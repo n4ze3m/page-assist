@@ -258,14 +258,14 @@ export const PlaygroundMessage = (props: Props) => {
           {/* images if available */}
           {props.images &&
             props.images.filter((img) => img.length > 0).length > 0 && (
-              <div>
+              <div className="flex flex-wrap gap-2 mt-2">
                 {props.images
                   .filter((image) => image.length > 0)
                   .map((image, index) => (
                     <Image
                       key={index}
                       src={image}
-                      alt="Uploaded Image"
+                      alt={`Uploaded Image ${index + 1}`}
                       width={180}
                       className="rounded-md relative"
                     />

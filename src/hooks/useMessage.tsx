@@ -1563,6 +1563,7 @@ export const useMessage = () => {
   const onSubmit = async ({
     message,
     image,
+    images,
     isRegenerate,
     controller,
     memory,
@@ -1572,6 +1573,7 @@ export const useMessage = () => {
   }: {
     message: string
     image: string
+    images?: string[]
     isRegenerate?: boolean
     messages?: Message[]
     memory?: ChatHistory

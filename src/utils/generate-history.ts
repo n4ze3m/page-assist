@@ -11,6 +11,7 @@ export const generateHistory = (
     role: "user" | "assistant" | "system"
     content: string
     image?: string
+    images?: string[]
   }[],
   model: string
 ) => {
@@ -27,21 +28,31 @@ export const generateHistory = (
             }
           ]
 
-      if (message.image) {
+      // Use images array if available, otherwise fall back to single image
+      const imagesToUse = message.images && message.images.length > 0
+        ? message.images
+        : (message.image ? [message.image] : [])
+
+      if (imagesToUse.length > 0) {
         content = [
-          {
-            type: "image_url",
-            image_url: !isCustom
-              ? message.image
-              : {
-                  url: message.image
-                }
-          },
           {
             type: "text",
             text: message.content
           }
         ]
+
+        // Add all images to content
+        imagesToUse.forEach((img) => {
+          //@ts-ignore
+          content.push({
+            type: "image_url",
+            image_url: !isCustom
+              ? img
+              : {
+                  url: img
+                }
+          })
+        })
       }
       history.push(
         new HumanMessage({

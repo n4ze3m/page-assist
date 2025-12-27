@@ -18,34 +18,41 @@ export const humanMessageFormatter = async ({
     if (typeof content !== "string") {
       if (content.length > 1) {
         if (useOCR) {
-          //@ts-ignore
-          const imageUrl = content[1].image_url
-          const ocrText = await processImageForOCR(imageUrl)
+          // Process all images for OCR
+          const imageContents = content.filter((c: any) => c.type === "image_url")
+          const ocrTexts = await Promise.all(
+            imageContents.map((c: any) => processImageForOCR(c.image_url))
+          )
           //@ts-ignore
           const ocrPROMPT = `${content[0].text}
-          
+
 [IMAGE OCR TEXT]
-${ocrText}`
+${ocrTexts.join("\n\n---\n\n")}`
           return new HumanMessage({
             content: ocrPROMPT
           })
         }
 
-        // this means that we need to reformat the image_url
+        // Reformat the image_url for all images
         const newContent: MessageContent = [
           {
             type: "text",
             //@ts-ignore
             text: content[0].text
-          },
-          {
-            type: "image_url",
-            image_url: {
-              //@ts-ignore
-              url: content[1].image_url
-            }
           }
         ]
+
+        // Add all images
+        const imageContents = content.filter((c: any) => c.type === "image_url")
+        imageContents.forEach((c: any) => {
+          //@ts-ignore
+          newContent.push({
+            type: "image_url",
+            image_url: {
+              url: c.image_url
+            }
+          })
+        })
 
         return new HumanMessage({
           content: newContent
@@ -61,13 +68,16 @@ ${ocrText}`
 
   if (useOCR) {
     if (typeof content !== "string" && content.length > 1) {
-      //@ts-ignore
-      const ocrText = await processImageForOCR(content[1].image_url)
+      // Process all images for OCR
+      const imageContents = content.filter((c: any) => c.type === "image_url")
+      const ocrTexts = await Promise.all(
+        imageContents.map((c: any) => processImageForOCR(c.image_url))
+      )
       //@ts-ignore
       const ocrPROMPT = `${content[0].text}
 
 [IMAGE OCR TEXT]
-${ocrText}`
+${ocrTexts.join("\n\n---\n\n")}`
       return new HumanMessage({
         content: ocrPROMPT
       })

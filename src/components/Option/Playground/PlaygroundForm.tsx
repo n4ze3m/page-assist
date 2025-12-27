@@ -131,7 +131,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const form = useForm({
     initialValues: {
       message: "",
-      image: ""
+      image: "",
+      images: [] as string[]
     }
   })
 
@@ -169,7 +170,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       const isImage = e.type.startsWith("image/")
       if (isImage) {
         const base64 = await toBase64(e)
-        form.setFieldValue("image", base64)
+        const currentImages = form.values.images || []
+        form.setFieldValue("images", [...currentImages, base64])
       } else {
         await handleFileUpload(e)
       }
@@ -181,25 +183,34 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   }
 
   const onFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
+    if (e.target.files && e.target.files.length > 0) {
+      const files = Array.from(e.target.files)
 
-      const isUnsupported = otherUnsupportedTypes.includes(file.type)
+      for (const file of files) {
+        const isUnsupported = otherUnsupportedTypes.includes(file.type)
 
-      if (isUnsupported) {
-        console.error("File type not supported:", file.type)
-        return
-      }
+        if (isUnsupported) {
+          console.error("File type not supported:", file.type)
+          continue
+        }
 
-      const isImage = file.type.startsWith("image/")
-      if (isImage) {
-        const base64 = await toBase64(file)
-        form.setFieldValue("image", base64)
-      } else {
-        await handleFileUpload(file)
+        const isImage = file.type.startsWith("image/")
+        if (isImage) {
+          const base64 = await toBase64(file)
+          const currentImages = form.values.images || []
+          form.setFieldValue("images", [...currentImages, base64])
+        } else {
+          await handleFileUpload(file)
+        }
       }
     }
   }
+  const removeImage = (index: number) => {
+    const currentImages = form.values.images || []
+    const newImages = currentImages.filter((_, i) => i !== index)
+    form.setFieldValue("images", newImages)
+  }
+
   const handlePaste = async (e: React.ClipboardEvent) => {
     if (e.clipboardData.files.length > 0) {
       onInputChange(e.clipboardData.files[0])
@@ -291,7 +302,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     form.onSubmit(async (value) => {
       if (
         value.message.trim().length === 0 &&
-        value.image.length === 0 &&
+        (!value.images || value.images.length === 0) &&
         selectedDocuments.length === 0 &&
         uploadedFiles.length === 0
       ) {
@@ -319,7 +330,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       }
       textAreaFocus()
       await sendMessage({
-        image: value.image,
+        image: value.images && value.images.length > 0 ? value.images[0] : "",
+        images: value.images,
         message: value.message.trim(),
         docs: selectedDocuments.map((doc) => ({
           type: "tab",
@@ -375,25 +387,28 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
             data-istemporary-chat={temporaryChat}
             data-checkwidemode={checkWideMode}
             className={` bg-neutral-50/70  dark:bg-[#2a2a2a]/70 relative w-full max-w-[48rem] p-1 backdrop-blur-3xl duration-100 border border-gray-300 rounded-t-xl  dark:border-[#404040] data-[istemporary-chat='true']:bg-gray-200/70 data-[istemporary-chat='true']:dark:bg-black/70 data-[checkwidemode='true']:max-w-none`}>
-            <div
-              className={`border-b border-gray-200 dark:border-[#404040] relative ${
-                form.values.image.length === 0 ? "hidden" : "block"
-              }`}>
-              <button
-                type="button"
-                onClick={() => {
-                  form.setFieldValue("image", "")
-                }}
-                className="absolute top-1 left-1 flex items-center justify-center z-10 bg-white dark:bg-[#2a2a2a] p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-[#404040] text-black dark:text-gray-100">
-                <X className="h-4 w-4" />
-              </button>{" "}
-              <Image
-                src={form.values.image}
-                alt="Uploaded Image"
-                preview={false}
-                className="rounded-md max-h-32"
-              />
-            </div>
+            {form.values.images && form.values.images.length > 0 && (
+              <div className="p-3 border-b border-gray-200 dark:border-[#404040]">
+                <div className="flex flex-wrap gap-2">
+                  {form.values.images.map((img, index) => (
+                    <div key={index} className="relative">
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute -top-2 -right-2 flex items-center justify-center z-10 bg-white dark:bg-[#2a2a2a] p-0.5 rounded-full hover:bg-gray-100 dark:hover:bg-[#404040] text-black dark:text-gray-100 shadow-md">
+                        <X className="h-3 w-3" />
+                      </button>
+                      <Image
+                        src={img}
+                        alt={`Uploaded Image ${index + 1}`}
+                        preview={true}
+                        className="rounded-md max-h-32 object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             {selectedDocuments.length > 0 && (
               <div className="p-3">
                 <div className="max-h-24 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-[#404040] scrollbar-track-transparent">
@@ -461,7 +476,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     }
                     if (
                       value.message.trim().length === 0 &&
-                      value.image.length === 0 &&
+                      (!value.images || value.images.length === 0) &&
                       selectedDocuments.length === 0 &&
                       uploadedFiles.length === 0
                     ) {
@@ -476,7 +491,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     }
                     textAreaFocus()
                     await sendMessage({
-                      image: value.image,
+                      image: value.images && value.images.length > 0 ? value.images[0] : "",
+                      images: value.images,
                       message: value.message.trim(),
                       docs: selectedDocuments.map((doc) => ({
                         type: "tab",
@@ -494,7 +510,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                     className="sr-only"
                     ref={inputRef}
                     accept="image/*"
-                    multiple={false}
+                    multiple={true}
                     onChange={onInputChange}
                   />
                   <input

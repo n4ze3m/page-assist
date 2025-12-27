@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 import { FC, useState, useMemo, useRef } from "react"
 import { useTranslation } from "react-i18next"
+import { useStorage } from "@plasmohq/storage/hook"
 
 interface TableProps {
   children: React.ReactNode
@@ -24,6 +25,7 @@ export const TableBlock: FC<TableProps> = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { t } = useTranslation("common")
   const ref = useRef<HTMLDivElement>(null)
+  const [tableTextWrap] = useStorage("tableTextWrap", false)
 
   const parseData = () => {
     // get table from ref
@@ -164,7 +166,7 @@ export const TableBlock: FC<TableProps> = ({ children }) => {
         <div className="overflow-x-auto">
           <div
             ref={ref}
-            className={`prose prose-gray dark:prose-invert max-w-none [&_table]:table-fixed [&_table]:w-full [&_table]:border-collapse [&_thead]:bg-neutral-50 [&_thead]:dark:bg-[#2a2a2a] [&_th]:px-6 [&_th]:py-4 [&_th]:text-left [&_th]:font-semibold [&_th]:text-gray-900 [&_th]:dark:text-gray-100 [&_th]:uppercase [&_th]:tracking-wider [&_th]:whitespace-nowrap [&_th:nth-child(1)]:w-1/2 [&_th:nth-child(2)]:w-1/2 [&_th:nth-child(3)]:w-1/3 [&_th]:border-b [&_th]:border-gray-200 [&_th]:dark:border-gray-700 [&_td]:px-6 [&_td]:py-4 [&_td]:text-gray-700 [&_td]:dark:text-gray-300 [&_td]:text-left [&_td]:whitespace-nowrap  [&_td]:border-b [&_td]:border-gray-200 [&_td]:dark:border-gray-700 [&_tr:last-child_td]:border-b-0`}
+            className={`prose prose-gray dark:prose-invert max-w-none [&_table]:table-fixed [&_table]:w-full [&_table]:border-collapse [&_thead]:bg-neutral-50 [&_thead]:dark:bg-[#2a2a2a] [&_th]:px-6 [&_th]:py-4 [&_th]:text-left [&_th]:font-semibold [&_th]:text-gray-900 [&_th]:dark:text-gray-100 [&_th]:uppercase [&_th]:tracking-wider ${tableTextWrap ? '[&_th]:break-words [&_th]:overflow-wrap-anywhere' : '[&_th]:whitespace-nowrap'} [&_th:nth-child(1)]:w-1/2 [&_th:nth-child(2)]:w-1/2 [&_th:nth-child(3)]:w-1/3 [&_th]:border-b [&_th]:border-gray-200 [&_th]:dark:border-gray-700 [&_td]:px-6 [&_td]:py-4 [&_td]:text-gray-700 [&_td]:dark:text-gray-300 [&_td]:text-left ${tableTextWrap ? '[&_td]:break-words [&_td]:overflow-wrap-anywhere' : '[&_td]:whitespace-nowrap'} [&_td]:border-b [&_td]:border-gray-200 [&_td]:dark:border-gray-700 [&_tr:last-child_td]:border-b-0`}
             style={{
               fontSize: `calc(0.875rem * var(--font-scale, 1))`
             }}>
