@@ -1,5 +1,6 @@
 import { isCustomModel } from "@/db/dexie/models"
 import { HumanMessage, type MessageContent } from "@langchain/core/messages"
+import { processImageForOCR } from "./ocr"
 
 type HumanMessageType = {
   content: MessageContent
@@ -19,7 +20,9 @@ export const humanMessageFormatter = async ({
       if (content.length > 1) {
         if (useOCR) {
           // Process all images for OCR
-          const imageContents = content.filter((c: any) => c.type === "image_url")
+          const imageContents = content.filter(
+            (c: any) => c.type === "image_url"
+          )
           const ocrTexts = await Promise.all(
             imageContents.map((c: any) => processImageForOCR(c.image_url))
           )
@@ -44,15 +47,19 @@ ${ocrTexts.join("\n\n---\n\n")}`
 
         // Add all images
         const imageContents = content.filter((c: any) => c.type === "image_url")
-        imageContents.forEach((c: any) => {
-          //@ts-ignore
-          newContent.push({
-            type: "image_url",
-            image_url: {
-              url: c.image_url
+        if (imageContents.length > 0) {
+          imageContents.forEach((c: any) => {
+            if (c.image_url.length > 0) {
+              console.log("Adding image to custom model message:", c.image_url)
+              newContent.push({
+                type: "image_url",
+                image_url: {
+                  url: c.image_url
+                }
+              })
             }
           })
-        })
+        }
 
         return new HumanMessage({
           content: newContent

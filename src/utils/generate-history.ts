@@ -43,15 +43,17 @@ export const generateHistory = (
 
         // Add all images to content
         imagesToUse.forEach((img) => {
-          //@ts-ignore
-          content.push({
-            type: "image_url",
-            image_url: !isCustom
-              ? img
-              : {
-                  url: img
-                }
-          })
+          if (img && img.length > 0) {
+            //@ts-ignore
+            content.push({
+              type: "image_url",
+              image_url: !isCustom
+                ? img
+                : {
+                    url: img
+                  }
+            })
+          }
         })
       }
       history.push(
