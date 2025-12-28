@@ -307,6 +307,12 @@ export const useMessageOption = () => {
         )
       } else {
         if (webSearch) {
+          // Include images array in search mode
+          const enhancedSearchChatModeParams = {
+            ...chatModeParams,
+            images: images
+          }
+
           await searchChatMode(
             message,
             image,
@@ -314,7 +320,7 @@ export const useMessageOption = () => {
             chatHistory || messages,
             memory || history,
             signal,
-            chatModeParams
+            enhancedSearchChatModeParams
           )
         } else {
           // Include uploaded files info and images array in normal mode

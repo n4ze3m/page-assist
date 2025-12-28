@@ -47,6 +47,7 @@ export const createRegenerateLastMessage = ({
         await onSubmit({
           message: lastMessage.content,
           image: lastMessage.image || "",
+          images: lastMessage.images || [],
           isRegenerate: true,
           memory: newHistory,
           controller: newController
@@ -105,7 +106,8 @@ export const createEditMessage = ({
         isRegenerate: true,
         messages: previousMessages,
         memory: previousHistory,
-        controller: abortController
+        controller: abortController,
+        images: currentHumanMessage.images || []
       })
       return
     }
