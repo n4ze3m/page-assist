@@ -37,7 +37,8 @@ export const normalChatMode = async (
     setAbortController,
     historyId,
     setHistoryId,
-    uploadedFiles
+    uploadedFiles,
+    images
   }: {
     selectedModel: string
     useOCR: boolean
@@ -53,6 +54,7 @@ export const normalChatMode = async (
     historyId: string | null
     setHistoryId: (id: string) => void
     uploadedFiles?: any[]
+    images?: string[]
   }
 ) => {
   console.log("Using normalChatMode")
@@ -60,6 +62,15 @@ export const normalChatMode = async (
   let promptId: string | undefined = selectedSystemPrompt
   let promptContent: string | undefined = undefined
 
+  // Process images array for base64 formatting
+  const processedImages = (images || []).map((img) => {
+    if (img.length > 0 && !img.startsWith("data:image")) {
+      return `data:image/jpeg;base64,${img.split(",")[1]}`
+    }
+    return img
+  })
+
+  // Keep backward compatibility with single image
   if (image.length > 0) {
     image = `data:image/jpeg;base64,${image.split(",")[1]}`
   }
@@ -74,6 +85,9 @@ export const normalChatMode = async (
   const modelInfo = await getModelNicknameByID(selectedModel)
 
   if (!isRegenerate) {
+    // Use images array if available, otherwise fall back to single image
+    const userImages = processedImages.length > 0 ? processedImages : (image ? [image] : [])
+
     newMessage = [
       ...messages,
       {
@@ -81,7 +95,7 @@ export const normalChatMode = async (
         name: "You",
         message,
         sources: [],
-        images: image ? [image] : [],
+        images: userImages,
         modelImage: modelInfo?.model_avatar,
         modelName: modelInfo?.model_name || selectedModel,
         documents: uploadedFiles?.map(f => ({
@@ -124,32 +138,29 @@ export const normalChatMode = async (
     const prompt = await systemPromptForNonRagOption()
     const selectedPrompt = await getPromptById(selectedSystemPrompt)
 
+    // Build content array with text and multiple images
+    const contentArray: any[] = [
+      {
+        text: message,
+        type: "text"
+      }
+    ]
+
+    // Add all images to content array (use processedImages if available, otherwise single image)
+    const imagesToUse = processedImages.length > 0 ? processedImages : (image.length > 0 ? [image] : [])
+
+    imagesToUse.forEach((img) => {
+      contentArray.push({
+        image_url: img,
+        type: "image_url"
+      })
+    })
+
     let humanMessage = await humanMessageFormatter({
-      content: [
-        {
-          text: message,
-          type: "text"
-        }
-      ],
+      content: contentArray,
       model: selectedModel,
       useOCR: useOCR
     })
-    if (image.length > 0) {
-      humanMessage = await humanMessageFormatter({
-        content: [
-          {
-            text: message,
-            type: "text"
-          },
-          {
-            image_url: image,
-            type: "image_url"
-          }
-        ],
-        model: selectedModel,
-        useOCR: useOCR
-      })
-    }
 
     const applicationChatHistory = generateHistory(history, selectedModel)
 
@@ -275,12 +286,15 @@ export const normalChatMode = async (
       })
     })
 
+    const imagesToSave = processedImages.length > 0 ? processedImages : (image ? [image] : [])
+
     setHistory([
       ...history,
       {
         role: "user",
         content: message,
-        image
+        image: imagesToSave.length > 0 ? imagesToSave[0] : undefined,
+        images: imagesToSave.length > 0 ? imagesToSave : undefined
       },
       {
         role: "assistant",
@@ -294,7 +308,8 @@ export const normalChatMode = async (
       isRegenerate,
       selectedModel: selectedModel,
       message,
-      image,
+      image: imagesToSave.length > 0 ? imagesToSave[0] : "",
+      images: imagesToSave,
       fullText,
       source: [],
       generationInfo,
@@ -309,12 +324,15 @@ export const normalChatMode = async (
 
     console.log(e)
 
+    const imagesToSave = processedImages.length > 0 ? processedImages : (image ? [image] : [])
+
     const errorSave = await saveMessageOnError({
       e,
       botMessage: fullText,
       history,
       historyId,
-      image,
+      image: imagesToSave.length > 0 ? imagesToSave[0] : "",
+      images: imagesToSave,
       selectedModel,
       setHistory,
       setHistoryId,

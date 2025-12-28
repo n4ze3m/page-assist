@@ -137,6 +137,7 @@ export const formatToChatHistory = (
     return {
       content: message.content,
       role: message.role as "user" | "assistant" | "system",
+      image: message.images && message.images.length > 0 ? message.images[0] : undefined,
       images: message.images
     }
   })

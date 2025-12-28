@@ -198,6 +198,7 @@ export const useMessageOption = () => {
   const onSubmit = async ({
     message,
     image,
+    images,
     isRegenerate = false,
     messages: chatHistory,
     memory,
@@ -207,6 +208,7 @@ export const useMessageOption = () => {
   }: {
     message: string
     image: string
+    images?: string[]
     isRegenerate?: boolean
     isContinue?: boolean
     messages?: Message[]
@@ -305,6 +307,12 @@ export const useMessageOption = () => {
         )
       } else {
         if (webSearch) {
+          // Include images array in search mode
+          const enhancedSearchChatModeParams = {
+            ...chatModeParams,
+            images: images
+          }
+
           await searchChatMode(
             message,
             image,
@@ -312,13 +320,14 @@ export const useMessageOption = () => {
             chatHistory || messages,
             memory || history,
             signal,
-            chatModeParams
+            enhancedSearchChatModeParams
           )
         } else {
-          // Include uploaded files info even in normal mode
+          // Include uploaded files info and images array in normal mode
           const enhancedChatModeParams = {
             ...chatModeParams,
-            uploadedFiles: uploadedFiles
+            uploadedFiles: uploadedFiles,
+            images: images
           }
 
           await normalChatMode(

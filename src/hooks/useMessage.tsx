@@ -446,7 +446,7 @@ export const useMessage = () => {
         {
           role: "user",
           content: message,
-          image
+          image,
         },
         {
           role: "assistant",
@@ -762,7 +762,8 @@ export const useMessage = () => {
     isRegenerate: boolean,
     messages: Message[],
     history: ChatHistory,
-    signal: AbortSignal
+    signal: AbortSignal,
+    images?: string[]
   ) => {
     setStreaming(true)
     const url = await getOllamaURL()
@@ -770,6 +771,16 @@ export const useMessage = () => {
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
+
+    // Process multiple images if provided
+    const processedImages = images?.length > 0
+      ? images.map(img => {
+          if (img.length > 0 && !img.startsWith('data:')) {
+            return `data:image/jpeg;base64,${img.split(",")[1]}`
+          }
+          return img
+        }).filter(img => img.length > 0)
+      : image.length > 0 ? [image] : []
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
@@ -788,7 +799,7 @@ export const useMessage = () => {
           name: "You",
           message,
           sources: [],
-          images: [image]
+          images: processedImages
         },
         {
           isBot: true,
@@ -832,17 +843,17 @@ export const useMessage = () => {
         model: selectedModel,
         useOCR
       })
-      if (image.length > 0) {
+      if (processedImages.length > 0) {
         humanMessage = await humanMessageFormatter({
           content: [
             {
               text: message,
               type: "text"
             },
-            {
-              image_url: image,
-              type: "image_url"
-            }
+            ...processedImages.map(img => ({
+              image_url: img,
+              type: "image_url" as const
+            }))
           ],
           model: selectedModel,
           useOCR
@@ -961,7 +972,8 @@ export const useMessage = () => {
         {
           role: "user",
           content: message,
-          image
+          image,
+          images: processedImages
         },
         {
           role: "assistant",
@@ -1019,13 +1031,24 @@ export const useMessage = () => {
     isRegenerate: boolean,
     messages: Message[],
     history: ChatHistory,
-    signal: AbortSignal
+    signal: AbortSignal,
+    images?: string[]
   ) => {
     const url = await getOllamaURL()
     setStreaming(true)
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
+
+    // Process multiple images if provided
+    const processedImages = images?.length > 0
+      ? images.map(img => {
+          if (img.length > 0 && !img.startsWith('data:')) {
+            return `data:image/jpeg;base64,${img.split(",")[1]}`
+          }
+          return img
+        }).filter(img => img.length > 0)
+      : image.length > 0 ? [image] : []
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
@@ -1044,7 +1067,7 @@ export const useMessage = () => {
           name: "You",
           message,
           sources: [],
-          images: [image]
+          images: processedImages
         },
         {
           isBot: true,
@@ -1107,17 +1130,17 @@ export const useMessage = () => {
         useOCR: useOCR
       })
 
-      if (image.length > 0) {
+      if (processedImages.length > 0) {
         questionMessage = await humanMessageFormatter({
           content: [
             {
               text: promptForQuestion,
               type: "text"
             },
-            {
-              image_url: image,
-              type: "image_url"
-            }
+            ...processedImages.map(img => ({
+              image_url: img,
+              type: "image_url" as const
+            }))
           ],
           model: selectedModel,
           useOCR: useOCR
@@ -1149,17 +1172,17 @@ export const useMessage = () => {
         model: selectedModel,
         useOCR
       })
-      if (image.length > 0) {
+      if (processedImages.length > 0) {
         humanMessage = await humanMessageFormatter({
           content: [
             {
               text: message,
               type: "text"
             },
-            {
-              image_url: image,
-              type: "image_url"
-            }
+            ...processedImages.map(img => ({
+              image_url: img,
+              type: "image_url" as const
+            }))
           ],
           model: selectedModel,
           useOCR
@@ -1271,7 +1294,8 @@ export const useMessage = () => {
         {
           role: "user",
           content: message,
-          image
+          image,
+          images: processedImages
         },
         {
           role: "assistant",
@@ -1328,7 +1352,8 @@ export const useMessage = () => {
     messages: Message[],
     history: ChatHistory,
     signal: AbortSignal,
-    messageType: string
+    messageType: string,
+    images?: string[]
   ) => {
     setStreaming(true)
     const url = await getOllamaURL()
@@ -1336,6 +1361,16 @@ export const useMessage = () => {
     if (image.length > 0) {
       image = `data:image/jpeg;base64,${image.split(",")[1]}`
     }
+
+    // Process multiple images if provided
+    const processedImages = images?.length > 0
+      ? images.map(img => {
+          if (img.length > 0 && !img.startsWith('data:')) {
+            return `data:image/jpeg;base64,${img.split(",")[1]}`
+          }
+          return img
+        }).filter(img => img.length > 0)
+      : image.length > 0 ? [image] : []
 
     const ollama = await pageAssistModel({
       model: selectedModel!,
@@ -1354,7 +1389,7 @@ export const useMessage = () => {
           name: "You",
           message,
           sources: [],
-          images: [image],
+          images: processedImages,
           messageType: messageType
         },
         {
@@ -1397,17 +1432,17 @@ export const useMessage = () => {
         model: selectedModel,
         useOCR
       })
-      if (image.length > 0) {
+      if (processedImages.length > 0) {
         humanMessage = await humanMessageFormatter({
           content: [
             {
               text: prompt.replace("{text}", message),
               type: "text"
             },
-            {
-              image_url: image,
-              type: "image_url"
-            }
+            ...processedImages.map(img => ({
+              image_url: img,
+              type: "image_url" as const
+            }))
           ],
           model: selectedModel,
           useOCR
@@ -1506,7 +1541,8 @@ export const useMessage = () => {
           role: "user",
           content: message,
           image,
-          messageType
+          messageType,
+          images: processedImages
         },
         {
           role: "assistant",
@@ -1563,6 +1599,7 @@ export const useMessage = () => {
   const onSubmit = async ({
     message,
     image,
+    images,
     isRegenerate,
     controller,
     memory,
@@ -1572,6 +1609,7 @@ export const useMessage = () => {
   }: {
     message: string
     image: string
+    images?: string[]
     isRegenerate?: boolean
     messages?: Message[]
     memory?: ChatHistory
@@ -1614,7 +1652,8 @@ export const useMessage = () => {
         chatHistory || messages,
         memory || history,
         signal,
-        messageType
+        messageType,
+        images
       )
     } else {
       if (chatMode === "normal") {
@@ -1625,7 +1664,8 @@ export const useMessage = () => {
             isRegenerate || false,
             messages,
             memory || history,
-            signal
+            signal,
+            images
           )
         } else {
           await normalChatMode(
@@ -1634,7 +1674,8 @@ export const useMessage = () => {
             isRegenerate,
             chatHistory || messages,
             memory || history,
-            signal
+            signal,
+            images
           )
         }
       } else if (chatMode === "vision") {
@@ -1697,6 +1738,7 @@ export const useMessage = () => {
       await onSubmit({
         message: message,
         image: currentHumanMessage.images[0] || "",
+        images: currentHumanMessage.images || [],
         isRegenerate: true,
         messages: previousMessages,
         memory: previousHistory,
@@ -1728,7 +1770,8 @@ export const useMessage = () => {
           isRegenerate: true,
           memory: newHistory,
           controller: newController,
-          messageType: lastMessage.messageType
+          messageType: lastMessage.messageType,
+          images: lastMessage.images || []
         })
       }
     }

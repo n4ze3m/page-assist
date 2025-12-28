@@ -98,6 +98,9 @@
       },
       "persistChatInput": {
         "label": "Persist Chat Input (Save unsent messages)"
+      },
+      "tableTextWrap": {
+        "label": "Enable Text Wrapping in Markdown Tables"
       }
     },
     "sidepanelRag": {
