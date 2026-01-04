@@ -183,6 +183,12 @@ export type ProviderState = {
   is_enabled: boolean
 }
 
+export type Memory = {
+  id: string
+  content: string
+  createdAt: number
+  updatedAt: number
+}
 
 export type MessageHistory = Message[];
 export type ChatHistory = HistoryInfo[];
@@ -192,3 +198,4 @@ export type Models = Model[]
 export type ModelNicknames = ModelNickname[]
 export type ModelStates = ModelState[]
 export type ProviderStates = ProviderState[]
+export type Memories = Memory[]
