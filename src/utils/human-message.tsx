@@ -1,6 +1,10 @@
 import { isCustomModel } from "@/db/dexie/models"
 import { HumanMessage, type MessageContent } from "@langchain/core/messages"
 import { processImageForOCR } from "./ocr"
+import { Storage } from "@plasmohq/storage"
+import { getMemoriesAsContext } from "@/db/dexie/memory"
+
+const storage = new Storage()
 
 type HumanMessageType = {
   content: MessageContent
@@ -13,6 +17,17 @@ export const humanMessageFormatter = async ({
   model,
   useOCR = false
 }: HumanMessageType) => {
+  // Get memory context if enabled
+  const enableMemory = await storage.get("enableMemory")
+  let memoryContext = ""
+
+  if (enableMemory) {
+    const context = await getMemoriesAsContext()
+    if (context) {
+      memoryContext = `\n\n${context}`
+    }
+  }
+
   const isCustom = isCustomModel(model)
 
   if (isCustom) {
@@ -30,7 +45,7 @@ export const humanMessageFormatter = async ({
           const ocrPROMPT = `${content[0].text}
 
 [IMAGE OCR TEXT]
-${ocrTexts.join("\n\n---\n\n")}`
+${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
           return new HumanMessage({
             content: ocrPROMPT
           })
@@ -41,7 +56,7 @@ ${ocrTexts.join("\n\n---\n\n")}`
           {
             type: "text",
             //@ts-ignore
-            text: content[0].text
+            text: content[0].text + memoryContext
           }
         ]
 
@@ -67,7 +82,7 @@ ${ocrTexts.join("\n\n---\n\n")}`
       } else {
         return new HumanMessage({
           //@ts-ignore
-          content: content[0].text
+          content: content[0].text + memoryContext
         })
       }
     }
@@ -84,11 +99,18 @@ ${ocrTexts.join("\n\n---\n\n")}`
       const ocrPROMPT = `${content[0].text}
 
 [IMAGE OCR TEXT]
-${ocrTexts.join("\n\n---\n\n")}`
+${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
       return new HumanMessage({
         content: ocrPROMPT
       })
     }
+  }
+
+  // Handle string content or fallback
+  if (typeof content === "string") {
+    return new HumanMessage({
+      content: content + memoryContext
+    })
   }
 
   return new HumanMessage({

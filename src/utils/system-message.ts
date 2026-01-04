@@ -1,9 +1,5 @@
 import { SystemMessage } from "@langchain/core/messages"
-import { getSelectedModelName } from "./model"
-import { Storage } from "@plasmohq/storage"
-import { getMemoriesAsContext } from "@/db/dexie/memory"
-
-const storage = new Storage()
+import { getSelectedModelName } from "./model" 
 
 export const systemPromptFormatter = async ({ content }: { content: string }) => {
   const currentDate = new Date()
@@ -21,16 +17,6 @@ export const systemPromptFormatter = async ({ content }: { content: string }) =>
 
   for (const [key, value] of Object.entries(replacements)) {
     content = content.replaceAll(key, value)
-  }
-
-  // Check if memory is enabled
-  const enableMemory = await storage.get("enableMemory")
-
-  if (enableMemory) {
-    const memoryContext = await getMemoriesAsContext()
-    if (memoryContext) {
-      content = `${content}\n\n${memoryContext}`
-    }
   }
 
   return new SystemMessage({
