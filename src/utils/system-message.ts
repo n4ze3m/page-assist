@@ -1,5 +1,5 @@
 import { SystemMessage } from "@langchain/core/messages"
-import { getSelectedModelName } from "./model"
+import { getSelectedModelName } from "./model" 
 
 export const systemPromptFormatter = async ({ content }: { content: string }) => {
   const currentDate = new Date()

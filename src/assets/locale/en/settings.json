@@ -101,6 +101,9 @@
       },
       "tableTextWrap": {
         "label": "Enable Text Wrapping in Markdown Tables"
+      },
+      "showMoreForLargeMessage": {
+        "label": "Show 'Show more' for large human messages"
       }
     },
     "sidepanelRag": {
