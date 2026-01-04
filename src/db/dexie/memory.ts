@@ -77,17 +77,22 @@ export const importMemories = async (memories: Memories): Promise<void> => {
 }
 
 export const getMemoriesAsContext = async (): Promise<string> => {
-  const memories = await getAllMemories()
+  try {
+    const memories = await getAllMemories()
 
-  if (memories.length === 0) {
+    if (memories.length === 0) {
+      return ""
+    }
+
+    const memoryContext = memories
+      .map((memory) => {
+        return `- ${memory.content}`
+      })
+      .join("\n")
+
+    return `User Context (Personal Memories):\n${memoryContext}`
+  } catch (error) {
+    console.error("Error generating memory context:", error)
     return ""
   }
-
-  const memoryContext = memories
-    .map((memory) => {
-      return `- ${memory.content}`
-    })
-    .join("\n")
-
-  return `User Context (Personal Memories):\n${memoryContext}`
 }
