@@ -54,7 +54,7 @@ export default defineConfig({
     version: "1.5.50",
     name:
       process.env.TARGET === "firefox"
-        ? "Page Assist - A Web UI for Local AI Models"
+        ? "Page Assist - UI for AI Models"
         : "__MSG_extName__",
     description: "__MSG_extDescription__",
     default_locale: "en",
