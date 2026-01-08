@@ -76,6 +76,7 @@ const SidepanelChat = () => {
     })
   })
   const bgMsg = useBackgroundMessage()
+  const lastBgKeyRef = React.useRef<string | null>(null)
 
   const setRecentMessagesOnLoad = async () => {
     const isEnabled = await copilotResumeLastChat()
@@ -184,28 +185,40 @@ const SidepanelChat = () => {
   }, [defaultChatWithWebsite, sidepanelTemporaryChat])
 
   React.useEffect(() => {
-    if (bgMsg && !streaming) {
-      if (selectedModel) {
-        if (bgMsg.type === "yt_summarize") {
-          onSubmit({
-            message: bgMsg.text,
-            image: "",
-            chatType: "youtube"
-          })
-        } else {
-          onSubmit({
-            message: bgMsg.text,
-            messageType: bgMsg.type,
-            image: ""
-          })
-        }
+    if (!bgMsg) return
+
+    const key = `${bgMsg.type}:${bgMsg.text}`
+
+    if (streaming) {
+      // Defer processing until current stream finishes
+      return
+    }
+
+    if (lastBgKeyRef.current === key) {
+      return
+    }
+    lastBgKeyRef.current = key
+
+    if (selectedModel) {
+      if (bgMsg.type === "yt_summarize") {
+        onSubmit({
+          message: bgMsg.text,
+          image: "",
+          chatType: "youtube"
+        })
       } else {
-        notification.error({
-          message: t("formError.noModel")
+        onSubmit({
+          message: bgMsg.text,
+          messageType: bgMsg.type,
+          image: ""
         })
       }
+    } else {
+      notification.error({
+        message: t("formError.noModel")
+      })
     }
-  }, [bgMsg])
+  }, [bgMsg, streaming, selectedModel])
 
   return (
     <div className="flex h-full w-full">

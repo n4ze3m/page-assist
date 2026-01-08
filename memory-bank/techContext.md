@@ -1,6 +1,6 @@
 # Tech Context: Page Assist
 
-Last updated: 2025-12-21
+Last updated: 2026-01-07
 Derived from: package.json, wxt.config.ts, repo structure
 
 1) Core Stack
@@ -103,24 +103,40 @@ Derived from: package.json, wxt.config.ts, repo structure
 - Theming approach (updated):
   - System-first: relies on browser/OS prefers-color-scheme, no html/body theme classes
   - No localStorage persistence for theme; no DOM class toggling
+- Firefox scripting limitation on built-in PDF viewer:
+  - browser.scripting.executeScript can return no/undefined result or throw; we must always resolve content retrieval to avoid UI deadlocks.
+  - Implemented in src/libs/get-html.ts with fallbacks using tab.url and type inference (pdf/html).
 
 9) Testing/Quality Notes
 - No dedicated test framework/scripts defined in package.json
 - Manual verification across browsers per README; prioritize e2e sanity for:
   - Sidebar/web UI load + shortcuts
   - Provider connectivity (Ollama, Chrome AI, OpenAI-compatible)
-  - Chat With Webpage parsing flows (HTML, PDF, OCR)
+  - Chat With Webpage parsing flows:
+    - HTML pages
+    - Firefox PDF (built-in viewer) with fallback path
+    - YouTube pages/transcripts (fetching transcript via in-tab scraping)
   - Vector store ingest/retrieve
   - Theme smoke tests: verify Tailwind dark variants, custom CSS media queries, AntD algorithm switching
-- Lint/format via Prettier; Type checking via tsc --noEmit
+  - Background-triggered events (context menus, YouTube summarize) should be deduped and gated during streaming
 
 10) Versioning and Release
 - Build scripts create per-target bundles (build/*); zip tasks for store submissions
 - Track both manifest.version (extension) and package.json version (npm package)
 - Postinstall step ensures WXT preparedness
 
+11) Browser-Specific Constraints and Implemented Solutions (New)
+- Firefox:
+  - content retrieval on PDF viewer: executeScript may fail or return nothing
+    - Solution: src/libs/get-html.ts always resolves; fallback to { url: tab.url, content: "", type: inferred } to prevent hangs.
+  - Sidebar lifecycle can cause duplicate background events (e.g., context menu triggers while opening)
+    - Solution: src/routes/sidepanel-chat.tsx adds a streaming guard and dedupes background-triggered messages by a stable key (type:text).
+- Cross-browser parity:
+  - Changes are safe for Chromium/Edge paths and maintain identical UX.
+
 Appendix: Key Files
 - wxt.config.ts, tailwind.config.js (darkMode: "media"), postcss.config.js, tsconfig.json, .prettierrc.cjs
 - src/models/*, src/services/*, src/libs/*, src/db/*, src/routes/*
 - src/hooks/useDarkmode.tsx (system-only mode hook)
+- src/libs/get-html.ts (content retrieval fallbacks), src/routes/sidepanel-chat.tsx (background dedupe + streaming guard), src/hooks/useMessage.tsx (embedding reuse keying)
 - docs/ (VitePress)

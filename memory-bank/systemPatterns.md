@@ -1,6 +1,6 @@
 # System Patterns: Page Assist
 
-Last updated: 2025-12-21
+Last updated: 2026-01-07
 Derived from: repo structure (src/*), wxt.config.ts, package.json
 
 1) High-Level Architecture
@@ -44,14 +44,14 @@ Derived from: repo structure (src/*), wxt.config.ts, package.json
 - loader/* and parser/*:
   - Loaders for various file types and URLs; parsers for site-specific content (amazon, wiki, twitter, google docs/sheets, default).
 - hooks/*:
-  - Chat flows (useMessage, useMessageOption), background messaging (useBackgroundMessage), UX (useSmartScroll, useSpeechRecognition, useTTS), i18n/useI18n, keyboard handlers, debounce, migrations, etc.
+  - Chat flows (useMessage, useMessageOption), background messaging (useBackgroundMessage), UX (useSmartScroll, useSpeechRecognition, useTTS), i18n/useI18n, keyboard handlers, debounce, migrations, utilities.
 - store/*:
   - Zustand state containers coordinating UI and services.
 
 3) Important Data Flows
 A. Chat With Webpage
 - Trigger from UI (sidepanel) -> hooks/useMessage and message options.
-- Acquire page content via libs/get-tab-contents.ts and/or @mozilla/readability, html-to-text, pdfjs, OCR when needed.
+- Acquire page content via libs/get-html.ts (executes function in tab via scripting API) with fallbacks for Firefox PDF viewer; plus @mozilla/readability, html-to-text, pdfjs, OCR when needed.
 - Optionally chunk/index through libs/process-knowledge/process-source + embeddings (OAIEmbedding/OllamaEmbedding) -> vector store (Dexie-backed via PageAssistVectorStore/PAMemoryVectorStore).
 - Query model via models/* adapter; stream responses -> UI render via react-markdown + syntax highlighter; optional TTS via services/openai-tts or elevenlabs.
 
@@ -65,7 +65,7 @@ C. Knowledge Base / RAG
 
 4) Cross-Browser Pattern
 - WXT switches entrypointsDir and manifest slices by TARGET.
-- Firefox: browser_specific_settings.gecko.id, different permissions (MV2-style array incl. webRequestBlocking), CSP string adjusted for worker-src and blob:.
+- Firefox: browser_specific_settings.gecko.id, different permissions (MV2-style array incl. webRequestBlocking), CSP string adjusted for worker-src and blob:, and known limitations with scripting on built-in PDF viewer (handled via fallbacks).
 - Chromium/Edge: MV3 permissions, sidePanel API, host_permissions.
 
 5) Permissions and Capabilities
@@ -88,7 +88,7 @@ C. Knowledge Base / RAG
   - services/model-settings.ts resolves active provider.
   - models/* handle streaming tokens -> hooks update UI incrementally.
 - Content extraction robustness:
-  - libs/get-html, get-tab-contents, pdf/pdfjs, mammoth for docx, tesseract OCR; fallbacks increase resilience across sites.
+  - libs/get-html, get-screenshot, pdf/pdfjs, mammoth for docx, tesseract OCR; fallbacks increase resilience across sites.
 - Vector operations:
   - embeddings via OAIEmbedding/OllamaEmbedding; similarity via ml-distance; persistence in Dexie; paging in UI.
 - Internationalization:
@@ -98,6 +98,7 @@ C. Knowledge Base / RAG
 - Use of TanStack Query for retries/caching where remote-like calls exist.
 - Graceful fallbacks if a provider is unavailable (e.g., default to different endpoint).
 - Notifications via libs/send-notification.ts; toasts via react-toastify.
+- Always resolve content retrieval even on scripting failures (Firefox PDF viewer), avoiding UI deadlocks.
 
 9) Performance Considerations
 - Offload heavy parsing/embedding where possible; chunking strategies in process-* libs.
@@ -121,10 +122,23 @@ C. Knowledge Base / RAG
 - Route wrappers no longer inject "dark"/"light" classes; only font class ("arimo") is applied.
 - Settings UIs surface a read-only label indicating current system theme ("System: Dark/Light") instead of a manual toggle.
 
+13) Chat With Page Robustness Patterns (Updated)
+- Content Retrieval Fallbacks (Firefox-aware):
+  - libs/get-html.ts: getDataFromCurrentTab guarantees resolution. If scripting.executeScript returns no/undefined result or throws (common on Firefox built-in PDF viewer), fall back to { url: tab.url, content: "", type: inferred pdf/html } to avoid unresolved Promises and UI hangs.
+- Streaming Integrity and Background Actions:
+  - sidepanel-chat.tsx: Introduce streaming guard; do not initiate submissions while a stream is active.
+  - Deduplicate background-triggered events via a stable key (type:text) using a ref, preventing duplicate submissions when the sidepanel opens/toggles (frequent in Firefox).
+- Embedding Cache Correctness:
+  - useMessage.tsx: On first turn, reuse embeddings keyed by the freshly detected websiteUrl rather than soon-to-be-updated currentURL state to avoid context mismatches caused by async state updates.
+- Optional Port Hygiene (recommended):
+  - useBackgroundMessage hook may store the Port from browser.runtime.connect({ name: "pgCopilot" }) and disconnect on cleanup to prevent zombie ports on rapid unmount/mount cycles.
+
 Appendix: Notable Files
 - wxt.config.ts (manifest, permissions, CSP, targets)
 - src/entries/background.ts, *.content.ts (content features)
-- src/routes/* (UI screens)
+- src/routes/* (UI screens), src/routes/sidepanel-chat.tsx (dedupe + streaming guard)
 - src/models/* (provider adapters)
 - src/db/*, src/libs/PageAssistVectorStore.ts, src/libs/PAMemoryVectorStore.ts
+- src/libs/get-html.ts (content retrieval with Firefox fallbacks), src/libs/get-screenshot.ts
+- src/hooks/useMessage.tsx (embedding reuse, streaming flows)
 - src/loader/*, src/parser/*

@@ -1,58 +1,67 @@
 # Active Context: Page Assist
 
-Last updated: 2025-12-21
+Last updated: 2026-01-07
 
 1) Current Work Focus
-- Refactor theming to respect system color scheme via prefers-color-scheme media queries.
-- Remove dependency on runtime ".dark" class toggling and localStorage theme override.
-- Ensure Tailwind, custom CSS, and Ant Design theming behave consistently across Chrome/Firefox.
+- Resolve “Chat with Page” occasionally losing context or not sending/showing responses, especially in Firefox.
+- Harden content acquisition from current tab to prevent hangs on Firefox (PDF viewer, restricted contexts).
+- Eliminate duplicated or prematurely-triggered background actions that interfere with streaming in the sidepanel.
+- Ensure correct embedding cache reuse on first turn to avoid silent context resets.
 
 2) Recent Changes (this session)
-- Tailwind configuration:
-  - tailwind.config.js: darkMode switched from "class" to "media".
-- Base CSS:
-  - src/assets/tailwind.css: replaced .dark-qualified rules with @media (prefers-color-scheme: dark) for scrollbars, shimmer text, table components, etc. (light remains the default styles).
-- Theme hook:
-  - src/hooks/useDarkmode.tsx: simplified to system-driven mode only (dark|light from matchMedia). No DOM class mutations or localStorage writes. toggleDarkMode retained as a no-op for API compatibility. Initializes from current system preference to avoid FOUC.
-- Route wrappers:
-  - src/routes/chrome-route.tsx and src/routes/firefox-route.tsx: removed injecting "dark"/"light" classes; wrappers now only apply the "arimo" font class.
-- Settings UI:
-  - Options: src/components/Option/Settings/general-settings.tsx — removed manual toggle button; shows read-only "System: Dark/Light".
-  - Sidepanel: src/components/Sidepanel/Settings/body.tsx — removed manual toggle button; shows read-only "System: Dark/Light".
+- Robust tab content retrieval fallback (prevents hangs)
+  - File: src/libs/get-html.ts
+  - Change: Ensure getDataFromCurrentTab always resolves even if browser.scripting.executeScript returns no/undefined result or throws.
+  - Chrome path: fallback to { url: tab.url, content: "", type: "html" }.
+  - Firefox path: infer type from URL (pdf/html) and resolve; accounts for built-in PDF viewer limitations.
+  - Effect: Prevents UI from appearing stuck when starting a “chat with page” on Firefox.
+
+- Correct embedding reuse keying on first turn
+  - File: src/hooks/useMessage.tsx
+  - Change: When messages.length === 0, use keepTrackOfEmbedding[websiteUrl] instead of keepTrackOfEmbedding[currentURL], since setCurrentURL is async and may be stale.
+  - Effect: Avoids context mismatch or reset on initial turns; improves stability of RAG context across messages.
+
+- Dedupe and gate background-triggered submissions
+  - File: src/routes/sidepanel-chat.tsx
+  - Change: Added lastBgKeyRef and streaming guard; avoid re-submitting the same background message and do not submit while a stream is active.
+  - Effect: Prevents duplicate or colliding submissions (more frequent in Firefox due to sidebar open/toggle timing).
 
 3) Next Steps (short-term)
-- Validate theming manually across OS/browser themes (Chrome/Firefox):
-  - Tailwind dark: utilities, custom CSS (scrollbars/table/shimmer), and Ant Design algorithm changes.
-- Scan for any remaining ".dark " usage in CSS/JSX (outside comments) and migrate if found.
-- Consider optional future enhancement:
-  - Manual override using data-theme + CSS vars layer (without reverting Tailwind to class mode).
+- Manual QA
+  - Firefox:
+    - Regular HTML page: verify one clean generation and that response references page content.
+    - PDF viewer page: verify no hang; response is produced; context fallback behaves safely.
+    - YouTube summarize via context menu: exactly one request fired, no duplicates; runs after any current stream completes.
+  - Chromium:
+    - Verify same flows to ensure cross-browser parity and no regressions.
+- Optional hardening
+  - useBackgroundMessage: store Port from browser.runtime.connect({ name: "pgCopilot" }) and disconnect on cleanup to avoid zombie ports on rapid mount/unmount cycles.
+  - Add short debounce (250–500ms) for background-triggered submissions.
 
 4) Active Decisions and Preferences
-- Theming:
-  - Tailwind darkMode: "media" — system-first; no runtime DOM theme class.
-  - Custom CSS uses @media (prefers-color-scheme: dark) for dark-specific rules.
-  - useDarkmode hook is information-only (reflects system preference); no side effects on DOM/localStorage.
-  - Ant Design theming continues to switch algorithms based on the hook’s mode.
-- Privacy-first, local-by-default storage continues unchanged.
+- Retrieval fallback pattern:
+  - Always resolve getDataFromCurrentTab to avoid deadlocks; infer type from URL if necessary (Firefox PDF viewer constraint).
+- Streaming integrity:
+  - Do not start new submissions while streaming; dedupe background-triggered events using a deterministic key (type:text).
+- Embedding cache correctness:
+  - Reuse vector store keyed by the freshly detected websiteUrl on first turn to avoid stale state race with setCurrentURL.
+- Privacy-first remains unchanged; all processing local unless user configures otherwise.
 
 5) Learnings & Insights
-- Moving to system media queries eliminates theme FOUC risk and simplifies runtime code.
-- Ant Design theme switching based on hook mode seamlessly maps to system preference.
-- Removing manual toggle reduces UX complexity; if needed later, a data-theme override can be layered without reintroducing Tailwind class mode.
+- Firefox scripting and PDF viewer can return no result, leading to unresolved Promises and stalled UX; explicit fallbacks are required.
+- Background messages can arrive during sidebar lifecycle transitions; explicit gating and deduping stabilizes UX.
+- React state updates (setCurrentURL) are async; do not use soon-to-be-updated state for cache lookups on the same tick.
 
 6) Open Questions / To Clarify
-- Do we want to reintroduce a user-facing override (data-theme) later?
-- Should we expose a developer flag to force theme for screenshots/tests?
-- Confirm there are no legacy paths that depended on .dark on the html/body wrapper.
+- Should we add telemetry (local-only logs) for frequency of fallback paths and deduped events to guide future improvements?
+- Do we want queueing for background requests during streaming (process after stream ends) or continue to drop duplicates?
 
 7) Update Triggers
-- Any future theme variable/token changes.
-- If adding a manual override (data-theme), update Tech and Patterns docs accordingly.
-- Prior to release, add a smoke test checklist for theme validation.
+- Any regression in “chat with page” streaming or context reuse.
+- Changes to browser.scripting or PDF viewer behavior in Firefox/Chromium.
+- Adjustments to background-triggered workflows (YouTube summarize, custom copilot menus).
 
 Appendix: Reference Pointers
-- Config: tailwind.config.js (darkMode: "media"); wxt.config.ts unchanged for theming
-- Hook: src/hooks/useDarkmode.tsx (system-only)
-- CSS: src/assets/tailwind.css (media queries)
-- Routes: src/routes/*-route.tsx (no theme class injection)
-- Settings: general-settings.tsx, sidepanel settings body.tsx (read-only system label)
+- Fallbacks: src/libs/get-html.ts
+- Embedding reuse: src/hooks/useMessage.tsx
+- Background gating/dedupe: src/routes/sidepanel-chat.tsx

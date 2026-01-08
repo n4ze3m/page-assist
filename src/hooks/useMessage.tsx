@@ -224,7 +224,8 @@ export const useMessage = () => {
     embedPDF = pdf
     if (messages.length === 0) {
       setCurrentURL(websiteUrl)
-      isAlreadyExistEmbedding = keepTrackOfEmbedding[currentURL]
+      // Use the freshly detected websiteUrl instead of stale currentURL state
+      isAlreadyExistEmbedding = keepTrackOfEmbedding[websiteUrl]
     } else {
       if (currentURL !== websiteUrl) {
         setCurrentURL(websiteUrl)
