@@ -18,6 +18,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useStoreChatModelSettings } from "@/store/model"
 import { PageAssistDatabase } from "@/db/dexie/chat"
 import { useMigration } from "../../hooks/useMigration"
+import { useStorage } from "@plasmohq/storage/hook"
 
 export default function OptionLayout({
   children
@@ -28,6 +29,7 @@ export default function OptionLayout({
   const { t } = useTranslation(["option", "common", "settings"])
   const [openModelSettings, setOpenModelSettings] = useState(false)
   useMigration()
+  const [sidebarPosition] = useStorage("sidebarPosition", "left")
   const {
     setMessages,
     setHistory,
@@ -105,7 +107,7 @@ export default function OptionLayout({
               </div>
             </div>
           }
-          placement="left"
+          placement={sidebarPosition === "right" ? "right" : "left"}
           closeIcon={null}
           onClose={() => setSidebarOpen(false)}
           open={sidebarOpen}>
