@@ -322,8 +322,11 @@ export const getDataFromCurrentTab = async () => {
           func: _getHtml
         })
 
-        if (data.length > 0) {
+        if (data.length > 0 && data[0].result) {
           resolve(data[0].result)
+        } else {
+          // Fallback to avoid hanging if script returns no result
+          resolve({ url: tab.url, content: "", type: "html" })
         }
       })
     } else {
@@ -337,24 +340,18 @@ export const getDataFromCurrentTab = async () => {
               func: _getHtml
             })
 
-            if (data.length > 0) {
+            if (data.length > 0 && data[0].result) {
               resolve(data[0].result)
+            } else {
+              // Robust fallback to avoid unresolved Promise on Firefox
+              const isPdf = (tab.url || "").toLowerCase().endsWith(".pdf")
+              resolve({ url: tab.url, content: "", type: isPdf ? "pdf" : "html" })
             }
           } catch (e) {
             console.error("error", e)
-            // this is a weird method but it works
-            if (import.meta.env.BROWSER === "firefox") {
-              // all I need is to get the pdf url but somehow
-              // firefox won't allow extensions to run content scripts on pdf https://bugzilla.mozilla.org/show_bug.cgi?id=1454760
-              // so I set up a weird method to fix this issue by asking tab to give the url
-              // and then I can get the pdf url
-              const result = {
-                url: tab.url,
-                content: "",
-                type: "pdf"
-              }
-              resolve(result)
-            }
+            // Always resolve to prevent hanging, infer type from URL
+            const isPdf = (tab.url || "").toLowerCase().endsWith(".pdf")
+            resolve({ url: tab.url, content: "", type: isPdf ? "pdf" : "html" })
           }
         })
     }

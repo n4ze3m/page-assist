@@ -1,6 +1,6 @@
 # Progress: Page Assist
 
-Last updated: 2025-12-21
+Last updated: 2026-01-07
 
 1) What Works (Verified)
 - Cross-browser extension structure using WXT with TARGET switching (chrome/edge, firefox).
@@ -11,25 +11,25 @@ Last updated: 2025-12-21
 - Build/dev scripts for Chrome/Firefox/Edge; docs site using VitePress.
 - CSP/permissions tailored per target; heavy deps externalized in build (langchain, @langchain/community).
 - Keyboard shortcuts defined in manifest: Web UI (Ctrl+Shift+L), Side Panel (Ctrl+Shift+Y).
-- Theming now follows system preference:
+- Theming follows system preference:
   - Tailwind darkMode: "media" (no .dark class reliance).
   - Custom CSS uses @media (prefers-color-scheme: dark) for dark-specific rules.
   - Ant Design algorithm switches based on system via useDarkmode hook.
   - No DOM class mutations or localStorage overrides for theme.
 
 2) What’s Left To Build / Improve
-- Optional manual override strategy:
+- Optional manual theme override:
   - If needed later, introduce data-theme="dark|light" with a small CSS variable override layer (without changing Tailwind darkMode back to "class").
 - Verification and polish:
-  - Manual test pass across Chrome/Firefox in light/dark modes (Tailwind utilities, custom CSS for scrollbars/tables/shimmer, AntD components).
-  - Scan and remove any remaining legacy .dark selectors (excluding comments/examples).
+  - Manual test pass across Chrome/Firefox for page parsing (HTML, PDF, YouTube transcript), and background-triggered actions.
+  - Confirm deduplication/streaming guard prevents duplicate or mid-stream submissions.
 - Testing/QA:
   - Add unit/e2e sanity tests and/or CI.
   - Theme smoke tests (light/dark) for core screens.
 - Performance/Profiling:
   - Measure open-to-first-response latency and parsing/embedding bottlenecks.
 - Docs:
-  - Note theming approach and rationale in developer documentation/troubleshooting.
+  - Document Firefox-specific content retrieval fallbacks and background message gating.
 
 3) Current Status (Config/Versions/Build)
 - Extension manifest version (wxt.config.ts): 1.5.44
@@ -39,12 +39,12 @@ Last updated: 2025-12-21
   - Firefox (MV2-like): webRequest/webRequestBlocking, host patterns, gecko id
 - Top-level await enabled via plugin; large deps externalized to reduce bundle size.
 - All data stored locally by default (Dexie); share feature optional/disable-able.
-- Theming implementation status:
+- Theming implementation status (unchanged since last update):
   - tailwind.config.js -> darkMode: "media"
   - src/assets/tailwind.css -> @media (prefers-color-scheme: dark) for dark styles
   - src/hooks/useDarkmode.tsx -> system-only, no DOM class toggles/localStorage
-  - src/routes/*-route.tsx -> removed theme class injection
-  - Settings UIs show read-only “System: Light/Dark”; manual toggle removed
+  - src/routes/*-route.tsx -> no theme class injection
+  - Settings UIs -> read-only “System: Light/Dark”
 
 4) Known Issues / Risks
 - Page parsing variability across sites/content types (HTML, PDF, OCR edge cases).
@@ -60,27 +60,35 @@ Last updated: 2025-12-21
 - entries vs entries-firefox split with per-target manifest slices.
 - Privacy-first default (no telemetry, no unsolicited network calls).
 - Theming moved from class-based .dark to system-driven media queries.
+- Chat with Page robustness improvements (this session):
+  - Always-resolve content retrieval with Firefox-aware fallbacks (no hangs).
+  - Deduplicate background-triggered actions and guard against mid-stream submissions.
+  - Correct initial embedding cache keying by websiteUrl to avoid stale state.
 
 6) Recent Session Summary (this session)
-- Implemented system-driven theming:
-  - Tailwind darkMode: "media"
-  - Replaced .dark CSS with @media (prefers-color-scheme: dark)
-  - Simplified theme hook to reflect system preference only
-  - Removed theme class injection in route wrappers
-  - Replaced manual theme toggle with read-only system status in settings UIs
-- Updated Memory Bank (activeContext) to reflect changes.
+- Fixed Firefox hangs in content retrieval:
+  - src/libs/get-html.ts: Always resolve getDataFromCurrentTab; if scripting.executeScript returns no/undefined result or throws, fallback using tab.url and infer type (pdf/html). Chrome path also guards against undefined results.
+- Stabilized embedding reuse on first turn:
+  - src/hooks/useMessage.tsx: On messages.length === 0, use keepTrackOfEmbedding[websiteUrl] to avoid stale currentURL during the same tick.
+- Prevented duplicate/overlapping background submissions:
+  - src/routes/sidepanel-chat.tsx: Added lastBgKeyRef for deduplication and a streaming guard so background-triggered submits run only after current stream ends.
 
 7) Next Actions (Concrete)
-- Execute manual validation across light/dark in Chrome/Firefox for:
-  - Tailwind dark: utilities, custom CSS (scrollbars/table/shimmer), AntD algorithm.
-- Run a repo-wide scan for ".dark " usage outside comments and migrate if any remain.
-- Decide on optional data-theme manual override and scope if requested.
-- Draft a lightweight test/CI plan including theme smoke checks.
-- Document theming approach in developer docs.
+- Manual QA
+  - Firefox:
+    - HTML page: single generation, response references page content.
+    - PDF viewer: no hang; response produced with safe context behavior.
+    - YouTube summarize (context menu): exactly one request; runs post-stream.
+  - Chromium:
+    - Repeat above flows to confirm parity and no regressions.
+- Optional hardening
+  - useBackgroundMessage: hold Port from browser.runtime.connect and disconnect on cleanup to avoid zombie ports.
+  - Add 250–500ms debounce for background-triggered submissions.
+- Testing/CI
+  - Draft smoke tests for “chat with page” including Firefox PDF and YouTube flows.
+  - Add telemetry/logging hooks (local only) for frequency of fallbacks and deduped events to guide further improvements.
 
 Appendix: Quick References
-- Config: wxt.config.ts; tailwind.config.js (darkMode: "media")
-- Hook: src/hooks/useDarkmode.tsx (system-only)
-- CSS: src/assets/tailwind.css (media-query-based theming)
-- Routes: src/routes/chrome-route.tsx, src/routes/firefox-route.tsx
-- Settings: src/components/Option/Settings/general-settings.tsx, src/components/Sidepanel/Settings/body.tsx
+- Fallbacks: src/libs/get-html.ts
+- Embedding reuse: src/hooks/useMessage.tsx
+- Background gating/dedupe: src/routes/sidepanel-chat.tsx
