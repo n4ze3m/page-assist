@@ -104,6 +104,13 @@
       },
       "showMoreForLargeMessage": {
         "label": "Show 'Show more' for large human messages"
+      },
+      "sidebarPosition": {
+        "label": "Sidebar Position",
+        "options": {
+          "left": "Left",
+          "right": "Right"
+        }
       }
     },
     "sidepanelRag": {

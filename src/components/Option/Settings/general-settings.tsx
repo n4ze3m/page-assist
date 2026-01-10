@@ -117,26 +117,28 @@ export const GeneralSettings = () => {
     },
     false
   )
-    const [hideReasoningWidget, setHideReasoningWidget] = useStorage('hideReasoningWidget', false)
+  const [hideReasoningWidget, setHideReasoningWidget] = useStorage(
+    "hideReasoningWidget",
+    false
+  )
 
   const [persistChatInput, setPersistChatInput] = useStorage(
     "persistChatInput",
     false
   )
 
-  const [tableTextWrap, setTableTextWrap] = useStorage(
-    "tableTextWrap",
-    false
-  )
+  const [tableTextWrap, setTableTextWrap] = useStorage("tableTextWrap", false)
 
-  const [enableMemory, setEnableMemory] = useStorage(
-    "enableMemory",
-    false
-  )
+  const [enableMemory, setEnableMemory] = useStorage("enableMemory", false)
 
   const [showMoreForLargeMessage, setShowMoreForLargeMessage] = useStorage(
     "showMoreForLargeMessage",
     false
+  )
+
+  const [sidebarPosition, setSidebarPosition] = useStorage(
+    "sidebarPosition",
+    "left"
   )
 
   const { mode, toggleDarkMode } = useDarkMode()
@@ -568,7 +570,10 @@ export const GeneralSettings = () => {
         <div className="inline-flex items-center gap-2">
           <BetaTag />
           <span className="text-gray-700   dark:text-neutral-50">
-            {t("generalSettings.settings.enableMemory.label", "Enable Memory (Experimental)")}
+            {t(
+              "generalSettings.settings.enableMemory.label",
+              "Enable Memory (Experimental)"
+            )}
           </span>
         </div>
 
@@ -588,6 +593,31 @@ export const GeneralSettings = () => {
         <Switch
           checked={showMoreForLargeMessage}
           onChange={(checked) => setShowMoreForLargeMessage(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <span className="text-gray-700 dark:text-neutral-50 ">
+          {t("generalSettings.settings.sidebarPosition.label")}
+        </span>
+
+        <Select
+          allowClear={false}
+          style={{ width: "200px" }}
+          options={[
+            {
+              value: "left",
+              label: t("generalSettings.settings.sidebarPosition.options.left")
+            },
+            {
+              value: "right",
+              label: t("generalSettings.settings.sidebarPosition.options.right")
+            }
+          ]}
+          value={sidebarPosition}
+          onChange={(value) => {
+            setSidebarPosition(value)
+          }}
         />
       </div>
 
