@@ -26,6 +26,7 @@ export const SearchModeSettings = () => {
       firecrawlAPIKey: "",
       ollamaSearchApiKey: "",
       kagiApiKey: "",
+      perplexityApiKey: "",
       domainFilterList: [] as string[],
       blockedDomainList: [] as string[]
     }
@@ -237,6 +238,30 @@ export const SearchModeSettings = () => {
                   required
                   className="w-full mt-4 sm:mt-0 sm:w-[200px]"
                   {...form.getInputProps("kagiApiKey")}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {form.values.searchProvider === "perplexity-api" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                {t(
+                  "generalSettings.webSearch.perplexityApi.label",
+                  "Perplexity API Key"
+                )}
+              </span>
+              <div>
+                <Input.Password
+                  placeholder={t(
+                    "generalSettings.webSearch.perplexityApi.placeholder",
+                    "Perplexity API Key"
+                  )}
+                  required
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  {...form.getInputProps("perplexityApiKey")}
                 />
               </div>
             </div>
