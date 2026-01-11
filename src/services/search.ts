@@ -101,6 +101,11 @@ export const getKagiApiKey = async () => {
   return kagiApiKey || ""
 }
 
+export const getPerplexityApiKey = async () => {
+  const perplexityApiKey = await storage2.get("perplexityApiKey")
+  return perplexityApiKey || ""
+}
+
 export const getTavilyApiKey = async () => {
   const tavilyApiKey = await storage2.get("tavilyApiKey")
   return tavilyApiKey || ""
@@ -121,6 +126,10 @@ export const setOllamaSearchApiKey = async (ollamaSearchApiKey: string) => {
 
 export const setKagiApiKey = async (kagiApiKey: string) => {
   await storage2.set("kagiApiKey", kagiApiKey)
+}
+
+export const setPerplexityApiKey = async (perplexityApiKey: string) => {
+  await storage2.set("perplexityApiKey", perplexityApiKey)
 }
 
 export const setFirecrawlAPIKey = async (firecrawlAPIKey: string) => {
@@ -208,6 +217,7 @@ export const getSearchSettings = async () => {
     firecrawlAPIKey,
     ollamaSearchApiKey,
     kagiApiKey,
+    perplexityApiKey,
     domainFilterList,
     blockedDomainList
   ] = await Promise.all([
@@ -225,6 +235,7 @@ export const getSearchSettings = async () => {
     getFirecrawlAPIKey(),
     getOllamaSearchApiKey(),
     getKagiApiKey(),
+    getPerplexityApiKey(),
     getDomainFilterList(),
     getBlockedDomainList()
   ])
@@ -244,6 +255,7 @@ export const getSearchSettings = async () => {
     firecrawlAPIKey,
     ollamaSearchApiKey,
     kagiApiKey,
+    perplexityApiKey,
     domainFilterList,
     blockedDomainList
   }
@@ -264,6 +276,7 @@ export const setSearchSettings = async ({
   firecrawlAPIKey,
   ollamaSearchApiKey,
   kagiApiKey,
+  perplexityApiKey,
   domainFilterList,
   blockedDomainList
 }: {
@@ -281,6 +294,7 @@ export const setSearchSettings = async ({
   firecrawlAPIKey: string
   ollamaSearchApiKey: string
   kagiApiKey: string
+  perplexityApiKey: string
   domainFilterList: string[]
   blockedDomainList: string[]
 }) => {
@@ -299,6 +313,7 @@ export const setSearchSettings = async ({
     setFirecrawlAPIKey(firecrawlAPIKey),
     setOllamaSearchApiKey(ollamaSearchApiKey),
     setKagiApiKey(kagiApiKey),
+    setPerplexityApiKey(perplexityApiKey),
     setDomainFilterList(domainFilterList),
     setBlockedDomainList(blockedDomainList)
   ])

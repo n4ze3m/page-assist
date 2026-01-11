@@ -58,5 +58,9 @@ export const SUPPORTED_SEARCH_PROVIDERS = [
     {
         label: "Kagi Search API*",
         value: "kagi-api",
+    },
+    {
+        label: "Perplexity Search API",
+        value: "perplexity-api"
     }
 ]
