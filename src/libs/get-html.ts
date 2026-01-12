@@ -298,7 +298,7 @@ export const fetchTranscriptYT = async () => {
           })
 
           if (data.length > 0) {
-            resolve(data[0].result)
+            resolve((data?.[0]?.result as string) ?? "")
           }
         } catch (e) {
           console.error("error", e)
@@ -323,7 +323,7 @@ export const getDataFromCurrentTab = async () => {
         })
 
         if (data.length > 0 && data[0].result) {
-          resolve(data[0].result)
+          resolve(data[0].result as { url: string; content: string; type: string })
         } else {
           // Fallback to avoid hanging if script returns no result
           resolve({ url: tab.url, content: "", type: "html" })
@@ -341,7 +341,7 @@ export const getDataFromCurrentTab = async () => {
             })
 
             if (data.length > 0 && data[0].result) {
-              resolve(data[0].result)
+              resolve(data[0].result as { url: string; content: string; type: string })
             } else {
               // Robust fallback to avoid unresolved Promise on Firefox
               const isPdf = (tab.url || "").toLowerCase().endsWith(".pdf")

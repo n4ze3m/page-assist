@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { BaseLanguageModel } from "@langchain/core/language_models/base";
+import type { BaseLanguageModel } from "@langchain/core/language_models/base";
 import { Document } from "@langchain/core/documents";
 import {
   ChatPromptTemplate,
@@ -15,7 +15,7 @@ import {
   RunnableMap,
   RunnableSequence,
 } from "@langchain/core/runnables";
-import type { ChatHistory } from "~/store";
+import type { ChatHistory } from "@/store";
 type RetrievalChainInput = {
   chat_history: string;
   question: string;
