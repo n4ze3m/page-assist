@@ -76,7 +76,7 @@ export function messageToOpenAIRole(message: BaseMessage): OpenAIRoleEnum {
             return extractGenericMessageCustomRole(message) as OpenAIRoleEnum
         }
         default:
-            return type
+            return "user"
     }
 }
 function openAIResponseToChatMessage(
@@ -84,10 +84,13 @@ function openAIResponseToChatMessage(
 ) {
     switch (message.role) {
         case "assistant":
-            return new AIMessage(message.content || "", {
-                // function_call: message.function_call,
-                // tool_calls: message.tool_calls
-                // reasoning_content: message?.reasoning_content || null
+            return new AIMessage({
+                content: message.content || "",
+                additional_kwargs: {
+                    // function_call: message.function_call,
+                    // tool_calls: message.tool_calls
+                    // reasoning_content: message?.reasoning_content || null
+                }
             })
         default:
             return new ChatMessage(message.content || "", message.role ?? "unknown")
@@ -413,8 +416,8 @@ export class CustomChatOpenAI<
             writable: true,
             value: void 0
         })
-        this.openAIApiKey =
-            fields?.openAIApiKey ?? getEnvironmentVariable("OPENAI_API_KEY")
+        const providedKey = typeof fields?.openAIApiKey === "string" ? fields.openAIApiKey : undefined
+        this.openAIApiKey = providedKey ?? getEnvironmentVariable("OPENAI_API_KEY")
 
         this.modelName = fields?.modelName ?? this.modelName
         this.modelKwargs = fields?.modelKwargs ?? {}
@@ -500,6 +503,11 @@ export class CustomChatOpenAI<
         options: this["ParsedCallOptions"],
         runManager?: CallbackManagerForLLMRun
     ): AsyncGenerator<ChatGenerationChunk> {
+        // Prefer OpenAI v6 Responses API when available; fallback to Chat Completions otherwise
+        if (this.shouldUseResponsesApi()) {
+            yield* this._streamResponseChunksResponses(messages, options, runManager)
+            return
+        }
         const messagesMapped = convertMessagesToOpenAIParams(messages)
         const params = {
             ...this.invocationParams(options),
@@ -774,6 +782,94 @@ export class CustomChatOpenAI<
             }
         })
     }
+    // v6 Responses API helpers (feature-gated; safe no-ops if unavailable)
+    private shouldUseResponsesApi(): boolean {
+        try {
+            const isOpenRouter = (this.clientConfig.baseURL || '').includes('openrouter.ai')
+            const hasResponses = (this.client as any)?.responses && typeof (this.client as any).responses.stream === 'function'
+            return !isOpenRouter && !!hasResponses
+        } catch {
+            return false
+        }
+    }
+
+    private messagesToResponsesInput(messages: BaseMessage[]): string {
+        return messages
+            .map((m) => {
+                const role = messageToOpenAIRole(m)
+                const content = typeof (m as any).content === 'string'
+                    ? (m as any).content
+                    : Array.isArray((m as any).content)
+                        ? (m as any).content.map((p: any) => p?.text ?? '').join('\n')
+                        : ''
+                return `${role.toUpperCase()}: ${content}`
+            })
+            .join('\n')
+    }
+
+    private async *_streamResponseChunksResponses(
+        messages: BaseMessage[],
+        options: this["ParsedCallOptions"],
+        runManager?: CallbackManagerForLLMRun
+    ): AsyncGenerator<ChatGenerationChunk> {
+        try {
+            // @ts-ignore - v6 Responses API
+            const stream = await (this.client as any).responses.stream({
+                model: this.modelName,
+                input: this.messagesToResponsesInput(messages),
+            }, this._getClientOptions(options))
+
+            for await (const event of stream as any) {
+                const type = event?.type
+                if (type === 'response.output_text.delta') {
+                    const delta: string = event?.delta ?? ''
+                    if (!delta) continue
+                    const chunkMsg = new CustomAIMessageChunk({ content: delta }) as any
+                    const generationChunk = new ChatGenerationChunk({
+                        message: chunkMsg,
+                        text: delta,
+                        generationInfo: {}
+                    })
+                    yield generationChunk
+                    // eslint-disable-next-line no-void
+                    void runManager?.handleLLMNewToken(delta ?? '')
+                } else if (type === 'response.completed') {
+                    break
+                } else if (type === 'response.error') {
+                    const msg = event?.error?.message || 'OpenAI Responses stream error'
+                    throw new Error(msg)
+                }
+            }
+        } catch (e) {
+            // If Responses API fails, gracefully fallback to completions stream
+            const messagesMapped = convertMessagesToOpenAIParams(messages)
+            const params = {
+                ...this.invocationParams(options),
+                messages: messagesMapped,
+                stream: true
+            }
+            // @ts-ignore
+            const streamIterable = await this.completionWithRetry(params, options)
+            let defaultRole
+            for await (const data of streamIterable) {
+                const choice = data?.choices[0]
+                if (!choice) continue
+                const { delta } = choice
+                if (!delta) continue
+                const chunk = _convertDeltaToMessageChunk(delta, defaultRole)
+                defaultRole = delta.role ?? defaultRole
+                if (typeof (chunk as any).content !== 'string') continue
+                const generationChunk = new ChatGenerationChunk({ message: chunk, text: (chunk as any).content, generationInfo: {} })
+                yield generationChunk
+                // eslint-disable-next-line no-void
+                void runManager?.handleLLMNewToken(generationChunk.text ?? '')
+            }
+        }
+        if (options.signal?.aborted) {
+            throw new Error('AbortError')
+        }
+    }
+
     _getClientOptions(options) {
         if (!this.client) {
             const openAIEndpointConfig = {
@@ -855,7 +951,7 @@ export class CustomChatOpenAI<
         let llm
         let outputParser
         if (method === "jsonMode") {
-            llm = this.bind({})
+            llm = (this as any)
             if (isZodSchema(schema)) {
                 outputParser = StructuredOutputParser.fromZodSchema(schema)
             } else {
@@ -880,7 +976,7 @@ export class CustomChatOpenAI<
                     parameters: schema
                 }
             }
-            llm = this.bind({})
+            llm = (this as any)
             outputParser = new JsonOutputKeyToolsParser({
                 returnSingle: true,
                 keyName: functionName

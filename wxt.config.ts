@@ -39,9 +39,18 @@ export default defineConfig({
         promiseImportName: (i) => `__tla_${i}`
       }) as any
     ],
+    // Avoid externalizing LangChain v1 packages; bundle them instead to ensure proper ESM exports resolution
+    optimizeDeps: {
+      include: [
+        "@langchain/core",
+        "@langchain/openai",
+        "@langchain/community",
+        "@langchain/textsplitters"
+      ]
+    },
     build: {
       rollupOptions: {
-        external: ["langchain", "@langchain/community"]
+        // no externals for langchain v1 packages
       }
     }
   }),
@@ -59,7 +68,7 @@ export default defineConfig({
     description: "__MSG_extDescription__",
     default_locale: "en",
     action: {},
-    author: "n4ze3m",
+    author: { email: "n4ze3m" } as any,
     browser_specific_settings:
       process.env.TARGET === "firefox"
         ? {
@@ -87,11 +96,12 @@ export default defineConfig({
       }
     },
     content_security_policy:
-      process.env.TARGET !== "firefox" ?
-        {
-          extension_pages:
-            "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
-        } :  "script-src 'self' 'wasm-unsafe-eval' blob:; object-src 'self'; worker-src 'self' blob:;",
+      process.env.TARGET !== "firefox"
+        ? {
+            extension_pages:
+              "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+          }
+        : ("script-src 'self' 'wasm-unsafe-eval' blob:; object-src 'self'; worker-src 'self' blob:;" as any),
     permissions:
       process.env.TARGET === "firefox"
         ? firefoxMV2Permissions

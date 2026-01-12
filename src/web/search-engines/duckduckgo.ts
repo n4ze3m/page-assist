@@ -13,7 +13,7 @@ import {
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 import type { Document } from "@langchain/core/documents"
 import * as cheerio from "cheerio"
-import { MemoryVectorStore } from "langchain/vectorstores/memory"
+import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 
 export const localDuckDuckGoSearch = async (query: string) => {
 
@@ -93,11 +93,11 @@ export const webDuckDuckGoSearch = async (query: string) => {
 
   const chunks = await textSplitter.splitDocuments(docs)
 
-  const store = new MemoryVectorStore(ollamaEmbedding)
+  const store = new PageAssistVectorStore(ollamaEmbedding, { knownledge_id: "web-search", file_id: "temp_uploaded_files" })
 
   await store.addDocuments(chunks)
 
-  const resultsWithEmbeddings = await store.similaritySearch(query, 3)
+  const resultsWithEmbeddings = await store.similaritySearchKB(query, 3)
 
   const searchResult = resultsWithEmbeddings.map((result) => {
     return {

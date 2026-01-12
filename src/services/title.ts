@@ -2,7 +2,7 @@ import { pageAssistModel } from "@/models"
 import { Storage } from "@plasmohq/storage"
 import { getOllamaURL } from "./ollama"
 import { cleanUrl } from "@/libs/clean-url"
-import { HumanMessage } from "langchain/schema"
+import { HumanMessage } from "@langchain/core/messages"
 import { removeReasoning } from "@/libs/reasoning"
 import { ChatHistory } from "@/store/option"
 const storage = new Storage()

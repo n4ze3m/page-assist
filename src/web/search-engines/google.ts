@@ -6,7 +6,7 @@ import {
 } from "@/services/search"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 import type { Document } from "@langchain/core/documents"
-import { MemoryVectorStore } from "langchain/vectorstores/memory"
+import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 import { cleanUrl } from "~/libs/clean-url"
 import { PageAssistHtmlLoader } from "~/loader/html"
 import {
@@ -132,16 +132,16 @@ export const webGoogleSearch = async (query: string) => {
 
   const chunks = await textSplitter.splitDocuments(docs)
 
-  const store = new MemoryVectorStore(ollamaEmbedding)
+  const store = new PageAssistVectorStore(ollamaEmbedding, { knownledge_id: "web-search", file_id: "temp_uploaded_files" })
 
   await store.addDocuments(chunks)
 
-  const resultsWithEmbeddings = await store.similaritySearch(query, 3)
+  const rankedDocs = await store.similaritySearchKB(query, 3)
 
-  const searchResult = resultsWithEmbeddings.map((result) => {
+  const searchResult = rankedDocs.map((doc) => {
     return {
-      url: result.metadata.url,
-      content: result.pageContent
+      url: (doc.metadata as any).url,
+      content: doc.pageContent
     }
   })
 
