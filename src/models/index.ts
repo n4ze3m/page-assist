@@ -147,6 +147,7 @@ export const pageAssistModel = async ({
         temperature: modelConfig?.temperature,
         topP: modelConfig?.topP,
         maxTokens: modelConfig?.maxTokens,
+        streaming: true,
         modelKwargs: {
           ...(modelConfig?.topK && { top_k: modelConfig.topK }),
           ...(modelConfig?.minP && { min_p: modelConfig.minP }),
@@ -212,6 +213,7 @@ export const pageAssistModel = async ({
       temperature: modelConfig?.temperature,
       topP: modelConfig?.topP,
       maxTokens: modelConfig?.maxTokens,
+      streaming: true,
       modelKwargs: {
         ...(modelConfig?.topK && { top_k: topK }),
         ...(modelConfig?.minP && { min_p: minP }), 
