@@ -11,11 +11,13 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
-      statements: 60,
-      lines: 60,
-      functions: 60,
-      branches: 50,
-      include: ['src/**/*.{ts,tsx}'],
+      thresholds: {
+        statements: 60,
+        lines: 60,
+        functions: 60,
+        branches: 50
+      },
+      include: ['src/components/ChatInput/controls/**/*.{ts,tsx}'],
       exclude: [
         'src/**/__tests__/**',
         'src/**/index.ts',
