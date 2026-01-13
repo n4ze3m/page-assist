@@ -5,6 +5,9 @@
   "description": "Use your locally running AI models to assist you in your web browsing.",
   "author": "n4ze3m",
   "scripts": {
+    "copy:pdf-worker": "cp node_modules/pdfjs-dist/build/pdf.worker.min.mjs src/public/pdf.worker.min.mjs",
+    "predev": "bun run copy:pdf-worker",
+    "prebuild": "bun run copy:pdf-worker",
     "dev": "cross-env TARGET=chrome wxt",
     "dev:firefox": "cross-env TARGET=firefox wxt -b firefox",
     "dev:edge": "cross-env TARGET=chrome wxt -b edge",
@@ -21,7 +24,7 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "postinstall": "wxt prepare"
+    "postinstall": "wxt prepare && bun run copy:pdf-worker"
   },
   "dependencies": {
     "@ant-design/cssinjs": "^1.18.4",
