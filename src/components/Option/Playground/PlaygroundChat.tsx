@@ -70,6 +70,7 @@ export const PlaygroundChat = () => {
             }}
             documents={message?.documents}
             actionInfo={actionInfo}
+            uiStreaming={message?.uiStreaming}
           />
         ))}
       </div>

@@ -60,6 +60,7 @@ type Props = {
   actionInfo?: string | null
   onNewBranch?: () => void
   temporaryChat?: boolean
+  uiStreaming?: { lastFlushedAt?: number }
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -78,6 +79,17 @@ export const PlaygroundMessage = (props: Props) => {
   const { cancel, isSpeaking, speak } = useTTS()
   const isLastMessage: boolean =
     props.currentMessageIndex === props.totalMessages - 1
+  const [pulse, setPulse] = React.useState(false)
+  // trigger a short fade/pulse when uiStreaming.lastFlushedAt changes
+  React.useEffect(() => {
+    if (!props.isBot || !props.isStreaming) return
+    if (!props.uiStreaming?.lastFlushedAt) return
+    const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (mql.matches) return
+    setPulse(true)
+    const to = window.setTimeout(() => setPulse(false), 120)
+    return () => window.clearTimeout(to)
+  }, [props.uiStreaming?.lastFlushedAt, props.isStreaming, props.isBot])
 
   const autoCopyToClipboard = async () => {
     if (
@@ -195,7 +207,7 @@ export const PlaygroundMessage = (props: Props) => {
               </Tag>
             )}
           </div>
-          <div className="flex flex-grow flex-col">
+          <div className={`flex flex-grow flex-col ${pulse ? 'stream-pulse' : ''}`}>
             {!editMode ? (
               props.isBot ? (
                 <>

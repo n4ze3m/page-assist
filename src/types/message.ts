@@ -23,4 +23,6 @@ export type Message = {
   modelImage?: string
   modelName?: string
   documents?: ChatDocuments
+  // UI-only metadata for soft-reveal streaming; not persisted
+  uiStreaming?: { lastFlushedAt?: number }
 }

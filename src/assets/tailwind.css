@@ -430,3 +430,32 @@
   }
   ------------------------------------------ */
 }
+
+/* Soft-reveal streaming styles */
+/*.pa-cursor {
+  display: inline-block;
+  margin-left: 0.5px;
+  animation: pa-blink 1.2s steps(1, end) infinite;
+}*/
+
+/*@keyframes pa-blink {
+  50% { opacity: 0; }
+}*/
+
+.stream-pulse {
+  position: relative;
+}
+.stream-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(125, 125, 125, 0.08);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pa-cursor { animation: none; }
+  .stream-pulse::after { transition: none; opacity: 0; }
+}

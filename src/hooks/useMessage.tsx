@@ -48,6 +48,7 @@ import {
 } from "./utils/messageHelpers"
 import { updatePageTitle } from "@/utils/update-page-title"
 import { getNoOfRetrievedDocs } from "@/services/app"
+import { STREAM_REVEAL } from "./streamingConfig"
 
 export const useMessage = () => {
   const {
@@ -182,7 +183,7 @@ export const useMessage = () => {
         {
           isBot: true,
           name: selectedModel,
-          message: "▋",
+          message: "",
           sources: [],
           id: generateMessageId,
           modelImage: modelInfo?.model_avatar,
@@ -195,7 +196,7 @@ export const useMessage = () => {
         {
           isBot: true,
           name: selectedModel,
-          message: "▋",
+          message: "",
           sources: [],
           id: generateMessageId,
           modelImage: modelInfo?.model_avatar,
@@ -205,6 +206,49 @@ export const useMessage = () => {
     }
 
     setMessages(newMessage)
+    // buffered soft-reveal state
+    let pendingBuffer = ""
+    let visibleText = ""
+    let flushTimer: number | null = null
+    const startFlush = () => {
+      if (flushTimer == null) {
+        flushTimer = setInterval(() => {
+          if (pendingBuffer.length > 0) {
+            const take = pendingBuffer.slice(0, STREAM_REVEAL.charsPerFlush)
+            pendingBuffer = pendingBuffer.slice(STREAM_REVEAL.charsPerFlush)
+            visibleText += take
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === generateMessageId
+                  ? { ...m, message: visibleText, uiStreaming: { lastFlushedAt: Date.now() } }
+                  : m
+              )
+            )
+          }
+        }, STREAM_REVEAL.flushIntervalMs) as unknown as number
+      }
+    }
+    const appendBuffered = (text: string) => {
+      if (!text) return
+      pendingBuffer += text
+      startFlush()
+    }
+    const flushAll = () => {
+      if (flushTimer != null) {
+        clearInterval(flushTimer)
+        flushTimer = null
+      }
+      if (pendingBuffer.length > 0) {
+        visibleText += pendingBuffer
+        pendingBuffer = ""
+      }
+    }
+    const cleanupFlush = () => {
+      if (flushTimer != null) {
+        clearInterval(flushTimer)
+        flushTimer = null
+      }
+    }
     let fullText = ""
     let contentToSave = ""
     let embedURL: string, embedHTML: string, embedType: string
@@ -412,21 +456,11 @@ export const useMessage = () => {
             reasoningEndTime.getTime() - reasoningStartTime.getTime()
           timetaken = reasoningTime
         }
-        setMessages((prev) => {
-          return prev.map((message) => {
-            if (message.id === generateMessageId) {
-              return {
-                ...message,
-                message: fullText + "▋",
-                reasoning_time_taken: timetaken
-              }
-            }
-            return message
-          })
-        })
+        appendBuffered(chunk?.content || "")
         count++
       }
 
+      flushAll()
       setMessages((prev) => {
         return prev.map((message) => {
           if (message.id === generateMessageId) {
@@ -435,7 +469,8 @@ export const useMessage = () => {
               message: fullText,
               sources: source,
               generationInfo,
-              reasoning_time_taken: timetaken
+              reasoning_time_taken: timetaken,
+              uiStreaming: undefined
             }
           }
           return message
@@ -499,6 +534,7 @@ export const useMessage = () => {
       setStreaming(false)
       setIsEmbedding(false)
     } finally {
+      cleanupFlush()
       setAbortController(null)
       setEmbeddingController(null)
     }
