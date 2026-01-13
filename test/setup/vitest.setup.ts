@@ -13,6 +13,18 @@ if (typeof window !== 'undefined' && !window.matchMedia) {
   window.matchMedia = () => ({ matches: false, addListener: () => {}, removeListener: () => {}, addEventListener: () => {}, removeEventListener: () => {}, dispatchEvent: () => false })
 }
 
+// Polyfill URL.createObjectURL/revokeObjectURL for jsdom
+if (typeof window !== 'undefined') {
+  if (!window.URL.createObjectURL) {
+    // @ts-ignore
+    window.URL.createObjectURL = () => 'blob:mock'
+  }
+  if (!window.URL.revokeObjectURL) {
+    // @ts-ignore
+    window.URL.revokeObjectURL = () => {}
+  }
+}
+
 // Ensure TextEncoder/TextDecoder are available in Node 18+
 import { TextEncoder, TextDecoder } from 'node:util'
 // @ts-ignore
