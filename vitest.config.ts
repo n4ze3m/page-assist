@@ -17,13 +17,29 @@ export default defineConfig({
         functions: 60,
         branches: 50
       },
-      include: ['src/components/ChatInput/**/*.{ts,tsx}'],
+      include: [
+        'src/components/ChatInput/**/*.{ts,tsx}',
+        'src/components/Common/Beta.tsx',
+        'src/components/Common/SaveButton.tsx',
+        'src/components/Common/DocumentCard.tsx',
+        'src/components/Common/PageAssistLoader.tsx',
+        'src/components/Common/ProviderIcon.tsx',
+        'src/components/Common/Markdown.tsx'
+      ],
       exclude: [
         'src/**/__tests__/**',
         'src/**/index.ts',
         'src/**/types.ts',
         'src/public/**',
-        'build/**'
+        'build/**',
+        'src/components/Icons/**',
+        'src/components/Layouts/**',
+        'src/components/Option/**',
+        'src/components/Select/**',
+        'src/components/Sidepanel/**',
+        'src/components/Common/Message/**',
+        'src/components/Common/Playground/**',
+        'src/components/Common/Settings/**'
       ]
     },
     alias: {
