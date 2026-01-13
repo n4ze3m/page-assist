@@ -15,6 +15,9 @@
     "zip": "cross-env TARGET=chrome wxt zip",
     "zip:firefox": "cross-env TARGET=firefox wxt zip -b firefox",
     "compile": "tsc --noEmit",
+    "test": "bunx vitest",
+    "test:watch": "bunx vitest --watch",
+    "test:ci": "bunx vitest --run --coverage",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
@@ -96,7 +99,15 @@
     "typescript": "5.3.3",
     "vite-plugin-top-level-await": "^1.4.1",
     "vitepress": "^1.6.3",
-    "wxt": "^0.19.6"
+    "wxt": "^0.19.6",
+    "vitest": "^1.6.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "@testing-library/react": "^14.2.1",
+    "@testing-library/user-event": "^14.5.2",
+    "@testing-library/jest-dom": "^6.5.0",
+    "fake-indexeddb": "^6.0.0",
+    "msw": "^2.6.0",
+    "jsdom": "^24.0.0"
   },
   "resolutions": {
     "@langchain/core": "^1.1.12"

@@ -1,6 +1,6 @@
 # Tech Context: Page Assist
 
-Last updated: 2026-01-07
+Last updated: 2026-01-13
 Derived from: package.json, wxt.config.ts, repo structure
 
 1) Core Stack
@@ -53,7 +53,7 @@ Derived from: package.json, wxt.config.ts, repo structure
   - Firefox string includes worker-src and blob: allowances for PDF/Tesseract, etc.
 - Names/Versions:
   - manifest.version: 1.5.44 (extension bundle)
-  - package.json version: 1.0.9 (npm package) — note discrepancy tracked in activeContext
+  - package.json version: 1.1.0 (npm package)
 
 4) Directory/Module Conventions
 - entries/ and entries-firefox/: background.ts, *.content.ts, sidepanel/, options/ per target
@@ -67,76 +67,53 @@ Derived from: package.json, wxt.config.ts, repo structure
 - src/public/: icons and _locales; ocr assets under public/ocr
 - Styling: tailwind.config.js + postcss.config.js; global src/assets/tailwind.css
 
-5) Tooling/Style
+5) Tooling/Style (Updated conventions)
 - Prettier: 3.x with @plasmohq/prettier-plugin-sort-imports
 - TypeScript: 5.3.x; @types for chrome, node, libs present
-- Tailwind CSS: 3.4.x + plugins (forms, typography)
-- PostCSS/Autoprefixer configured
-- React 18.2, react-router-dom 6.10, vite-plugin-top-level-await to enable top-level await
-- i18n language detection and support-lists in src/i18n
+- Tailwind CSS utilities for ChatInput surfaces:
+  - .pa-card (split across base, surface, interactive, and a [data-istemporary-chat] variant)
+  - .pa-textarea, .pa-icon-button, .pa-controls
+  - Prefer these utilities over long ad hoc className strings to ensure consistency and simplify UI changes.
+- React form handling:
+  - Always call e.preventDefault() in onSubmit handlers before delegating to submitForm to prevent page reload in extension UIs.
+- Input/key handling:
+  - Centralize Enter/Shift+Enter and IME/Firefox 'Process' key logic via useKeydownHandler; use extraGuard for mentions dropdown navigation.
 
 6) Providers/Integrations
 - Local:
-  - Ollama via ollama npm package; runtime selection in services/model-settings and models/ChatOllama
+  - Ollama via ollama npm package; runtime selection via services/model-settings and models/ChatOllama
   - Chrome AI (Gemini Nano) via models/ChatChromeAi (browser-provided)
 - OpenAI-compatible:
   - openai SDK; CustomChatOpenAI adapter supports any OpenAI API-compatible endpoint
 - Embeddings via OpenAI or Ollama adapters
 - RAG flows use loaders + process-* libs + vector stores (Dexie-backed)
 
-7) Development Setup
-- Recommended:
-  - Install Bun (or use npm as fallback)
-  - bun install
-  - For Chromium dev: bun dev
-  - For Firefox dev: bun dev:firefox
-  - Build all: bun run build
-  - Load unpacked extension from build/ in browser (per README)
-- Docs development: bun run docs:dev (VitePress)
+7) ChatInput Consolidation (New)
+- Shared controls under src/components/ChatInput/controls:
+  - SpeechButton, StopButton, WebSearchToggle (switch|icon), ThinkingControls (ossLevels|toggle), UploadImageButton,
+    UploadDocumentButton, ClearContextButton, VisionToggle, SubmitDropdown.
+- Shared parts under src/components/ChatInput/parts:
+  - ImagePreview (image header), DocumentsBar (selected docs list), FilesBar (uploaded files + retrieval toggle).
+- Shared hooks under src/hooks/chat-input:
+  - useSubmitValidation, useKeydownHandler.
+- Integration:
+  - Sidepanel/Chat/form.tsx and Option/Playground/PlaygroundForm.tsx delegate to shared controls/parts and prevent default on submit.
 
 8) Constraints/Considerations
 - MV3 (Chromium) vs MV2-like (Firefox) differences in APIs and CSP; managed in wxt.config.ts
 - Heavy libraries (langchain) externalized to reduce bundle size
 - Web features requiring wasm/worker/blob need CSP allowances (already configured)
-- All data local by default (Dexie); share feature optional and can be disabled
-- Internationalization and extension store listings rely on proper _locales packaging
-- Theming approach (updated):
-  - System-first: relies on browser/OS prefers-color-scheme, no html/body theme classes
-  - No localStorage persistence for theme; no DOM class toggling
-- Firefox scripting limitation on built-in PDF viewer:
-  - browser.scripting.executeScript can return no/undefined result or throw; we must always resolve content retrieval to avoid UI deadlocks.
-  - Implemented in src/libs/get-html.ts with fallbacks using tab.url and type inference (pdf/html).
+- Data local by default; share optional and disabled by default in privacy-first mode
+- Firefox scripting limitation on built-in PDF viewer handled with fallbacks in libs/get-html.ts
 
-9) Testing/Quality Notes
-- No dedicated test framework/scripts defined in package.json
-- Manual verification across browsers per README; prioritize e2e sanity for:
-  - Sidebar/web UI load + shortcuts
-  - Provider connectivity (Ollama, Chrome AI, OpenAI-compatible)
-  - Chat With Webpage parsing flows:
-    - HTML pages
-    - Firefox PDF (built-in viewer) with fallback path
-    - YouTube pages/transcripts (fetching transcript via in-tab scraping)
-  - Vector store ingest/retrieve
-  - Theme smoke tests: verify Tailwind dark variants, custom CSS media queries, AntD algorithm switching
-  - Background-triggered events (context menus, YouTube summarize) should be deduped and gated during streaming
+9) Testing/Quality
+- Test runner: Vitest (vitest.config.ts) with React Testing Library.
+- Global setup: test/setup/vitest.setup.ts; custom render with providers at test/utils/render.tsx.
+- Mocks: test/mocks/browser.ts (webextension APIs), test/mocks/speech.ts (Speech/TTS APIs).
+- Structure: __tests__ colocated with components (e.g., src/components/ChatInput/controls/__tests__).
+- Guidance: prefer accessible queries and user-event over snapshots; keep snapshots minimal.
 
 10) Versioning and Release
-- Build scripts create per-target bundles (build/*); zip tasks for store submissions
-- Track both manifest.version (extension) and package.json version (npm package)
+- Build scripts create per-target bundles under build/*; zip tasks for store submissions
+- Track both manifest.version (extension) and package.json version (npm)
 - Postinstall step ensures WXT preparedness
-
-11) Browser-Specific Constraints and Implemented Solutions (New)
-- Firefox:
-  - content retrieval on PDF viewer: executeScript may fail or return nothing
-    - Solution: src/libs/get-html.ts always resolves; fallback to { url: tab.url, content: "", type: inferred } to prevent hangs.
-  - Sidebar lifecycle can cause duplicate background events (e.g., context menu triggers while opening)
-    - Solution: src/routes/sidepanel-chat.tsx adds a streaming guard and dedupes background-triggered messages by a stable key (type:text).
-- Cross-browser parity:
-  - Changes are safe for Chromium/Edge paths and maintain identical UX.
-
-Appendix: Key Files
-- wxt.config.ts, tailwind.config.js (darkMode: "media"), postcss.config.js, tsconfig.json, .prettierrc.cjs
-- src/models/*, src/services/*, src/libs/*, src/db/*, src/routes/*
-- src/hooks/useDarkmode.tsx (system-only mode hook)
-- src/libs/get-html.ts (content retrieval fallbacks), src/routes/sidepanel-chat.tsx (background dedupe + streaming guard), src/hooks/useMessage.tsx (embedding reuse keying)
-- docs/ (VitePress)

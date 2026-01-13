@@ -1,42 +1,44 @@
 # Active Context: Page Assist
 
-Last updated: 2026-01-12
+Last updated: 2026-01-13
 
 1) Current Work Focus
-- Fix TypeScript compile errors (48 across 34 files) and harden typings for browser scripting and model adapters.
+- Reduce duplication between Playground and Sidepanel chat forms by extracting shared UI controls and parts; centralize styling; keep behavior identical while improving maintainability.
 
-2) Changes in this session (TypeScript fixes)
-- tsconfig.json
-  - Added: baseUrl, paths for @/* and ~/*, resolveJsonModule, skipLibCheck, types ["vite/client", "chrome"], moduleResolution: "bundler".
-- wxt.config.ts
-  - Fixed manifest typing issues: author cast, Firefox content_security_policy cast.
-- Web extraction helpers
-  - src/libs/get-html.ts: Cast executeScript results; always resolve with typed fallback; stronger types for transcript fetch.
-  - src/libs/get-tab-contents.ts: Introduced ContentSnapshot type and cast; fixed property access on unknown.
-- YouTube content scripts
-  - src/entries/youtube-summarize.content.ts and entries-firefox variant: typed message response for check_youtube_summarize_enabled.
-- LangChain v1 import modernizations
-  - Loaders: csv/docx/html/pdf-url/pdf/txt switched to @langchain/core/document_loaders/base.
-  - Text splitters: switched to @langchain/textsplitters.
-  - HumanMessage import path fixed in services/title.ts.
-  - MemoryVectorStore imports switched to @langchain/community/vectorstores/memory across all search engines and web/website.
-- Model adapters
-  - ChatOllama: getLsParams made public and ls_model_type literal typed; resolves inheritance/type mismatch.
-  - CustomChatAnthropic: Rewrote message conversion with type guards; fixed generator method signature; file compiles.
-  - CustomChatOpenAI: Role mapping defaulted; AIMessage constructor to object form; openAIApiKey narrowed to string; removed bind() usage in structured output paths.
-- Utils
-  - models/utils/openai.ts: Guard zodToJsonSchema input to accept non-Zod schemas.
-  - utils/human-message.tsx: Import processImageForOCR; cast unknown to string; remove ts-ignore; safe text extraction.
+2) Changes in this session (UI refactor & fixes)
+- Styling utilities
+  - Introduced Tailwind component classes: .pa-card, .pa-textarea, .pa-icon-button, .pa-controls.
+  - Reformatted .pa-card into logical sections (base/surface/interactive/variant) for readability and easier future edits.
+- Shared hooks
+  - useSubmitValidation: centralizes model/embedding and empty-payload checks.
+  - useKeydownHandler: centralizes Enter/Shift+Enter handling with IME/Firefox guard and optional extraGuard (e.g., mentions menu).
+- Shared controls (src/components/ChatInput/controls)
+  - SpeechButton, StopButton, WebSearchToggle (switch|icon), ThinkingControls (ossLevels|toggle), UploadImageButton,
+    UploadDocumentButton, ClearContextButton, VisionToggle, SubmitDropdown.
+- Shared parts (src/components/ChatInput/parts)
+  - ImagePreview: shared image header (clear button + preview), used in both forms.
+  - DocumentsBar: shared selected-documents strip (wraps existing DocumentChip), used in Playground.
+  - FilesBar: shared uploaded-files strip with retrieval toggle (wraps existing PlaygroundFile), used in Playground.
+- Forms integration
+  - Sidepanel/Chat/form.tsx: replaced inline controls for web search icon, vision toggle, image upload, stop button; switched image header to ImagePreview; preventDefault on form submit.
+  - Option/Playground/PlaygroundForm.tsx: replaced web search switch, clear context, image/doc upload, stop button; switched image header to ImagePreview; documents to DocumentsBar; files to FilesBar; preventDefault on submit.
+- Bug fix
+  - Prevent page reload on Submit by calling e.preventDefault() in both forms.
 
 3) Outcome
-- tsc --noEmit now passes with 0 errors locally.
+- Visual/behavior parity maintained; major duplication removed; consistent look-and-feel; simpler future changes.
+- TypeScript compile succeeds (bun run compile -> tsc --noEmit OK).
 
 4) Next Steps
-- Run full dev build/test flows (bun dev / bun build) to ensure no runtime regressions.
-- If @langchain/community vectorstore types resolve after install/update, consider removing shim.
-- Optional: add minimal tests or CI lint/tsc checks.
+- Extract ChatInputShell and ChatTextarea wrappers to further reduce JSX duplication and standardize assembly.
+- Optionally add unit tests for hooks (useSubmitValidation, useKeydownHandler) and snapshot/render tests for controls/parts.
+- Consider refactoring remaining inline playground/sidepanel bits into parts where feasible.
 
 5) Rationale & Notes
-- Aligns repo with LangChain v1 package boundaries, reduces TS friction.
-- Stronger typing around browser.scripting.executeScript resolves unknown-related errors.
-- Minimal changes to runtime behavior; primarily typing and imports.
+- Keeping logic identical while moving markup into small components improves maintainability and consistency.
+- Tailwind component utilities and split .pa-card rules make intent clear and minimize long class strings.
+
+6) Testing in this session
+- Introduced Vitest + React Testing Library test setup (vitest.config.ts, test/setup/vitest.setup.ts).
+- Added initial component tests for ChatInput controls under src/components/ChatInput/controls/__tests__.
+- Created mocks in test/mocks for browser and speech APIs; added custom render helper at test/utils/render.tsx.
