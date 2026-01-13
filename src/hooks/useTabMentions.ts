@@ -31,7 +31,8 @@ export const useTabMentions = (textareaRef: React.RefObject<HTMLTextAreaElement>
         .filter(tab => tab?.status === 'complete') 
         .filter(tab => {
           const url = tab.url!.toLowerCase()
-          return !url.startsWith('chrome://') &&
+          return !url.startsWith('about:') &&
+            !url.startsWith('chrome://') &&
             !url.startsWith('edge://') &&
             !url.startsWith('brave://') &&
             !url.startsWith('firefox://') &&
