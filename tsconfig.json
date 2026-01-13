@@ -11,7 +11,7 @@
     "paths": { "@/*": ["src/*"], "~/*": ["src/*"] },
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "types": ["vite/client", "chrome"],
+    "types": ["vite/client", "chrome", "vitest/globals", "@testing-library/jest-dom"],
     "moduleResolution": "bundler"
   },
   "exclude": [
