@@ -12,6 +12,20 @@
 
 @tailwind base;
 @tailwind components;
+@layer components {
+  .pa-card {
+    @apply shadow-xl relative w-full max-w-[48rem] p-1 backdrop-blur-lg transition px-1 bg-neutral-50/70 dark:text-gray-100 border border-gray-200/50 rounded-3xl dark:border-gray-700/50 hover:border-gray-300/50 focus-within:border-gray-300/50 hover:dark:border-gray-600/50 focus-within:dark:border-gray-600/50 dark:bg-gray-900/30  duration-100 data-[istemporary-chat='true']:border-dashed;
+  }
+  .pa-textarea {
+    @apply p-3 w-full resize-none bg-transparent focus:ring-0 focus-visible:ring-0 ring-0 border-0 dark:text-gray-100;
+  }
+  .pa-icon-button {
+    @apply flex items-center justify-center text-gray-800 dark:text-gray-300 disabled:opacity-50;
+  }
+  .pa-controls {
+    @apply mt-2 flex justify-between items-center;
+  }
+}
 @tailwind utilities;
 @layer utilities {
   .mask-bottom-fade {
