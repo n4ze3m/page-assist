@@ -12,7 +12,7 @@
         "@langchain/openai": "^1.2.1",
         "@mantine/form": "^7.5.0",
         "@mantine/hooks": "^7.5.3",
-        "@mozilla/readability": "^0.5.0",
+        "@mozilla/readability": "^0.6.0",
         "@plasmohq/storage": "^1.9.0",
         "@tailwindcss/forms": "^0.5.7",
         "@tailwindcss/typography": "^0.5.10",
@@ -379,7 +379,7 @@
 
     "@mixmark-io/domino": ["@mixmark-io/domino@2.2.0", "https://nexus.iad.opower.it/repository/npm-all/@mixmark-io/domino/-/domino-2.2.0.tgz", {}, "sha512-Y28PR25bHXUg88kCV7nivXrP2Nj2RueZ3/l/jdx6J9f8J4nsEGcgX0Qe6lt7Pa+J79+kPiJU3LguR6O/6zrLOw=="],
 
-    "@mozilla/readability": ["@mozilla/readability@0.5.0", "https://nexus.iad.opower.it/repository/npm-all/@mozilla/readability/-/readability-0.5.0.tgz", {}, "sha512-Z+CZ3QaosfFaTqvhQsIktyGrjFjSC0Fa4EMph4mqKnWhmyoGICsV/8QK+8HpXut6zV7zwfWwqDmEjtk1Qf6EgQ=="],
+    "@mozilla/readability": ["@mozilla/readability@0.6.0", "https://nexus.iad.opower.it/repository/npm-all/@mozilla/readability/-/readability-0.6.0.tgz", {}, "sha512-juG5VWh4qAivzTAeMzvY9xs9HY5rAcr2E4I7tiSSCokRFi7XIZCAu92ZkSTsIj1OPceCifL3cpfteP3pDT9/QQ=="],
 
     "@mswjs/interceptors": ["@mswjs/interceptors@0.40.0", "https://nexus.iad.opower.it/repository/npm-all/@mswjs/interceptors/-/interceptors-0.40.0.tgz", { "dependencies": { "@open-draft/deferred-promise": "^2.2.0", "@open-draft/logger": "^0.3.0", "@open-draft/until": "^2.0.0", "is-node-process": "^1.2.0", "outvariant": "^1.4.3", "strict-event-emitter": "^0.5.1" } }, "sha512-EFd6cVbHsgLa6wa4RljGj6Wk75qoHxUSyc5asLyyPSyuhIcdS2Q3Phw6ImS1q+CkALthJRShiYfKANcQMuMqsQ=="],
 
