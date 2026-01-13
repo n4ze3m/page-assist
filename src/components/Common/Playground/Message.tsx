@@ -76,6 +76,7 @@ type Props = {
   actionInfo?: ChatActionInfo | null
   onNewBranch?: (messageIndex: number) => void
   temporaryChat?: boolean
+  uiStreaming?: { lastFlushedAt?: number }
   messageKind?: ChatMessageKind
   toolCalls?: McpToolCall[]
   toolCallId?: string
@@ -116,6 +117,7 @@ const renderAssistantText = ({
   openReasoning,
   hideReasoningWidget,
   reasoningTimeTaken,
+  uiStreaming,
   t
 }: {
   keyPrefix: string
@@ -124,6 +126,7 @@ const renderAssistantText = ({
   openReasoning?: boolean
   hideReasoningWidget: boolean
   reasoningTimeTaken?: number
+  uiStreaming?: { lastFlushedAt?: number }
   t: (key: string, options?: any) => string
 }) =>
   parseReasoning(message).map((entry, index) => {
@@ -148,14 +151,29 @@ const renderAssistantText = ({
                     time: humanizeMilliseconds(reasoningTimeTaken)
                   })
                 ),
-              children: <Markdown message={entry.content} />
+              children: (
+                <Markdown
+                  message={entry.content}
+                  showStreamingTail={uiStreaming != null}
+                  streamingTailShiftCh={8}
+                  streamingTailTick={uiStreaming?.lastFlushedAt}
+                />
+              )
             }
           ]}
         />
       )
     }
 
-    return <Markdown key={`${keyPrefix}-content-${index}`} message={entry.content} />
+    return (
+      <Markdown
+        key={`${keyPrefix}-content-${index}`}
+        message={entry.content}
+        showStreamingTail={uiStreaming != null}
+        streamingTailShiftCh={8}
+        streamingTailTick={uiStreaming?.lastFlushedAt}
+      />
+    )
   })
 
 const McpInvocationGroup = ({
@@ -164,6 +182,7 @@ const McpInvocationGroup = ({
   isStreaming,
   openReasoning,
   hideReasoningWidget,
+  uiStreaming,
   t
 }: {
   content: string
@@ -171,6 +190,7 @@ const McpInvocationGroup = ({
   isStreaming: boolean
   openReasoning?: boolean
   hideReasoningWidget: boolean
+  uiStreaming?: { lastFlushedAt?: number }
   t: (key: string, options?: any) => string
 }) => (
   <div className="space-y-3  dark:border-white/10">
@@ -180,10 +200,11 @@ const McpInvocationGroup = ({
           keyPrefix: `tool-content-${content.length}`,
           message: content,
           isStreaming,
-          openReasoning,
-          hideReasoningWidget,
-          t
-        })}
+            openReasoning,
+            hideReasoningWidget,
+            uiStreaming,
+            t
+          })}
       </div>
     )}
 
@@ -220,7 +241,6 @@ const PlaygroundMessageComponent = (props: Props) => {
     props.segments
   )
   const copyableMessage = props.isBot ? primaryAssistantText : props.message
-
   const autoCopyToClipboard = async () => {
     if (
       autoCopyResponseToClipboard &&
@@ -360,6 +380,7 @@ const PlaygroundMessageComponent = (props: Props) => {
                             hideReasoningWidget,
                             reasoningTimeTaken:
                               segment.message.reasoning_time_taken,
+                            uiStreaming: props.uiStreaming,
                             t
                           })}
                         </div>
@@ -374,6 +395,7 @@ const PlaygroundMessageComponent = (props: Props) => {
                         isStreaming={props.isStreaming}
                         openReasoning={props.openReasoning}
                         hideReasoningWidget={hideReasoningWidget}
+                        uiStreaming={props.uiStreaming}
                         t={t}
                       />
                     )
@@ -386,6 +408,7 @@ const PlaygroundMessageComponent = (props: Props) => {
                     openReasoning: props.openReasoning,
                     hideReasoningWidget,
                     reasoningTimeTaken: props.reasoningTimeTaken,
+                    uiStreaming: props.uiStreaming,
                     t
                   })
                 )
@@ -660,6 +683,7 @@ const arePlaygroundMessagePropsEqual = (previous: Props, next: Props) =>
   previous.actionInfo === next.actionInfo &&
   previous.onNewBranch === next.onNewBranch &&
   previous.temporaryChat === next.temporaryChat &&
+  previous.uiStreaming?.lastFlushedAt === next.uiStreaming?.lastFlushedAt &&
   previous.messageKind === next.messageKind &&
   previous.toolCalls === next.toolCalls &&
   previous.toolCallId === next.toolCallId &&
