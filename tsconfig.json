@@ -15,6 +15,11 @@
     "moduleResolution": "bundler"
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "test",
+    "vitest.config.ts",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/__tests__/**"
   ]
 }
