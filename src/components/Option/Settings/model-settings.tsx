@@ -1,4 +1,4 @@
-import { BetaTag } from "@/components/Common/Beta"
+import { BetaTag } from "@/components/Common/BetaTag"
 import { SaveButton } from "@/components/Common/SaveButton"
 import { getAllModelSettings, setModelSetting } from "@/services/model-settings"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
