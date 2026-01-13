@@ -17,7 +17,7 @@ export default defineConfig({
         functions: 60,
         branches: 50
       },
-      include: ['src/components/ChatInput/controls/**/*.{ts,tsx}'],
+      include: ['src/components/ChatInput/**/*.{ts,tsx}'],
       exclude: [
         'src/**/__tests__/**',
         'src/**/index.ts',
