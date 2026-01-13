@@ -9,7 +9,9 @@ vi.mock('react-i18next', () => ({
 
 describe('BetaTag', () => {
   it('renders translated beta tag', () => {
-    render(<BetaTag />)
-    expect(screen.getByText('beta')).toBeInTheDocument()
+    render(<BetaTag className="my-class" />)
+    const el = screen.getByText('beta')
+    expect(el).toBeInTheDocument()
+    expect(el).toHaveClass('my-class')
   })
 })
