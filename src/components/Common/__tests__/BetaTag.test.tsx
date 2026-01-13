@@ -1,7 +1,7 @@
 import React from 'react'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { BetaTag } from '../Beta'
+import { BetaTag } from '../BetaTag'
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (k: string) => k })
