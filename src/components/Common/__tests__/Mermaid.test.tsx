@@ -26,12 +26,15 @@ describe('Mermaid', () => {
     const mermaid = (await import('mermaid')).default as any
     mermaid.run.mockRejectedValueOnce(new Error('boom'))
 
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+
     const { container } = render(<Mermaid code={"graph TD; X-->Y;"} />)
 
-    // Wait for state update to hide the component
-    await act(async () => {})
     await waitFor(() => {
+      expect(errorSpy).toHaveBeenCalledWith('[Mermaid] ', 'boom')
       expect(container.firstChild).toBeNull()
     })
+
+    errorSpy.mockRestore()
   })
 })
