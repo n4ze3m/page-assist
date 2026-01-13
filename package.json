@@ -59,7 +59,7 @@
     "ollama": "^0.5.17",
     "openai": "^6.0.0",
     "pa-tesseract.js": "^5.1.1",
-    "pdfjs-dist": "4.0.379",
+    "pdfjs-dist": "^4.2.67",
     "property-information": "^6.4.1",
     "pubsub-js": "^1.9.4",
     "react": "18.2.0",

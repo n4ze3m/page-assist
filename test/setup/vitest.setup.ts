@@ -20,26 +20,27 @@ installSpeechMocks(g)
 if (typeof window !== 'undefined') {
   const noop = createNoop()
 
-  // Optional: mock matchMedia for components using it
-  if (!('matchMedia' in window)) {
-    defineIfMissing(window as any, 'matchMedia', () => ({
+  // Ensure matchMedia exists AND is a function (jsdom may define the property as undefined)
+  if (typeof (window as any).matchMedia !== 'function') {
+    ;(window as any).matchMedia = () => ({
       matches: false,
-      addListener: noop,
-      removeListener: noop,
+      media: '',
+      onchange: null,
+      addListener: noop, // deprecated
+      removeListener: noop, // deprecated
       addEventListener: noop,
       removeEventListener: noop,
       dispatchEvent: () => false,
-    }))
-  }
-
-  // Polyfill getComputedStyle to avoid jsdom not-implemented errors from antd/rc-* internals
-  if (!('getComputedStyle' in window)) {
-    ;(window as any).getComputedStyle = () => ({
-      getPropertyValue: () => '',
-      overflowY: 'auto',
-      overflowX: 'auto',
     }) as any
   }
+
+  // Override getComputedStyle to avoid jsdom not-implemented errors from antd/rc-* internals
+  // jsdom provides this but certain internals rely on fields that aren't available; a safe stub is fine for tests
+  ;(window as any).getComputedStyle = () => ({
+    getPropertyValue: () => '',
+    overflowY: 'auto',
+    overflowX: 'auto',
+  }) as any
 
   // Polyfill URL.createObjectURL/revokeObjectURL for jsdom
   const urlObj = (window as any).URL || ((window as any).URL = {})
