@@ -1,7 +1,7 @@
 import { marked } from "marked"
 import markedKatexExtension from "./marked/katex"
 import { removeReasoning, replaceThinkTagToEM } from "@/libs/reasoning"
-import { isRemoveReasoningTagFromCopy } from "@/services/app"
+import { isRemoveReasoningTagFromCopy } from "@/services/features/app"
 import { convertMathDelimiters } from "./math-delimiter"
 
 export const copyToClipboard = async ({

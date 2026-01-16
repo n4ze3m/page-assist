@@ -12,7 +12,7 @@ import {
   defaultEmbeddingModelForRag,
   saveForRag,
   getEmbeddingModels
-} from "~/services/ollama"
+} from "~/services/ai/ollama"
 
 import {
   Skeleton,
@@ -32,7 +32,7 @@ import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "@/components/Option/Settings/tts-mode"
 import { AdvanceOllamaSettings } from "@/components/Common/Settings/AdvanceOllamaSettings"
 import { useStorage } from "@plasmohq/storage/hook"
-import { getTotalFilePerKB } from "@/services/app"
+import { getTotalFilePerKB } from "@/services/features/app"
 import { SidepanelRag } from "@/components/Option/Settings/sidepanel-rag"
 import { SSTSettings } from "@/components/Option/Settings/sst-settings"
 

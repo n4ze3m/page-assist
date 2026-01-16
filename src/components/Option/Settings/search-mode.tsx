@@ -1,5 +1,5 @@
 import { SaveButton } from "@/components/Common/SaveButton"
-import { getSearchSettings, setSearchSettings } from "@/services/search"
+import { getSearchSettings, setSearchSettings } from "@/services/features/search"
 import { ALL_GOOGLE_DOMAINS } from "@/utils/google-domains"
 import { SUPPORTED_SEARCH_PROVIDERS } from "@/utils/search-provider"
 import { useForm } from "@mantine/form"

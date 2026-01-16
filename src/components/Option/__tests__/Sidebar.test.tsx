@@ -20,14 +20,14 @@ vi.mock('antd', () => ({
 vi.mock('react-router-dom', () => ({ useNavigate: () => vi.fn() }))
 
 // Mock services and db used inside Sidebar
-vi.mock('@/services/model-settings', () => ({ lastUsedChatModelEnabled: vi.fn().mockResolvedValue(false) }))
+vi.mock('@/services/ai/model-settings', () => ({ lastUsedChatModelEnabled: vi.fn().mockResolvedValue(false) }))
 vi.mock('@/hooks/useDebounce', () => ({ useDebounce: (v: string) => v }))
 vi.mock('@/db/dexie/chat', () => ({ PageAssistDatabase: vi.fn().mockImplementation(() => ({ getChatHistoriesPaginated: vi.fn().mockResolvedValue({ histories: [], hasMore: false, totalCount: 0 }), getChatHistories: vi.fn().mockResolvedValue([]) })) }))
 vi.mock('@/db/dexie/helpers', () => ({ formatToChatHistory: vi.fn(), deleteByHistoryId: vi.fn(), deleteHistoriesByDateRange: vi.fn(), updateHistory: vi.fn(), pinHistory: vi.fn(), formatToMessage: vi.fn(), getSessionFiles: vi.fn(), getPromptById: vi.fn() }))
 vi.mock('@/db/dexie/types', () => ({}))
 vi.mock('@/utils/ff-error', () => ({ isDatabaseClosedError: () => false }))
 vi.mock('@/utils/update-page-title', () => ({ updatePageTitle: vi.fn() }))
-vi.mock('@/services/title', () => ({ generateTitle: vi.fn() }))
+vi.mock('@/services/features/title', () => ({ generateTitle: vi.fn() }))
 
 // Mock tanstack react-query hooks used in component to a stable state
 vi.mock('@tanstack/react-query', async () => {

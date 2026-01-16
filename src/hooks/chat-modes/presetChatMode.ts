@@ -1,11 +1,11 @@
 import { cleanUrl } from "~/libs/clean-url"
-import { getOllamaURL } from "~/services/ollama"
+import { getOllamaURL } from "~/services/ai/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
 import { generateID } from "@/db/dexie/helpers"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { pageAssistModel } from "@/models"
 import { humanMessageFormatter } from "@/utils/human-message"
-import { getPrompt } from "@/services/application"
+import { getPrompt } from "@/services/browser/application"
 import {CURSOR, streamChatResponse, type StreamConfig} from "./sharedStreaming"
 import { STREAM_REVEAL } from "../streamingConfig"
 

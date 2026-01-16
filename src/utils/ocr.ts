@@ -1,4 +1,4 @@
-import { getOCRLanguageToUse, isOfflineOCR } from "@/services/ocr"
+import { getOCRLanguageToUse, isOfflineOCR } from "@/services/features/ocr"
 import { createWorker } from "pa-tesseract.js"
 
 export async function processImageForOCR(imageData: string): Promise<string> {

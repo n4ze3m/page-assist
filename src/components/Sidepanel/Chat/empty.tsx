@@ -12,7 +12,7 @@ import {
   isOllamaRunning,
   setOllamaURL as saveOllamaURL,
   fetchChatModels
-} from "~/services/ollama"
+} from "~/services/ai/ollama"
 
 export const EmptySidePanel = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")

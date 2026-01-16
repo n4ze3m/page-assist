@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Skeleton, Table, Tag, Tooltip, notification, Avatar, Switch } from "antd"
 import { bytePerSecondFormatter } from "~/libs/byte-formater"
-import { deleteModel, getAllModels } from "~/services/ollama"
+import { deleteModel, getAllModels } from "~/services/ai/ollama"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import { useForm } from "@mantine/form"

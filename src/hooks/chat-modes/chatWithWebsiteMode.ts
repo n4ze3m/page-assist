@@ -3,8 +3,8 @@ import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   promptForRag
-} from "~/services/ollama"
-import { getAllDefaultModelSettings } from "@/services/model-settings"
+} from "~/services/ai/ollama"
+import { getAllDefaultModelSettings } from "@/services/ai/model-settings"
 import { type ChatHistory, type Message } from "~/store/option"
 import { generateID } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"
@@ -13,7 +13,7 @@ import { humanMessageFormatter } from "@/utils/human-message"
 import { removeReasoning } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { formatDocs } from "@/chain/chat-with-x"
-import { getNoOfRetrievedDocs } from "@/services/app"
+import { getNoOfRetrievedDocs } from "@/services/features/app"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
 import { getContentFromCurrentTab } from "~/libs/get-html"

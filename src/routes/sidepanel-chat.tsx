@@ -12,7 +12,7 @@ import {
   useSidebarShortcuts,
   useChatModeShortcuts
 } from "@/hooks/keyboard/useKeyboardShortcuts"
-import { copilotResumeLastChat } from "@/services/app"
+import { copilotResumeLastChat } from "@/services/features/app"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 import { notification } from "antd"
