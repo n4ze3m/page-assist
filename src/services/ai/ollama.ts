@@ -6,7 +6,7 @@ import {
   getOllamaEnabled,
   setNoOfRetrievedDocs,
   setTotalFilePerKB
-} from "./app"
+} from "../features/app"
 import fetcher from "@/libs/fetcher"
 import { ollamaFormatAllCustomModels } from "@/db/dexie/models"
 import { getAllModelNicknames } from "@/db/dexie/nickname"

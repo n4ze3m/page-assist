@@ -1,13 +1,13 @@
-import { getOllamaURL, isOllamaRunning } from "../services/ollama"
+import { getOllamaURL, isOllamaRunning } from "../services/ai/ollama"
 import { browser } from "wxt/browser"
 import { clearBadge, streamDownload, cancelDownload } from "@/utils/pull-ollama"
 import { Storage } from "@plasmohq/storage"
-import { getInitialConfig } from "@/services/action"
+import { getInitialConfig } from "@/services/browser/action"
 import {
   getCustomCopilotPrompts,
   getCopilotPromptsEnabledState,
   type CustomCopilotPrompt
-} from "@/services/application"
+} from "@/services/browser/application"
 
 export default defineBackground({
   main() {
