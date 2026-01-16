@@ -3,7 +3,7 @@ import { Avatar, Dropdown, Tooltip } from "antd"
 import { LucideBrain } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { fetchChatModels } from "@/services/ollama"
+import { fetchChatModels } from "@/services/ai/ollama"
 import { useMessage } from "@/hooks/useMessage"
 import { ProviderIcons } from "./ProviderIcon"
 
@@ -11,7 +11,7 @@ type Props = {
   iconClassName?: string
 }
 
-export const ModelSelect: React.FC<Props> = ({iconClassName = "size-5"}) => {
+export const ModelSelect: React.FC<Props> = ({ iconClassName = "size-5" }) => {
   const { t } = useTranslation("common")
   const { setSelectedModel, selectedModel } = useMessage()
   const { data } = useQuery({

@@ -8,7 +8,7 @@ import {
   defaultEmbeddingChunkSize,
   defaultSsplttingSeparator,
   defaultSplittingStrategy
-} from "@/services/ollama"
+} from "@/services/ai/ollama"
 
 export const getPageAssistTextSplitter = async () => {
   const chunkSize = await defaultEmbeddingChunkSize()
