@@ -1,5 +1,5 @@
 import { cleanUrl } from "~/libs/clean-url"
-import { getOllamaURL, promptForRag } from "~/services/ollama"
+import { getOllamaURL, promptForRag } from "~/services/ai/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
 import { generateID } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"

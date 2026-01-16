@@ -7,7 +7,7 @@ import { useMessageOption } from "~/hooks/useMessageOption"
 import { Checkbox, Dropdown, Switch, Tooltip, Select } from "antd"
 import { Image } from "antd"
 import { useWebUI } from "~/store/webui"
-import { defaultEmbeddingModelForRag } from "~/services/ollama"
+import { defaultEmbeddingModelForRag } from "~/services/ai/ollama"
 import {
   EraserIcon,
   ImageIcon,
@@ -25,7 +25,7 @@ import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
-import { getIsSimpleInternetSearch } from "@/services/search"
+import { getIsSimpleInternetSearch } from "@/services/features/search"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useTabMentions } from "~/hooks/useTabMentions"
 import { useFocusShortcuts } from "~/hooks/keyboard"

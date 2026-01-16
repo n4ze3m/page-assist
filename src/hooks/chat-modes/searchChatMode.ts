@@ -1,5 +1,5 @@
 import { cleanUrl } from "~/libs/clean-url"
-import { geWebSearchFollowUpPrompt, getOllamaURL } from "~/services/ollama"
+import { geWebSearchFollowUpPrompt, getOllamaURL } from "~/services/ai/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
 import { generateID } from "@/db/dexie/helpers"
 import { getSystemPromptForWeb, isQueryHaveWebsite } from "~/web/web"

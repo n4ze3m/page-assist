@@ -8,7 +8,7 @@ import {
   getOllamaURL,
   isOllamaRunning,
   setOllamaURL as saveOllamaURL
-} from "~/services/ollama"
+} from "~/services/ai/ollama"
 
 export const PlaygroundEmpty = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")

@@ -1,9 +1,9 @@
 import { cleanUrl } from "@/libs/clean-url"
 import { PageAssistHtmlLoader } from "@/loader/html"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
-import { getNoOfRetrievedDocs } from "@/services/app"
-import { getMaxContextSize, isChatWithWebsiteEnabled } from "@/services/kb"
-import { defaultEmbeddingModelForRag, getOllamaURL } from "@/services/ollama"
+import { getNoOfRetrievedDocs } from "@/services/features/app"
+import { getMaxContextSize, isChatWithWebsiteEnabled } from "@/services/features/kb"
+import { defaultEmbeddingModelForRag, getOllamaURL } from "@/services/ai/ollama"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
 import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"

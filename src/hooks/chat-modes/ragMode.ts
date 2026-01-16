@@ -3,7 +3,7 @@ import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   promptForRag
-} from "~/services/ollama"
+} from "~/services/ai/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
 import { generateID } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"
@@ -13,10 +13,10 @@ import { removeReasoning } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 import { formatDocs } from "@/chain/chat-with-x"
-import { getAllDefaultModelSettings } from "@/services/model-settings"
-import { getNoOfRetrievedDocs } from "@/services/app"
+import { getAllDefaultModelSettings } from "@/services/ai/model-settings"
+import { getNoOfRetrievedDocs } from "@/services/features/app"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
-import { isChatWithWebsiteEnabled } from "@/services/kb"
+import { isChatWithWebsiteEnabled } from "@/services/features/kb"
 import { getKnowledgeById } from "@/db/dexie/knowledge"
 import {CURSOR, streamChatResponse, type StreamConfig} from "./sharedStreaming"
 

@@ -6,7 +6,7 @@ import { useMessage } from "~/hooks/useMessage"
 import { toBase64 } from "~/libs/to-base64"
 import { Checkbox, Dropdown, Image, Switch, Tooltip, Popover, Radio } from "antd"
 import { useWebUI } from "~/store/webui"
-import { defaultEmbeddingModelForRag } from "~/services/ollama"
+import { defaultEmbeddingModelForRag } from "~/services/ai/ollama"
 import {
   ImageIcon,
   MicIcon,
@@ -22,7 +22,7 @@ import { ModelSelect } from "@/components/Common/ModelSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobeX, PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
-import { getIsSimpleInternetSearch } from "@/services/search"
+import { getIsSimpleInternetSearch } from "@/services/features/search"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useFocusShortcuts } from "@/hooks/keyboard"
 import { isThinkingCapableModel, isGptOssModel } from "~/libs/model-utils"

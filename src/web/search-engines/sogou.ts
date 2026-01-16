@@ -6,11 +6,11 @@ import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   getSelectedModel
-} from "@/services/ollama"
+} from "@/services/ai/ollama"
 import {
   getIsSimpleInternetSearch,
   totalSearchResults
-} from "@/services/search"
+} from "@/services/features/search"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 import type { Document } from "@langchain/core/documents"
 import * as cheerio from "cheerio"

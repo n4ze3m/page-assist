@@ -30,7 +30,7 @@ import {
   toggleCustomCopilotPrompt,
   toggleCopilotPromptEnabled,
   type CustomCopilotPrompt
-} from "@/services/application"
+} from "@/services/browser/application"
 import { tagColors } from "@/utils/color"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 

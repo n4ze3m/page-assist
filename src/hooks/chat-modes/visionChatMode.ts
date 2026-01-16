@@ -1,5 +1,5 @@
 import { cleanUrl } from "~/libs/clean-url"
-import { getOllamaURL, systemPromptForNonRag } from "~/services/ollama"
+import { getOllamaURL, systemPromptForNonRag } from "~/services/ai/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
 import { generateID } from "@/db/dexie/helpers"
 import { getModelNicknameByID } from "@/db/dexie/nickname"

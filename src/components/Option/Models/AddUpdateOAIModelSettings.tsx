@@ -1,5 +1,5 @@
 import { SaveButton } from "@/components/Common/SaveButton"
-import { getModelSettings, setModelSettings } from "@/services/model-settings"
+import { getModelSettings, setModelSettings } from "@/services/ai/model-settings"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   Collapse,

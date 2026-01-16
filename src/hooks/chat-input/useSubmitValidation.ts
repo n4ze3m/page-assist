@@ -1,5 +1,5 @@
-import { defaultEmbeddingModelForRag } from "~/services/ollama"
-import { getIsSimpleInternetSearch } from "@/services/search"
+import { defaultEmbeddingModelForRag } from "~/services/ai/ollama"
+import { getIsSimpleInternetSearch } from "@/services/features/search"
 
 export type SubmitValidationOptions = {
   // Required

@@ -3,7 +3,7 @@ import { isAmazonURL, parseAmazonWebsite } from "@/parser/amazon"
 import { defaultExtractContent } from "@/parser/default"
 import { isTwitterProfile, isTwitterTimeline, parseTweetProfile, parseTwitterTimeline } from "@/parser/twitter"
 import { isWikipedia, parseWikipedia } from "@/parser/wiki"
-import { getMaxContextSize } from "@/services/kb"
+import { getMaxContextSize } from "@/services/features/kb"
 import { YtTranscript } from "yt-transcript"
 import { processPDFFromURL } from "./pdf"
 

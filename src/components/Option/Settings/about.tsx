@@ -1,4 +1,4 @@
-import { getOllamaURL } from "~/services/ollama"
+import { getOllamaURL } from "~/services/ai/ollama"
 import { useTranslation } from "react-i18next"
 import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "antd"

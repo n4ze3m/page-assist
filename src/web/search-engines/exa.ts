@@ -3,7 +3,7 @@ import {
   getIsSimpleInternetSearch,
   totalSearchResults,
   getExaAPIKey
-} from "@/services/search"
+} from "@/services/features/search"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import type { Document } from "@langchain/core/documents"
 import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
@@ -12,7 +12,7 @@ import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   getSelectedModel
-} from "~/services/ollama"
+} from "~/services/ai/ollama"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
 interface ExaAPIResult {

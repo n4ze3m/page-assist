@@ -3,7 +3,7 @@ import {
   getGoogleDomain,
   getIsSimpleInternetSearch,
   totalSearchResults
-} from "@/services/search"
+} from "@/services/features/search"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 import type { Document } from "@langchain/core/documents"
 import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
@@ -13,7 +13,7 @@ import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   getSelectedModel
-} from "~/services/ollama"
+} from "~/services/ai/ollama"
 
 
 export const localGoogleSearch = async (query: string, start: number = 0) => {

@@ -1,7 +1,7 @@
 import { getPromptById } from "@/db/dexie/helpers"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import { FileIcon, X } from "lucide-react"
-import { getAllModelSettings, getModelSettings } from "@/services/model-settings"
+import { getAllModelSettings, getModelSettings } from "@/services/ai/model-settings"
 import { useStoreChatModelSettings } from "@/store/model"
 import { useQuery } from "@tanstack/react-query"
 import {
@@ -19,7 +19,7 @@ import {
 import React, { useCallback } from "react"
 import { useTranslation } from "react-i18next"
 import { SaveButton } from "../SaveButton"
-import { getOCRLanguage } from "@/services/ocr"
+import { getOCRLanguage } from "@/services/features/ocr"
 import { ocrLanguages } from "@/data/ocr-language"
 import { useMessage } from "@/hooks/useMessage"
 

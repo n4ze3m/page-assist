@@ -6,7 +6,7 @@ import {
   getOllamaURL,
   promptForRag,
   systemPromptForNonRag
-} from "~/services/ollama"
+} from "~/services/ai/ollama"
 import { useStoreMessageOption, type Message } from "~/store/option"
 import { useStoreMessage } from "~/store"
 import { getContentFromCurrentTab } from "~/libs/get-html"
@@ -25,10 +25,10 @@ import { usePageAssist } from "@/context"
 import { formatDocs } from "@/chain/chat-with-x"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useStoreChatModelSettings } from "@/store/model"
-import { getAllDefaultModelSettings } from "@/services/model-settings"
+import { getAllDefaultModelSettings } from "@/services/ai/model-settings"
 import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
 import { pageAssistModel } from "@/models"
-import { getPrompt } from "@/services/application"
+import { getPrompt } from "@/services/browser/application"
 import { humanMessageFormatter } from "@/utils/human-message"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
@@ -41,7 +41,7 @@ import {
   createSaveMessageOnSuccess
 } from "./utils/messageHelpers"
 import { updatePageTitle } from "@/utils/update-page-title"
-import { getNoOfRetrievedDocs } from "@/services/app"
+import { getNoOfRetrievedDocs } from "@/services/features/app"
 
 import { normalChatMode } from "./chat-modes/normalChatMode"
 import { searchChatMode } from "./chat-modes/searchChatMode"

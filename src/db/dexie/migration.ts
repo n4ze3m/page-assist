@@ -1,4 +1,4 @@
-import { getLastUsedChatModel, getLastUsedChatSystemPrompt } from "@/services/model-settings"
+import { getLastUsedChatModel, getLastUsedChatSystemPrompt } from "@/services/ai/model-settings"
 import { PageAssitDatabase as ChromeDB } from "../index"
 import { getAllKnowledge } from "../knowledge"
 import { getAllVector,  } from "../vector"
