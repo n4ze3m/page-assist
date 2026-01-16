@@ -16,7 +16,7 @@
   .pa-card {
     @apply shadow-xl relative w-full max-w-[48rem] p-1 border rounded-3xl backdrop-blur-lg transition duration-100;
     @apply bg-neutral-50/70 text-gray-800 border-gray-300/70 hover:border-gray-400/50 focus-within:border-gray-400/50;
-    @apply dark:bg-gray-900/30 dark:text-gray-100 dark:border-gray-500/70 hover:dark:border-gray-600/50 focus-within:dark:border-gray-600/50 ;
+    @apply dark:bg-gray-900/30 dark:text-gray-100 dark:border-gray-500/70 hover:dark:border-gray-600/50 focus-within:dark:border-gray-600/50;
     @apply data-[istemporary-chat='true']:border-dashed;
   }
   .pa-textarea {
@@ -34,6 +34,48 @@
   .mask-bottom-fade {
     mask-image: linear-gradient(0deg, transparent 0, #000 160px);
     -webkit-mask-image: linear-gradient(0deg, transparent 0, #000 160px);
+  }
+  .streaming-mask {
+    position: relative;
+    --stream-mask-start: 0px;
+    --stream-mask-width: 75%;
+    --stream-mask-line-height: 1.65em;
+    --stream-mask-last-line-top: 0px;
+  }
+  .streaming-mask {
+    mask:
+      linear-gradient(#000 0 0) 0 0,
+      linear-gradient(#000 0 0) 0 0,
+      linear-gradient(to right, #000, transparent) 0 0;
+    mask-size:
+      100% 100%,
+      var(--stream-mask-start) var(--stream-mask-line-height),
+      var(--stream-mask-width) var(--stream-mask-line-height);
+    mask-repeat: no-repeat;
+    mask-type: alpha;
+    mask-position:
+      left 0 bottom var(--stream-mask-line-height),
+      left 0 bottom var(--stream-mask-last-line-top),
+      left var(--stream-mask-start) bottom var(--stream-mask-last-line-top);
+    -webkit-mask:
+      linear-gradient(#000 0 0) 0 0,
+      linear-gradient(#000 0 0) 0 0,
+      linear-gradient(to right, #000, transparent) 0 0;
+    -webkit-mask-size:
+      100% 100%,
+      var(--stream-mask-start) var(--stream-mask-line-height),
+      var(--stream-mask-width) var(--stream-mask-line-height);
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position:
+      left 0 bottom var(--stream-mask-line-height),
+      left 0 bottom var(--stream-mask-last-line-top),
+      left var(--stream-mask-start) bottom var(--stream-mask-last-line-top);
+  }
+  .streaming-mask-anchor {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    pointer-events: none;
   }
 }
 
@@ -343,7 +385,7 @@
    ===================================== */
 .table-wrapper pre,
 .table-wrapper code {
-  font-family: 'SFMono-Regular', Consolas, Monaco, monospace;
+  font-family: "SFMono-Regular", Consolas, Monaco, monospace;
   font-size: 0.8em;
   line-height: 1.4;
   background-color: rgb(0 0 0 / 0.05);
@@ -432,15 +474,21 @@
 }
 
 /* Soft-reveal streaming styles */
-/*.pa-cursor {
+.pa-cursor {
   display: inline-block;
   margin-left: 0.5px;
   animation: pa-blink 1.2s steps(1, end) infinite;
-}*/
+}
 
-/*@keyframes pa-blink {
-  50% { opacity: 0; }
-}*/
+.pa-animate-pulse {
+  animation: pa-blink 1.2s steps(1, end) infinite;
+}
+
+@keyframes pa-blink {
+  50% {
+    opacity: 0;
+  }
+}
 
 .stream-pulse {
   position: relative;
@@ -456,6 +504,11 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pa-cursor { animation: none; }
-  .stream-pulse::after { transition: none; opacity: 0; }
+  .pa-cursor {
+    animation: none;
+  }
+  .stream-pulse::after {
+    transition: none;
+    opacity: 0;
+  }
 }

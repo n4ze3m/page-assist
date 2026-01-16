@@ -2,7 +2,8 @@
 
 Last updated: 2026-01-13
 
-1) What Works (Verified)
+1. What Works (Verified)
+
 - Cross-browser extension build via WXT with per-target manifest slices.
 - Sidebar and Web UI flows functional; chat streaming with multiple providers.
 - RAG/Knowledge ingestion pipelines and vector retrieval.
@@ -17,7 +18,8 @@ Last updated: 2026-01-13
 - TypeScript compile (tsc --noEmit) passes.
 - Vitest test infrastructure in place; initial ChatInput controls test suites added and passing.
 
-2) What’s Left To Build / Improve
+2. What’s Left To Build / Improve
+
 - Further reduce JSX duplication by extracting ChatInputShell and ChatTextarea wrappers and composing the forms from shared parts/controls.
 - Consider unifying remaining inline sections (e.g., mentions block) into optional parts if appropriate.
 - Testing/QA:
@@ -26,26 +28,36 @@ Last updated: 2026-01-13
 - Docs:
   - Add developer notes for shared controls/parts usage and Tailwind utility conventions.
 
-3) Current Status (Versions/Build)
+3. Current Status (Versions/Build)
+
 - manifest.version: 1.5.44
 - package.json version: 1.1.0 (observed previously 1.0.9; ensure consistency across docs)
 - Build outputs to build/ per-target; externalized heavy deps remain in place.
 - Compile sanity: bun run compile succeeds with 0 errors.
 
-4) Known Issues / Risks
+4. Known Issues / Risks
+
 - Any refactor can introduce subtle parity differences; we mitigated by preserving logic and only moving UI/handlers.
 - Absence of automated tests can slow detection of UI regressions.
 
-5) Evolution of Decisions (Highlights)
+5. Evolution of Decisions (Highlights)
+
 - UI consolidation: Introduced shared controls and parts under src/components/ChatInput to remove duplication between forms.
 - Styling consolidation: Introduced Tailwind component utilities and split .pa-card into base/surface/interactive/variant selectors for clarity.
 - Input handling: Centralized Enter/Shift+Enter/IME handling via useKeydownHandler; validation via useSubmitValidation.
 
-6) Recent Session Summary
+6. Recent Session Summary
+
 - Extracted and integrated shared controls and parts into both forms; consolidated styling; prevented form-triggered reload.
 - Verified compile after changes; no TypeScript errors.
 
-7) Next Actions (Concrete)
+7. Next Actions (Concrete)
+
 - Implement ChatInputShell and ChatTextarea wrappers and migrate both forms to them.
 - Add minimal tests for useSubmitValidation/useKeydownHandler and smoke tests for controls/parts.
 - Update docs with a short contributor guide for the ChatInput system.
+
+8. UI/UX Chat Automation Plan (Draft)
+
+- Stored in `memory-bank/ui-ux-chat-automation-plan.md`.
+- Includes progress checklist, test matrix, and CI-ready execution outline.

@@ -1,5 +1,4 @@
 export const STREAM_REVEAL = {
-  flushIntervalMs: 60,
-  charsPerFlush: 8,
-  fadeDurationMs: 120,
+  flushIntervalMs: 40,
+  charsPerFlush: 5,
 } as const

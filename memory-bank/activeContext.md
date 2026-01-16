@@ -2,10 +2,12 @@
 
 Last updated: 2026-01-13
 
-1) Current Work Focus
+1. Current Work Focus
+
 - Reduce duplication between Playground and Sidepanel chat forms by extracting shared UI controls and parts; centralize styling; keep behavior identical while improving maintainability.
 
-2) Changes in this session (UI refactor & fixes)
+2. Changes in this session (UI refactor & fixes)
+
 - Styling utilities
   - Introduced Tailwind component classes: .pa-card, .pa-textarea, .pa-icon-button, .pa-controls.
   - Reformatted .pa-card into logical sections (base/surface/interactive/variant) for readability and easier future edits.
@@ -25,20 +27,25 @@ Last updated: 2026-01-13
 - Bug fix
   - Prevent page reload on Submit by calling e.preventDefault() in both forms.
 
-3) Outcome
+3. Outcome
+
 - Visual/behavior parity maintained; major duplication removed; consistent look-and-feel; simpler future changes.
 - TypeScript compile succeeds (bun run compile -> tsc --noEmit OK).
 
-4) Next Steps
+4. Next Steps
+
 - Extract ChatInputShell and ChatTextarea wrappers to further reduce JSX duplication and standardize assembly.
 - Optionally add unit tests for hooks (useSubmitValidation, useKeydownHandler) and snapshot/render tests for controls/parts.
 - Consider refactoring remaining inline playground/sidepanel bits into parts where feasible.
+- Follow UI/UX chat automation plan in `memory-bank/ui-ux-chat-automation-plan.md`.
 
-5) Rationale & Notes
+5. Rationale & Notes
+
 - Keeping logic identical while moving markup into small components improves maintainability and consistency.
 - Tailwind component utilities and split .pa-card rules make intent clear and minimize long class strings.
 
-6) Testing in this session
+6. Testing in this session
+
 - Introduced Vitest + React Testing Library test setup (vitest.config.ts, test/setup/vitest.setup.ts).
-- Added initial component tests for ChatInput controls under src/components/ChatInput/controls/__tests__.
+- Added initial component tests for ChatInput controls under src/components/ChatInput/controls/**tests**.
 - Created mocks in test/mocks for browser and speech APIs; added custom render helper at test/utils/render.tsx.
