@@ -1,30 +1,25 @@
 import { cleanUrl } from "~/libs/clean-url"
-import { getOllamaURL, promptForRag } from "~/services/ollama"
+import { getOllamaURL } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
 import { generateID } from "@/db/dexie/helpers"
-import { generateHistory } from "@/utils/generate-history"
+import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { pageAssistModel } from "@/models"
 import { humanMessageFormatter } from "@/utils/human-message"
-import { removeReasoning } from "@/libs/reasoning"
-import { getModelNicknameByID } from "@/db/dexie/nickname"
-import { ChatDocuments } from "@/models/ChatTypes"
-import { getTabContents } from "@/libs/get-tab-contents"
+import { getPrompt } from "@/services/application"
 import {CURSOR, streamChatResponse, type StreamConfig} from "./sharedStreaming"
 import { STREAM_REVEAL } from "../streamingConfig"
 
-export const tabChatMode = async (
+export const presetChatMode = async (
   message: string,
   image: string,
-  documents: ChatDocuments,
   isRegenerate: boolean,
   messages: Message[],
   history: ChatHistory,
   signal: AbortSignal,
+  messageType: string,
   {
     selectedModel,
     useOCR,
-    selectedSystemPrompt,
-    currentChatModelSettings,
     setMessages,
     saveMessageOnSuccess,
     saveMessageOnError,
@@ -37,8 +32,6 @@ export const tabChatMode = async (
   }: {
     selectedModel: string
     useOCR: boolean
-    selectedSystemPrompt: string
-    currentChatModelSettings: any
     setMessages: (
       messages: Message[] | ((prev: Message[]) => Message[])
     ) => void
@@ -52,77 +45,35 @@ export const tabChatMode = async (
     setHistoryId: (id: string) => void
   }
 ) => {
-  console.log("Using tabChatMode")
+  console.log("Using presetChatMode")
   const url = await getOllamaURL()
+
+  if (image.length > 0) {
+    image = `data:image/jpeg;base64,${image.split(",")[1]}`
+  }
 
   const ollama = await pageAssistModel({
     model: selectedModel!,
     baseUrl: cleanUrl(url)
   })
 
-  const modelInfo = await getModelNicknameByID(selectedModel)
-  let generateMessageId = generateID()
-  let newMessage: Message[] = [...messages]
-
-  if (!isRegenerate) {
-    newMessage = [
-      ...newMessage,
-      {
-        isBot: false,
-        name: "You",
-        message,
-        sources: [],
-        images: [image],
-        documents
-      },
-      {
-        isBot: true,
-        name: selectedModel,
-        message: "▋",
-        sources: [],
-        id: generateMessageId,
-        modelImage: modelInfo?.model_avatar,
-        modelName: modelInfo?.model_name || selectedModel
-      }
-    ]
-  } else {
-    newMessage = [
-      ...newMessage,
-      {
-        isBot: true,
-        name: selectedModel,
-        message: "▋",
-        sources: [],
-        id: generateMessageId,
-        modelImage: modelInfo?.model_avatar,
-        modelName: modelInfo?.model_name || selectedModel
-      }
-    ]
-  }
-  setMessages(newMessage)
-
-  let query = message
-  const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
-    await promptForRag()
-  let context = await getTabContents(documents)
+  const prompt = await getPrompt(messageType)
 
   let humanMessage = await humanMessageFormatter({
     content: [
       {
-        text: systemPrompt
-          .replace("{context}", context)
-          .replace("{question}", message),
+        text: prompt.replace("{text}", message),
         type: "text"
       }
     ],
     model: selectedModel,
-    useOCR: useOCR
+    useOCR
   })
   if (image.length > 0) {
     humanMessage = await humanMessageFormatter({
       content: [
         {
-          text: message,
+          text: prompt.replace("{text}", message),
           type: "text"
         },
         {
@@ -131,32 +82,9 @@ export const tabChatMode = async (
         }
       ],
       model: selectedModel,
-      useOCR: useOCR
+      useOCR
     })
   }
-  // console.log(context)
-  if (newMessage.length > 2) {
-    const lastTenMessages = newMessage.slice(-10)
-    lastTenMessages.pop()
-    const chat_history = lastTenMessages
-      .map((message) => {
-        return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
-      })
-      .join("\n")
-    const promptForQuestion = questionPrompt
-      .replaceAll("{chat_history}", chat_history)
-      .replaceAll("{question}", message)
-    const questionOllama = await pageAssistModel({
-      model: selectedModel!,
-      baseUrl: cleanUrl(url)
-    })
-    const response = await questionOllama.invoke(promptForQuestion)
-    query = response.content.toString()
-    query = removeReasoning(query)
-  }
-  let source: any[] = []
-
-  const applicationChatHistory = generateHistory(history, selectedModel)
 
   const config: StreamConfig = {
     cursor: CURSOR,
@@ -173,7 +101,8 @@ export const tabChatMode = async (
       {
         role: "user",
         content: message,
-        image
+        image,
+        messageType
       },
       {
         role: "assistant",
@@ -189,10 +118,11 @@ export const tabChatMode = async (
       message,
       image,
       fullText,
-      source,
+      source: [],
+      message_source: "copilot",
+      message_type: messageType,
       generationInfo,
-      reasoning_time_taken: timetaken,
-      documents
+      reasoning_time_taken: timetaken
     })
 
     setIsProcessing(false)
@@ -200,7 +130,6 @@ export const tabChatMode = async (
   }
 
   const onError = async (e: any, fullText: string) => {
-    console.log(e)
     const errorSave = await saveMessageOnError({
       e,
       botMessage: fullText,
@@ -212,11 +141,12 @@ export const tabChatMode = async (
       setHistoryId,
       userMessage: message,
       isRegenerating: isRegenerate,
-      documents
+      message_source: "copilot",
+      message_type: messageType
     })
 
     if (!errorSave) {
-      throw e // Re-throw to be handled by the calling function
+      throw e
     }
     setIsProcessing(false)
     setStreaming(false)
@@ -224,10 +154,10 @@ export const tabChatMode = async (
 
   await streamChatResponse({
     ollama,
-    applicationChatHistory,
+    applicationChatHistory: [], // No history for preset, just humanMessage
     humanMessage,
     selectedModel,
-    messages: newMessage,
+    messages,
     isRegenerate,
     signal,
     config,
@@ -235,8 +165,8 @@ export const tabChatMode = async (
     onComplete,
     onError,
     image,
-    sources: source,
-    documents,
-    messageType: ""
+    sources: [],
+    documents: [],
+    messageType
   })
 }

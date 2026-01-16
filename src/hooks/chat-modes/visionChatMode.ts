@@ -1,21 +1,24 @@
 import { cleanUrl } from "~/libs/clean-url"
-import { getOllamaURL, systemPromptForNonRagOption } from "~/services/ollama"
+import { getOllamaURL, systemPromptForNonRag } from "~/services/ollama"
 import { type ChatHistory, type Message } from "~/store/option"
-import { getPromptById } from "@/db/dexie/helpers"
-import { generateHistory } from "@/utils/generate-history"
+import { generateID } from "@/db/dexie/helpers"
+import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { pageAssistModel } from "@/models"
+import { humanMessageFormatter } from "@/utils/human-message"
 import { systemPromptFormatter } from "@/utils/system-message"
 import {CURSOR, streamChatResponse, type StreamConfig} from "./sharedStreaming"
 import { STREAM_REVEAL } from "../streamingConfig"
 
-export const continueChatMode = async (
+export const visionChatMode = async (
+  message: string,
+  image: string,
+  isRegenerate: boolean,
   messages: Message[],
   history: ChatHistory,
   signal: AbortSignal,
   {
     selectedModel,
-    selectedSystemPrompt,
-    currentChatModelSettings,
+    useOCR,
     setMessages,
     saveMessageOnSuccess,
     saveMessageOnError,
@@ -27,8 +30,7 @@ export const continueChatMode = async (
     setHistoryId
   }: {
     selectedModel: string
-    selectedSystemPrompt: string
-    currentChatModelSettings: any
+    useOCR: boolean
     setMessages: (
       messages: Message[] | ((prev: Message[]) => Message[])
     ) => void
@@ -42,29 +44,34 @@ export const continueChatMode = async (
     setHistoryId: (id: string) => void
   }
 ) => {
-  console.log("Using continueChatMode")
+  console.log("Using visionChatMode")
   const url = await getOllamaURL()
-  let promptId: string | undefined = selectedSystemPrompt
-  let promptContent: string | undefined = undefined
-
-  const lastMessage = messages[messages.length - 1]
-  if (!lastMessage || !lastMessage.id) {
-    throw new Error("No last message to continue")
-  }
-
-  const initialFullText = lastMessage.message.replace(/▋$/, "") // Remove cursor if present
 
   const ollama = await pageAssistModel({
     model: selectedModel!,
     baseUrl: cleanUrl(url)
   })
 
-  const prompt = await systemPromptForNonRagOption()
-  const selectedPrompt = await getPromptById(selectedSystemPrompt)
+  const prompt = await systemPromptForNonRag()
+
+  let humanMessage = await humanMessageFormatter({
+    content: [
+      {
+        text: message,
+        type: "text"
+      },
+      {
+        image_url: image,
+        type: "image_url"
+      }
+    ],
+    model: selectedModel,
+    useOCR
+  })
 
   const applicationChatHistory = generateHistory(history, selectedModel)
 
-  if (prompt && !selectedPrompt) {
+  if (prompt) {
     applicationChatHistory.unshift(
       await systemPromptFormatter({
         content: prompt
@@ -72,29 +79,7 @@ export const continueChatMode = async (
     )
   }
 
-  const isTempSystemprompt =
-    currentChatModelSettings.systemPrompt &&
-    currentChatModelSettings.systemPrompt?.trim().length > 0
-
-  if (!isTempSystemprompt && selectedPrompt) {
-    applicationChatHistory.unshift(
-      await systemPromptFormatter({
-        content: selectedPrompt.content
-      })
-    )
-    promptContent = selectedPrompt.content
-  }
-
-  if (isTempSystemprompt) {
-    applicationChatHistory.unshift(
-      await systemPromptFormatter({
-        content: currentChatModelSettings.systemPrompt
-      })
-    )
-    promptContent = currentChatModelSettings.systemPrompt
-  }
-
-  const config = {
+  const config: StreamConfig = {
     cursor: CURSOR,
     reveal: STREAM_REVEAL
   }
@@ -104,28 +89,31 @@ export const continueChatMode = async (
     generationInfo?: any,
     timetaken?: number
   ) => {
-    // Update last history entry
-    const newHistory = [...history]
-    newHistory[newHistory.length - 1] = {
-      ...newHistory[newHistory.length - 1],
-      content: fullText
-    }
-    setHistory(newHistory)
+    setHistory([
+      ...history,
+      {
+        role: "user",
+        content: message,
+        image: ""
+      },
+      {
+        role: "assistant",
+        content: fullText
+      }
+    ])
 
     await saveMessageOnSuccess({
       historyId,
       setHistoryId,
-      isRegenerate: false,
+      isRegenerate,
       selectedModel: selectedModel,
-      message: "",
+      message,
       image: "",
       fullText,
       source: [],
+      message_source: "copilot",
       generationInfo,
-      prompt_content: promptContent,
-      prompt_id: promptId,
-      reasoning_time_taken: timetaken,
-      isContinue: true
+      reasoning_time_taken: timetaken
     })
 
     setIsProcessing(false)
@@ -142,11 +130,9 @@ export const continueChatMode = async (
       selectedModel,
       setHistory,
       setHistoryId,
-      userMessage: "",
-      isRegenerating: false,
-      isContinue: true,
-      prompt_content: promptContent,
-      prompt_id: promptId
+      userMessage: message,
+      isRegenerating: isRegenerate,
+      message_source: "copilot"
     })
 
     if (!errorSave) {
@@ -156,18 +142,13 @@ export const continueChatMode = async (
     setStreaming(false)
   }
 
-  setStreaming(true)
-  setIsProcessing(true)
-
   await streamChatResponse({
     ollama,
     applicationChatHistory,
+    humanMessage,
     selectedModel,
     messages,
-    isRegenerate: false,
-    isContinue: true,
-    botMessageId: lastMessage.id,
-    initialFullText,
+    isRegenerate,
     signal,
     config,
     setMessages,

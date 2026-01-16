@@ -68,7 +68,7 @@ export const PlaygroundMessage = (props: Props) => {
   const [editMode, setEditMode] = React.useState(false)
   const [checkWideMode] = useStorage("checkWideMode", false)
   const [isUserChatBubble] = useStorage("userChatBubble", true)
-  const [hideReasoningWidget] = useStorage('hideReasoningWidget', false)
+  const [hideReasoningWidget] = useStorage("hideReasoningWidget", false)
   const [autoCopyResponseToClipboard] = useStorage(
     "autoCopyResponseToClipboard",
     false
@@ -79,18 +79,6 @@ export const PlaygroundMessage = (props: Props) => {
   const { cancel, isSpeaking, speak } = useTTS()
   const isLastMessage: boolean =
     props.currentMessageIndex === props.totalMessages - 1
-  const [pulse, setPulse] = React.useState(false)
-  // trigger a short fade/pulse when uiStreaming.lastFlushedAt changes
-  React.useEffect(() => {
-    if (!props.isBot || !props.isStreaming) return
-    if (!props.uiStreaming?.lastFlushedAt) return
-    const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
-    if (mql.matches) return
-    setPulse(true)
-    const to = window.setTimeout(() => setPulse(false), 120)
-    return () => window.clearTimeout(to)
-  }, [props.uiStreaming?.lastFlushedAt, props.isStreaming, props.isBot])
-
   const autoCopyToClipboard = async () => {
     if (
       autoCopyResponseToClipboard &&
@@ -207,7 +195,7 @@ export const PlaygroundMessage = (props: Props) => {
               </Tag>
             )}
           </div>
-          <div className={`flex flex-grow flex-col ${pulse ? 'stream-pulse' : ''}`}>
+          <div className={`flex flex-grow flex-col`}>
             {!editMode ? (
               props.isBot ? (
                 <>
@@ -237,14 +225,31 @@ export const PlaygroundMessage = (props: Props) => {
                                     )
                                   })
                                 ),
-                              children: <Markdown message={e.content} />
+                              children: (
+                                <Markdown
+                                  message={e.content}
+                                  showStreamingTail={props.uiStreaming != null}
+                                  streamingTailShiftCh={8}
+                                  streamingTailTick={
+                                    props.uiStreaming?.lastFlushedAt
+                                  }
+                                />
+                              )
                             }
                           ]}
                         />
                       )
                     }
 
-                    return <Markdown key={i} message={e.content} />
+                    return (
+                      <Markdown
+                        key={i}
+                        message={e.content}
+                        showStreamingTail={props.uiStreaming != null}
+                        streamingTailShiftCh={8}
+                        streamingTailTick={props.uiStreaming?.lastFlushedAt}
+                      />
+                    )
                   })}
                 </>
               ) : (
