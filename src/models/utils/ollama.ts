@@ -1,7 +1,7 @@
 import { IterableReadableStream } from "@langchain/core/utils/stream"
 import type { StringWithAutocomplete } from "@langchain/core/utils/types"
 import { BaseLanguageModelCallOptions } from "@langchain/core/language_models/base"
-import { getCustomOllamaHeaders } from "@/services/app"
+import { getCustomOllamaHeaders } from "@/services/features/app"
 
 export interface OllamaInput {
   embeddingOnly?: boolean

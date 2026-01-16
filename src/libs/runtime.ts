@@ -9,7 +9,7 @@
  * @param type - The type of request, defaults to 'ollama'.
  * @returns - A Promise that resolves when the URL rewriting is complete.
  */
-import { getAdvancedOllamaSettings } from "@/services/app"
+import { getAdvancedOllamaSettings } from "@/services/features/app"
 
 export const urlRewriteRuntime = async function (
   domain: string,

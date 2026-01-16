@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
-vi.mock("@/services/ollama", () => ({
+vi.mock("@/services/ai/ollama", () => ({
   defaultEmbeddingChunkSize: async () => 100,
   defaultEmbeddingChunkOverlap: async () => 10,
   defaultSplittingStrategy: async () => "CharacterTextSplitter",
