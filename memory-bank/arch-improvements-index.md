@@ -16,12 +16,12 @@ Breakdown of src/ architecture improvements from 2026-01-16 review. Phased for i
 
 ## Progress Tracker
 
-| Task File              | Priority | Est. Effort | Status  | Notes                           |
-| ---------------------- | -------- | ----------- | ------- | ------------------------------- |
-| unify-browser.md       | High     | 1-2h        | Pending | Cross-browser merge             |
-| modularize-services.md | Medium   | 2h          | Pending | Services subdirs + interfaces   |
-| enhance-routes-ui.md   | High     | 2h          | Pending | Settings grouping + UI wrappers |
-| testing-conventions.md | Medium   | 1-2h        | Pending | Tests + standards               |
+| Task File              | Priority | Est. Effort | Status    | Notes                           |
+| ---------------------- | -------- | ----------- | --------- | ------------------------------- |
+| unify-browser.md       | High     | 1-2h        | Completed | Cross-browser merge             |
+| modularize-services.md | Medium   | 2h          | Pending   | Services subdirs + interfaces   |
+| enhance-routes-ui.md   | High     | 2h          | Pending   | Settings grouping + UI wrappers |
+| testing-conventions.md | Medium   | 1-2h        | Pending   | Tests + standards               |
 
 ## Next Steps
 
