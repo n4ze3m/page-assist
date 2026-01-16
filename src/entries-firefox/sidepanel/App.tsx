@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { MemoryRouter } from "react-router-dom"
 import { useEffect } from "react"
-import { SidepanelRouting } from "@/routes/firefox-route"
+import { SidepanelRouting } from "@/routes/entry"
 const queryClient = new QueryClient()
 import { ConfigProvider, Empty, theme } from "antd"
 import { StyleProvider } from "@ant-design/cssinjs"
