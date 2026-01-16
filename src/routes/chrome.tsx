@@ -1,34 +1,37 @@
 import { Route, Routes } from "react-router-dom"
-import OptionIndex from "./option-index"
-import OptionSettings from "./option-settings"
-import OptionModal from "./option-settings-model"
-import OptionPrompt from "./option-settings-prompt"
-import OptionOllamaSettings from "./options-settings-ollama"
-import OptionShare from "./option-settings-share"
-import OptionKnowledgeBase from "./option-settings-knowledge"
-import OptionAbout from "./option-settings-about"
+import OptionIndex from "./settings/option-index"
+import OptionSettings from "./settings/option-settings"
+import OptionModal from "./settings/option-settings-model"
+import OptionPrompt from "./settings/option-settings-prompt"
+import OptionOllamaSettings from "./settings/options-settings-ollama"
+import OptionShare from "./settings/option-settings-share"
+import OptionKnowledgeBase from "./settings/option-settings-knowledge"
+import OptionAbout from "./settings/option-settings-about"
 import SidepanelChat from "./sidepanel-chat"
 import SidepanelSettings from "./sidepanel-settings"
-import OptionRagSettings from "./option-rag"
-import OptionChrome from "./option-settings-chrome"
-import OptionOpenAI from "./option-settings-openai"
+import OptionRagSettings from "./settings/option-rag"
+import OptionChrome from "./settings/option-settings-chrome"
+import OptionOpenAI from "./settings/option-settings-openai"
 import SidepanelSettingsOpenAI from "./sidepanel-settings-openai"
 import SidepanelSettingsModel from "./sidepanel-settings-model"
+import { SettingsLayout } from "./SettingsLayout"
 
 export const OptionRoutingChrome = () => {
   return (
     <Routes>
       <Route path="/" element={<OptionIndex />} />
-      <Route path="/settings" element={<OptionSettings />} />
-      <Route path="/settings/model" element={<OptionModal />} />
-      <Route path="/settings/prompt" element={<OptionPrompt />} />
-      <Route path="/settings/ollama" element={<OptionOllamaSettings />} />
-      <Route path="/settings/chrome" element={<OptionChrome />} />
-      <Route path="/settings/openai" element={<OptionOpenAI />} />
-      <Route path="/settings/share" element={<OptionShare />} />
-      <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
-      <Route path="/settings/rag" element={<OptionRagSettings />} />
-      <Route path="/settings/about" element={<OptionAbout />} />
+      <Route path="/settings/*" element={<SettingsLayout />}>
+        <Route path="" element={<OptionSettings />} />
+        <Route path="model" element={<OptionModal />} />
+        <Route path="prompt" element={<OptionPrompt />} />
+        <Route path="ollama" element={<OptionOllamaSettings />} />
+        <Route path="chrome" element={<OptionChrome />} />
+        <Route path="openai" element={<OptionOpenAI />} />
+        <Route path="share" element={<OptionShare />} />
+        <Route path="knowledge" element={<OptionKnowledgeBase />} />
+        <Route path="rag" element={<OptionRagSettings />} />
+        <Route path="about" element={<OptionAbout />} />
+      </Route>
     </Routes>
   )
 }

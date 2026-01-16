@@ -5,33 +5,47 @@ import { Route, Routes } from "react-router-dom"
 
 const SidepanelChat = lazy(() => import("./sidepanel-chat"))
 const SidepanelSettings = lazy(() => import("./sidepanel-settings"))
-const SidepanelSettingsOpenAI = lazy(() => import("./sidepanel-settings-openai"))
-const SidepanelSettingsModel = lazy(() => import("./sidepanel-settings-model"))  
+const SidepanelSettingsOpenAI = lazy(
+  () => import("./sidepanel-settings-openai")
+)
+const SidepanelSettingsModel = lazy(() => import("./sidepanel-settings-model"))
 
-const OptionIndex = lazy(() => import("./option-index"))
-const OptionModal = lazy(() => import("./option-settings-model"))
-const OptionPrompt = lazy(() => import("./option-settings-prompt"))
-const OptionOllamaSettings = lazy(() => import("./options-settings-ollama"))
-const OptionSettings = lazy(() => import("./option-settings"))
-const OptionShare = lazy(() => import("./option-settings-share"))
-const OptionKnowledgeBase = lazy(() => import("./option-settings-knowledge"))
-const OptionAbout = lazy(() => import("./option-settings-about"))
-const OptionRagSettings = lazy(() => import("./option-rag"))
-const OptionOpenAI = lazy(() => import("./option-settings-openai"))
+const OptionIndex = lazy(() => import("./settings/option-index"))
+const OptionModal = lazy(() => import("./settings/option-settings-model"))
+const OptionPrompt = lazy(() => import("./settings/option-settings-prompt"))
+const OptionOllamaSettings = lazy(
+  () => import("./settings/options-settings-ollama")
+)
+const OptionSettings = lazy(() => import("./settings/option-settings"))
+const OptionShare = lazy(() => import("./settings/option-settings-share"))
+const OptionKnowledgeBase = lazy(
+  () => import("./settings/option-settings-knowledge")
+)
+const OptionAbout = lazy(() => import("./settings/option-settings-about"))
+const OptionRagSettings = lazy(() => import("./settings/option-rag"))
+const OptionOpenAI = lazy(() => import("./settings/option-settings-openai"))
+
+const SettingsLayout = lazy(() =>
+  import("./SettingsLayout").then((module) => ({
+    default: module.SettingsLayout
+  }))
+)
 
 export const OptionRoutingFirefox = () => {
   return (
     <Routes>
       <Route path="/" element={<OptionIndex />} />
-      <Route path="/settings" element={<OptionSettings />} />
-      <Route path="/settings/model" element={<OptionModal />} />
-      <Route path="/settings/prompt" element={<OptionPrompt />} />
-      <Route path="/settings/ollama" element={<OptionOllamaSettings />} />
-      <Route path="/settings/openai" element={<OptionOpenAI />} />
-      <Route path="/settings/share" element={<OptionShare />} />
-      <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
-      <Route path="/settings/about" element={<OptionAbout />} />
-      <Route path="/settings/rag" element={<OptionRagSettings />} />
+      <Route path="/settings/*" element={<SettingsLayout />}>
+        <Route path="" element={<OptionSettings />} />
+        <Route path="model" element={<OptionModal />} />
+        <Route path="prompt" element={<OptionPrompt />} />
+        <Route path="ollama" element={<OptionOllamaSettings />} />
+        <Route path="openai" element={<OptionOpenAI />} />
+        <Route path="share" element={<OptionShare />} />
+        <Route path="knowledge" element={<OptionKnowledgeBase />} />
+        <Route path="about" element={<OptionAbout />} />
+        <Route path="rag" element={<OptionRagSettings />} />
+      </Route>
     </Routes>
   )
 }
@@ -41,8 +55,8 @@ export const SidepanelRoutingFirefox = () => {
     <Routes>
       <Route path="/" element={<SidepanelChat />} />
       <Route path="/settings" element={<SidepanelSettings />} />
-      <Route path="/settings/openai" element={<SidepanelSettingsOpenAI />} /> 
-      <Route path="/settings/model" element={<SidepanelSettingsModel />} /> 
+      <Route path="/settings/openai" element={<SidepanelSettingsOpenAI />} />
+      <Route path="/settings/model" element={<SidepanelSettingsModel />} />
     </Routes>
   )
 }
