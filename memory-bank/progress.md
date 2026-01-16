@@ -61,3 +61,13 @@ Last updated: 2026-01-13
 
 - Stored in `memory-bank/ui-ux-chat-automation-plan.md`.
 - Includes progress checklist, test matrix, and CI-ready execution outline.
+
+9. Architectural Improvements Breakdown
+
+- New task breakdowns stored in `memory-bank/arch-improvements-index.md` with detailed files:
+  - `arch-improvements-unify-browser.md`: Cross-browser unification (high prio, 1-2h)
+  - `arch-improvements-modularize-services.md`: Services modularization (medium prio, 2h)
+  - `arch-improvements-enhance-routes-ui.md`: Routes and UI enhancement (high prio, 2h)
+  - `arch-improvements-icons-replacement.md`: Icon replacement with CSS SVG library (medium prio, 1-2h)
+  - `arch-improvements-testing-conventions.md`: Testing and conventions (medium prio, 1-2h)
+- Execute via opencode tasks; update index post-completion.
