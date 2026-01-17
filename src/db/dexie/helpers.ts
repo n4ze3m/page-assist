@@ -15,7 +15,9 @@ import {
   LastUsedModelType,
   OpenAIModelConfigs,
   ModelNicknames,
-  Models
+  Models,
+  ProjectFolder,
+  ProjectFolders
 } from "./types"
 import { PageAssistDatabase } from "./chat"
 import { db as chatDB } from "./schema"
@@ -137,7 +139,10 @@ export const formatToChatHistory = (
     return {
       content: message.content,
       role: message.role as "user" | "assistant" | "system",
-      image: message.images && message.images.length > 0 ? message.images[0] : undefined,
+      image:
+        message.images && message.images.length > 0
+          ? message.images[0]
+          : undefined,
       images: message.images
     }
   })
@@ -234,10 +239,10 @@ export const getAllPrompts = async () => {
 export const getAllPromptsSystem = async () => {
   try {
     const db = new PageAssistDatabase()
-    return (await db.getAllPrompts())
+    return await db.getAllPrompts()
   } catch (e) {
     if (isDatabaseClosedError(e)) {
-      return (await getAllPromptsFB())
+      return await getAllPromptsFB()
     }
 
     return []
@@ -624,6 +629,43 @@ export const importOAIConfigsV2 = async (
 ) => {
   const db = new OpenAIModelDb()
   return db.importDataV2(data, options)
+}
+
+export const getProjectFolders = async (): Promise<ProjectFolders> => {
+  const db = new PageAssistDatabase()
+  return db.getProjectFolders()
+}
+
+export const addProjectFolder = async (
+  title: string
+): Promise<ProjectFolder> => {
+  const db = new PageAssistDatabase()
+  const id = generateID()
+  const createdAt = Date.now()
+  const folder = { id, title, createdAt }
+  await db.addProjectFolder(folder)
+  return folder
+}
+
+export const updateProjectFolder = async (
+  id: string,
+  title: string
+) => {
+  const db = new PageAssistDatabase()
+  await db.updateProjectFolder(id, title)
+}
+
+export const deleteProjectFolder = async (id: string) => {
+  const db = new PageAssistDatabase()
+  await db.deleteProjectFolder(id)
+}
+
+export const assignHistoryToFolder = async (
+  history_id: string,
+  folder_id?: string
+) => {
+  const db = new PageAssistDatabase()
+  await db.assignHistoryToFolder(history_id, folder_id)
 }
 
 export const updateLastUsedModel = async (

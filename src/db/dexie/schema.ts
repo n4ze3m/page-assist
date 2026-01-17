@@ -1,5 +1,4 @@
-
-import Dexie, { type Table } from 'dexie';
+import Dexie, { type Table } from "dexie"
 import {
   HistoryInfo,
   Message,
@@ -15,25 +14,26 @@ import {
   ModelNickname,
   ModelState,
   ProviderState,
-  Memory
+  Memory,
+  ProjectFolder
 } from "./types"
 
 export class PageAssistDexieDB extends Dexie {
-  chatHistories!: Table<HistoryInfo>;
-  messages!: Table<Message>;
-  prompts!: Table<Prompt>;
-  webshares!: Table<Webshare>;
-  sessionFiles!: Table<SessionFiles>;
-  userSettings!: Table<UserSettings>;
+  chatHistories!: Table<HistoryInfo>
+  messages!: Table<Message>
+  prompts!: Table<Prompt>
+  webshares!: Table<Webshare>
+  sessionFiles!: Table<SessionFiles>
+  userSettings!: Table<UserSettings>
 
   // Knowledge management tables
-  knowledge!: Table<Knowledge>;
-  documents!: Table<Document>;
-  vectors!: Table<VectorData>;
+  knowledge!: Table<Knowledge>
+  documents!: Table<Document>
+  vectors!: Table<VectorData>
 
   // Openai config
-  openaiConfigs!: Table<OpenAIModelConfig>;
-  customModels!: Table<Model>;
+  openaiConfigs!: Table<OpenAIModelConfig>
+  customModels!: Table<Model>
   modelNickname!: Table<ModelNickname>
   modelState!: Table<ModelState>
   providerState!: Table<ProviderState>
@@ -41,30 +41,86 @@ export class PageAssistDexieDB extends Dexie {
   // Memory management
   memories!: Table<Memory>
 
+  // Project folders
+  projectFolders!: Table<ProjectFolder>
+
   constructor() {
-    super('PageAssistDatabase');
+    super("PageAssistDatabase")
 
     this.version(1).stores({
-      chatHistories: 'id, title, is_rag, message_source, is_pinned, createdAt, doc_id, last_used_prompt, model_id',
-      messages: 'id, history_id, name, role, content, createdAt, messageType, modelName',
-      prompts: 'id, title, content, is_system, createdBy, createdAt',
-      webshares: 'id, title, url, api_url, share_id, createdAt',
-      sessionFiles: 'sessionId, retrievalEnabled, createdAt',
-      userSettings: 'id, user_id',
+      chatHistories:
+        "id, title, is_rag, message_source, is_pinned, createdAt, doc_id, last_used_prompt, model_id",
+      messages:
+        "id, history_id, name, role, content, createdAt, messageType, modelName",
+      prompts: "id, title, content, is_system, createdBy, createdAt",
+      webshares: "id, title, url, api_url, share_id, createdAt",
+      sessionFiles: "sessionId, retrievalEnabled, createdAt",
+      userSettings: "id, user_id",
       // Knowledge management tables
-      knowledge: 'id, db_type, title, status, embedding_model, systemPrompt, followupPrompt, createdAt',
-      documents: 'id, db_type, title, status, embedding_model, createdAt',
-      vectors: 'id, vectors',
+      knowledge:
+        "id, db_type, title, status, embedding_model, systemPrompt, followupPrompt, createdAt",
+      documents: "id, db_type, title, status, embedding_model, createdAt",
+      vectors: "id, vectors",
       // OpenAI Configs
-      openaiConfigs: 'id, name, baseUrl, apiKey, createdAt, provider, db_type, headers',
-      customModels: 'id, model_id, name, model_name, model_image, provider_id, lookup, model_type, db_type',
-      modelNickname: 'id, model_id, model_name, model_avatar',
-      modelState: 'id, model_id, is_enabled',
-      providerState: 'id, provider_id, is_enabled',
+      openaiConfigs:
+        "id, name, baseUrl, apiKey, createdAt, provider, db_type, headers",
+      customModels:
+        "id, model_id, name, model_name, model_image, provider_id, lookup, model_type, db_type",
+      modelNickname: "id, model_id, model_name, model_avatar",
+      modelState: "id, model_id, is_enabled",
+      providerState: "id, provider_id, is_enabled",
       // Memory management
-      memories: 'id, content, createdAt, updatedAt'
-    });
+      memories: "id, content, createdAt, updatedAt"
+    })
+
+    this.version(2).stores({
+      chatHistories:
+        "id, title, is_rag, message_source, is_pinned, createdAt, doc_id, last_used_prompt, model_id, folder_id",
+      messages:
+        "id, history_id, name, role, content, createdAt, messageType, modelName",
+      prompts: "id, title, content, is_system, createdBy, createdAt",
+      webshares: "id, title, url, api_url, share_id, createdAt",
+      sessionFiles: "sessionId, retrievalEnabled, createdAt",
+      userSettings: "id, user_id",
+      knowledge:
+        "id, db_type, title, status, embedding_model, systemPrompt, followupPrompt, createdAt",
+      documents: "id, db_type, title, status, embedding_model, createdAt",
+      vectors: "id, vectors",
+      openaiConfigs:
+        "id, name, baseUrl, apiKey, createdAt, provider, db_type, headers",
+      customModels:
+        "id, model_id, name, model_name, model_image, provider_id, lookup, model_type, db_type",
+      modelNickname: "id, model_id, model_name, model_avatar",
+      modelState: "id, model_id, is_enabled",
+      providerState: "id, provider_id, is_enabled",
+      memories: "id, content, createdAt, updatedAt",
+      projectFolders: "id, title, createdAt"
+    })
+
+    this.version(3).stores({
+      chatHistories:
+        "id, title, is_rag, message_source, is_pinned, createdAt, doc_id, last_used_prompt, model_id, folder_id",
+      messages:
+        "id, history_id, name, role, content, createdAt, messageType, modelName",
+      prompts: "id, title, content, is_system, createdBy, createdAt",
+      webshares: "id, title, url, api_url, share_id, createdAt",
+      sessionFiles: "sessionId, retrievalEnabled, createdAt",
+      userSettings: "id, user_id",
+      knowledge:
+        "id, db_type, title, status, embedding_model, systemPrompt, followupPrompt, createdAt",
+      documents: "id, db_type, title, status, embedding_model, createdAt",
+      vectors: "id, vectors",
+      openaiConfigs:
+        "id, name, baseUrl, apiKey, createdAt, provider, db_type, headers",
+      customModels:
+        "id, model_id, name, model_name, model_image, provider_id, lookup, model_type, db_type",
+      modelNickname: "id, model_id, model_name, model_avatar",
+      modelState: "id, model_id, is_enabled",
+      providerState: "id, provider_id, is_enabled",
+      memories: "id, content, createdAt, updatedAt",
+      projectFolders: "id, title, color, createdAt"
+    })
   }
 }
 
-export const db = new PageAssistDexieDB();
+export const db = new PageAssistDexieDB()

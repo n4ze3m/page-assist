@@ -1,7 +1,8 @@
 import {
   useMutation,
   useQueryClient,
-  useInfiniteQuery
+  useInfiniteQuery,
+  useQuery
 } from "@tanstack/react-query"
 import {
   Empty,
@@ -13,6 +14,7 @@ import {
   message,
   Button
 } from "antd"
+import { SaveButton } from "@/components/Common/SaveButton"
 import {
   PencilIcon,
   Trash2,
@@ -25,7 +27,9 @@ import {
   Loader2,
   ChevronDown,
   GitBranch,
-  Sparkles
+  Sparkles,
+  FolderPlus,
+  Folder
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
@@ -41,7 +45,12 @@ import {
   pinHistory,
   formatToMessage,
   getSessionFiles,
-  getPromptById
+  getPromptById,
+  getProjectFolders,
+  addProjectFolder,
+  updateProjectFolder,
+  deleteProjectFolder,
+  assignHistoryToFolder
 } from "@/db/dexie/helpers"
 import { UploadedFile } from "@/db/dexie/types"
 import { isDatabaseClosedError } from "@/utils/ff-error"
@@ -64,6 +73,7 @@ type Props = {
   isOpen: boolean
   selectedModel: string
 }
+
 
 export const Sidebar = ({
   onClose,
@@ -89,7 +99,20 @@ export const Sidebar = ({
   const [dexiePrivateWindowError, setDexiePrivateWindowError] = useState(false)
   const [editingHistoryId, setEditingHistoryId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState("")
-  const [generatingTitleId, setGeneratingTitleId] = useState<string | null>(null)
+  const [generatingTitleId, setGeneratingTitleId] = useState<string | null>(
+    null
+  )
+  const [newProjectTitle, setNewProjectTitle] = useState("")
+  const [isCreatingProject, setIsCreatingProject] = useState(false)
+  const [editingProjectId, setEditingProjectId] = useState<string | null>(null)
+  const [editProjectTitle, setEditProjectTitle] = useState("")
+  const [draggingChatId, setDraggingChatId] = useState<string | null>(null)
+  const [dragOverProjectId, setDragOverProjectId] = useState<string | null>(
+    null
+  )
+  const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(
+    new Set()
+  )
 
   const handleEditStart = (chat: any) => {
     setEditingHistoryId(chat.id)
@@ -109,14 +132,18 @@ export const Sidebar = ({
       const historyDetails = await db.getHistoryInfo(chat.id)
       const chatHistory = formatToChatHistory(history)
       const model = selectedModel
-      
+
       const generatedTitle = await generateTitle(model, chatHistory, chat.title)
       if (generatedTitle && generatedTitle !== chat.title) {
         setEditTitle(generatedTitle)
       }
     } catch (error) {
       console.error("Error generating title:", error)
-      message.error(t("common:generateTitleError", { defaultValue: "Failed to generate title" }))
+      message.error(
+        t("common:generateTitleError", {
+          defaultValue: "Failed to generate title"
+        })
+      )
     } finally {
       setGeneratingTitleId(null)
     }
@@ -190,13 +217,15 @@ export const Sidebar = ({
         )
 
         const groups = []
-        
+
         // Always get all pinned items for the first page to ensure they appear at the top
         if (pageParam === 1) {
           try {
             const db = new PageAssistDatabase()
             const allPinnedItems = await db.getChatHistories()
-            const pinnedOnlyItems = allPinnedItems.filter((item) => item.is_pinned)
+            const pinnedOnlyItems = allPinnedItems.filter(
+              (item) => item.is_pinned
+            )
             if (pinnedOnlyItems.length > 0) {
               groups.push({ label: "pinned", items: pinnedOnlyItems })
             }
@@ -206,7 +235,7 @@ export const Sidebar = ({
               groups.push({ label: "pinned", items: pinnedItems })
           }
         }
-        
+
         if (todayItems.length)
           groups.push({ label: "today", items: todayItems })
         if (yesterdayItems.length)
@@ -246,7 +275,10 @@ export const Sidebar = ({
           const existingGroup = acc.find((g) => g.label === group.label)
           if (existingGroup) {
             const newItems = group.items.filter(
-              newItem => !existingGroup.items.some(existingItem => existingItem.id === newItem.id)
+              (newItem) =>
+                !existingGroup.items.some(
+                  (existingItem) => existingItem.id === newItem.id
+                )
             )
             existingGroup.items.push(...newItems)
           } else {
@@ -259,7 +291,14 @@ export const Sidebar = ({
     ) || []
 
   const orderedChatHistories = chatHistories.sort((a, b) => {
-    const order = ["pinned", "today", "yesterday", "last7Days", "older", "searchResults"]
+    const order = [
+      "pinned",
+      "today",
+      "yesterday",
+      "last7Days",
+      "older",
+      "searchResults"
+    ]
     return order.indexOf(a.label) - order.indexOf(b.label)
   })
 
@@ -338,8 +377,331 @@ export const Sidebar = ({
     setSearchQuery(e.target.value)
   }
 
+  const { data: projectFoldersData = [] } = useQuery({
+    queryKey: ["fetchProjectFolders"],
+    queryFn: async () => {
+      return await getProjectFolders()
+    },
+    enabled: isOpen
+  })
+
+  const projectFolders = projectFoldersData || []
+
+  const { mutate: createProjectFolder, isPending: creatingProject } =
+    useMutation({
+      mutationKey: ["createProjectFolder"],
+      mutationFn: async (data: { title: string }) => {
+        return await addProjectFolder(data.title)
+      },
+      onSuccess: () => {
+        client.invalidateQueries({ queryKey: ["fetchProjectFolders"] })
+        setNewProjectTitle("")
+        setIsCreatingProject(false)
+      }
+    })
+
+  const { mutate: renameProjectFolder } = useMutation({
+    mutationKey: ["renameProjectFolder"],
+    mutationFn: async (data: { id: string; title: string }) => {
+      return await updateProjectFolder(data.id, data.title)
+    },
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["fetchProjectFolders"] })
+      setEditingProjectId(null)
+      setEditProjectTitle("")
+    }
+  })
+
+  const { mutate: removeProjectFolder } = useMutation({
+    mutationKey: ["deleteProjectFolder"],
+    mutationFn: async (id: string) => {
+      return await deleteProjectFolder(id)
+    },
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["fetchProjectFolders"] })
+      client.invalidateQueries({ queryKey: ["fetchChatHistory"] })
+    }
+  })
+
+  const { mutate: moveChatToFolder } = useMutation({
+    mutationKey: ["assignHistoryToFolder"],
+    mutationFn: async (data: { historyId: string; folderId?: string }) => {
+      return await assignHistoryToFolder(data.historyId, data.folderId)
+    },
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["fetchChatHistory"] })
+    }
+  })
+
+  const startProjectEdit = (project: { id: string; title: string }) => {
+    setEditingProjectId(project.id)
+    setEditProjectTitle(project.title)
+  }
+
+  const cancelProjectEdit = () => {
+    setEditingProjectId(null)
+    setEditProjectTitle("")
+  }
+
+  const saveProjectEdit = (projectId: string, currentTitle: string) => {
+    const trimmedTitle = editProjectTitle.trim()
+    if (trimmedTitle && trimmedTitle !== currentTitle) {
+      renameProjectFolder({ id: projectId, title: trimmedTitle })
+    } else {
+      cancelProjectEdit()
+    }
+  }
+
+  const handleCreateProject = () => {
+    const trimmedTitle = newProjectTitle.trim()
+    if (!trimmedTitle) {
+      return
+    }
+    createProjectFolder({ title: trimmedTitle })
+  }
+
+  const handleDeleteProject = (projectId: string) => {
+    if (
+      !confirm(
+        t("common:deleteProjectConfirmation", {
+          defaultValue:
+            "Delete this project folder? Chats will move back to Your chats."
+        })
+      )
+    ) {
+      return
+    }
+    removeProjectFolder(projectId)
+  }
+
   const clearSearch = () => {
     setSearchQuery("")
+  }
+
+  const folderMap = projectFolders.reduce<Record<string, any>>(
+    (acc, folder) => {
+      acc[folder.id] = folder
+      return acc
+    },
+    {}
+  )
+
+  const isSearchActive = Boolean(debouncedSearchQuery)
+  const allChats = orderedChatHistories.flatMap((group) => group.items)
+  const projectChatsMap = allChats.reduce<Record<string, any[]>>(
+    (acc, chat) => {
+      if (!chat.folder_id) {
+        return acc
+      }
+      if (!acc[chat.folder_id]) {
+        acc[chat.folder_id] = []
+      }
+      acc[chat.folder_id].push(chat)
+      return acc
+    },
+    {}
+  )
+
+  const unassignedChats = allChats.filter((chat) => !chat.folder_id)
+
+  const handleDragStart = (chatId: string) => {
+    setDraggingChatId(chatId)
+  }
+
+  const handleDragEnd = () => {
+    setDraggingChatId(null)
+    setDragOverProjectId(null)
+  }
+
+  const handleDropOnFolder = (folderId?: string) => {
+    if (!draggingChatId) {
+      return
+    }
+    moveChatToFolder({ historyId: draggingChatId, folderId })
+    handleDragEnd()
+  }
+
+  const toggleFolderCollapse = (folderId: string) => {
+    setCollapsedFolders((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(folderId)) {
+        newSet.delete(folderId)
+      } else {
+        newSet.add(folderId)
+      }
+      return newSet
+    })
+  }
+
+  const renderChatRow = (chat: any) => {
+    return (
+      <div
+        key={chat.id}
+        draggable
+        onDragStart={() => handleDragStart(chat.id)}
+        onDragEnd={handleDragEnd}
+        className={`flex py-2 px-2 items-center gap-3 relative rounded-md truncate hover:pr-4 group transition-opacity duration-300 ease-in-out border ${
+          historyId === chat.id
+            ? "bg-gray-200 dark:bg-[#454242] border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+            : "bg-gray-50 dark:bg-[#242424] dark:text-gray-100 text-gray-800 border-gray-300 dark:border-[#404040] hover:bg-gray-200 dark:hover:bg-[#2a2a2a]"
+        }`}
+        data-chat-id={chat.id}>
+        {chat?.message_source === "copilot" && (
+          <BotIcon className="size-3 text-gray-500 dark:text-gray-400" />
+        )}
+        {chat?.message_source === "branch" && (
+          <GitBranch className="size-3 text-gray-500 dark:text-gray-400" />
+        )}
+        {editingHistoryId === chat.id ? (
+          <div className="flex items-center flex-1 gap-1">
+            <input
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleEditSave(chat.id, chat.title)
+                } else if (e.key === "Escape") {
+                  handleEditCancel()
+                }
+                e.stopPropagation()
+              }}
+              onClick={(e) => e.stopPropagation()}
+              onBlur={(e) => {
+                if (e.relatedTarget?.closest("[data-generate-btn]")) {
+                  return
+                }
+                handleEditSave(chat.id, chat.title)
+              }}
+              autoFocus
+              disabled={generatingTitleId === chat.id}
+              className={`flex-1 h-8 text-sm z-20 px-0 bg-transparent outline-none border-none dark:focus:ring-[#404040] focus:ring-gray-300 focus:rounded-md focus:p-2 caret-current selection:bg-gray-300 dark:selection:bg-gray-600 ${
+                historyId === chat.id
+                  ? "text-gray-900 dark:text-gray-100 placeholder-gray-500"
+                  : "text-gray-800 dark:text-gray-100 placeholder-gray-400"
+              } ${generatingTitleId === chat.id ? "opacity-50" : ""}`}
+            />
+            <Tooltip
+              title={t("common:generateTitle", {
+                defaultValue: "Generate title with AI"
+              })}>
+              <button
+                data-generate-btn
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleGenerateTitle(chat)
+                }}
+                disabled={generatingTitleId === chat.id}
+                className={`p-1 rounded-md transition-all duration-200 ${
+                  generatingTitleId === chat.id
+                    ? "text-purple-500 dark:text-purple-400"
+                    : "text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                }`}>
+                <Sparkles
+                  className={`w-4 h-4 ${
+                    generatingTitleId === chat.id ? "animate-pulse" : ""
+                  }`}
+                  style={
+                    generatingTitleId === chat.id
+                      ? {
+                          filter: "drop-shadow(0 0 4px rgba(168, 85, 247, 0.6))"
+                        }
+                      : undefined
+                  }
+                />
+              </button>
+            </Tooltip>
+          </div>
+        ) : (
+          <button
+            className="flex-1 overflow-hidden break-all text-start truncate w-full"
+            onClick={async () => {
+              const db = new PageAssistDatabase()
+              const history = await db.getChatHistory(chat.id)
+              const historyDetails = await db.getHistoryInfo(chat.id)
+              setHistoryId(chat.id)
+              setHistory(formatToChatHistory(history))
+              setMessages(formatToMessage(history))
+              const isLastUsedChatModel = await lastUsedChatModelEnabled()
+              if (isLastUsedChatModel) {
+                const currentChatModel = historyDetails?.model_id
+                if (currentChatModel) {
+                  setSelectedModel(currentChatModel)
+                }
+              }
+              const lastUsedPrompt = historyDetails?.last_used_prompt
+              if (lastUsedPrompt) {
+                if (lastUsedPrompt.prompt_id) {
+                  const prompt = await getPromptById(lastUsedPrompt.prompt_id)
+                  if (prompt) {
+                    setSelectedSystemPrompt(lastUsedPrompt.prompt_id)
+                  }
+                }
+                setSystemPrompt(lastUsedPrompt.prompt_content)
+              }
+
+              if (setContext) {
+                const session = await getSessionFiles(chat.id)
+                setContext(session)
+              }
+              updatePageTitle(chat.title)
+              navigate("/")
+              onClose()
+            }}>
+            <span className="flex-grow truncate">{chat.title}</span>
+          </button>
+        )}
+        <div className="flex items-center gap-2">
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item
+                  key="pin"
+                  icon={
+                    chat.is_pinned ? (
+                      <PinOffIcon className="w-4 h-4" />
+                    ) : (
+                      <PinIcon className="w-4 h-4" />
+                    )
+                  }
+                  onClick={() =>
+                    pinChatHistory({
+                      id: chat.id,
+                      is_pinned: !chat.is_pinned
+                    })
+                  }
+                  disabled={pinLoading}>
+                  {chat.is_pinned ? t("common:unpin") : t("common:pin")}
+                </Menu.Item>
+                <Menu.Item
+                  key="edit"
+                  icon={<PencilIcon className="w-4 h-4" />}
+                  onClick={(e) => {
+                    e.domEvent.stopPropagation()
+                    handleEditStart(chat)
+                  }}>
+                  {t("common:edit")}
+                </Menu.Item>
+                <Menu.Item
+                  key="delete"
+                  icon={<Trash2 className="w-4 h-4" />}
+                  danger
+                  onClick={() => {
+                    if (!confirm(t("deleteHistoryConfirmation"))) return
+                    deleteHistory(chat.id)
+                  }}>
+                  {t("common:delete")}
+                </Menu.Item>
+              </Menu>
+            }
+            trigger={["click"]}
+            placement="bottomRight">
+            <button className="text-gray-500 dark:text-gray-400 opacity-80 hover:opacity-100">
+              <MoreVertical className="w-4 h-4" />
+            </button>
+          </Dropdown>
+        </div>
+      </div>
+    )
   }
 
   const handleLoadMore = () => {
@@ -405,200 +767,197 @@ export const Sidebar = ({
 
       {status === "success" && orderedChatHistories.length > 0 && (
         <div className="flex flex-col gap-2">
-          {orderedChatHistories.map((group, groupIndex) => (
-            <div key={groupIndex}>
-              <div className="flex items-center justify-between mt-2">
-                <h3 className="px-2 text-sm font-medium text-gray-500">
-                  {group.label === "searchResults"
-                    ? t("common:searchResults")
-                    : t(`common:date:${group.label}`)}
-                </h3>
-                {group.label !== "searchResults" && (
-                  <Tooltip
-                    title={t(`common:range:tooltip:${group.label}`)}
-                    placement="top">
-                    <button
-                      onClick={() => handleDeleteHistoriesByRange(group.label)}>
-                      {deleteRangeLoading && deleteGroup === group.label ? (
-                        <Loader2 className="w-4 h-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 animate-spin" />
-                      ) : (
-                        <Trash2Icon className="w-4 h-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200" />
-                      )}
-                    </button>
-                  </Tooltip>
-                )}
-              </div>
-              <div className="flex flex-col gap-2 mt-2">
-                {group.items.map((chat, index) => (
+          {/* Project Folders Section */}
+          {!isSearchActive && (
+            <>
+              {/* Create New Project Button */}
+              {isCreatingProject ? (
+                <div className="rounded-md p-2 mb-2 bg-gray-100 dark:bg-[#2a2a2a] border border-gray-400 dark:border-[#383838]">
+                  <div className="flex flex-col gap-2">
+                    <input
+                      value={newProjectTitle}
+                      onChange={(e) => setNewProjectTitle(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleCreateProject()
+                        } else if (e.key === "Escape") {
+                          setIsCreatingProject(false)
+                          setNewProjectTitle("")
+                        }
+                      }}
+                      placeholder={t("common:projectName", {
+                        defaultValue: "Project name"
+                      })}
+                      autoFocus
+                      className="px-2 py-1 text-sm bg-white dark:bg-[#1a1a1a] text-gray-800 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
+                    />
+                    <div className="flex items-center justify-end gap-2">
+                      <SaveButton
+                        onClick={handleCreateProject}
+                        disabled={creatingProject || !newProjectTitle.trim()}
+                        text="create"
+                        textOnSave="created"
+                        className="mt-0"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setIsCreatingProject(true)}
+                  className="flex items-center gap-2 px-2 py-2 mb-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] rounded-md transition-colors w-full border border-transparent hover:border-gray-300 dark:hover:border-[#404040]">
+                  <FolderPlus className="w-4 h-4" />
+                  {t("common:newProject", { defaultValue: "New project" })}
+                </button>
+              )}
+              {/* Project Folders */}
+              {projectFolders.map((folder) => {
+                const folderChats = projectChatsMap[folder.id] || []
+                const isCollapsed = !collapsedFolders.has(folder.id)
+                return (
                   <div
-                    key={chat.id}
-                    className={`flex py-2 px-2 items-center gap-3 relative rounded-md truncate hover:pr-4 group transition-opacity duration-300 ease-in-out border ${
-                      historyId === chat.id
-                        ? "bg-gray-200 dark:bg-[#454242] border-gray-400 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                        : "bg-gray-50 dark:bg-[#242424] dark:text-gray-100 text-gray-800 border-gray-300 dark:border-[#404040] hover:bg-gray-200 dark:hover:bg-[#2a2a2a]"
+                    key={folder.id}
+                    onDragOver={(e) => {
+                      e.preventDefault()
+                      setDragOverProjectId(folder.id)
+                    }}
+                    onDragLeave={() => setDragOverProjectId(null)}
+                    onDrop={() => handleDropOnFolder(folder.id)}
+                    className={`rounded-md p-2 mb-2 border transition-colors ${
+                      dragOverProjectId === folder.id
+                        ? "bg-blue-100 dark:bg-blue-900/30 border-blue-400 dark:border-blue-600"
+                        : "bg-gray-100 dark:bg-[#2a2a2a] border-gray-400 dark:border-[#383838]"
                     }`}>
-                    {chat?.message_source === "copilot" && (
-                      <BotIcon className="size-3 text-gray-500 dark:text-gray-400" />
-                    )}
-                    {chat?.message_source === "branch" && (
-                      <GitBranch className="size-3 text-gray-500 dark:text-gray-400" />
-                    )}
-                    {editingHistoryId === chat.id ? (
-                      <div className="flex items-center flex-1 gap-1">
+                    <div className="flex items-center justify-between">
+                      {editingProjectId === folder.id ? (
                         <input
-                          value={editTitle}
-                          onChange={(e) => setEditTitle(e.target.value)}
+                          value={editProjectTitle}
+                          onChange={(e) => setEditProjectTitle(e.target.value)}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                              handleEditSave(chat.id, chat.title)
+                              saveProjectEdit(folder.id, folder.title)
                             } else if (e.key === "Escape") {
-                              handleEditCancel()
+                              cancelProjectEdit()
                             }
                             e.stopPropagation()
                           }}
-                          onClick={(e) => e.stopPropagation()}
-                          onBlur={(e) => {
-                            // Don't save if clicking on the generate button
-                            if (e.relatedTarget?.closest('[data-generate-btn]')) {
-                              return
-                            }
-                            handleEditSave(chat.id, chat.title)
-                          }}
+                          onBlur={() =>
+                            saveProjectEdit(folder.id, folder.title)
+                          }
                           autoFocus
-                          disabled={generatingTitleId === chat.id}
-                          className={`flex-1 h-8 text-sm z-20 px-0 bg-transparent outline-none border-none dark:focus:ring-[#404040] focus:ring-gray-300 focus:rounded-md focus:p-2 caret-current selection:bg-gray-300 dark:selection:bg-gray-600 ${
-                            historyId === chat.id
-                              ? "text-gray-900 dark:text-gray-100 placeholder-gray-500"
-                              : "text-gray-800 dark:text-gray-100 placeholder-gray-400"
-                          } ${generatingTitleId === chat.id ? "opacity-50" : ""}`}
+                          className="flex-1 px-2 py-1 text-sm bg-white dark:bg-[#1a1a1a] text-gray-800 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
                         />
-                        <Tooltip title={t("common:generateTitle", { defaultValue: "Generate title with AI" })}>
-                          <button
-                            data-generate-btn
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleGenerateTitle(chat)
-                            }}
-                            disabled={generatingTitleId === chat.id}
-                            className={`p-1 rounded-md transition-all duration-200 ${
-                              generatingTitleId === chat.id
-                                ? "text-purple-500 dark:text-purple-400"
-                                : "text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 hover:bg-gray-200 dark:hover:bg-gray-700"
-                            }`}>
-                            <Sparkles
-                              className={`w-4 h-4 ${
-                                generatingTitleId === chat.id
-                                  ? "animate-pulse"
-                                  : ""
-                              }`}
-                              style={generatingTitleId === chat.id ? {
-                                filter: "drop-shadow(0 0 4px rgba(168, 85, 247, 0.6))"
-                              } : undefined}
-                            />
-                          </button>
-                        </Tooltip>
-                      </div>
-                    ) : (
-                      <button
-                        className="flex-1 overflow-hidden break-all text-start truncate w-full"
-                        onClick={async () => {
-                          const db = new PageAssistDatabase()
-                          const history = await db.getChatHistory(chat.id)
-                          const historyDetails = await db.getHistoryInfo(chat.id)
-                          setHistoryId(chat.id)
-                          setHistory(formatToChatHistory(history))
-                          setMessages(formatToMessage(history))
-                          const isLastUsedChatModel =
-                            await lastUsedChatModelEnabled()
-                          if (isLastUsedChatModel) {
-                            const currentChatModel = historyDetails?.model_id
-                            if (currentChatModel) {
-                              setSelectedModel(currentChatModel)
-                            }
-                          }
-                          const lastUsedPrompt = historyDetails?.last_used_prompt
-                          if (lastUsedPrompt) {
-                            if (lastUsedPrompt.prompt_id) {
-                              const prompt = await getPromptById(
-                                lastUsedPrompt.prompt_id
-                              )
-                              if (prompt) {
-                                setSelectedSystemPrompt(lastUsedPrompt.prompt_id)
-                              }
-                            }
-                            setSystemPrompt(lastUsedPrompt.prompt_content)
-                          }
-
-                          if (setContext) {
-                            const session = await getSessionFiles(chat.id)
-                            setContext(session)
-                          }
-                          updatePageTitle(chat.title)
-                          navigate("/")
-                          onClose()
-                        }}>
-                        <span className="flex-grow truncate">{chat.title}</span>
-                      </button>
-                    )}
-                    <div className="flex items-center gap-2">
+                      ) : (
+                        <button
+                          onClick={() => toggleFolderCollapse(folder.id)}
+                          className="flex items-center gap-2 flex-1 text-left hover:opacity-70 transition-opacity">
+                          <ChevronDown
+                            className={`w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform ${
+                              isCollapsed ? "-rotate-90" : ""
+                            }`}
+                          />
+                          <Folder className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            {folder.title}
+                          </span>
+                          <span className="text-xs text-gray-400">
+                            ({folderChats.length})
+                          </span>
+                        </button>
+                      )}
                       <Dropdown
                         overlay={
                           <Menu>
                             <Menu.Item
-                              key="pin"
-                              icon={
-                                chat.is_pinned ? (
-                                  <PinOffIcon className="w-4 h-4" />
-                                ) : (
-                                  <PinIcon className="w-4 h-4" />
-                                )
-                              }
-                              onClick={() =>
-                                pinChatHistory({
-                                  id: chat.id,
-                                  is_pinned: !chat.is_pinned
-                                })
-                              }
-                              disabled={pinLoading}>
-                              {chat.is_pinned
-                                ? t("common:unpin")
-                                : t("common:pin")}
-                            </Menu.Item>
-                            <Menu.Item
-                              key="edit"
+                              key="rename"
                               icon={<PencilIcon className="w-4 h-4" />}
-                              onClick={(e) => {
-                                // prevent menu closing immediately if needed, but usually we want it to close so we can see the input
-                                e.domEvent.stopPropagation()
-                                handleEditStart(chat)
-                              }}>
-                              {t("common:edit")}
+                              onClick={() => startProjectEdit(folder)}>
+                              {t("common:rename")}
                             </Menu.Item>
                             <Menu.Item
                               key="delete"
                               icon={<Trash2 className="w-4 h-4" />}
                               danger
-                              onClick={() => {
-                                if (!confirm(t("deleteHistoryConfirmation")))
-                                  return
-                                deleteHistory(chat.id)
-                              }}>
+                              onClick={() => handleDeleteProject(folder.id)}>
                               {t("common:delete")}
                             </Menu.Item>
                           </Menu>
                         }
                         trigger={["click"]}
                         placement="bottomRight">
-                        <button className="text-gray-500 dark:text-gray-400 opacity-80 hover:opacity-100">
+                        <button className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
                           <MoreVertical className="w-4 h-4" />
                         </button>
                       </Dropdown>
                     </div>
+                    {!isCollapsed && (
+                      <div className="flex flex-col gap-2">
+                        {folderChats.map((chat) => renderChatRow(chat))}
+                      </div>
+                    )}
                   </div>
-                ))}
+                )
+              })}
+
+              {/* Unassigned Chats Section */}
+              {unassignedChats.length > 0 && (
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault()
+                    setDragOverProjectId("unassigned")
+                  }}
+                  onDragLeave={() => setDragOverProjectId(null)}
+                  onDrop={() => handleDropOnFolder(undefined)}
+                  className={`rounded-md p-2 ${
+                    dragOverProjectId === "unassigned"
+                      ? "bg-blue-50 dark:bg-blue-900/20"
+                      : ""
+                  }`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="px-2 text-sm font-medium text-gray-500">
+                      {t("common:yourChats", { defaultValue: "Your chats" })}
+                    </h3>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {unassignedChats.map((chat) => renderChatRow(chat))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Search Results or Date-grouped History */}
+          {isSearchActive &&
+            orderedChatHistories.map((group, groupIndex) => (
+              <div key={groupIndex}>
+                <div className="flex items-center justify-between mt-2">
+                  <h3 className="px-2 text-sm font-medium text-gray-500">
+                    {group.label === "searchResults"
+                      ? t("common:searchResults")
+                      : t(`common:date:${group.label}`)}
+                  </h3>
+                  {group.label !== "searchResults" && (
+                    <Tooltip
+                      title={t(`common:range:tooltip:${group.label}`)}
+                      placement="top">
+                      <button
+                        onClick={() =>
+                          handleDeleteHistoriesByRange(group.label)
+                        }>
+                        {deleteRangeLoading && deleteGroup === group.label ? (
+                          <Loader2 className="w-4 h-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200 animate-spin" />
+                        ) : (
+                          <Trash2Icon className="w-4 h-4 text-gray-500 hover:text-gray-700 dark:hover:text-gray-200" />
+                        )}
+                      </button>
+                    </Tooltip>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2 mt-2">
+                  {group.items.map((chat) => renderChatRow(chat))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
 
           {/* Load More Button */}
           {hasNextPage && (
