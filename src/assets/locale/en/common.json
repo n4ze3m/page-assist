@@ -203,5 +203,6 @@
     "downloading": "Downloading" ,
     "cancelPullingModel": {
         "confirm": "Are you sure you want to cancel the download? This will stop the download process. According to the Ollama documentation, you can restart from where you left off."
-    }
+    },
+    "saveChat": "Save Chat"
 }

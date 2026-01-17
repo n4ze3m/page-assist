@@ -7,7 +7,8 @@ import {
   ComputerIcon,
   GithubIcon,
   PanelLeftIcon,
-  ZapIcon
+  ZapIcon,
+  SaveIcon
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useLocation, NavLink } from "react-router-dom"
@@ -25,11 +26,13 @@ import { MoreOptions } from "./MoreOptions"
 type Props = {
   setSidebarOpen: (open: boolean) => void
   setOpenModelSettings: (open: boolean) => void
+  saveTemporaryChat?: () => Promise<string>
 }
 
 export const Header: React.FC<Props> = ({
   setOpenModelSettings,
-  setSidebarOpen
+  setSidebarOpen,
+  saveTemporaryChat
 }) => {
   const { t, i18n } = useTranslation(["option", "common"])
   const isRTL = i18n?.dir() === "rtl"
@@ -213,6 +216,15 @@ export const Header: React.FC<Props> = ({
       <div className="flex flex-1 justify-end px-4">
         <div className="ml-4 flex items-center md:ml-6">
           <div className="flex gap-4 items-center">
+            {temporaryChat && messages.length > 0 && !streaming && (
+              <Tooltip title={t("common:saveChat")}>
+                <button
+                  onClick={saveTemporaryChat}
+                  className="!text-gray-500 dark:text-gray-300 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                  <SaveIcon className="w-6 h-6" />
+                </button>
+              </Tooltip>
+            )}
             {messages.length > 0 && !streaming && (
               <MoreOptions
                 shareModeEnabled={shareModeEnabled}

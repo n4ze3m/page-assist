@@ -41,7 +41,8 @@ export default function OptionLayout({
     setSelectedSystemPrompt,
     setContextFiles,
     useOCR,
-    selectedModel
+    selectedModel,
+    saveTemporaryChat
   } = useMessageOption()
   const queryClient = useQueryClient()
   const { setSystemPrompt } = useStoreChatModelSettings()
@@ -62,6 +63,7 @@ export default function OptionLayout({
           <Header
             setSidebarOpen={setSidebarOpen}
             setOpenModelSettings={setOpenModelSettings}
+            saveTemporaryChat={saveTemporaryChat}
           />
         </div>
         {/* <div className="relative flex h-full flex-col items-center"> */}
