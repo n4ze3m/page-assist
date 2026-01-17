@@ -199,3 +199,14 @@ export type ModelNicknames = ModelNickname[]
 export type ModelStates = ModelState[]
 export type ProviderStates = ProviderState[]
 export type Memories = Memory[]
+
+export type McpServerConfig = {
+  id?: number;
+  name: string;
+  url: string;
+  enabled: number; // 1 for enabled, 0 for disabled
+  env?: Record<string, string>;
+  args?: string[];
+}
+
+export type McpServerConfigs = McpServerConfig[]

@@ -15,7 +15,8 @@ import {
   ModelNickname,
   ModelState,
   ProviderState,
-  Memory
+  Memory,
+  McpServerConfig
 } from "./types"
 
 export class PageAssistDexieDB extends Dexie {
@@ -41,6 +42,9 @@ export class PageAssistDexieDB extends Dexie {
   // Memory management
   memories!: Table<Memory>
 
+  // MCP server management
+  mcpServers!: Table<McpServerConfig>
+
   constructor() {
     super('PageAssistDatabase');
 
@@ -63,6 +67,27 @@ export class PageAssistDexieDB extends Dexie {
       providerState: 'id, provider_id, is_enabled',
       // Memory management
       memories: 'id, content, createdAt, updatedAt'
+    });
+
+    // Version 2: Add MCP servers table
+    this.version(2).stores({
+      chatHistories: 'id, title, is_rag, message_source, is_pinned, createdAt, doc_id, last_used_prompt, model_id',
+      messages: 'id, history_id, name, role, content, createdAt, messageType, modelName',
+      prompts: 'id, title, content, is_system, createdBy, createdAt',
+      webshares: 'id, title, url, api_url, share_id, createdAt',
+      sessionFiles: 'sessionId, retrievalEnabled, createdAt',
+      userSettings: 'id, user_id',
+      knowledge: 'id, db_type, title, status, embedding_model, systemPrompt, followupPrompt, createdAt',
+      documents: 'id, db_type, title, status, embedding_model, createdAt',
+      vectors: 'id, vectors',
+      openaiConfigs: 'id, name, baseUrl, apiKey, createdAt, provider, db_type, headers',
+      customModels: 'id, model_id, name, model_name, model_image, provider_id, lookup, model_type, db_type',
+      modelNickname: 'id, model_id, model_name, model_avatar',
+      modelState: 'id, model_id, is_enabled',
+      providerState: 'id, provider_id, is_enabled',
+      memories: 'id, content, createdAt, updatedAt',
+      // MCP servers
+      mcpServers: '++id, name, url, enabled, env, args'
     });
   }
 }

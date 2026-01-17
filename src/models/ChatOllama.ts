@@ -22,7 +22,13 @@ import {
 
 export interface ChatOllamaInput extends OllamaInput { }
 
-export interface ChatOllamaCallOptions extends BaseLanguageModelCallOptions { }
+export interface ChatOllamaCallOptions extends BaseLanguageModelCallOptions {
+    tools?: any[];
+    // Define the callbacks to pass status up to the caller
+    onToolStart?: (tool: { name: string, arguments: any }) => Promise<void>;
+    onToolEnd?: (tool: { name: string, arguments: any }, output: string) => Promise<void>;
+    onToolError?: (tool: { name: string, arguments: any }, error: any) => Promise<void>;
+}
 
 export class ChatOllama
     extends SimpleChatModel<ChatOllamaCallOptions>
@@ -115,6 +121,8 @@ export class ChatOllama
 
     format?: StringWithAutocomplete<"json">;
 
+    private static toolSupportCache: { [model: string]: boolean } = {};
+
     constructor(fields: OllamaInput & BaseChatModelParams) {
         super(fields);
         this.model = fields.model ?? this.model;
@@ -159,6 +167,48 @@ export class ChatOllama
         this.format = fields.format;
         this.seed = fields.seed;
         this.thinking = fields.thinking;
+
+        // No need to await this in constructor
+        this.detectToolSupport();
+    }
+
+    private async detectToolSupport(): Promise<void> {
+        if (ChatOllama.toolSupportCache[this.model] !== undefined) {
+            return;
+        }
+
+        try {
+            const testPayload = {
+                model: this.model,
+                messages: [{ role: 'user', content: 'Test' }],
+                tools: [{ type: 'function', function: { name: 'test_tool', description: 'Test', parameters: { type: 'object', properties: {} } } }],
+                options: {},
+            };
+
+            const response = await fetch(`${this.baseUrl}/api/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', ...this.headers },
+                body: JSON.stringify(testPayload),
+            });
+
+            if (!response.ok) {
+                const errorBody = await response.json();
+                if (errorBody.error && errorBody.error.includes("does not support tools")) {
+                    console.log(`[ChatOllama] Model ${this.model} does not support tools (API error).`);
+                    ChatOllama.toolSupportCache[this.model] = false;
+                } else {
+                    console.log(`[ChatOllama] Model ${this.model} might not support tools (unspecific API error).`);
+                    ChatOllama.toolSupportCache[this.model] = false;
+                }
+            } else {
+                 console.log(`[ChatOllama] Model ${this.model} supports tools.`);
+                 ChatOllama.toolSupportCache[this.model] = true;
+            }
+
+        } catch (e: any) {
+            console.error(`[ChatOllama] Error detecting tool support for ${this.model}:`, e);
+            ChatOllama.toolSupportCache[this.model] = false;
+        }
     }
 
     protected getLsParams(options: this["ParsedCallOptions"]) {
@@ -184,7 +234,7 @@ export class ChatOllama
      * @returns An object containing the parameters for an Ollama API call.
      */
     invocationParams(options?: this["ParsedCallOptions"]) {
-        return {
+        const params = {
             model: this.model,
             format: this.format,
             keep_alive: this.keepAlive,
@@ -225,6 +275,12 @@ export class ChatOllama
                 seed: this.seed,
             },
         };
+        // @ts-ignore
+        if (ChatOllama.toolSupportCache[this.model] && options?.tools) {
+            // @ts-ignore
+            params.tools = options.tools;
+        }
+        return params;
     }
 
     _combineLLMOutput() {
