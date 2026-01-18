@@ -25,5 +25,8 @@
             "image": "Image (.png)"
         },
         "share": "Share"
-    }
+    },
+    "chatSaved": "Chat Saved",
+    "temporaryChatSavedSuccessfully": "Your temporary chat has been saved successfully",
+    "failedToSaveTemporaryChat": "Failed to save temporary chat. Please try again."
 }
