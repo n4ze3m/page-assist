@@ -808,7 +808,6 @@ export const Sidebar = ({
 
       {status === "success" && orderedChatHistories.length > 0 && (
         <div className="flex flex-col gap-2">
-         
           {/* Pinned Chats Section - Always show at top when not searching */}
           {!isSearchActive && pinnedChats.length > 0 && (
             <div className="mb-2">
@@ -826,51 +825,51 @@ export const Sidebar = ({
           {/* Project Folders Section */}
           {!isSearchActive && (
             <>
-             <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between">
                 <h3 className="px-2 text-sm font-medium text-gray-500">
                   {t("common:projects", { defaultValue: "Projects" })}
                 </h3>
               </div>
 
-               {isCreatingProject ? (
-            <div className="rounded-md p-2 mb-2 bg-gray-100 dark:bg-[#2a2a2a] border border-gray-400 dark:border-[#383838]">
-              <div className="flex flex-col gap-2">
-                <input
-                  value={newProjectTitle}
-                  onChange={(e) => setNewProjectTitle(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleCreateProject()
-                    } else if (e.key === "Escape") {
-                      setIsCreatingProject(false)
-                      setNewProjectTitle("")
-                    }
-                  }}
-                  placeholder={t("common:projectName", {
-                    defaultValue: "Project name"
-                  })}
-                  autoFocus
-                  className="px-2 py-1 text-sm bg-white dark:bg-[#1a1a1a] text-gray-800 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
-                />
-                <div className="flex items-center justify-end gap-2">
-                  <SaveButton
-                    onClick={handleCreateProject}
-                    disabled={creatingProject || !newProjectTitle.trim()}
-                    text="create"
-                    textOnSave="created"
-                    className="mt-0"
-                  />
+              {isCreatingProject ? (
+                <div className="rounded-md p-2 mb-2 bg-gray-100 dark:bg-[#2a2a2a] border border-gray-400 dark:border-[#383838]">
+                  <div className="flex flex-col gap-2">
+                    <input
+                      value={newProjectTitle}
+                      onChange={(e) => setNewProjectTitle(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleCreateProject()
+                        } else if (e.key === "Escape") {
+                          setIsCreatingProject(false)
+                          setNewProjectTitle("")
+                        }
+                      }}
+                      placeholder={t("common:projectName", {
+                        defaultValue: "Project name"
+                      })}
+                      autoFocus
+                      className="px-2 py-1 text-sm bg-white dark:bg-[#1a1a1a] text-gray-800 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
+                    />
+                    <div className="flex items-center justify-end gap-2">
+                      <SaveButton
+                        onClick={handleCreateProject}
+                        disabled={creatingProject || !newProjectTitle.trim()}
+                        text="create"
+                        textOnSave="created"
+                        className="mt-0"
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ) : (
-            <button
-              onClick={() => setIsCreatingProject(true)}
-              className="flex items-center gap-2 px-2 py-2 mb-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] rounded-md transition-colors w-full border border-transparent hover:border-gray-300 dark:hover:border-[#404040]">
-              <FolderPlus className="w-4 h-4" />
-              {t("common:newProject", { defaultValue: "New project" })}
-            </button>
-          )}
+              ) : (
+                <button
+                  onClick={() => setIsCreatingProject(true)}
+                  className="flex items-center gap-2 px-2 py-2 mb-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] rounded-md transition-colors w-full border border-transparent hover:border-gray-300 dark:hover:border-[#404040]">
+                  <FolderPlus className="w-4 h-4" />
+                  {t("common:newProject", { defaultValue: "New project" })}
+                </button>
+              )}
               {/* Project Folders */}
               {projectFolders.map((folder) => {
                 const folderChats = projectChatsMap[folder.id] || []
