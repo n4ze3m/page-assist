@@ -74,7 +74,6 @@ type Props = {
   selectedModel: string
 }
 
-
 export const Sidebar = ({
   onClose,
   setMessages,
@@ -113,6 +112,43 @@ export const Sidebar = ({
   const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(
     new Set()
   )
+
+  // Helper function to group chats by date
+  const groupChatsByDate = (chats: any[]) => {
+    const now = new Date()
+    const today = new Date(now.setHours(0, 0, 0, 0))
+    const yesterday = new Date(today)
+    yesterday.setDate(yesterday.getDate() - 1)
+    const lastWeek = new Date(today)
+    lastWeek.setDate(lastWeek.getDate() - 7)
+
+    const todayItems = chats.filter(
+      (item) => new Date(item?.createdAt) >= today
+    )
+    const yesterdayItems = chats.filter(
+      (item) =>
+        new Date(item?.createdAt) >= yesterday &&
+        new Date(item?.createdAt) < today
+    )
+    const lastWeekItems = chats.filter(
+      (item) =>
+        new Date(item?.createdAt) >= lastWeek &&
+        new Date(item?.createdAt) < yesterday
+    )
+    const olderItems = chats.filter(
+      (item) => new Date(item?.createdAt) < lastWeek
+    )
+
+    const groups = []
+    if (todayItems.length) groups.push({ label: "today", items: todayItems })
+    if (yesterdayItems.length)
+      groups.push({ label: "yesterday", items: yesterdayItems })
+    if (lastWeekItems.length)
+      groups.push({ label: "last7Days", items: lastWeekItems })
+    if (olderItems.length) groups.push({ label: "older", items: olderItems })
+
+    return groups
+  }
 
   const handleEditStart = (chat: any) => {
     setEditingHistoryId(chat.id)
@@ -488,7 +524,12 @@ export const Sidebar = ({
 
   const isSearchActive = Boolean(debouncedSearchQuery)
   const allChats = orderedChatHistories.flatMap((group) => group.items)
-  const projectChatsMap = allChats.reduce<Record<string, any[]>>(
+
+  // Separate pinned chats from the rest
+  const pinnedChats = allChats.filter((chat) => chat.is_pinned)
+  const unpinnedChats = allChats.filter((chat) => !chat.is_pinned)
+
+  const projectChatsMap = unpinnedChats.reduce<Record<string, any[]>>(
     (acc, chat) => {
       if (!chat.folder_id) {
         return acc
@@ -502,7 +543,7 @@ export const Sidebar = ({
     {}
   )
 
-  const unassignedChats = allChats.filter((chat) => !chat.folder_id)
+  const unassignedChats = unpinnedChats.filter((chat) => !chat.folder_id)
 
   const handleDragStart = (chatId: string) => {
     setDraggingChatId(chatId)
@@ -767,53 +808,74 @@ export const Sidebar = ({
 
       {status === "success" && orderedChatHistories.length > 0 && (
         <div className="flex flex-col gap-2">
+         
+          {/* Pinned Chats Section - Always show at top when not searching */}
+          {!isSearchActive && pinnedChats.length > 0 && (
+            <div className="mb-2">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="px-2 text-sm font-medium text-gray-500">
+                  {t("common:date:pinned")}
+                </h3>
+              </div>
+              <div className="flex flex-col gap-2">
+                {pinnedChats.map((chat) => renderChatRow(chat))}
+              </div>
+            </div>
+          )}
+
           {/* Project Folders Section */}
           {!isSearchActive && (
             <>
-              {/* Create New Project Button */}
-              {isCreatingProject ? (
-                <div className="rounded-md p-2 mb-2 bg-gray-100 dark:bg-[#2a2a2a] border border-gray-400 dark:border-[#383838]">
-                  <div className="flex flex-col gap-2">
-                    <input
-                      value={newProjectTitle}
-                      onChange={(e) => setNewProjectTitle(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          handleCreateProject()
-                        } else if (e.key === "Escape") {
-                          setIsCreatingProject(false)
-                          setNewProjectTitle("")
-                        }
-                      }}
-                      placeholder={t("common:projectName", {
-                        defaultValue: "Project name"
-                      })}
-                      autoFocus
-                      className="px-2 py-1 text-sm bg-white dark:bg-[#1a1a1a] text-gray-800 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
-                    />
-                    <div className="flex items-center justify-end gap-2">
-                      <SaveButton
-                        onClick={handleCreateProject}
-                        disabled={creatingProject || !newProjectTitle.trim()}
-                        text="create"
-                        textOnSave="created"
-                        className="mt-0"
-                      />
-                    </div>
-                  </div>
+             <div className="flex items-center justify-between">
+                <h3 className="px-2 text-sm font-medium text-gray-500">
+                  {t("common:projects", { defaultValue: "Projects" })}
+                </h3>
+              </div>
+
+               {isCreatingProject ? (
+            <div className="rounded-md p-2 mb-2 bg-gray-100 dark:bg-[#2a2a2a] border border-gray-400 dark:border-[#383838]">
+              <div className="flex flex-col gap-2">
+                <input
+                  value={newProjectTitle}
+                  onChange={(e) => setNewProjectTitle(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleCreateProject()
+                    } else if (e.key === "Escape") {
+                      setIsCreatingProject(false)
+                      setNewProjectTitle("")
+                    }
+                  }}
+                  placeholder={t("common:projectName", {
+                    defaultValue: "Project name"
+                  })}
+                  autoFocus
+                  className="px-2 py-1 text-sm bg-white dark:bg-[#1a1a1a] text-gray-800 dark:text-gray-100 border border-gray-300 dark:border-gray-600 rounded outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500"
+                />
+                <div className="flex items-center justify-end gap-2">
+                  <SaveButton
+                    onClick={handleCreateProject}
+                    disabled={creatingProject || !newProjectTitle.trim()}
+                    text="create"
+                    textOnSave="created"
+                    className="mt-0"
+                  />
                 </div>
-              ) : (
-                <button
-                  onClick={() => setIsCreatingProject(true)}
-                  className="flex items-center gap-2 px-2 py-2 mb-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] rounded-md transition-colors w-full border border-transparent hover:border-gray-300 dark:hover:border-[#404040]">
-                  <FolderPlus className="w-4 h-4" />
-                  {t("common:newProject", { defaultValue: "New project" })}
-                </button>
-              )}
+              </div>
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsCreatingProject(true)}
+              className="flex items-center gap-2 px-2 py-2 mb-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] rounded-md transition-colors w-full border border-transparent hover:border-gray-300 dark:hover:border-[#404040]">
+              <FolderPlus className="w-4 h-4" />
+              {t("common:newProject", { defaultValue: "New project" })}
+            </button>
+          )}
               {/* Project Folders */}
               {projectFolders.map((folder) => {
                 const folderChats = projectChatsMap[folder.id] || []
                 const isCollapsed = !collapsedFolders.has(folder.id)
+                const groupedFolderChats = groupChatsByDate(folderChats)
                 return (
                   <div
                     key={folder.id}
@@ -891,8 +953,17 @@ export const Sidebar = ({
                       </Dropdown>
                     </div>
                     {!isCollapsed && (
-                      <div className="flex flex-col gap-2">
-                        {folderChats.map((chat) => renderChatRow(chat))}
+                      <div className="flex flex-col gap-2 mt-2">
+                        {groupedFolderChats.map((group, groupIndex) => (
+                          <div key={groupIndex}>
+                            <h4 className="px-2 text-xs font-medium text-gray-400 mb-1">
+                              {t(`common:date:${group.label}`)}
+                            </h4>
+                            <div className="flex flex-col gap-2">
+                              {group.items.map((chat) => renderChatRow(chat))}
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     )}
                   </div>
@@ -919,7 +990,18 @@ export const Sidebar = ({
                     </h3>
                   </div>
                   <div className="flex flex-col gap-2">
-                    {unassignedChats.map((chat) => renderChatRow(chat))}
+                    {groupChatsByDate(unassignedChats).map(
+                      (group, groupIndex) => (
+                        <div key={groupIndex}>
+                          <h4 className="px-2 text-xs font-medium text-gray-400 mb-1">
+                            {t(`common:date:${group.label}`)}
+                          </h4>
+                          <div className="flex flex-col gap-2">
+                            {group.items.map((chat) => renderChatRow(chat))}
+                          </div>
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               )}
