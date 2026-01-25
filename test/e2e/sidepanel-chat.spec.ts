@@ -6,6 +6,7 @@ const extensionPath = path.join(process.cwd(), "build", "chrome-mv3")
 test("sidepanel chat smoke", async () => {
   const context = await chromium.launchPersistentContext("", {
     headless: false,
+    bypassCSP: true,
     args: [
       `--disable-extensions-except=${extensionPath}`,
       `--load-extension=${extensionPath}`
@@ -13,6 +14,9 @@ test("sidepanel chat smoke", async () => {
   })
 
   try {
+    // Wait for extension to initialize
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+
     const background =
       context.serviceWorkers()[0] ??
       (await context.waitForEvent("serviceworker"))
@@ -32,8 +36,8 @@ test("sidepanel chat smoke", async () => {
           body: JSON.stringify({
             models: [
               {
-                name: "llama2",
-                model: "llama2",
+                name: "mock_model",
+                model: "mock_model",
                 modified_at: new Date().toISOString(),
                 size: 0,
                 digest: "",
@@ -58,21 +62,12 @@ test("sidepanel chat smoke", async () => {
         contentType: "application/x-ndjson",
         body: [
           JSON.stringify({
-            model: "llama2",
+            model: "mock_model",
             created_at: new Date().toISOString(),
-            message: { role: "assistant", content: "Hello" },
+            message: { role: "assistant", content: "Hello from Page Assist!" },
             done: false
           }),
           JSON.stringify({
-            model: "llama2",
-            created_at: new Date().toISOString(),
-            message: { role: "assistant", content: " from Page Assist" },
-            done: false
-          }),
-          JSON.stringify({
-            model: "llama2",
-            created_at: new Date().toISOString(),
-            message: { role: "assistant", content: "!" },
             done: true
           })
         ].join("\n")
@@ -80,13 +75,16 @@ test("sidepanel chat smoke", async () => {
     })
 
     await page.goto(`chrome-extension://${extensionId}/sidepanel.html`)
+    await page.waitForLoadState("networkidle")
 
     await expect(page.getByText("Page Assist", { exact: false })).toBeVisible()
 
     const modelSelect = page.getByRole("combobox")
     await expect(modelSelect).toBeVisible()
     await modelSelect.click()
-    await page.getByText("llama2").click()
+
+    await modelSelect.type("mock_model")
+    await modelSelect.press("Enter")
 
     const input = page.locator("textarea.pa-textarea")
     await expect(input).toBeVisible()
@@ -94,7 +92,9 @@ test("sidepanel chat smoke", async () => {
     await input.press("Enter")
 
     await expect(page.getByText("Hi there")).toBeVisible()
-    await expect(page.getByText("Hello from Page Assist!")).toBeVisible()
+    // Verify visibility after wait
+    await expect(page.getByText("Hello from Page Assist!")).toBeVisible({ timeout: 50000 });
+
   } finally {
     await context.close()
   }

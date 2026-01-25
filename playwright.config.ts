@@ -10,8 +10,9 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   reporter: "list",
   use: {
-    headless: false,
+    headless: true, // Set to true for CI
     viewport: { width: 1280, height: 800 }
   },
+  webServer: undefined, // No web server for extension
   outputDir: "test-results"
 })

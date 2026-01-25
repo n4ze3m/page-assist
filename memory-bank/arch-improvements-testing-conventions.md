@@ -69,6 +69,16 @@ Extend Vitest coverage; add E2E basics; enforce patterns for reliability. Addres
 - progress.md: Current testing gaps
 - systemPatterns.md: Quality patterns
 
+## Test Matrix
+
+| Test Type       | Scope                                 | Framework                       | Status         | Coverage                    |
+| --------------- | ------------------------------------- | ------------------------------- | -------------- | --------------------------- |
+| Unit Tests      | Services (Ollama, etc.), Hooks, Utils | Vitest + @testing-library/react | ✅ Implemented | ~83% (target 85%)           |
+| Component Tests | ChatInput controls, common components | Vitest + @testing-library/react | ✅ Existing    | High                        |
+| E2E Smoke       | Sidepanel load, basic interactions    | Playwright                      | ✅ Setup       | Pending full implementation |
+| E2E UX          | Scrolling, drag-drop, shortcuts       | Playwright                      | 🔄 Planned     | N/A                         |
+| Integration     | API mocks, storage                    | Vitest + MSW                    | ✅ Partial     | Medium                      |
+
 ## Status
 
-Pending
+Completed

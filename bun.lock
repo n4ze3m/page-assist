@@ -14,14 +14,12 @@
         "@mantine/hooks": "^7.5.3",
         "@mozilla/readability": "^0.6.0",
         "@plasmohq/storage": "^1.9.0",
-        "@tailwindcss/forms": "^0.5.7",
         "@tailwindcss/typography": "^0.5.10",
         "@tanstack/react-query": "^5.17.19",
         "@tanstack/react-virtual": "^3.13.6",
         "@vitejs/plugin-react": "^4.2.1",
         "antd": "^5.13.3",
         "axios": "^1.6.7",
-        "caniuse-lite": "^1.0.30001716",
         "cheerio": "^1.0.0-rc.12",
         "d3-dsv": "2",
         "dayjs": "^1.11.10",
@@ -52,7 +50,6 @@
         "react-syntax-highlighter": "^15.5.0",
         "react-toastify": "^10.0.4",
         "rehype-katex": "6.0.3",
-        "rehype-mathjax": "4.0.3",
         "remark-gfm": "3.0.1",
         "remark-math": "5.1.1",
         "turndown": "^7.1.3",
@@ -73,12 +70,12 @@
         "@types/pubsub-js": "^1.8.6",
         "@types/react": "18.2.48",
         "@types/react-dom": "18.2.18",
-        "@types/react-speech-recognition": "^3.9.5",
         "@types/react-syntax-highlighter": "^15.5.11",
         "@types/turndown": "^5.0.4",
         "@vitest/coverage-v8": "^1.6.0",
         "autoprefixer": "^10.4.17",
-        "cross-env": "^7.0.3",
+        "cross-env": "^10.1.0",
+        "eslint-plugin-tailwindcss": "^3.18.2",
         "fake-indexeddb": "^6.0.0",
         "jsdom": "^24.0.0",
         "msw": "^2.6.0",
@@ -261,6 +258,8 @@
     "@emotion/hash": ["@emotion/hash@0.8.0", "https://nexus.iad.opower.it/repository/npm-all/@emotion/hash/-/hash-0.8.0.tgz", {}, "sha512-kBJtf7PH6aWwZ6fka3zQ0p6SBYzx4fl1LoZXE2RrnYST9Xljm7WfKJrU4g/Xr3Beg72MLrp1AWNUmuYJTL7Cow=="],
 
     "@emotion/unitless": ["@emotion/unitless@0.7.5", "https://nexus.iad.opower.it/repository/npm-all/@emotion/unitless/-/unitless-0.7.5.tgz", {}, "sha512-OWORNpfjMsSSUBVrRBVGECkhWcULOAJz9ZW8uK9qgxD+87M7jHRcvh/A96XXNhXTLmKcoYSQtBEX7lHMO7YRwg=="],
+
+    "@epic-web/invariant": ["@epic-web/invariant@1.0.0", "https://nexus.iad.opower.it/repository/npm-all/@epic-web/invariant/-/invariant-1.0.0.tgz", {}, "sha512-lrTPqgvfFQtR/eY/qkIzp98OGdNJu0m5ji3q/nJI8v3SXkRKEnWiOxMmbvcSoAIzv/cGiuvRy57k4suKQSAdwA=="],
 
     "@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.25.12", "https://nexus.iad.opower.it/repository/npm-all/@esbuild/aix-ppc64/-/aix-ppc64-0.25.12.tgz", { "os": "aix", "cpu": "ppc64" }, "sha512-Hhmwd6CInZ3dwpuGTF8fJG6yoWmsToE+vYgD4nytZVxcu1ulHpUQRAB1UJ8+N1Am3Mz4+xOByoQoSZf4D+CpkA=="],
 
@@ -556,8 +555,6 @@
 
     "@swc/wasm": ["@swc/wasm@1.15.8", "https://nexus.iad.opower.it/repository/npm-all/@swc/wasm/-/wasm-1.15.8.tgz", {}, "sha512-RG2BxGbbsjtddFCo1ghKH6A/BMXbY1eMBfpysV0lJMCpI4DZOjW1BNBnxvBt7YsYmlJtmy5UXIg9/4ekBTFFaQ=="],
 
-    "@tailwindcss/forms": ["@tailwindcss/forms@0.5.11", "https://nexus.iad.opower.it/repository/npm-all/@tailwindcss/forms/-/forms-0.5.11.tgz", { "dependencies": { "mini-svg-data-uri": "^1.2.3" }, "peerDependencies": { "tailwindcss": ">=3.0.0 || >= 3.0.0-alpha.1 || >= 4.0.0-alpha.20 || >= 4.0.0-beta.1" } }, "sha512-h9wegbZDPurxG22xZSoWtdzc41/OlNEUQERNqI/0fOwa2aVlWGu7C35E/x6LDyD3lgtztFSSjKZyuVM0hxhbgA=="],
-
     "@tailwindcss/typography": ["@tailwindcss/typography@0.5.19", "https://nexus.iad.opower.it/repository/npm-all/@tailwindcss/typography/-/typography-0.5.19.tgz", { "dependencies": { "postcss-selector-parser": "6.0.10" }, "peerDependencies": { "tailwindcss": ">=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1" } }, "sha512-w31dd8HOx3k9vPtcQh5QHP9GwKcgbMp87j58qi6xgiBnFFtKEAgCWnDw4qUT8aHwkCp8bKvb/KGKWWHedP0AAg=="],
 
     "@tanstack/query-core": ["@tanstack/query-core@5.90.16", "https://nexus.iad.opower.it/repository/npm-all/@tanstack/query-core/-/query-core-5.90.16.tgz", {}, "sha512-MvtWckSVufs/ja463/K4PyJeqT+HMlJWtw6PrCpywznd2NSgO3m4KwO9RqbFqGg6iDE8vVMFWMeQI4Io3eEYww=="],
@@ -577,8 +574,6 @@
     "@testing-library/user-event": ["@testing-library/user-event@14.6.1", "https://nexus.iad.opower.it/repository/npm-all/@testing-library/user-event/-/user-event-14.6.1.tgz", { "peerDependencies": { "@testing-library/dom": ">=7.21.4" } }, "sha512-vq7fv0rnt+QTXgPxr5Hjc210p6YKq2kmdziLgnsZGgLJ9e6VAShx1pACLuRjd/AS/sr7phAR58OIIpf0LlmQNw=="],
 
     "@tokenizer/token": ["@tokenizer/token@0.3.0", "https://nexus.iad.opower.it/repository/npm-all/@tokenizer/token/-/token-0.3.0.tgz", {}, "sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A=="],
-
-    "@tootallnate/once": ["@tootallnate/once@2.0.0", "https://nexus.iad.opower.it/repository/npm-all/@tootallnate/once/-/once-2.0.0.tgz", {}, "sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A=="],
 
     "@types/aria-query": ["@types/aria-query@5.0.4", "https://nexus.iad.opower.it/repository/npm-all/@types/aria-query/-/aria-query-5.0.4.tgz", {}, "sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw=="],
 
@@ -656,8 +651,6 @@
 
     "@types/debug": ["@types/debug@4.1.12", "https://nexus.iad.opower.it/repository/npm-all/@types/debug/-/debug-4.1.12.tgz", { "dependencies": { "@types/ms": "*" } }, "sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ=="],
 
-    "@types/dom-speech-recognition": ["@types/dom-speech-recognition@0.0.7", "https://nexus.iad.opower.it/repository/npm-all/@types/dom-speech-recognition/-/dom-speech-recognition-0.0.7.tgz", {}, "sha512-NjiUoJbBlKhyufNsMZLSp+pbPNtPAFnR738RCJvtZy/HVQ2TZjmqpMyaeOSMXgxdfZM60nt8QGbtfmQrJAH2sw=="],
-
     "@types/estree": ["@types/estree@1.0.8", "https://nexus.iad.opower.it/repository/npm-all/@types/estree/-/estree-1.0.8.tgz", {}, "sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w=="],
 
     "@types/filesystem": ["@types/filesystem@0.0.36", "https://nexus.iad.opower.it/repository/npm-all/@types/filesystem/-/filesystem-0.0.36.tgz", { "dependencies": { "@types/filewriter": "*" } }, "sha512-vPDXOZuannb9FZdxgHnqSwAG/jvdGM8Wq+6N4D/d80z+D4HWH+bItqsZaVRQykAn6WEVeEkLm2oQigyHtgb0RA=="],
@@ -678,8 +671,6 @@
 
     "@types/markdown-it": ["@types/markdown-it@14.1.2", "https://nexus.iad.opower.it/repository/npm-all/@types/markdown-it/-/markdown-it-14.1.2.tgz", { "dependencies": { "@types/linkify-it": "^5", "@types/mdurl": "^2" } }, "sha512-promo4eFwuiW+TfGxhi+0x3czqTYJkG8qB17ZUJiVF10Xm7NLVRSLUsfRTU/6h1e24VvRnXCx+hG7li58lkzog=="],
 
-    "@types/mathjax": ["@types/mathjax@0.0.37", "https://nexus.iad.opower.it/repository/npm-all/@types/mathjax/-/mathjax-0.0.37.tgz", {}, "sha512-y0WSZBtBNQwcYipTU/BhgeFu1EZNlFvUNCmkMXV9kBQZq7/o5z82dNVyH3yy2Xv5zzeNeQoHSL4Xm06+EQiH+g=="],
-
     "@types/mdast": ["@types/mdast@3.0.15", "https://nexus.iad.opower.it/repository/npm-all/@types/mdast/-/mdast-3.0.15.tgz", { "dependencies": { "@types/unist": "^2" } }, "sha512-LnwD+mUEfxWMa1QpDraczIn6k0Ee3SMicuYSSzS6ZYl2gKS09EClnJYGd8Du6rfc5r/GZEk5o1mRb8TaTj03sQ=="],
 
     "@types/mdurl": ["@types/mdurl@2.0.0", "https://nexus.iad.opower.it/repository/npm-all/@types/mdurl/-/mdurl-2.0.0.tgz", {}, "sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg=="],
@@ -699,8 +690,6 @@
     "@types/react": ["@types/react@18.2.48", "https://nexus.iad.opower.it/repository/npm-all/@types/react/-/react-18.2.48.tgz", { "dependencies": { "@types/prop-types": "*", "@types/scheduler": "*", "csstype": "^3.0.2" } }, "sha512-qboRCl6Ie70DQQG9hhNREz81jqC1cs9EVNcjQ1AU+jH6NFfSAhVVbrrY/+nSF+Bsk4AOwm9Qa61InvMCyV+H3w=="],
 
     "@types/react-dom": ["@types/react-dom@18.2.18", "https://nexus.iad.opower.it/repository/npm-all/@types/react-dom/-/react-dom-18.2.18.tgz", { "dependencies": { "@types/react": "*" } }, "sha512-TJxDm6OfAX2KJWJdMEVTwWke5Sc/E/RlnPGvGfS0W7+6ocy2xhDVQVh/KvC2Uf7kACs+gDytdusDSdWfWkaNzw=="],
-
-    "@types/react-speech-recognition": ["@types/react-speech-recognition@3.9.6", "https://nexus.iad.opower.it/repository/npm-all/@types/react-speech-recognition/-/react-speech-recognition-3.9.6.tgz", { "dependencies": { "@types/dom-speech-recognition": "*" } }, "sha512-cdzwXIZXWyp8zfM2XI7APDW1rZf4Nz73T4SIS2y+cC7zHnZluCdumYKH6HacxgxJH+zemAq2oXbHWXcyW0eT3A=="],
 
     "@types/react-syntax-highlighter": ["@types/react-syntax-highlighter@15.5.13", "https://nexus.iad.opower.it/repository/npm-all/@types/react-syntax-highlighter/-/react-syntax-highlighter-15.5.13.tgz", { "dependencies": { "@types/react": "*" } }, "sha512-uLGJ87j6Sz8UaBAooU0T6lWJ0dBmjZgN1PZTrj05TNql2/XpC6+4HhMT5syIdFUUt+FASfCeLLv4kBygNU+8qA=="],
 
@@ -784,15 +773,11 @@
 
     "@xmldom/xmldom": ["@xmldom/xmldom@0.8.11", "https://nexus.iad.opower.it/repository/npm-all/@xmldom/xmldom/-/xmldom-0.8.11.tgz", {}, "sha512-cQzWCtO6C8TQiYl1ruKNn2U6Ao4o4WBBcbL61yJl84x+j5sOWWFU9X7DpND8XZG3daDppSsigMdfAIl2upQBRw=="],
 
-    "abab": ["abab@2.0.6", "https://nexus.iad.opower.it/repository/npm-all/abab/-/abab-2.0.6.tgz", {}, "sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA=="],
-
     "abbrev": ["abbrev@1.1.1", "https://nexus.iad.opower.it/repository/npm-all/abbrev/-/abbrev-1.1.1.tgz", {}, "sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q=="],
 
     "abort-controller": ["abort-controller@3.0.0", "https://nexus.iad.opower.it/repository/npm-all/abort-controller/-/abort-controller-3.0.0.tgz", { "dependencies": { "event-target-shim": "^5.0.0" } }, "sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg=="],
 
     "acorn": ["acorn@8.15.0", "https://nexus.iad.opower.it/repository/npm-all/acorn/-/acorn-8.15.0.tgz", { "bin": { "acorn": "bin/acorn" } }, "sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg=="],
-
-    "acorn-globals": ["acorn-globals@7.0.1", "https://nexus.iad.opower.it/repository/npm-all/acorn-globals/-/acorn-globals-7.0.1.tgz", { "dependencies": { "acorn": "^8.1.0", "acorn-walk": "^8.0.2" } }, "sha512-umOSDSDrfHbTNPuNpC2NSnnA3LUrqpevPb4T9jRx4MagXNS0rs+gwiTcAvqCRmsD6utzsrzNt+ebm00SNWiC3Q=="],
 
     "acorn-walk": ["acorn-walk@8.3.4", "https://nexus.iad.opower.it/repository/npm-all/acorn-walk/-/acorn-walk-8.3.4.tgz", { "dependencies": { "acorn": "^8.11.0" } }, "sha512-ueEepnujpqee2o5aIYnvHU6C0A42MNdsIDeqy5BydrkuC5R1ZuUFnm27EeFJGoEHJQgn3uleRvmTXaJgfXbt4g=="],
 
@@ -1004,7 +989,7 @@
 
     "cose-base": ["cose-base@1.0.3", "https://nexus.iad.opower.it/repository/npm-all/cose-base/-/cose-base-1.0.3.tgz", { "dependencies": { "layout-base": "^1.0.0" } }, "sha512-s9whTXInMSgAp/NVXVNuVxVKzGH2qck3aQlVHxDCdAEPgtMKwc4Wq6/QKhgdEdgbLSi9rBTAcPoRa6JpiG4ksg=="],
 
-    "cross-env": ["cross-env@7.0.3", "https://nexus.iad.opower.it/repository/npm-all/cross-env/-/cross-env-7.0.3.tgz", { "dependencies": { "cross-spawn": "^7.0.1" }, "bin": { "cross-env": "src/bin/cross-env.js", "cross-env-shell": "src/bin/cross-env-shell.js" } }, "sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw=="],
+    "cross-env": ["cross-env@10.1.0", "https://nexus.iad.opower.it/repository/npm-all/cross-env/-/cross-env-10.1.0.tgz", { "dependencies": { "@epic-web/invariant": "^1.0.0", "cross-spawn": "^7.0.6" }, "bin": { "cross-env": "dist/bin/cross-env.js", "cross-env-shell": "dist/bin/cross-env-shell.js" } }, "sha512-GsYosgnACZTADcmEyJctkJIoqAhHjttw7RsFrVoJNXbsWWqaq6Ym+7kZjq6mS45O0jij6vtiReppKQEtqWy6Dw=="],
 
     "cross-spawn": ["cross-spawn@7.0.6", "https://nexus.iad.opower.it/repository/npm-all/cross-spawn/-/cross-spawn-7.0.6.tgz", { "dependencies": { "path-key": "^3.1.0", "shebang-command": "^2.0.0", "which": "^2.0.1" } }, "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA=="],
 
@@ -1166,8 +1151,6 @@
 
     "domelementtype": ["domelementtype@2.3.0", "https://nexus.iad.opower.it/repository/npm-all/domelementtype/-/domelementtype-2.3.0.tgz", {}, "sha512-OLETBj6w0OsagBwdXnPdN0cnMfF9opN69co+7ZrbfPGrdpPVNBUj02spi6B1N7wChLQiPn4CSH/zJvXw56gmHw=="],
 
-    "domexception": ["domexception@4.0.0", "https://nexus.iad.opower.it/repository/npm-all/domexception/-/domexception-4.0.0.tgz", { "dependencies": { "webidl-conversions": "^7.0.0" } }, "sha512-A2is4PLG+eeSfoTMA95/s4pvAoSo2mKtiM5jlHkAVewmiO8ISFTFKZjH7UAM1Atli/OT/7JHOrJRJiMKUZKYBw=="],
-
     "domhandler": ["domhandler@5.0.3", "https://nexus.iad.opower.it/repository/npm-all/domhandler/-/domhandler-5.0.3.tgz", { "dependencies": { "domelementtype": "^2.3.0" } }, "sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w=="],
 
     "dompurify": ["dompurify@3.3.1", "https://nexus.iad.opower.it/repository/npm-all/dompurify/-/dompurify-3.3.1.tgz", { "optionalDependencies": { "@types/trusted-types": "^2.0.7" } }, "sha512-qkdCKzLNtrgPFP1Vo+98FRzJnBRGe4ffyCea9IwHB1fyxPOeNTHpLKYGd4Uk9xvNoH0ZoOjwZxNptyMwqrId1Q=="],
@@ -1222,17 +1205,9 @@
 
     "escape-string-regexp": ["escape-string-regexp@5.0.0", "https://nexus.iad.opower.it/repository/npm-all/escape-string-regexp/-/escape-string-regexp-5.0.0.tgz", {}, "sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw=="],
 
-    "escodegen": ["escodegen@2.1.0", "https://nexus.iad.opower.it/repository/npm-all/escodegen/-/escodegen-2.1.0.tgz", { "dependencies": { "esprima": "^4.0.1", "estraverse": "^5.2.0", "esutils": "^2.0.2" }, "optionalDependencies": { "source-map": "~0.6.1" }, "bin": { "esgenerate": "bin/esgenerate.js", "escodegen": "bin/escodegen.js" } }, "sha512-2NlIDTwUWJN0mRPQOdtQBzbUHvdGY2P1VXSyU83Q3xKxM7WHX2Ql8dKq782Q9TgQUNOLEzEYu9bzLNj1q88I5w=="],
-
-    "esm": ["esm@3.2.25", "https://nexus.iad.opower.it/repository/npm-all/esm/-/esm-3.2.25.tgz", {}, "sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA=="],
-
-    "esprima": ["esprima@4.0.1", "https://nexus.iad.opower.it/repository/npm-all/esprima/-/esprima-4.0.1.tgz", { "bin": { "esparse": "./bin/esparse.js", "esvalidate": "./bin/esvalidate.js" } }, "sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A=="],
-
-    "estraverse": ["estraverse@5.3.0", "https://nexus.iad.opower.it/repository/npm-all/estraverse/-/estraverse-5.3.0.tgz", {}, "sha512-MMdARuVEQziNTeJD8DgMqmhwR11BRQ/cBP+pLtYdSTnf3MIO8fFeiINEbX36ZdNlfU/7A9f3gUw49B3oQsvwBA=="],
+    "eslint-plugin-tailwindcss": ["eslint-plugin-tailwindcss@3.18.2", "https://nexus.iad.opower.it/repository/npm-all/eslint-plugin-tailwindcss/-/eslint-plugin-tailwindcss-3.18.2.tgz", { "dependencies": { "fast-glob": "^3.2.5", "postcss": "^8.4.4" }, "peerDependencies": { "tailwindcss": "^3.4.0" } }, "sha512-QbkMLDC/OkkjFQ1iz/5jkMdHfiMu/uwujUHLAJK5iwNHD8RTxVTlsUezE0toTZ6VhybNBsk+gYGPDq2agfeRNA=="],
 
     "estree-walker": ["estree-walker@3.0.3", "https://nexus.iad.opower.it/repository/npm-all/estree-walker/-/estree-walker-3.0.3.tgz", { "dependencies": { "@types/estree": "^1.0.0" } }, "sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g=="],
-
-    "esutils": ["esutils@2.0.3", "https://nexus.iad.opower.it/repository/npm-all/esutils/-/esutils-2.0.3.tgz", {}, "sha512-kVscqXk4OCp68SZ0dkgEKVi6/8ij300KBWTJq32P/dYeWTSwK41WyTxalN1eRmA5Z9UU/LX9D7FWSmV9SAYx6g=="],
 
     "event-target-shim": ["event-target-shim@5.0.1", "https://nexus.iad.opower.it/repository/npm-all/event-target-shim/-/event-target-shim-5.0.1.tgz", {}, "sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ=="],
 
@@ -1686,8 +1661,6 @@
 
     "math-intrinsics": ["math-intrinsics@1.1.0", "https://nexus.iad.opower.it/repository/npm-all/math-intrinsics/-/math-intrinsics-1.1.0.tgz", {}, "sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g=="],
 
-    "mathjax-full": ["mathjax-full@3.2.2", "https://nexus.iad.opower.it/repository/npm-all/mathjax-full/-/mathjax-full-3.2.2.tgz", { "dependencies": { "esm": "^3.2.25", "mhchemparser": "^4.1.0", "mj-context-menu": "^0.6.1", "speech-rule-engine": "^4.0.6" } }, "sha512-+LfG9Fik+OuI8SLwsiR02IVdjcnRCy5MufYLi0C3TdMT56L/pjB0alMVGgoWJF8pN9Rc7FESycZB9BMNWIid5w=="],
-
     "mdast-util-definitions": ["mdast-util-definitions@5.1.2", "https://nexus.iad.opower.it/repository/npm-all/mdast-util-definitions/-/mdast-util-definitions-5.1.2.tgz", { "dependencies": { "@types/mdast": "^3.0.0", "@types/unist": "^2.0.0", "unist-util-visit": "^4.0.0" } }, "sha512-8SVPMuHqlPME/z3gqVwWY4zVXn8lqKv/pAhC57FuJ40ImXyBpmO5ukh98zB2v7Blql2FiHjHv9LVztSIqjY+MA=="],
 
     "mdast-util-find-and-replace": ["mdast-util-find-and-replace@2.2.2", "https://nexus.iad.opower.it/repository/npm-all/mdast-util-find-and-replace/-/mdast-util-find-and-replace-2.2.2.tgz", { "dependencies": { "@types/mdast": "^3.0.0", "escape-string-regexp": "^5.0.0", "unist-util-is": "^5.0.0", "unist-util-visit-parents": "^5.0.0" } }, "sha512-MTtdFRz/eMDHXzeK6W3dO7mXUlF82Gom4y0oOgvHhh/HXZAGvIQDUvQ0SuUx+j2tv44b8xTHOm8K/9OoRFnXKw=="],
@@ -1721,8 +1694,6 @@
     "merge2": ["merge2@1.4.1", "https://nexus.iad.opower.it/repository/npm-all/merge2/-/merge2-1.4.1.tgz", {}, "sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg=="],
 
     "mermaid": ["mermaid@11.12.2", "https://nexus.iad.opower.it/repository/npm-all/mermaid/-/mermaid-11.12.2.tgz", { "dependencies": { "@braintree/sanitize-url": "^7.1.1", "@iconify/utils": "^3.0.1", "@mermaid-js/parser": "^0.6.3", "@types/d3": "^7.4.3", "cytoscape": "^3.29.3", "cytoscape-cose-bilkent": "^4.1.0", "cytoscape-fcose": "^2.2.0", "d3": "^7.9.0", "d3-sankey": "^0.12.3", "dagre-d3-es": "7.0.13", "dayjs": "^1.11.18", "dompurify": "^3.2.5", "katex": "^0.16.22", "khroma": "^2.1.0", "lodash-es": "^4.17.21", "marked": "^16.2.1", "roughjs": "^4.6.6", "stylis": "^4.3.6", "ts-dedent": "^2.2.0", "uuid": "^11.1.0" } }, "sha512-n34QPDPEKmaeCG4WDMGy0OT6PSyxKCfy2pJgShP+Qow2KLrvWjclwbc3yXfSIf4BanqWEhQEpngWwNp/XhZt6w=="],
-
-    "mhchemparser": ["mhchemparser@4.2.1", "https://nexus.iad.opower.it/repository/npm-all/mhchemparser/-/mhchemparser-4.2.1.tgz", {}, "sha512-kYmyrCirqJf3zZ9t/0wGgRZ4/ZJw//VwaRVGA75C4nhE60vtnIzhl9J9ndkX/h6hxSN7pjg/cE0VxbnNM+bnDQ=="],
 
     "micromark": ["micromark@3.2.0", "https://nexus.iad.opower.it/repository/npm-all/micromark/-/micromark-3.2.0.tgz", { "dependencies": { "@types/debug": "^4.0.0", "debug": "^4.0.0", "decode-named-character-reference": "^1.0.0", "micromark-core-commonmark": "^1.0.1", "micromark-factory-space": "^1.0.0", "micromark-util-character": "^1.0.0", "micromark-util-chunked": "^1.0.0", "micromark-util-combine-extensions": "^1.0.0", "micromark-util-decode-numeric-character-reference": "^1.0.0", "micromark-util-encode": "^1.0.0", "micromark-util-normalize-identifier": "^1.0.0", "micromark-util-resolve-all": "^1.0.0", "micromark-util-sanitize-uri": "^1.0.0", "micromark-util-subtokenize": "^1.0.0", "micromark-util-symbol": "^1.0.0", "micromark-util-types": "^1.0.1", "uvu": "^0.5.0" } }, "sha512-uD66tJj54JLYq0De10AhWycZWGQNUvDI55xPgk2sQM5kn1JYlhbCMTtEeT27+vAhW2FBQxLlOmS3pmA7/2z4aA=="],
 
@@ -1796,8 +1767,6 @@
 
     "min-indent": ["min-indent@1.0.1", "https://nexus.iad.opower.it/repository/npm-all/min-indent/-/min-indent-1.0.1.tgz", {}, "sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg=="],
 
-    "mini-svg-data-uri": ["mini-svg-data-uri@1.4.4", "https://nexus.iad.opower.it/repository/npm-all/mini-svg-data-uri/-/mini-svg-data-uri-1.4.4.tgz", { "bin": { "mini-svg-data-uri": "cli.js" } }, "sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg=="],
-
     "minimatch": ["minimatch@10.1.1", "https://nexus.iad.opower.it/repository/npm-all/minimatch/-/minimatch-10.1.1.tgz", { "dependencies": { "@isaacs/brace-expansion": "^5.0.0" } }, "sha512-enIvLvRAFZYXJzkCYG5RKmPfrFArdLv+R+lbQ53BmIMLIry74bjKzX6iHAm8WYamJkhSSEabrWN5D97XnKObjQ=="],
 
     "minimist": ["minimist@1.2.8", "https://nexus.iad.opower.it/repository/npm-all/minimist/-/minimist-1.2.8.tgz", {}, "sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA=="],
@@ -1809,8 +1778,6 @@
     "minizlib": ["minizlib@2.1.2", "https://nexus.iad.opower.it/repository/npm-all/minizlib/-/minizlib-2.1.2.tgz", { "dependencies": { "minipass": "^3.0.0", "yallist": "^4.0.0" } }, "sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg=="],
 
     "mitt": ["mitt@3.0.1", "https://nexus.iad.opower.it/repository/npm-all/mitt/-/mitt-3.0.1.tgz", {}, "sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw=="],
-
-    "mj-context-menu": ["mj-context-menu@0.6.1", "https://nexus.iad.opower.it/repository/npm-all/mj-context-menu/-/mj-context-menu-0.6.1.tgz", {}, "sha512-7NO5s6n10TIV96d4g2uDpG7ZDpIhMh0QNfGdJw/W47JswFcosz457wqz/b5sAKvl12sxINGFCn80NZHKwxQEXA=="],
 
     "mkdirp": ["mkdirp@1.0.4", "https://nexus.iad.opower.it/repository/npm-all/mkdirp/-/mkdirp-1.0.4.tgz", { "bin": { "mkdirp": "bin/cmd.js" } }, "sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw=="],
 
@@ -2178,8 +2145,6 @@
 
     "rehype-katex": ["rehype-katex@6.0.3", "https://nexus.iad.opower.it/repository/npm-all/rehype-katex/-/rehype-katex-6.0.3.tgz", { "dependencies": { "@types/hast": "^2.0.0", "@types/katex": "^0.14.0", "hast-util-from-html-isomorphic": "^1.0.0", "hast-util-to-text": "^3.1.0", "katex": "^0.16.0", "unist-util-visit": "^4.0.0" } }, "sha512-ByZlRwRUcWegNbF70CVRm2h/7xy7jQ3R9LaY4VVSvjnoVWwWVhNL60DiZsBpC5tSzYQOCvDbzncIpIjPZWodZA=="],
 
-    "rehype-mathjax": ["rehype-mathjax@4.0.3", "https://nexus.iad.opower.it/repository/npm-all/rehype-mathjax/-/rehype-mathjax-4.0.3.tgz", { "dependencies": { "@types/hast": "^2.0.0", "@types/mathjax": "^0.0.37", "hast-util-from-dom": "^4.0.0", "hast-util-to-text": "^3.1.0", "jsdom": "^20.0.0", "mathjax-full": "^3.0.0", "unified": "^10.0.0", "unist-util-visit": "^4.0.0" } }, "sha512-QIwWH9U+r54nMQklVkT1qluxhKyzdPWz9dFwgel3BrseQsWZafRTDTUj8VR8/14nFuRIV2ChuCMz4zpACPoYvg=="],
-
     "remark-gfm": ["remark-gfm@3.0.1", "https://nexus.iad.opower.it/repository/npm-all/remark-gfm/-/remark-gfm-3.0.1.tgz", { "dependencies": { "@types/mdast": "^3.0.0", "mdast-util-gfm": "^2.0.0", "micromark-extension-gfm": "^2.0.0", "unified": "^10.0.0" } }, "sha512-lEFDoi2PICJyNrACFOfDD3JlLkuSbOa5Wd8EPt06HUdptv8Gn0bxYTdbU/XXQ3swAPkEaGxxPN9cbnMHvVu1Ig=="],
 
     "remark-math": ["remark-math@5.1.1", "https://nexus.iad.opower.it/repository/npm-all/remark-math/-/remark-math-5.1.1.tgz", { "dependencies": { "@types/mdast": "^3.0.0", "mdast-util-math": "^2.0.0", "micromark-extension-math": "^2.0.0", "unified": "^10.0.0" } }, "sha512-cE5T2R/xLVtfFI4cCePtiRn+e6jKMtFDR3P8V3qpv8wpKjwvHoBA4eJzvX+nVrnlNy0911bdGmuspCSwetfYHw=="],
@@ -2303,8 +2268,6 @@
     "spawn-sync": ["spawn-sync@1.0.15", "https://nexus.iad.opower.it/repository/npm-all/spawn-sync/-/spawn-sync-1.0.15.tgz", { "dependencies": { "concat-stream": "^1.4.7", "os-shim": "^0.1.2" } }, "sha512-9DWBgrgYZzNghseho0JOuh+5fg9u6QWhAWa51QC7+U5rCheZ/j1DrEZnyE0RBBRqZ9uEXGPgSSM0nky6burpVw=="],
 
     "speakingurl": ["speakingurl@14.0.1", "https://nexus.iad.opower.it/repository/npm-all/speakingurl/-/speakingurl-14.0.1.tgz", {}, "sha512-1POYv7uv2gXoyGFpBCmpDVSNV74IfsWlDW216UPjbWufNf+bSU6GdbDsxdcxtfwb4xlI3yxzOTKClUosxARYrQ=="],
-
-    "speech-rule-engine": ["speech-rule-engine@4.1.2", "https://nexus.iad.opower.it/repository/npm-all/speech-rule-engine/-/speech-rule-engine-4.1.2.tgz", { "dependencies": { "@xmldom/xmldom": "0.9.8", "commander": "13.1.0", "wicked-good-xpath": "1.3.0" }, "bin": { "sre": "bin/sre" } }, "sha512-S6ji+flMEga+1QU79NDbwZ8Ivf0S/MpupQQiIC0rTpU/ZTKgcajijJJb1OcByBQDjrXCN1/DJtGz4ZJeBMPGJw=="],
 
     "split": ["split@1.0.1", "https://nexus.iad.opower.it/repository/npm-all/split/-/split-1.0.1.tgz", { "dependencies": { "through": "2" } }, "sha512-mTyOoPbrivtXnwnIxZRFYRrPNtEFKlpB2fvjSnCQUiAA6qAZzqwna5envK4uk6OIeP17CsdF3rSBGYVBsU0Tkg=="],
 
@@ -2562,8 +2525,6 @@
 
     "why-is-node-running": ["why-is-node-running@2.3.0", "https://nexus.iad.opower.it/repository/npm-all/why-is-node-running/-/why-is-node-running-2.3.0.tgz", { "dependencies": { "siginfo": "^2.0.0", "stackback": "0.0.2" }, "bin": { "why-is-node-running": "cli.js" } }, "sha512-hUrmaWBdVDcxvYqnyh09zunKzROWjbZTiNy8dBEjkS7ehEDQibXJ7XvlmtbwuTclUiIyN+CyXQD4Vmko8fNm8w=="],
 
-    "wicked-good-xpath": ["wicked-good-xpath@1.3.0", "https://nexus.iad.opower.it/repository/npm-all/wicked-good-xpath/-/wicked-good-xpath-1.3.0.tgz", {}, "sha512-Gd9+TUn5nXdwj/hFsPVx5cuHHiF5Bwuc30jZ4+ronF1qHK5O7HD0sgmXWSEgwKquT3ClLoKPVbO6qGwVwLzvAw=="],
-
     "wide-align": ["wide-align@1.1.5", "https://nexus.iad.opower.it/repository/npm-all/wide-align/-/wide-align-1.1.5.tgz", { "dependencies": { "string-width": "^1.0.2 || 2 || 3 || 4" } }, "sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg=="],
 
     "widest-line": ["widest-line@5.0.0", "https://nexus.iad.opower.it/repository/npm-all/widest-line/-/widest-line-5.0.0.tgz", { "dependencies": { "string-width": "^7.0.0" } }, "sha512-c9bZp7b5YtRj2wOe6dlj32MK+Bx/M/d+9VB2SHM1OtsUHR0aV0tdP6DWh/iMt0kWi1t5g1Iudu6hQRNd1A4PVA=="],
@@ -2804,8 +2765,6 @@
 
     "es-get-iterator/isarray": ["isarray@2.0.5", "https://nexus.iad.opower.it/repository/npm-all/isarray/-/isarray-2.0.5.tgz", {}, "sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw=="],
 
-    "escodegen/source-map": ["source-map@0.6.1", "https://nexus.iad.opower.it/repository/npm-all/source-map/-/source-map-0.6.1.tgz", {}, "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="],
-
     "fast-glob/glob-parent": ["glob-parent@5.1.2", "https://nexus.iad.opower.it/repository/npm-all/glob-parent/-/glob-parent-5.1.2.tgz", { "dependencies": { "is-glob": "^4.0.1" } }, "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow=="],
 
     "fs-extra/universalify": ["universalify@2.0.1", "https://nexus.iad.opower.it/repository/npm-all/universalify/-/universalify-2.0.1.tgz", {}, "sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw=="],
@@ -2960,10 +2919,6 @@
 
     "rehype-katex/unist-util-visit": ["unist-util-visit@4.1.2", "https://nexus.iad.opower.it/repository/npm-all/unist-util-visit/-/unist-util-visit-4.1.2.tgz", { "dependencies": { "@types/unist": "^2.0.0", "unist-util-is": "^5.0.0", "unist-util-visit-parents": "^5.1.1" } }, "sha512-MSd8OUGISqHdVvfY9TPhyK2VdUrPgxkUtWSuMHF6XAAFuL4LokseigBnZtPnJMu+FbynTkFNnFlyjxpVKujMRg=="],
 
-    "rehype-mathjax/jsdom": ["jsdom@20.0.3", "https://nexus.iad.opower.it/repository/npm-all/jsdom/-/jsdom-20.0.3.tgz", { "dependencies": { "abab": "^2.0.6", "acorn": "^8.8.1", "acorn-globals": "^7.0.0", "cssom": "^0.5.0", "cssstyle": "^2.3.0", "data-urls": "^3.0.2", "decimal.js": "^10.4.2", "domexception": "^4.0.0", "escodegen": "^2.0.0", "form-data": "^4.0.0", "html-encoding-sniffer": "^3.0.0", "http-proxy-agent": "^5.0.0", "https-proxy-agent": "^5.0.1", "is-potential-custom-element-name": "^1.0.1", "nwsapi": "^2.2.2", "parse5": "^7.1.1", "saxes": "^6.0.0", "symbol-tree": "^3.2.4", "tough-cookie": "^4.1.2", "w3c-xmlserializer": "^4.0.0", "webidl-conversions": "^7.0.0", "whatwg-encoding": "^2.0.0", "whatwg-mimetype": "^3.0.0", "whatwg-url": "^11.0.0", "ws": "^8.11.0", "xml-name-validator": "^4.0.0" }, "peerDependencies": { "canvas": "^2.5.0" }, "optionalPeers": ["canvas"] }, "sha512-SYhBvTh89tTfCD/CRdSOm13mOBa42iTaTyfyEWBdKcGdPxPtLFBXuHR8XHb33YNYaP+lLbmSvBTsnoesCNJEsQ=="],
-
-    "rehype-mathjax/unist-util-visit": ["unist-util-visit@4.1.2", "https://nexus.iad.opower.it/repository/npm-all/unist-util-visit/-/unist-util-visit-4.1.2.tgz", { "dependencies": { "@types/unist": "^2.0.0", "unist-util-is": "^5.0.0", "unist-util-visit-parents": "^5.1.1" } }, "sha512-MSd8OUGISqHdVvfY9TPhyK2VdUrPgxkUtWSuMHF6XAAFuL4LokseigBnZtPnJMu+FbynTkFNnFlyjxpVKujMRg=="],
-
     "restore-cursor/onetime": ["onetime@7.0.0", "https://nexus.iad.opower.it/repository/npm-all/onetime/-/onetime-7.0.0.tgz", { "dependencies": { "mimic-function": "^5.0.0" } }, "sha512-VXJjc87FScF88uafS3JllDgvAm+c/Slfz06lorj2uAY34rlUu0Nt+v8wreiImcrgAjjIHp1rXpTDlLOGw29WwQ=="],
 
     "rollup/fsevents": ["fsevents@2.3.3", "https://nexus.iad.opower.it/repository/npm-all/fsevents/-/fsevents-2.3.3.tgz", { "os": "darwin" }, "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw=="],
@@ -2975,10 +2930,6 @@
     "slice-ansi/is-fullwidth-code-point": ["is-fullwidth-code-point@4.0.0", "https://nexus.iad.opower.it/repository/npm-all/is-fullwidth-code-point/-/is-fullwidth-code-point-4.0.0.tgz", {}, "sha512-O4L094N2/dZ7xqVdrXhh9r1KODPJpFms8B5sGdJLPy664AgvXsreZUyCQQNItZRDlYug4xStLjNp/sz3HvBowQ=="],
 
     "source-map-support/source-map": ["source-map@0.6.1", "https://nexus.iad.opower.it/repository/npm-all/source-map/-/source-map-0.6.1.tgz", {}, "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="],
-
-    "speech-rule-engine/@xmldom/xmldom": ["@xmldom/xmldom@0.9.8", "https://nexus.iad.opower.it/repository/npm-all/@xmldom/xmldom/-/xmldom-0.9.8.tgz", {}, "sha512-p96FSY54r+WJ50FIOsCOjyj/wavs8921hG5+kVMmZgKcvIKxMXHTrjNJvRgWa/zuX3B6t2lijLNFaOyuxUH+2A=="],
-
-    "speech-rule-engine/commander": ["commander@13.1.0", "https://nexus.iad.opower.it/repository/npm-all/commander/-/commander-13.1.0.tgz", {}, "sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw=="],
 
     "string-width/strip-ansi": ["strip-ansi@6.0.1", "https://nexus.iad.opower.it/repository/npm-all/strip-ansi/-/strip-ansi-6.0.1.tgz", { "dependencies": { "ansi-regex": "^5.0.1" } }, "sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A=="],
 
@@ -3158,30 +3109,6 @@
 
     "rehype-katex/unist-util-visit/unist-util-visit-parents": ["unist-util-visit-parents@5.1.3", "https://nexus.iad.opower.it/repository/npm-all/unist-util-visit-parents/-/unist-util-visit-parents-5.1.3.tgz", { "dependencies": { "@types/unist": "^2.0.0", "unist-util-is": "^5.0.0" } }, "sha512-x6+y8g7wWMyQhL1iZfhIPhDAs7Xwbn9nRosDXl7qoPTSCy0yNxnKc+hWokFifWQIDGi154rdUqKvbCa4+1kLhg=="],
 
-    "rehype-mathjax/jsdom/cssstyle": ["cssstyle@2.3.0", "https://nexus.iad.opower.it/repository/npm-all/cssstyle/-/cssstyle-2.3.0.tgz", { "dependencies": { "cssom": "~0.3.6" } }, "sha512-AZL67abkUzIuvcHqk7c09cezpGNcxUxU4Ioi/05xHk4DQeTkWmGYftIE6ctU6AEt+Gn4n1lDStOtj7FKycP71A=="],
-
-    "rehype-mathjax/jsdom/data-urls": ["data-urls@3.0.2", "https://nexus.iad.opower.it/repository/npm-all/data-urls/-/data-urls-3.0.2.tgz", { "dependencies": { "abab": "^2.0.6", "whatwg-mimetype": "^3.0.0", "whatwg-url": "^11.0.0" } }, "sha512-Jy/tj3ldjZJo63sVAvg6LHt2mHvl4V6AgRAmNDtLdm7faqtsx+aJG42rsyCo9JCoRVKwPFzKlIPx3DIibwSIaQ=="],
-
-    "rehype-mathjax/jsdom/html-encoding-sniffer": ["html-encoding-sniffer@3.0.0", "https://nexus.iad.opower.it/repository/npm-all/html-encoding-sniffer/-/html-encoding-sniffer-3.0.0.tgz", { "dependencies": { "whatwg-encoding": "^2.0.0" } }, "sha512-oWv4T4yJ52iKrufjnyZPkrN0CH3QnrUqdB6In1g5Fe1mia8GmF36gnfNySxoZtxD5+NmYw1EElVXiBk93UeskA=="],
-
-    "rehype-mathjax/jsdom/http-proxy-agent": ["http-proxy-agent@5.0.0", "https://nexus.iad.opower.it/repository/npm-all/http-proxy-agent/-/http-proxy-agent-5.0.0.tgz", { "dependencies": { "@tootallnate/once": "2", "agent-base": "6", "debug": "4" } }, "sha512-n2hY8YdoRE1i7r6M0w9DIw5GgZN0G25P8zLCRQ8rjXtTU3vsNFBI/vWK/UIeE6g5MUUz6avwAPXmL6Fy9D/90w=="],
-
-    "rehype-mathjax/jsdom/https-proxy-agent": ["https-proxy-agent@5.0.1", "https://nexus.iad.opower.it/repository/npm-all/https-proxy-agent/-/https-proxy-agent-5.0.1.tgz", { "dependencies": { "agent-base": "6", "debug": "4" } }, "sha512-dFcAjpTQFgoLMzC2VwU+C/CbS7uRL0lWmxDITmqm7C+7F0Odmj6s9l6alZc6AELXhrnggM2CeWSXHGOdX2YtwA=="],
-
-    "rehype-mathjax/jsdom/w3c-xmlserializer": ["w3c-xmlserializer@4.0.0", "https://nexus.iad.opower.it/repository/npm-all/w3c-xmlserializer/-/w3c-xmlserializer-4.0.0.tgz", { "dependencies": { "xml-name-validator": "^4.0.0" } }, "sha512-d+BFHzbiCx6zGfz0HyQ6Rg69w9k19nviJspaj4yNscGjrHu94sVP+aRm75yEbCh+r2/yR+7q6hux9LVtbuTGBw=="],
-
-    "rehype-mathjax/jsdom/whatwg-encoding": ["whatwg-encoding@2.0.0", "https://nexus.iad.opower.it/repository/npm-all/whatwg-encoding/-/whatwg-encoding-2.0.0.tgz", { "dependencies": { "iconv-lite": "0.6.3" } }, "sha512-p41ogyeMUrw3jWclHWTQg1k05DSVXPLcVxRTYsXUk+ZooOCZLcoYgPZ/HL/D/N+uQPOtcp1me1WhBEaX02mhWg=="],
-
-    "rehype-mathjax/jsdom/whatwg-mimetype": ["whatwg-mimetype@3.0.0", "https://nexus.iad.opower.it/repository/npm-all/whatwg-mimetype/-/whatwg-mimetype-3.0.0.tgz", {}, "sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q=="],
-
-    "rehype-mathjax/jsdom/whatwg-url": ["whatwg-url@11.0.0", "https://nexus.iad.opower.it/repository/npm-all/whatwg-url/-/whatwg-url-11.0.0.tgz", { "dependencies": { "tr46": "^3.0.0", "webidl-conversions": "^7.0.0" } }, "sha512-RKT8HExMpoYx4igMiVMY83lN6UeITKJlBQ+vR/8ZJ8OCdSiN3RwCq+9gH0+Xzj0+5IrM6i4j/6LuvzbZIQgEcQ=="],
-
-    "rehype-mathjax/jsdom/xml-name-validator": ["xml-name-validator@4.0.0", "https://nexus.iad.opower.it/repository/npm-all/xml-name-validator/-/xml-name-validator-4.0.0.tgz", {}, "sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw=="],
-
-    "rehype-mathjax/unist-util-visit/unist-util-is": ["unist-util-is@5.2.1", "https://nexus.iad.opower.it/repository/npm-all/unist-util-is/-/unist-util-is-5.2.1.tgz", { "dependencies": { "@types/unist": "^2.0.0" } }, "sha512-u9njyyfEh43npf1M+yGKDGVPbY/JWEemg5nH05ncKPfi+kBbKBJoTdsogMu33uhytuLlv9y0O7GH7fEdwLdLQw=="],
-
-    "rehype-mathjax/unist-util-visit/unist-util-visit-parents": ["unist-util-visit-parents@5.1.3", "https://nexus.iad.opower.it/repository/npm-all/unist-util-visit-parents/-/unist-util-visit-parents-5.1.3.tgz", { "dependencies": { "@types/unist": "^2.0.0", "unist-util-is": "^5.0.0" } }, "sha512-x6+y8g7wWMyQhL1iZfhIPhDAs7Xwbn9nRosDXl7qoPTSCy0yNxnKc+hWokFifWQIDGi154rdUqKvbCa4+1kLhg=="],
-
     "shiki/@types/hast/@types/unist": ["@types/unist@3.0.3", "https://nexus.iad.opower.it/repository/npm-all/@types/unist/-/unist-3.0.3.tgz", {}, "sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q=="],
 
     "unimport/local-pkg/pkg-types": ["pkg-types@2.3.0", "https://nexus.iad.opower.it/repository/npm-all/pkg-types/-/pkg-types-2.3.0.tgz", { "dependencies": { "confbox": "^0.2.2", "exsolve": "^1.0.7", "pathe": "^2.0.3" } }, "sha512-SIqCzDRg0s9npO5XQ3tNZioRY1uK06lA41ynBC1YmFTmnY6FjUjVt6s4LoADmwoig1qqD0oK8h1p/8mlMx8Oig=="],
@@ -3263,16 +3190,6 @@
     "log-update/wrap-ansi/string-width/emoji-regex": ["emoji-regex@10.6.0", "https://nexus.iad.opower.it/repository/npm-all/emoji-regex/-/emoji-regex-10.6.0.tgz", {}, "sha512-toUI84YS5YmxW219erniWD0CIVOo46xGKColeNQRgOzDorgBi1v4D71/OFzgD9GO2UGKIv1C3Sp8DAn0+j5w7A=="],
 
     "readable-web-to-node-stream/readable-stream/string_decoder/safe-buffer": ["safe-buffer@5.2.1", "https://nexus.iad.opower.it/repository/npm-all/safe-buffer/-/safe-buffer-5.2.1.tgz", {}, "sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ=="],
-
-    "rehype-mathjax/jsdom/cssstyle/cssom": ["cssom@0.3.8", "https://nexus.iad.opower.it/repository/npm-all/cssom/-/cssom-0.3.8.tgz", {}, "sha512-b0tGHbfegbhPJpxpiBPU2sCkigAqtM9O121le6bbOlgyV+NyGyCmVfJ6QW9eRjz8CpNfWEOYBIMIGRYkLwsIYg=="],
-
-    "rehype-mathjax/jsdom/http-proxy-agent/agent-base": ["agent-base@6.0.2", "https://nexus.iad.opower.it/repository/npm-all/agent-base/-/agent-base-6.0.2.tgz", { "dependencies": { "debug": "4" } }, "sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ=="],
-
-    "rehype-mathjax/jsdom/https-proxy-agent/agent-base": ["agent-base@6.0.2", "https://nexus.iad.opower.it/repository/npm-all/agent-base/-/agent-base-6.0.2.tgz", { "dependencies": { "debug": "4" } }, "sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ=="],
-
-    "rehype-mathjax/jsdom/whatwg-encoding/iconv-lite": ["iconv-lite@0.6.3", "https://nexus.iad.opower.it/repository/npm-all/iconv-lite/-/iconv-lite-0.6.3.tgz", { "dependencies": { "safer-buffer": ">= 2.1.2 < 3.0.0" } }, "sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw=="],
-
-    "rehype-mathjax/jsdom/whatwg-url/tr46": ["tr46@3.0.0", "https://nexus.iad.opower.it/repository/npm-all/tr46/-/tr46-3.0.0.tgz", { "dependencies": { "punycode": "^2.1.1" } }, "sha512-l7FvfAHlcmulp8kr+flpQZmVwtu7nfRV7NZujtN0OqES8EL4O4e0qqzL0DC5gAvx/ZC/9lk6rhcUwYvkBnBnYA=="],
 
     "hast-util-to-html/mdast-util-to-hast/micromark-util-sanitize-uri/micromark-util-character/micromark-util-types": ["micromark-util-types@2.0.2", "https://nexus.iad.opower.it/repository/npm-all/micromark-util-types/-/micromark-util-types-2.0.2.tgz", {}, "sha512-Yw0ECSpJoViF1qTU4DC6NwtC4aWGt1EkzaQB8KPPyCRR8z9TWeV0HbEFGTO+ZY1wB22zmxnJqhPyTpOVCpeHTA=="],
 
