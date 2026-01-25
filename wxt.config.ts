@@ -32,6 +32,9 @@ const firefoxMV2Permissions = [
 // See https://wxt.dev/api/config.html
 export default defineConfig({
   vite: () => ({
+    define: {
+      "process.env.TARGET": JSON.stringify(process.env.TARGET || "chrome")
+    },
     plugins: [
       react(),
       topLevelAwait({
@@ -68,14 +71,14 @@ export default defineConfig({
     description: "__MSG_extDescription__",
     default_locale: "en",
     action: {},
-    author: "n4ze3m" as any,
+    author: "n4zeem" as any,
     browser_specific_settings:
       process.env.TARGET === "firefox"
         ? {
-          gecko: {
-            id: "page-assist@nazeem"
+            gecko: {
+              id: "page-assist@nazeem"
+            }
           }
-        }
         : undefined,
     host_permissions:
       process.env.TARGET !== "firefox"
