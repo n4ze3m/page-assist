@@ -1,4 +1,4 @@
-import { ChromeIcon, CpuIcon } from "lucide-react"
+import { ChromeIcon, CpuIcon, TreePineIcon } from "lucide-react"
 import { OllamaIcon } from "../Icons/Ollama"
 import { FireworksMonoIcon } from "../Icons/Fireworks"
 import { GroqMonoIcon } from "../Icons/Groq"
@@ -85,6 +85,8 @@ export const ProviderIcons = ({
       return <ChutesIcon className={className} />
     case "anthropic":
       return <AnthropicIcon className={className} />
+    case "canopywave":
+      return <TreePineIcon className={className} />
     default:
       return <OllamaIcon className={className} />
   }
