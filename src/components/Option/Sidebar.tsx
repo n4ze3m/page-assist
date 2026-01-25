@@ -35,7 +35,7 @@ import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { lastUsedChatModelEnabled } from "@/services/model-settings"
 import { useDebounce } from "@/hooks/useDebounce"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { PageAssistDatabase } from "@/db/dexie/chat"
 import {
   deleteByHistoryId,
@@ -112,6 +112,28 @@ export const Sidebar = ({
   const [collapsedFolders, setCollapsedFolders] = useState<Set<string>>(
     new Set()
   )
+  const projectCreationCardRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isCreatingProject &&
+        projectCreationCardRef.current &&
+        !projectCreationCardRef.current.contains(event.target as Node)
+      ) {
+        setIsCreatingProject(false)
+        setNewProjectTitle("")
+      }
+    }
+
+    if (isCreatingProject) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isCreatingProject])
 
   // Helper function to group chats by date
   const groupChatsByDate = (chats: any[]) => {
@@ -832,7 +854,9 @@ export const Sidebar = ({
               </div>
 
               {isCreatingProject ? (
-                <div className="rounded-md p-2 mb-2 bg-gray-100 dark:bg-[#2a2a2a] border border-gray-400 dark:border-[#383838]">
+                <div
+                  ref={projectCreationCardRef}
+                  className="rounded-md p-2 mb-2 bg-gray-100 dark:bg-[#2a2a2a] border border-gray-400 dark:border-[#383838]">
                   <div className="flex flex-col gap-2">
                     <input
                       value={newProjectTitle}
@@ -865,7 +889,7 @@ export const Sidebar = ({
               ) : (
                 <button
                   onClick={() => setIsCreatingProject(true)}
-                  className="flex items-center gap-2 px-2 py-2 mb-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] rounded-md transition-colors w-full border border-transparent hover:border-gray-300 dark:hover:border-[#404040]">
+                  className="flex items-center gap-2 px-2 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#2a2a2a] rounded-md transition-colors w-full border border-transparent hover:border-gray-300 dark:hover:border-[#404040]">
                   <FolderPlus className="w-4 h-4" />
                   {t("common:newProject", { defaultValue: "New project" })}
                 </button>
@@ -978,7 +1002,7 @@ export const Sidebar = ({
                   }}
                   onDragLeave={() => setDragOverProjectId(null)}
                   onDrop={() => handleDropOnFolder(undefined)}
-                  className={`rounded-md p-2 ${
+                  className={`rounded-md ${
                     dragOverProjectId === "unassigned"
                       ? "bg-blue-50 dark:bg-blue-900/20"
                       : ""
