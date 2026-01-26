@@ -2,9 +2,12 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 # settings
 .vscode
-
+/.opencode
+/memory-bank
 # dependencies
 /node_modules
+/test-results
+
 /.pnp
 .pnp.js
 
@@ -49,3 +52,4 @@ keys.json
 
 /docs/.vitepress/cache/
 package-lock.json
+/memory-bank/

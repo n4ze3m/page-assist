@@ -1,6 +1,6 @@
 import { Storage } from "@plasmohq/storage"
-import { cleanUrl } from "../../libs/clean-url"
-import { urlRewriteRuntime } from "../../libs/runtime"
+import { cleanUrl } from "@/libs/clean-url"
+import { urlRewriteRuntime } from "@/libs/runtime"
 import { getChromeAIModel } from "./chrome"
 import {
   getOllamaEnabled,

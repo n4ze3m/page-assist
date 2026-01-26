@@ -72,7 +72,7 @@ export default defineConfig({
     description: "__MSG_extDescription__",
     default_locale: "en",
     action: {},
-    author: "n4zeem" as any,
+    author: "n4ze3m" as any,
     browser_specific_settings:
       process.env.TARGET === "firefox"
         ? {

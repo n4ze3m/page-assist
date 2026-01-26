@@ -1,19 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { getOllamaURL } from "@/services/ai/ollama"
 
-const mockStorage = {
-  get: vi.fn()
-}
+const { mockStorage } = vi.hoisted(() => ({
+  mockStorage: { get: vi.fn() }
+}))
 
 vi.mock("@plasmohq/storage", () => ({
   Storage: vi.fn().mockImplementation(() => mockStorage)
 }))
 
-vi.mock("../../libs/clean-url", () => ({
-  cleanUrl: vi.fn((url) => url)
+vi.mock("@/libs/clean-url", () => ({
+  cleanUrl: vi.fn((url: string) => url)
 }))
 
-vi.mock("../../libs/runtime", () => ({
+vi.mock("@/libs/runtime", () => ({
   urlRewriteRuntime: vi.fn()
 }))
 
