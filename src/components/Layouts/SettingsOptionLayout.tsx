@@ -16,7 +16,6 @@ import { OllamaIcon } from "../Icons/Ollama"
 import { LinkComponent } from "./LinkComponent"
 import { MCPIcon } from "../Icons/MCPIcon"
 
-
 export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
   const { t } = useTranslation(["settings", "common", "openai"])
