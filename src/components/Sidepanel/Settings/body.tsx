@@ -12,7 +12,7 @@ import {
   defaultEmbeddingModelForRag,
   saveForRag,
   getEmbeddingModels
-} from "~/services/ai/ollama"
+} from "@/services/ai/ollama"
 
 import {
   Skeleton,
@@ -23,10 +23,10 @@ import {
   Collapse,
   Switch
 } from "antd"
-import { useDarkMode } from "~/hooks/useDarkmode"
-import { SaveButton } from "~/components/Common/SaveButton"
-import { SUPPORTED_LANGUAGES } from "~/utils/supported-languages"
-import { useMessage } from "~/hooks/useMessage"
+import { useDarkMode } from "@/hooks/useDarkmode"
+import { SaveButton } from "@/components/Common/SaveButton"
+import { SUPPORTED_LANGUAGES } from "@/utils/supported-languages"
+import { useMessage } from "@/hooks/useMessage"
 import { Trans, useTranslation } from "react-i18next"
 import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "@/components/Option/Settings/tts-mode"
@@ -61,6 +61,10 @@ export const SettingsBody = () => {
   const queryClient = useQueryClient()
 
   const { changeLocale, locale, supportLanguage } = useI18n()
+  const [themePreference, setThemePreference] = useStorage(
+    "themePreference",
+    "system"
+  )
 
   const { data, status } = useQuery({
     queryKey: ["sidebarSettings"],
@@ -423,9 +427,32 @@ export const SettingsBody = () => {
         <h2 className="text-md mb-4 font-semibold dark:text-white">
           {t("generalSettings.settings.darkMode.label")}
         </h2>
-        <span className="inline-flex mt-2 items-center rounded-md px-2 py-2 text-sm font-medium text-gray-700 dark:text-gray-200">
-          {mode === "dark" ? "System: Dark" : "System: Light"}
-        </span>
+        <Select
+          allowClear={false}
+          style={{ width: "200px" }}
+          options={[
+            {
+              value: "system",
+              label: t(
+                "generalSettings.settings.darkMode.options.system",
+                "System"
+              )
+            },
+            {
+              value: "light",
+              label: t(
+                "generalSettings.settings.darkMode.options.light",
+                "Light"
+              )
+            },
+            {
+              value: "dark",
+              label: t("generalSettings.settings.darkMode.options.dark", "Dark")
+            }
+          ]}
+          value={themePreference}
+          onChange={(value) => setThemePreference(value)}
+        />
       </div>
     </div>
   )

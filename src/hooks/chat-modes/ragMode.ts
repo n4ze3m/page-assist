@@ -1,10 +1,10 @@
-import { cleanUrl } from "~/libs/clean-url"
+import { cleanUrl } from "@/libs/clean-url"
 import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   promptForRag
-} from "~/services/ai/ollama"
-import { type ChatHistory, type Message } from "~/store/option"
+} from "@/services/ai/ollama"
+import { type ChatHistory, type Message } from "@/store/option"
 import { generateID } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"
 import { pageAssistModel } from "@/models"

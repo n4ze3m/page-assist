@@ -1,5 +1,5 @@
-import { SettingsLayout } from "~/components/Layouts/SettingsOptionLayout"
-import OptionLayout from "~/components/Layouts/Layout"
+import OptionLayout from "@/components/Layouts/Layout"
+import { SettingsLayout } from "@/components/Layouts/SettingsOptionLayout"
 import { OpenAIApp } from "@/components/Option/Settings/openai"
 
 const OptionOpenAI = () => {

@@ -1,8 +1,8 @@
-import { SettingsLayout } from "~/components/Layouts/SettingsOptionLayout"
-import OptionLayout from "~/components/Layouts/Layout"
-import { GeneralSettings } from "~/components/Option/Settings/general-settings"
+import OptionLayout from "@/components/Layouts/Layout"
+import { SettingsLayout } from "@/components/Layouts/SettingsOptionLayout"
+import { GeneralSettings } from "@/components/Option/Settings/general-settings"
 
- const OptionSettings = () => {
+const OptionSettings = () => {
   return (
     <OptionLayout>
       <SettingsLayout>

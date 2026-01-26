@@ -1,4 +1,4 @@
-import { PageAssistHtmlLoader } from "~/loader/html"
+import { PageAssistHtmlLoader } from "@/loader/html"
 
 import { PageAssistPDFLoader } from "@/loader/pdf"
 import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"

@@ -1,4 +1,4 @@
-import { cleanUrl } from "~/libs/clean-url"
+import { cleanUrl } from "@/libs/clean-url"
 import {
   getIsSimpleInternetSearch,
   totalSearchResults,
@@ -6,13 +6,13 @@ import {
 } from "@/services/search"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import type { Document } from "@langchain/core/documents"
-import { MemoryVectorStore } from "langchain/vectorstores/memory"
-import { PageAssistHtmlLoader } from "~/loader/html"
+import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory"
+import { PageAssistHtmlLoader } from "@/loader/html"
 import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   getSelectedModel
-} from "~/services/ollama"
+} from "@/services/ollama"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
 interface PerplexitySearchResult {

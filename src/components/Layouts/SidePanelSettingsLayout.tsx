@@ -8,7 +8,7 @@ import {
 import { useTranslation } from "react-i18next"
 import { useLocation, Link } from "react-router-dom"
 import { LinkComponent } from "./LinkComponent"
-import logoImage from "~/assets/icon.png"
+import logoImage from "@/assets/icon.png"
 
 export const SidePanelSettingsLayout = ({
   children

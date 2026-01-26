@@ -1,4 +1,4 @@
-import { getWebSearchPrompt } from "~/services/ai/ollama"
+import { getWebSearchPrompt } from "@/services/ai/ollama"
 import { webGoogleSearch } from "./search-engines/google"
 import { webDuckDuckGoSearch } from "./search-engines/duckduckgo"
 import { getIsVisitSpecificWebsite, getSearchProvider, getDomainFilterList, getBlockedDomainList } from "@/services/features/search"

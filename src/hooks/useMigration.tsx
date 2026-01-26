@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useMutation } from "@tanstack/react-query"
-import { runAllMigrations } from "~/db/dexie/migration"
+import { runAllMigrations } from "@/db/dexie/migration"
 import { Storage } from "@plasmohq/storage"
 import { message, notification } from "antd"
 

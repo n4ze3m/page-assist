@@ -5,7 +5,7 @@ import { SidepanelRouting } from "@/routes/entry"
 const queryClient = new QueryClient()
 import { ConfigProvider, Empty, theme } from "antd"
 import { StyleProvider } from "@ant-design/cssinjs"
-import { useDarkMode } from "~/hooks/useDarkmode"
+import { useDarkMode } from "@/hooks/useDarkmode"
 import "~/i18n"
 import { useTranslation } from "react-i18next"
 import { PageAssistProvider } from "@/components/Common/PageAssistProvider"

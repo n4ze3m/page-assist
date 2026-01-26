@@ -1,15 +1,15 @@
 import React from "react"
-import { cleanUrl } from "~/libs/clean-url"
+import { cleanUrl } from "@/libs/clean-url"
 import {
   defaultEmbeddingModelForRag,
   geWebSearchFollowUpPrompt,
   getOllamaURL,
   promptForRag,
   systemPromptForNonRag
-} from "~/services/ai/ollama"
-import { useStoreMessageOption, type Message } from "~/store/option"
-import { useStoreMessage } from "~/store"
-import { getContentFromCurrentTab } from "~/libs/get-html"
+} from "@/services/ai/ollama"
+import { useStoreMessageOption, type Message } from "@/store/option"
+import { useStoreMessage } from "@/store"
+import { getContentFromCurrentTab } from "@/libs/get-html"
 import { memoryEmbedding } from "@/utils/memory-embeddings"
 import { ChatHistory } from "@/store/option"
 import {
@@ -158,6 +158,7 @@ export const useMessage = () => {
   const onSubmit = async ({
     message,
     image,
+    images,
     isRegenerate,
     controller,
     memory,
@@ -167,6 +168,7 @@ export const useMessage = () => {
   }: {
     message: string
     image: string
+    images?: string[]
     isRegenerate?: boolean
     messages?: Message[]
     memory?: ChatHistory
@@ -379,25 +381,27 @@ export const useMessage = () => {
   }
 
   const regenerateLastMessage = async () => {
-    if (history.length > 0) {
-      const lastMessage = history[history.length - 2]
-      let newHistory = history.slice(0, -2)
-      let mewMessages = messages
-      mewMessages.pop()
-      setHistory(newHistory)
-      setMessages(mewMessages)
-      await removeMessageUsingHistoryId(historyId)
-      if (lastMessage.role === "user") {
-        const newController = new AbortController()
-        await onSubmit({
-          message: lastMessage.content,
-          image: lastMessage.image || "",
-          isRegenerate: true,
-          memory: newHistory,
-          controller: newController,
-          messageType: lastMessage.messageType
-        })
-      }
+    if (history.length < 2 || messages.length === 0) {
+      return
+    }
+    const lastMessage = history[history.length - 2]
+    const newHistory = history.slice(0, -2)
+    const newMessages = messages.slice(0, -1)
+    setHistory(newHistory)
+    setMessages(newMessages)
+    await removeMessageUsingHistoryId(historyId)
+    if (lastMessage.role === "user") {
+      const newController = new AbortController()
+      await onSubmit({
+        message: lastMessage.content,
+        image: lastMessage.image ?? "",
+        images: lastMessage.images ?? [],
+        isRegenerate: true,
+        messages: newMessages,
+        memory: newHistory,
+        controller: newController,
+        messageType: lastMessage.messageType
+      })
     }
   }
   const createChatBranch = createBranchMessage({

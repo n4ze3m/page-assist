@@ -1,5 +1,5 @@
 import React from "react"
-import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
+import useDynamicTextareaSize from "@/hooks/useDynamicTextareaSize"
 import { useChatKeydown } from "@/hooks/chat-input/useKeydownHandler"
 
 interface ChatTextareaProps {

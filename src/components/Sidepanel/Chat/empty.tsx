@@ -6,13 +6,13 @@ import { Avatar, Select } from "antd"
 import { Loader2, RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Trans, useTranslation } from "react-i18next"
-import { useMessage } from "~/hooks/useMessage"
+import { useMessage } from "@/hooks/useMessage"
 import {
   getOllamaURL,
   isOllamaRunning,
   setOllamaURL as saveOllamaURL,
   fetchChatModels
-} from "~/services/ai/ollama"
+} from "@/services/ai/ollama"
 
 export const EmptySidePanel = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")

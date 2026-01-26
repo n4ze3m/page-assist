@@ -25,27 +25,19 @@ const OptionAbout = lazy(() => import("./settings/option-settings-about"))
 const OptionRagSettings = lazy(() => import("./settings/option-rag"))
 const OptionOpenAI = lazy(() => import("./settings/option-settings-openai"))
 
-const SettingsLayout = lazy(() =>
-  import("./SettingsLayout").then((module) => ({
-    default: module.SettingsLayout
-  }))
-)
-
 export const OptionRoutingFirefox = () => {
   return (
     <Routes>
       <Route path="/" element={<OptionIndex />} />
-      <Route path="/settings/*" element={<SettingsLayout />}>
-        <Route path="" element={<OptionSettings />} />
-        <Route path="model" element={<OptionModal />} />
-        <Route path="prompt" element={<OptionPrompt />} />
-        <Route path="ollama" element={<OptionOllamaSettings />} />
-        <Route path="openai" element={<OptionOpenAI />} />
-        <Route path="share" element={<OptionShare />} />
-        <Route path="knowledge" element={<OptionKnowledgeBase />} />
-        <Route path="about" element={<OptionAbout />} />
-        <Route path="rag" element={<OptionRagSettings />} />
-      </Route>
+      <Route path="/settings" element={<OptionSettings />} />
+      <Route path="/settings/model" element={<OptionModal />} />
+      <Route path="/settings/prompt" element={<OptionPrompt />} />
+      <Route path="/settings/ollama" element={<OptionOllamaSettings />} />
+      <Route path="/settings/openai" element={<OptionOpenAI />} />
+      <Route path="/settings/share" element={<OptionShare />} />
+      <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
+      <Route path="/settings/about" element={<OptionAbout />} />
+      <Route path="/settings/rag" element={<OptionRagSettings />} />
     </Routes>
   )
 }

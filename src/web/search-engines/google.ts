@@ -7,13 +7,13 @@ import {
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 import type { Document } from "@langchain/core/documents"
 import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
-import { cleanUrl } from "~/libs/clean-url"
-import { PageAssistHtmlLoader } from "~/loader/html"
+import { cleanUrl } from "@/libs/clean-url"
+import { PageAssistHtmlLoader } from "@/loader/html"
 import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   getSelectedModel
-} from "~/services/ai/ollama"
+} from "@/services/ai/ollama"
 
 
 export const localGoogleSearch = async (query: string, start: number = 0) => {

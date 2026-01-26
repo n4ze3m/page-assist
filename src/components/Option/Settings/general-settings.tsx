@@ -1,4 +1,4 @@
-import { useDarkMode } from "~/hooks/useDarkmode"
+import { useDarkMode } from "@/hooks/useDarkmode"
 import { Select, Switch } from "antd"
 import { SearchModeSettings } from "./search-mode"
 import { useTranslation } from "react-i18next"
@@ -143,6 +143,10 @@ export const GeneralSettings = () => {
   const { mode } = useDarkMode()
   const { t } = useTranslation("settings")
   const { changeLocale, locale, supportLanguage } = useI18n()
+  const [themePreference, setThemePreference] = useStorage(
+    "themePreference",
+    "system"
+  )
 
   const { data: prompts } = useQuery({
     queryKey: ["getAllPromptsForSettings"],
@@ -625,9 +629,29 @@ export const GeneralSettings = () => {
           {t("generalSettings.settings.darkMode.label")}
         </span>
 
-        <span className="inline-flex mt-4 items-center rounded-md px-2 py-2 text-sm font-medium text-gray-700 dark:text-gray-200">
-          {mode === "dark" ? "System: Dark" : "System: Light"}
-        </span>
+        <Select
+          allowClear={false}
+          style={{ width: "200px" }}
+          options={[
+            {
+              value: "system",
+              label: t(
+                "generalSettings.settings.darkMode.options.system",
+                "System"
+              )
+            },
+            {
+              value: "light",
+              label: t("generalSettings.settings.darkMode.options.light")
+            },
+            {
+              value: "dark",
+              label: t("generalSettings.settings.darkMode.options.dark")
+            }
+          ]}
+          value={themePreference}
+          onChange={(value) => setThemePreference(value)}
+        />
       </div>
       <SearchModeSettings />
       <SSTSettings />

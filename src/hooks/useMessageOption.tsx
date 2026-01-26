@@ -1,6 +1,6 @@
 import React from "react"
-import { type ChatHistory, type Message } from "~/store/option"
-import { useStoreMessageOption } from "~/store/option"
+import { type ChatHistory, type Message } from "@/store/option"
+import { useStoreMessageOption } from "@/store/option"
 import { removeMessageUsingHistoryId, saveHistory, saveMessage } from "@/db/dexie/helpers"
 import { useNavigate } from "react-router-dom"
 import { notification } from "antd"
@@ -116,7 +116,7 @@ export const useMessageOption = () => {
 
       const fileId = generateID()
 
-      const { processFileUpload } = await import("~/utils/file-processor")
+      const { processFileUpload } = await import("@/utils/file-processor")
       const source = await processFileUpload(file)
 
       const uploadedFile: UploadedFile = {

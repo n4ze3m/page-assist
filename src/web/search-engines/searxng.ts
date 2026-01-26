@@ -1,15 +1,15 @@
-import { urlRewriteRuntime } from "~/libs/runtime"
-import { cleanUrl } from "~/libs/clean-url"
+import { urlRewriteRuntime } from "@/libs/runtime"
+import { cleanUrl } from "@/libs/clean-url"
 import { getSearxngURL, isSearxngJSONMode, getIsSimpleInternetSearch, totalSearchResults } from "@/services/features/search"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import type { Document } from "@langchain/core/documents"
 import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
-import { PageAssistHtmlLoader } from "~/loader/html"
+import { PageAssistHtmlLoader } from "@/loader/html"
 import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   getSelectedModel
-} from "~/services/ai/ollama"
+} from "@/services/ai/ollama"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
 interface SearxNGJSONResult {

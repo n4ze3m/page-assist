@@ -1,5 +1,5 @@
 import { SidePanelSettingsLayout } from "@/components/Layouts/SidePanelSettingsLayout"
-import { SettingsBody } from "~/components/Sidepanel/Settings/body"
+import { SettingsBody } from "@/components/Sidepanel/Settings/body"
 
 const SidepanelSettings = () => {
   return (

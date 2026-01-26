@@ -63,7 +63,10 @@ export const ModelSelect: React.FC<Props> = ({ iconClassName = "size-5" }) => {
           placement={"topLeft"}
           trigger={["click"]}>
           <Tooltip title={t("selectAModel")}>
-            <button type="button" className="dark:text-gray-300">
+            <button
+              type="button"
+              data-testid="model-select-trigger"
+              className="dark:text-gray-300">
               <LucideBrain className={iconClassName} />
             </button>
           </Tooltip>
