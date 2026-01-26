@@ -1,6 +1,7 @@
 import { defineConfig } from "wxt"
 import react from "@vitejs/plugin-react"
 import topLevelAwait from "vite-plugin-top-level-await"
+import pkg from "./package.json"
 
 const chromeMV3Permissions = [
   "storage",
@@ -63,7 +64,7 @@ export default defineConfig({
   outDir: "build",
 
   manifest: {
-    version: "1.5.68",
+    version: (pkg.version || "0.0.0").split("-")[0],
     name:
       process.env.TARGET === "firefox"
         ? "Page Assist - UI for AI Models"
@@ -71,7 +72,7 @@ export default defineConfig({
     description: "__MSG_extDescription__",
     default_locale: "en",
     action: {},
-    author: "n4zeem" as any,
+    author: "n4ze3m" as any,
     browser_specific_settings:
       process.env.TARGET === "firefox"
         ? {
