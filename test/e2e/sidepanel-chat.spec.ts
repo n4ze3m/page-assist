@@ -99,9 +99,7 @@ test("sidepanel chat smoke", async () => {
 
     // Message may be rendered progressively; wait for either echo or assistant
     await expect(
-      page
-        .locator("text=Hi there")
-        .or(page.locator("text=Hello from Page Assist!"))
+      page.getByText(/Hi there|Hello from Page Assist!/).first()
     ).toBeVisible({ timeout: 30000 })
 
     await expect(page.getByText("Hello from Page Assist!")).toBeVisible({
