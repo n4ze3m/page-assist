@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react"
 import "@testing-library/jest-dom"
 import { ChatTextarea } from "../ChatTextarea"
 
-vi.mock("~/hooks/useDynamicTextareaSize", () => ({
+vi.mock("@/hooks/useDynamicTextareaSize", () => ({
   default: vi.fn()
 }))
 

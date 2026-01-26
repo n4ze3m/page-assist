@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest"
 import { normalizeThinking } from "@/store/model"
 
-vi.mock("~/libs/model-utils", () => ({
+vi.mock("@/libs/model-utils", () => ({
   isGptOssModel: (id: string | null) => id === "gpt-oss"
 }))
 

@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { SidePanelSettingsLayout } from '../SidePanelSettingsLayout'
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (k: string) => k, i18n: { dir: () => 'ltr' } }) }))
-vi.mock('~/assets/icon.png', () => ({ default: 'icon' }))
+vi.mock('@/assets/icon.png', () => ({ default: 'icon' }))
 
 vi.mock('./LinkComponent', () => ({
   LinkComponent: ({ name }: any) => <div>{typeof name === 'string' ? name : 'name'}</div>

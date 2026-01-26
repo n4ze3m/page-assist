@@ -15,7 +15,7 @@ vi.mock("@/db/dexie/helpers", () => ({
   saveWebshare: vi.fn().mockResolvedValue(undefined)
 }))
 
-vi.mock("~/services/ai/ollama", () => ({
+vi.mock("@/services/ai/ollama", () => ({
   getPageShareUrl: vi.fn().mockResolvedValue("http://localhost/")
 }))
 
