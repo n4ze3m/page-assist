@@ -14,7 +14,6 @@ import { Link, useLocation } from "react-router-dom"
 import { OllamaIcon } from "../Icons/Ollama"
 import { LinkComponent } from "./LinkComponent"
 
-
 export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation()
   const { t } = useTranslation(["settings", "common", "openai"])

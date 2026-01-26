@@ -12,6 +12,19 @@
 
 @tailwind base;
 @tailwind components;
+
+@layer base {
+  html {
+    @apply bg-white;
+  }
+  html.dark {
+    background-color: #1a1a1a;
+  }
+  body {
+    @apply bg-inherit;
+  }
+}
+
 @layer components {
   .pa-card {
     @apply shadow-xl relative w-full max-w-[48rem] p-1 border rounded-3xl backdrop-blur-lg transition duration-100;
