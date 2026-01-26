@@ -6,7 +6,11 @@ import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { pageAssistModel } from "@/models"
 import { humanMessageFormatter } from "@/utils/human-message"
 import { systemPromptFormatter } from "@/utils/system-message"
-import {CURSOR, streamChatResponse, type StreamConfig} from "./sharedStreaming"
+import {
+  CURSOR,
+  streamChatResponse,
+  type StreamConfig
+} from "./sharedStreaming"
 import { STREAM_REVEAL } from "../streamingConfig"
 
 export const visionChatMode = async (
@@ -146,6 +150,7 @@ export const visionChatMode = async (
     ollama,
     applicationChatHistory,
     humanMessage,
+    userMessage: message,
     selectedModel,
     messages,
     isRegenerate,
