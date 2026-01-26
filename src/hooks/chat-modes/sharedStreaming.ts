@@ -24,6 +24,7 @@ interface StreamChatResponseParams {
   ollama: any
   applicationChatHistory: any[]
   humanMessage?: any
+  userMessage?: string
   selectedModel: string
   messages: Message[]
   isRegenerate: boolean
@@ -56,6 +57,7 @@ export const streamChatResponse = async (params: StreamChatResponseParams) => {
     ollama,
     applicationChatHistory,
     humanMessage,
+    userMessage,
     selectedModel,
     messages,
     isRegenerate,
@@ -78,6 +80,23 @@ export const streamChatResponse = async (params: StreamChatResponseParams) => {
   const { reveal } = config
   const { charsPerFlush, flushIntervalMs } = reveal
   const maxCharsPerFlush = Math.max(charsPerFlush * 10000, charsPerFlush)
+
+  const resolveUserMessage = () => {
+    if (typeof userMessage === "string") {
+      return userMessage
+    }
+    const content = humanMessage?.content
+    if (typeof content === "string") {
+      return content
+    }
+    if (Array.isArray(content)) {
+      const textEntry = content.find((item) => typeof item?.text === "string")
+      if (textEntry?.text) {
+        return textEntry.text
+      }
+    }
+    return ""
+  }
 
   // Setup bot message or get existing
   let generateMessageId: string
@@ -102,12 +121,13 @@ export const streamChatResponse = async (params: StreamChatResponseParams) => {
   } else {
     generateMessageId = botMessageId || generateID()
     if (!isRegenerate && humanMessage) {
+      const resolvedUserMessage = resolveUserMessage()
       newMessage = [
         ...newMessage,
         {
           isBot: false,
           name: "You",
-          message: humanMessage.content?.[0]?.text || "",
+          message: resolvedUserMessage,
           sources: [],
           images: image ? [image] : [],
           documents

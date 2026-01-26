@@ -9,7 +9,11 @@ import { removeReasoning } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { getTabContents } from "@/libs/get-tab-contents"
-import {CURSOR, streamChatResponse, type StreamConfig} from "./sharedStreaming"
+import {
+  CURSOR,
+  streamChatResponse,
+  type StreamConfig
+} from "./sharedStreaming"
 import { STREAM_REVEAL } from "../streamingConfig"
 
 export const tabChatMode = async (
@@ -226,6 +230,7 @@ export const tabChatMode = async (
     ollama,
     applicationChatHistory,
     humanMessage,
+    userMessage: message,
     selectedModel,
     messages: newMessage,
     isRegenerate,

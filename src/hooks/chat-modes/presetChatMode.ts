@@ -6,7 +6,11 @@ import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { pageAssistModel } from "@/models"
 import { humanMessageFormatter } from "@/utils/human-message"
 import { getPrompt } from "@/services/browser/application"
-import {CURSOR, streamChatResponse, type StreamConfig} from "./sharedStreaming"
+import {
+  CURSOR,
+  streamChatResponse,
+  type StreamConfig
+} from "./sharedStreaming"
 import { STREAM_REVEAL } from "../streamingConfig"
 
 export const presetChatMode = async (
@@ -156,6 +160,7 @@ export const presetChatMode = async (
     ollama,
     applicationChatHistory: [], // No history for preset, just humanMessage
     humanMessage,
+    userMessage: message,
     selectedModel,
     messages,
     isRegenerate,

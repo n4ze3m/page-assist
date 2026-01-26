@@ -9,7 +9,11 @@ import { humanMessageFormatter } from "@/utils/human-message"
 import { removeReasoning } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
-import {CURSOR, streamChatResponse, type StreamConfig} from "./sharedStreaming"
+import {
+  CURSOR,
+  streamChatResponse,
+  type StreamConfig
+} from "./sharedStreaming"
 
 export const searchChatMode = async (
   message: string,
@@ -269,6 +273,7 @@ export const searchChatMode = async (
       ollama,
       applicationChatHistory,
       humanMessage,
+      userMessage: message,
       selectedModel,
       messages: newMessage,
       isRegenerate,

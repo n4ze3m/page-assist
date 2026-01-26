@@ -6,7 +6,11 @@ import { generateHistory } from "@/utils/generate-history"
 import { pageAssistModel } from "@/models"
 import { humanMessageFormatter } from "@/utils/human-message"
 import { systemPromptFormatter } from "@/utils/system-message"
-import {CURSOR, streamChatResponse, type StreamConfig} from "./sharedStreaming"
+import {
+  CURSOR,
+  streamChatResponse,
+  type StreamConfig
+} from "./sharedStreaming"
 
 export const normalChatMode = async (
   message: string,
@@ -196,6 +200,7 @@ export const normalChatMode = async (
     ollama,
     applicationChatHistory,
     humanMessage,
+    userMessage: message,
     selectedModel,
     messages,
     isRegenerate,

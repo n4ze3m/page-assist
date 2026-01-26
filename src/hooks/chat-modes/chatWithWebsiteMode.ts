@@ -18,7 +18,11 @@ import { pageAssistEmbeddingModel } from "@/models/embedding"
 import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
 import { getContentFromCurrentTab } from "@/libs/get-html"
 import { memoryEmbedding } from "@/utils/memory-embeddings"
-import {CURSOR, streamChatResponse, type StreamConfig} from "./sharedStreaming"
+import {
+  CURSOR,
+  streamChatResponse,
+  type StreamConfig
+} from "./sharedStreaming"
 import { STREAM_REVEAL } from "../streamingConfig"
 
 export const chatWithWebsiteMode = async (
@@ -334,6 +338,7 @@ export const chatWithWebsiteMode = async (
       ollama,
       applicationChatHistory,
       humanMessage,
+      userMessage: message,
       selectedModel,
       messages,
       isRegenerate,

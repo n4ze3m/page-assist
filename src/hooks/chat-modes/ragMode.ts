@@ -18,7 +18,11 @@ import { getNoOfRetrievedDocs } from "@/services/features/app"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import { isChatWithWebsiteEnabled } from "@/services/features/kb"
 import { getKnowledgeById } from "@/db/dexie/knowledge"
-import {CURSOR, streamChatResponse, type StreamConfig} from "./sharedStreaming"
+import {
+  CURSOR,
+  streamChatResponse,
+  type StreamConfig
+} from "./sharedStreaming"
 
 export const ragMode = async (
   message: string,
@@ -233,6 +237,7 @@ export const ragMode = async (
     ollama,
     applicationChatHistory,
     humanMessage,
+    userMessage: message,
     selectedModel,
     messages,
     isRegenerate,
