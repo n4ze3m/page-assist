@@ -1,4 +1,4 @@
-import { BaseDocumentLoader } from "langchain/document_loaders/base"
+import { BaseDocumentLoader } from "@langchain/core/document_loaders/base"
 import { Document } from "@langchain/core/documents"
 import { processPdf } from "@/libs/pdf"
 export interface WebLoaderParams {

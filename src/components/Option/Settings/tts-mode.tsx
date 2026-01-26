@@ -1,6 +1,6 @@
 import { SaveButton } from "@/components/Common/SaveButton"
-import { getModels, getVoices } from "@/services/elevenlabs"
-import { getTTSSettings, setTTSSettings } from "@/services/tts"
+import { getModels, getVoices } from "@/services/ai/elevenlabs"
+import { getTTSSettings, setTTSSettings } from "@/services/ai/tts"
 import { useWebUI } from "@/store/webui"
 import { useForm } from "@mantine/form"
 import { useQuery } from "@tanstack/react-query"

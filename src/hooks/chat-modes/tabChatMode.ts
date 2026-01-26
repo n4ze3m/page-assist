@@ -1,22 +1,20 @@
-import { cleanUrl } from "~/libs/clean-url"
-import {
-  getOllamaURL,
-  promptForRag,
-} from "~/services/ollama"
-import { type ChatHistory, type Message } from "~/store/option"
+import { cleanUrl } from "@/libs/clean-url"
+import { getOllamaURL, promptForRag } from "@/services/ai/ollama"
+import { type ChatHistory, type Message } from "@/store/option"
 import { generateID } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"
 import { pageAssistModel } from "@/models"
 import { humanMessageFormatter } from "@/utils/human-message"
-import {
-  isReasoningEnded,
-  isReasoningStarted,
-  mergeReasoningContent,
-  removeReasoning
-} from "@/libs/reasoning"
+import { removeReasoning } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { getTabContents } from "@/libs/get-tab-contents"
+import {
+  CURSOR,
+  streamChatResponse,
+  type StreamConfig
+} from "./sharedStreaming"
+import { STREAM_REVEAL } from "../streamingConfig"
 
 export const tabChatMode = async (
   message: string,
@@ -45,7 +43,9 @@ export const tabChatMode = async (
     useOCR: boolean
     selectedSystemPrompt: string
     currentChatModelSettings: any
-    setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void
+    setMessages: (
+      messages: Message[] | ((prev: Message[]) => Message[])
+    ) => void
     saveMessageOnSuccess: (data: any) => Promise<string | null>
     saveMessageOnError: (data: any) => Promise<string | null>
     setHistory: (history: ChatHistory) => void
@@ -64,13 +64,13 @@ export const tabChatMode = async (
     baseUrl: cleanUrl(url)
   })
 
-  let newMessage: Message[] = []
-  let generateMessageId = generateID()
   const modelInfo = await getModelNicknameByID(selectedModel)
+  let generateMessageId = generateID()
+  let newMessage: Message[] = [...messages]
 
   if (!isRegenerate) {
     newMessage = [
-      ...messages,
+      ...newMessage,
       {
         isBot: false,
         name: "You",
@@ -91,7 +91,7 @@ export const tabChatMode = async (
     ]
   } else {
     newMessage = [
-      ...messages,
+      ...newMessage,
       {
         isBot: true,
         name: selectedModel,
@@ -104,160 +104,74 @@ export const tabChatMode = async (
     ]
   }
   setMessages(newMessage)
-  let fullText = ""
-  let contentToSave = ""
 
+  let query = message
+  const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
+    await promptForRag()
+  let context = await getTabContents(documents)
 
-  let timetaken = 0
-  try {
-    let query = message
-    const { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
-      await promptForRag()
-    let context = await getTabContents(documents)
-
-    let humanMessage = await humanMessageFormatter({
+  let humanMessage = await humanMessageFormatter({
+    content: [
+      {
+        text: systemPrompt
+          .replace("{context}", context)
+          .replace("{question}", message),
+        type: "text"
+      }
+    ],
+    model: selectedModel,
+    useOCR: useOCR
+  })
+  if (image.length > 0) {
+    humanMessage = await humanMessageFormatter({
       content: [
         {
-          text: systemPrompt
-            .replace("{context}", context)
-            .replace("{question}", message),
+          text: message,
           type: "text"
+        },
+        {
+          image_url: image,
+          type: "image_url"
         }
       ],
       model: selectedModel,
       useOCR: useOCR
     })
-    if (image.length > 0) {
-      humanMessage = await humanMessageFormatter({
-        content: [
-          {
-            text: message,
-            type: "text"
-          },
-          {
-            image_url: image,
-            type: "image_url"
-          }
-        ],
-        model: selectedModel,
-        useOCR: useOCR
+  }
+  // console.log(context)
+  if (newMessage.length > 2) {
+    const lastTenMessages = newMessage.slice(-10)
+    lastTenMessages.pop()
+    const chat_history = lastTenMessages
+      .map((message) => {
+        return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
       })
-    }
-    // console.log(context)
-    if (newMessage.length > 2) {
-      const lastTenMessages = newMessage.slice(-10)
-      lastTenMessages.pop()
-      const chat_history = lastTenMessages
-        .map((message) => {
-          return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
-        })
-        .join("\n")
-      const promptForQuestion = questionPrompt
-        .replaceAll("{chat_history}", chat_history)
-        .replaceAll("{question}", message)
-      const questionOllama = await pageAssistModel({
-        model: selectedModel!,
-        baseUrl: cleanUrl(url)
-      })
-      const response = await questionOllama.invoke(promptForQuestion)
-      query = response.content.toString()
-      query = removeReasoning(query)
-    }
-    let source: any[] = []
-
-
-    const applicationChatHistory = generateHistory(history, selectedModel)
-
-    let generationInfo: any | undefined = undefined
-
-    const chunks = await ollama.stream(
-      [...applicationChatHistory, humanMessage],
-      {
-        signal: signal,
-        callbacks: [
-          {
-            handleLLMEnd(output: any): any {
-              try {
-                generationInfo = output?.generations?.[0][0]?.generationInfo
-              } catch (e) {
-                console.error("handleLLMEnd error", e)
-              }
-            }
-          }
-        ]
-      }
-    )
-    let count = 0
-    let reasoningStartTime: Date | undefined = undefined
-    let reasoningEndTime: Date | undefined = undefined
-    let apiReasoning = false
-
-    for await (const chunk of chunks) {
-      if (chunk?.additional_kwargs?.reasoning_content) {
-        const reasoningContent = mergeReasoningContent(
-          fullText,
-          chunk?.additional_kwargs?.reasoning_content || ""
-        )
-        contentToSave = reasoningContent
-        fullText = reasoningContent
-        apiReasoning = true
-      } else {
-        if (apiReasoning) {
-          fullText += "</think>"
-          contentToSave += "</think>"
-          apiReasoning = false
-        }
-      }
-
-      contentToSave += chunk?.content
-      fullText += chunk?.content
-      if (count === 0) {
-        setIsProcessing(true)
-      }
-      if (isReasoningStarted(fullText) && !reasoningStartTime) {
-        reasoningStartTime = new Date()
-      }
-
-      if (
-        reasoningStartTime &&
-        !reasoningEndTime &&
-        isReasoningEnded(fullText)
-      ) {
-        reasoningEndTime = new Date()
-        const reasoningTime =
-          reasoningEndTime.getTime() - reasoningStartTime.getTime()
-        timetaken = reasoningTime
-      }
-      setMessages((prev) => {
-        return prev.map((message) => {
-          if (message.id === generateMessageId) {
-            return {
-              ...message,
-              message: fullText + "▋",
-              reasoning_time_taken: timetaken
-            }
-          }
-          return message
-        })
-      })
-      count++
-    }
-    // update the message with the full text
-    setMessages((prev) => {
-      return prev.map((message) => {
-        if (message.id === generateMessageId) {
-          return {
-            ...message,
-            message: fullText,
-            sources: source,
-            generationInfo,
-            reasoning_time_taken: timetaken
-          }
-        }
-        return message
-      })
+      .join("\n")
+    const promptForQuestion = questionPrompt
+      .replaceAll("{chat_history}", chat_history)
+      .replaceAll("{question}", message)
+    const questionOllama = await pageAssistModel({
+      model: selectedModel!,
+      baseUrl: cleanUrl(url)
     })
+    const response = await questionOllama.invoke(promptForQuestion)
+    query = response.content.toString()
+    query = removeReasoning(query)
+  }
+  let source: any[] = []
 
+  const applicationChatHistory = generateHistory(history, selectedModel)
+
+  const config: StreamConfig = {
+    cursor: CURSOR,
+    reveal: STREAM_REVEAL
+  }
+
+  const onComplete = async (
+    fullText: string,
+    generationInfo?: any,
+    timetaken?: number
+  ) => {
     setHistory([
       ...history,
       {
@@ -282,12 +196,14 @@ export const tabChatMode = async (
       source,
       generationInfo,
       reasoning_time_taken: timetaken,
-      documents,
+      documents
     })
 
     setIsProcessing(false)
     setStreaming(false)
-  } catch (e) {
+  }
+
+  const onError = async (e: any, fullText: string) => {
     console.log(e)
     const errorSave = await saveMessageOnError({
       e,
@@ -300,7 +216,7 @@ export const tabChatMode = async (
       setHistoryId,
       userMessage: message,
       isRegenerating: isRegenerate,
-      documents,
+      documents
     })
 
     if (!errorSave) {
@@ -308,7 +224,24 @@ export const tabChatMode = async (
     }
     setIsProcessing(false)
     setStreaming(false)
-  } finally {
-    setAbortController(null)
   }
+
+  await streamChatResponse({
+    ollama,
+    applicationChatHistory,
+    humanMessage,
+    userMessage: message,
+    selectedModel,
+    messages: newMessage,
+    isRegenerate,
+    signal,
+    config,
+    setMessages,
+    onComplete,
+    onError,
+    image,
+    sources: source,
+    documents,
+    messageType: ""
+  })
 }

@@ -1,6 +1,5 @@
-import { useDarkMode } from "~/hooks/useDarkmode"
+import { useDarkMode } from "@/hooks/useDarkmode"
 import { Select, Switch } from "antd"
-import { MoonIcon, SunIcon } from "lucide-react"
 import { SearchModeSettings } from "./search-mode"
 import { useTranslation } from "react-i18next"
 import { useI18n } from "@/hooks/useI18n"
@@ -8,7 +7,7 @@ import { TTSModeSettings } from "./tts-mode"
 import { useStorage } from "@plasmohq/storage/hook"
 import { SystemSettings } from "./system-settings"
 import { SSTSettings } from "./sst-settings"
-import { BetaTag } from "@/components/Common/Beta"
+import { BetaTag } from "@/components/Common/BetaTag"
 import { getDefaultOcrLanguage, ocrLanguages } from "@/data/ocr-language"
 import { Storage } from "@plasmohq/storage"
 import { useQuery } from "@tanstack/react-query"
@@ -141,9 +140,13 @@ export const GeneralSettings = () => {
     "left"
   )
 
-  const { mode, toggleDarkMode } = useDarkMode()
+  const { mode } = useDarkMode()
   const { t } = useTranslation("settings")
   const { changeLocale, locale, supportLanguage } = useI18n()
+  const [themePreference, setThemePreference] = useStorage(
+    "themePreference",
+    "system"
+  )
 
   const { data: prompts } = useQuery({
     queryKey: ["getAllPromptsForSettings"],
@@ -626,18 +629,29 @@ export const GeneralSettings = () => {
           {t("generalSettings.settings.darkMode.label")}
         </span>
 
-        <button
-          onClick={toggleDarkMode}
-          className={`inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm  dark:bg-white dark:text-gray-800 disabled:opacity-50 `}>
-          {mode === "dark" ? (
-            <SunIcon className="w-4 h-4 mr-2" />
-          ) : (
-            <MoonIcon className="w-4 h-4 mr-2" />
-          )}
-          {mode === "dark"
-            ? t("generalSettings.settings.darkMode.options.light")
-            : t("generalSettings.settings.darkMode.options.dark")}
-        </button>
+        <Select
+          allowClear={false}
+          style={{ width: "200px" }}
+          options={[
+            {
+              value: "system",
+              label: t(
+                "generalSettings.settings.darkMode.options.system",
+                "System"
+              )
+            },
+            {
+              value: "light",
+              label: t("generalSettings.settings.darkMode.options.light")
+            },
+            {
+              value: "dark",
+              label: t("generalSettings.settings.darkMode.options.dark")
+            }
+          ]}
+          value={themePreference}
+          onChange={(value) => setThemePreference(value)}
+        />
       </div>
       <SearchModeSettings />
       <SSTSettings />

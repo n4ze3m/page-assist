@@ -16,7 +16,7 @@ import { db } from "@/db/dexie/schema"
 import { exportVectors, importVectorsV2 } from "@/db/dexie/vector"
 import { importKnowledge } from "@/db/knowledge"
 import { importVectors } from "@/db/vector"
-import { getStorageSyncEnabled } from "@/services/app"
+import { getStorageSyncEnabled } from "@/services/features/app"
 
 export const formatKnowledge = (knowledge: any[]) => {
   const kb = []

@@ -1,4 +1,4 @@
-import { type ChatHistory, type Message } from "~/store/option"
+import { type ChatHistory, type Message } from "@/store/option"
 import {
   deleteChatForEdit,
   formatToChatHistory,
@@ -34,25 +34,26 @@ export const createRegenerateLastMessage = ({
     if (!isOk) {
       return
     }
-    if (history.length > 0) {
-      const lastMessage = history[history.length - 2]
-      let newHistory = history.slice(0, -2)
-      let mewMessages = messages
-      mewMessages.pop()
-      setHistory(newHistory)
-      setMessages(mewMessages)
-      await removeMessageUsingHistoryIdFn(historyId)
-      if (lastMessage.role === "user") {
-        const newController = new AbortController()
-        await onSubmit({
-          message: lastMessage.content,
-          image: lastMessage.image || "",
-          images: lastMessage.images || [],
-          isRegenerate: true,
-          memory: newHistory,
-          controller: newController
-        })
-      }
+    if (history.length < 2 || messages.length === 0) {
+      return
+    }
+    const lastMessage = history[history.length - 2]
+    const newHistory = history.slice(0, -2)
+    const newMessages = messages.slice(0, -1)
+    setHistory(newHistory)
+    setMessages(newMessages)
+    await removeMessageUsingHistoryIdFn(historyId)
+    if (lastMessage.role === "user") {
+      const newController = new AbortController()
+      await onSubmit({
+        message: lastMessage.content,
+        image: lastMessage.image ?? "",
+        images: lastMessage.images ?? [],
+        isRegenerate: true,
+        messages: newMessages,
+        memory: newHistory,
+        controller: newController
+      })
     }
   }
 }

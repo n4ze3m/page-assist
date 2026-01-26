@@ -9,13 +9,13 @@ import {
   getVoice,
   isSSMLEnabled,
   getSpeechPlaybackSpeed
-} from "@/services/tts"
+} from "@/services/ai/tts"
 import { markdownToSSML } from "@/utils/markdown-to-ssml"
-import { generateSpeech } from "@/services/elevenlabs"
+import { generateSpeech } from "@/services/ai/elevenlabs"
 import { splitMessageContent } from "@/utils/tts"
 import { removeReasoning } from "@/libs/reasoning"
 import { markdownToText } from "@/utils/markdown-to-text"
-import { generateOpenAITTS } from "@/services/openai-tts"
+import { generateOpenAITTS } from "@/services/ai/openai-tts"
 
 export interface VoiceOptions {
   utterance: string

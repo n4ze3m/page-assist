@@ -1,7 +1,7 @@
 import { Embeddings, EmbeddingsParams } from "@langchain/core/embeddings"
 import type { StringWithAutocomplete } from "@langchain/core/utils/types"
 import { parseKeepAlive } from "./utils/ollama"
-import { getCustomOllamaHeaders } from "@/services/app"
+import { getCustomOllamaHeaders } from "@/services/features/app"
 
 export interface OllamaInput {
   embeddingOnly?: boolean

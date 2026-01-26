@@ -1,6 +1,7 @@
 import { defineConfig } from "wxt"
 import react from "@vitejs/plugin-react"
 import topLevelAwait from "vite-plugin-top-level-await"
+import pkg from "./package.json"
 
 const chromeMV3Permissions = [
   "storage",
@@ -32,6 +33,9 @@ const firefoxMV2Permissions = [
 // See https://wxt.dev/api/config.html
 export default defineConfig({
   vite: () => ({
+    define: {
+      "process.env.TARGET": JSON.stringify(process.env.TARGET || "chrome")
+    },
     plugins: [
       react(),
       topLevelAwait({
@@ -39,9 +43,18 @@ export default defineConfig({
         promiseImportName: (i) => `__tla_${i}`
       }) as any
     ],
+    // Avoid externalizing LangChain v1 packages; bundle them instead to ensure proper ESM exports resolution
+    optimizeDeps: {
+      include: [
+        "@langchain/core",
+        "@langchain/openai",
+        "@langchain/community",
+        "@langchain/textsplitters"
+      ]
+    },
     build: {
       rollupOptions: {
-        external: ["langchain", "@langchain/community"]
+        // no externals for langchain v1 packages
       }
     }
   }),
@@ -51,22 +64,22 @@ export default defineConfig({
   outDir: "build",
 
   manifest: {
-    version: "1.5.50",
+    version: (pkg.version || "0.0.0").split("-")[0],
     name:
       process.env.TARGET === "firefox"
-        ? "Page Assist - A Web UI for Local AI Models"
+        ? "Page Assist - UI for AI Models"
         : "__MSG_extName__",
     description: "__MSG_extDescription__",
     default_locale: "en",
     action: {},
-    author: "n4ze3m",
+    author: "n4ze3m" as any,
     browser_specific_settings:
       process.env.TARGET === "firefox"
         ? {
-          gecko: {
-            id: "page-assist@nazeem"
+            gecko: {
+              id: "page-assist@nazeem"
+            }
           }
-        }
         : undefined,
     host_permissions:
       process.env.TARGET !== "firefox"
@@ -87,11 +100,12 @@ export default defineConfig({
       }
     },
     content_security_policy:
-      process.env.TARGET !== "firefox" ?
-        {
-          extension_pages:
-            "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
-        } :  "script-src 'self' 'wasm-unsafe-eval' blob:; object-src 'self'; worker-src 'self' blob:;",
+      process.env.TARGET !== "firefox"
+        ? {
+            extension_pages:
+              "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+          }
+        : ("script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' blob:; object-src 'self'; worker-src 'self' blob:;" as any),
     permissions:
       process.env.TARGET === "firefox"
         ? firefoxMV2Permissions

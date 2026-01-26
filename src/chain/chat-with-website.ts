@@ -1,21 +1,21 @@
 //@ts-nocheck
-import { BaseLanguageModel } from "langchain/base_language";
+import type { BaseLanguageModel } from "@langchain/core/language_models/base";
 import { Document } from "@langchain/core/documents";
 import {
   ChatPromptTemplate,
   MessagesPlaceholder,
   PromptTemplate,
-} from "langchain/prompts";
-import { AIMessage, BaseMessage, HumanMessage } from "langchain/schema";
-import { StringOutputParser } from "langchain/schema/output_parser";
+} from "@langchain/core/prompts";
+import { AIMessage, BaseMessage, HumanMessage } from "@langchain/core/messages";
+import { StringOutputParser } from "@langchain/core/output_parsers";
 import {
   Runnable,
   RunnableBranch,
   RunnableLambda,
   RunnableMap,
   RunnableSequence,
-} from "langchain/schema/runnable";
-import type { ChatHistory } from "~/store";
+} from "@langchain/core/runnables";
+import type { ChatHistory } from "@/store";
 type RetrievalChainInput = {
   chat_history: string;
   question: string;

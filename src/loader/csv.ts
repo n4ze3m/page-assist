@@ -1,6 +1,6 @@
 import { dsvFormat } from "d3-dsv"
 
-import { BaseDocumentLoader } from "langchain/document_loaders/base"
+import { BaseDocumentLoader } from "@langchain/core/document_loaders/base"
 import { Document } from "@langchain/core/documents"
 export interface WebLoaderParams {
   url: string

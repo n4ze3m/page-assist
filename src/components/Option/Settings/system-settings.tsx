@@ -1,4 +1,4 @@
-import { BetaTag } from "@/components/Common/Beta"
+import { BetaTag } from "@/components/Common/BetaTag"
 import { useFontSize } from "@/context/FontSizeProvider"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import {

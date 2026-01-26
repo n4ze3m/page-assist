@@ -1,12 +1,12 @@
 import { cleanUrl } from "@/libs/clean-url"
 import { PageAssistHtmlLoader } from "@/loader/html"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
-import { getNoOfRetrievedDocs } from "@/services/app"
-import { getMaxContextSize, isChatWithWebsiteEnabled } from "@/services/kb"
-import { defaultEmbeddingModelForRag, getOllamaURL } from "@/services/ollama"
+import { getNoOfRetrievedDocs } from "@/services/features/app"
+import { getMaxContextSize, isChatWithWebsiteEnabled } from "@/services/features/kb"
+import { defaultEmbeddingModelForRag, getOllamaURL } from "@/services/ai/ollama"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
-import { MemoryVectorStore } from "langchain/vectorstores/memory"
+import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 
 export const processSingleWebsite = async (url: string, query: string) => {
     const loader = new PageAssistHtmlLoader({
@@ -45,16 +45,16 @@ export const processSingleWebsite = async (url: string, query: string) => {
 
     const chunks = await textSplitter.splitDocuments(docs)
 
-    const store = new MemoryVectorStore(ollamaEmbedding)
+    const store = new PageAssistVectorStore(ollamaEmbedding, { knownledge_id: "web-search", file_id: "temp_uploaded_files" })
 
     await store.addDocuments(chunks)
 
-    const resultsWithEmbeddings = await store.similaritySearch(query, 4)
+    const rankedDocs = await store.similaritySearchKB(query, 4)
 
-    const searchResult = resultsWithEmbeddings.map((result) => {
+    const searchResult = rankedDocs.map((doc) => {
         return {
-            url: result.metadata.url,
-            content: result.pageContent
+            url: (doc.metadata as any).url,
+            content: doc.pageContent
         }
     })
 

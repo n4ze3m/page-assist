@@ -1,5 +1,5 @@
 import { PencilIcon } from "lucide-react"
-import { useMessage } from "../../../hooks/useMessage"
+import { useMessage } from "@/hooks/useMessage"
 import { useTranslation } from 'react-i18next';
 
 export const PlaygroundNewChat = () => {

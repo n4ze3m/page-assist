@@ -1,18 +1,12 @@
-import { cleanUrl } from "~/libs/clean-url"
-import {
-  getOllamaURL,
-  systemPromptForNonRagOption
-} from "~/services/ollama"
-import { type ChatHistory, type Message } from "~/store/option"
+import { cleanUrl } from "@/libs/clean-url"
+import { getOllamaURL, systemPromptForNonRagOption } from "@/services/ai/ollama"
+import { type ChatHistory, type Message } from "@/store/option"
 import { getPromptById } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"
 import { pageAssistModel } from "@/models"
-import {
-  isReasoningEnded,
-  isReasoningStarted,
-  mergeReasoningContent
-} from "@/libs/reasoning"
 import { systemPromptFormatter } from "@/utils/system-message"
+import {CURSOR, streamChatResponse, type StreamConfig} from "./sharedStreaming"
+import { STREAM_REVEAL } from "../streamingConfig"
 
 export const continueChatMode = async (
   messages: Message[],
@@ -35,7 +29,9 @@ export const continueChatMode = async (
     selectedModel: string
     selectedSystemPrompt: string
     currentChatModelSettings: any
-    setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void
+    setMessages: (
+      messages: Message[] | ((prev: Message[]) => Message[])
+    ) => void
     saveMessageOnSuccess: (data: any) => Promise<string | null>
     saveMessageOnError: (data: any) => Promise<string | null>
     setHistory: (history: ChatHistory) => void
@@ -51,157 +47,71 @@ export const continueChatMode = async (
   let promptId: string | undefined = selectedSystemPrompt
   let promptContent: string | undefined = undefined
 
+  const lastMessage = messages[messages.length - 1]
+  if (!lastMessage || !lastMessage.id) {
+    throw new Error("No last message to continue")
+  }
+
+  const initialFullText = lastMessage.message.replace(/▋$/, "") // Remove cursor if present
+
   const ollama = await pageAssistModel({
     model: selectedModel!,
     baseUrl: cleanUrl(url)
   })
 
-  let newMessage: Message[] = []
+  const prompt = await systemPromptForNonRagOption()
+  const selectedPrompt = await getPromptById(selectedSystemPrompt)
 
-  const lastMessage = messages[messages.length - 1]
-  let generateMessageId = lastMessage.id
-  newMessage = [...messages]
-  newMessage[newMessage.length - 1] = {
-    ...lastMessage,
-    message: lastMessage.message + "▋"
+  const applicationChatHistory = generateHistory(history, selectedModel)
+
+  if (prompt && !selectedPrompt) {
+    applicationChatHistory.unshift(
+      await systemPromptFormatter({
+        content: prompt
+      })
+    )
   }
-  setMessages(newMessage)
-  let fullText = lastMessage.message
-  let contentToSave = ""
-  let timetaken = 0
 
-  try {
-    const prompt = await systemPromptForNonRagOption()
-    const selectedPrompt = await getPromptById(selectedSystemPrompt)
+  const isTempSystemprompt =
+    currentChatModelSettings.systemPrompt &&
+    currentChatModelSettings.systemPrompt?.trim().length > 0
 
-    const applicationChatHistory = generateHistory(history, selectedModel)
-
-    if (prompt && !selectedPrompt) {
-      applicationChatHistory.unshift(
-        await systemPromptFormatter({
-          content: prompt
-        })
-      )
-    }
-
-    const isTempSystemprompt =
-      currentChatModelSettings.systemPrompt &&
-      currentChatModelSettings.systemPrompt?.trim().length > 0
-
-    if (!isTempSystemprompt && selectedPrompt) {
-      applicationChatHistory.unshift(
-        await systemPromptFormatter({
-          content: selectedPrompt.content
-        })
-      )
-      promptContent = selectedPrompt.content
-    }
-
-    if (isTempSystemprompt) {
-      applicationChatHistory.unshift(
-        await systemPromptFormatter({
-          content: currentChatModelSettings.systemPrompt
-        })
-      )
-      promptContent = currentChatModelSettings.systemPrompt
-    }
-
-    let generationInfo: any | undefined = undefined
-
-    const chunks = await ollama.stream([...applicationChatHistory], {
-      signal: signal,
-      callbacks: [
-        {
-          handleLLMEnd(output: any): any {
-            try {
-              generationInfo = output?.generations?.[0][0]?.generationInfo
-            } catch (e) {
-              console.error("handleLLMEnd error", e)
-            }
-          }
-        }
-      ]
-    })
-
-    let count = 0
-    let reasoningStartTime: Date | null = null
-    let reasoningEndTime: Date | null = null
-    let apiReasoning: boolean = false
-    for await (const chunk of chunks) {
-      if (chunk?.additional_kwargs?.reasoning_content) {
-        const reasoningContent = mergeReasoningContent(
-          fullText,
-          chunk?.additional_kwargs?.reasoning_content || ""
-        )
-        contentToSave = reasoningContent
-        fullText = reasoningContent
-        apiReasoning = true
-      } else {
-        if (apiReasoning) {
-          fullText += "</think>"
-          contentToSave += "</think>"
-          apiReasoning = false
-        }
-      }
-
-      contentToSave += chunk?.content
-      fullText += chunk?.content
-
-      if (isReasoningStarted(fullText) && !reasoningStartTime) {
-        reasoningStartTime = new Date()
-      }
-
-      if (
-        reasoningStartTime &&
-        !reasoningEndTime &&
-        isReasoningEnded(fullText)
-      ) {
-        reasoningEndTime = new Date()
-        const reasoningTime =
-          reasoningEndTime.getTime() - reasoningStartTime.getTime()
-        timetaken = reasoningTime
-      }
-
-      if (count === 0) {
-        setIsProcessing(true)
-      }
-
-      setMessages((prev) => {
-        return prev.map((message) => {
-          if (message.id === generateMessageId) {
-            return {
-              ...message,
-              message: fullText + "▋",
-              reasoning_time_taken: timetaken
-            }
-          }
-          return message
-        })
+  if (!isTempSystemprompt && selectedPrompt) {
+    applicationChatHistory.unshift(
+      await systemPromptFormatter({
+        content: selectedPrompt.content
       })
-      count++
-    }
+    )
+    promptContent = selectedPrompt.content
+  }
 
-    setMessages((prev) => {
-      return prev.map((message) => {
-        if (message.id === generateMessageId) {
-          return {
-            ...message,
-            message: fullText,
-            generationInfo,
-            reasoning_time_taken: timetaken
-          }
-        }
-        return message
+  if (isTempSystemprompt) {
+    applicationChatHistory.unshift(
+      await systemPromptFormatter({
+        content: currentChatModelSettings.systemPrompt
       })
-    })
+    )
+    promptContent = currentChatModelSettings.systemPrompt
+  }
 
-    let newHistory = [...history]
+  const config = {
+    cursor: CURSOR,
+    reveal: STREAM_REVEAL
+  }
 
+  const onComplete = async (
+    fullText: string,
+    generationInfo?: any,
+    timetaken?: number
+  ) => {
+    // Update last history entry
+    const newHistory = [...history]
     newHistory[newHistory.length - 1] = {
       ...newHistory[newHistory.length - 1],
       content: fullText
     }
     setHistory(newHistory)
+
     await saveMessageOnSuccess({
       historyId,
       setHistoryId,
@@ -220,7 +130,9 @@ export const continueChatMode = async (
 
     setIsProcessing(false)
     setStreaming(false)
-  } catch (e) {
+  }
+
+  const onError = async (e: any, fullText: string) => {
     const errorSave = await saveMessageOnError({
       e,
       botMessage: fullText,
@@ -238,11 +150,32 @@ export const continueChatMode = async (
     })
 
     if (!errorSave) {
-      throw e // Re-throw to be handled by the calling function
+      throw e
     }
     setIsProcessing(false)
     setStreaming(false)
-  } finally {
-    setAbortController(null)
   }
+
+  setStreaming(true)
+  setIsProcessing(true)
+
+  await streamChatResponse({
+    ollama,
+    applicationChatHistory,
+    selectedModel,
+    messages,
+    isRegenerate: false,
+    isContinue: true,
+    botMessageId: lastMessage.id,
+    initialFullText,
+    signal,
+    config,
+    setMessages,
+    onComplete,
+    onError,
+    image: "",
+    sources: [],
+    documents: [],
+    messageType: ""
+  })
 }

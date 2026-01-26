@@ -33,7 +33,7 @@ import {
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import { lastUsedChatModelEnabled } from "@/services/model-settings"
+import { lastUsedChatModelEnabled } from "@/services/ai/model-settings"
 import { useDebounce } from "@/hooks/useDebounce"
 import { useState, useRef, useEffect } from "react"
 import { PageAssistDatabase } from "@/db/dexie/chat"
@@ -55,7 +55,7 @@ import {
 import { UploadedFile } from "@/db/dexie/types"
 import { isDatabaseClosedError } from "@/utils/ff-error"
 import { updatePageTitle } from "@/utils/update-page-title"
-import { generateTitle } from "@/services/title"
+import { generateTitle } from "@/services/features/title"
 
 type Props = {
   onClose: () => void

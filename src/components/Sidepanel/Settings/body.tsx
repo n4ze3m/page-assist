@@ -12,7 +12,7 @@ import {
   defaultEmbeddingModelForRag,
   saveForRag,
   getEmbeddingModels
-} from "~/services/ollama"
+} from "@/services/ai/ollama"
 
 import {
   Skeleton,
@@ -23,17 +23,16 @@ import {
   Collapse,
   Switch
 } from "antd"
-import { useDarkMode } from "~/hooks/useDarkmode"
-import { SaveButton } from "~/components/Common/SaveButton"
-import { SUPPORTED_LANGUAGES } from "~/utils/supported-languages"
-import { useMessage } from "~/hooks/useMessage"
-import { MoonIcon, SunIcon } from "lucide-react"
+import { useDarkMode } from "@/hooks/useDarkmode"
+import { SaveButton } from "@/components/Common/SaveButton"
+import { SUPPORTED_LANGUAGES } from "@/utils/supported-languages"
+import { useMessage } from "@/hooks/useMessage"
 import { Trans, useTranslation } from "react-i18next"
 import { useI18n } from "@/hooks/useI18n"
 import { TTSModeSettings } from "@/components/Option/Settings/tts-mode"
 import { AdvanceOllamaSettings } from "@/components/Common/Settings/AdvanceOllamaSettings"
 import { useStorage } from "@plasmohq/storage/hook"
-import { getTotalFilePerKB } from "@/services/app"
+import { getTotalFilePerKB } from "@/services/features/app"
 import { SidepanelRag } from "@/components/Option/Settings/sidepanel-rag"
 import { SSTSettings } from "@/components/Option/Settings/sst-settings"
 
@@ -58,10 +57,14 @@ export const SettingsBody = () => {
     "speechToTextLanguage",
     "en-US"
   )
-  const { mode, toggleDarkMode } = useDarkMode()
+  const { mode } = useDarkMode()
   const queryClient = useQueryClient()
 
   const { changeLocale, locale, supportLanguage } = useI18n()
+  const [themePreference, setThemePreference] = useStorage(
+    "themePreference",
+    "system"
+  )
 
   const { data, status } = useQuery({
     queryKey: ["sidebarSettings"],
@@ -422,23 +425,34 @@ export const SettingsBody = () => {
       </div>
       <div className="border border-gray-300 dark:border-gray-700 rounded p-4 bg-white dark:bg-[#1a1a1a]">
         <h2 className="text-md mb-4 font-semibold dark:text-white">
-          {t("generalSettings.settings.darkMode.label")}{" "}
+          {t("generalSettings.settings.darkMode.label")}
         </h2>
-        {mode === "dark" ? (
-          <button
-            onClick={toggleDarkMode}
-            className="select-none inline-flex text-center w-full rounded-lg border border-gray-900 py-3 px-6 justify-center font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none dark:border-gray-100 dark:text-white dark:hover:opacity-75 dark:focus:ring-dark dark:active:opacity-75 dark:disabled:pointer-events-none dark:disabled:opacity-50 dark:disabled:shadow-none">
-            <SunIcon className="h-4 w-4 mr-2" />
-            {t("generalSettings.settings.darkMode.options.light")}
-          </button>
-        ) : (
-          <button
-            onClick={toggleDarkMode}
-            className="select-none inline-flex text-center w-full rounded-lg border border-gray-900 py-3 px-6 justify-center font-sans text-xs font-bold uppercase text-gray-900 transition-all hover:opacity-75 focus:ring focus:ring-gray-300 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none dark:border-gray-100 dark:text-white dark:hover:opacity-75 dark:focus:ring-dark dark:active:opacity-75 dark:disabled:pointer-events-none dark:disabled:opacity-50 dark:disabled:shadow-none">
-            <MoonIcon className="h-4 w-4 mr-2" />
-            {t("generalSettings.settings.darkMode.options.dark")}
-          </button>
-        )}
+        <Select
+          allowClear={false}
+          style={{ width: "200px" }}
+          options={[
+            {
+              value: "system",
+              label: t(
+                "generalSettings.settings.darkMode.options.system",
+                "System"
+              )
+            },
+            {
+              value: "light",
+              label: t(
+                "generalSettings.settings.darkMode.options.light",
+                "Light"
+              )
+            },
+            {
+              value: "dark",
+              label: t("generalSettings.settings.darkMode.options.dark", "Dark")
+            }
+          ]}
+          value={themePreference}
+          onChange={(value) => setThemePreference(value)}
+        />
       </div>
     </div>
   )

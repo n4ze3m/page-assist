@@ -1,6 +1,6 @@
 import { Source } from "@/db/knowledge"
 import { addNewSources } from "@/db/dexie/knowledge"
-import { defaultEmbeddingModelForRag } from "@/services/ollama"
+import { defaultEmbeddingModelForRag } from "@/services/ai/ollama"
 import { convertTextToSource, convertToSource } from "@/utils/to-source"
 import { useMutation } from "@tanstack/react-query"
 import {

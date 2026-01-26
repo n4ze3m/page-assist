@@ -3,10 +3,10 @@ export default defineContentScript({
     // Check if YouTube summarization is enabled
     const checkEnabled = async () => {
       try {
-        const response = await browser.runtime.sendMessage({
+        const response = (await browser.runtime.sendMessage({
           type: "check_youtube_summarize_enabled"
-        })
-        return response?.enabled || false
+        })) as { enabled?: boolean }
+        return !!response?.enabled
       } catch (error) {
         console.error("Failed to check YouTube summarize setting:", error)
         return false

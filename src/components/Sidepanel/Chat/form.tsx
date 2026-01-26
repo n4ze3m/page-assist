@@ -1,12 +1,20 @@
 import { useForm } from "@mantine/form"
 import { useMutation } from "@tanstack/react-query"
 import React from "react"
-import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
-import { useMessage } from "~/hooks/useMessage"
-import { toBase64 } from "~/libs/to-base64"
-import { Checkbox, Dropdown, Image, Switch, Tooltip, Popover, Radio } from "antd"
-import { useWebUI } from "~/store/webui"
-import { defaultEmbeddingModelForRag } from "~/services/ollama"
+import useDynamicTextareaSize from "@/hooks/useDynamicTextareaSize"
+import { useMessage } from "@/hooks/useMessage"
+import { toBase64 } from "@/libs/to-base64"
+import {
+  Checkbox,
+  Dropdown,
+  Image,
+  Switch,
+  Tooltip,
+  Popover,
+  Radio
+} from "antd"
+import { useWebUI } from "@/store/webui"
+import { defaultEmbeddingModelForRag } from "@/services/ai/ollama"
 import {
   ImageIcon,
   MicIcon,
@@ -22,11 +30,11 @@ import { ModelSelect } from "@/components/Common/ModelSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobeX, PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
-import { getIsSimpleInternetSearch } from "@/services/search"
+import { getIsSimpleInternetSearch } from "@/services/features/search"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useFocusShortcuts } from "@/hooks/keyboard"
-import { isThinkingCapableModel, isGptOssModel } from "~/libs/model-utils"
-import { useStoreChatModelSettings } from "~/store/model"
+import { isThinkingCapableModel, isGptOssModel } from "@/libs/model-utils"
+import { useStoreChatModelSettings } from "@/store/model"
 import { getVariable } from "@/utils/select-variable"
 
 type Props = {
@@ -272,7 +280,6 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [defaultInternetSearchOn])
 
- 
   return (
     <div className="flex w-full flex-col items-center px-2">
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">
@@ -345,7 +352,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     }
                     textAreaFocus()
                     await sendMessage({
-                      image: value.images && value.images.length > 0 ? value.images[0] : "",
+                      image:
+                        value.images && value.images.length > 0
+                          ? value.images[0]
+                          : "",
                       images: value.images,
                       message: value.message.trim()
                     })
@@ -365,7 +375,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     <textarea
                       onKeyDown={(e) => handleKeyDown(e)}
                       ref={textareaRef}
-                      className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
+                      className="pa-textarea px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
                       onPaste={handlePaste}
                       rows={1}
                       style={{ minHeight: "60px" }}
@@ -407,18 +417,33 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           </button>
                         </Tooltip>
                       )}
-                      {defaultThinkingMode && isThinkingCapableModel(selectedModel) && (
-                        isGptOssModel(selectedModel) ? (
+                      {defaultThinkingMode &&
+                        isThinkingCapableModel(selectedModel) &&
+                        (isGptOssModel(selectedModel) ? (
                           <Popover
                             content={
                               <div>
                                 <Radio.Group
                                   value={thinking || "medium"}
-                                  onChange={(e) => setThinking?.(e.target.value)}
+                                  onChange={(e) =>
+                                    setThinking?.(e.target.value)
+                                  }
                                   className="flex flex-col gap-2">
-                                  <Radio value="low">{t("common:modelSettings.form.thinking.levels.low")}</Radio>
-                                  <Radio value="medium">{t("common:modelSettings.form.thinking.levels.medium")}</Radio>
-                                  <Radio value="high">{t("common:modelSettings.form.thinking.levels.high")}</Radio>
+                                  <Radio value="low">
+                                    {t(
+                                      "common:modelSettings.form.thinking.levels.low"
+                                    )}
+                                  </Radio>
+                                  <Radio value="medium">
+                                    {t(
+                                      "common:modelSettings.form.thinking.levels.medium"
+                                    )}
+                                  </Radio>
+                                  <Radio value="high">
+                                    {t(
+                                      "common:modelSettings.form.thinking.levels.high"
+                                    )}
+                                  </Radio>
                                 </Radio.Group>
                                 <div className="text-xs text-gray-500 dark:text-gray-400 mt-2 px-1 border-t border-gray-200 dark:border-gray-700 pt-2">
                                   Note: This model always includes reasoning
@@ -448,8 +473,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                               )}
                             </button>
                           </Tooltip>
-                        )
-                      )}
+                        ))}
                       <ModelSelect iconClassName="size-4" />
                       {browserSupportsSpeechRecognition && (
                         <Tooltip title={t("tooltip.speechToText")}>

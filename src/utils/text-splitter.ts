@@ -1,14 +1,14 @@
 import {
   RecursiveCharacterTextSplitter,
   CharacterTextSplitter
-} from "langchain/text_splitter"
+} from "@langchain/textsplitters"
 
 import {
   defaultEmbeddingChunkOverlap,
   defaultEmbeddingChunkSize,
   defaultSsplttingSeparator,
   defaultSplittingStrategy
-} from "@/services/ollama"
+} from "@/services/ai/ollama"
 
 export const getPageAssistTextSplitter = async () => {
   const chunkSize = await defaultEmbeddingChunkSize()

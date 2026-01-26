@@ -11,7 +11,7 @@ import {
   setCustomOllamaHeaders,
   setRewriteUrl,
   setUrlRewriteEnabled
-} from "@/services/app"
+} from "@/services/features/app"
 import { Trash2Icon } from "lucide-react"
 import { SaveButton } from "../SaveButton"
 

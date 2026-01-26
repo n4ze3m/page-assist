@@ -1,6 +1,6 @@
 import { isCustomModel } from "@/db/dexie/models"
 import { HumanMessage, type MessageContent } from "@langchain/core/messages"
-import { processImageForOCR } from "./ocr"
+import { processImageForOCR } from "@/utils/ocr"
 import { Storage } from "@plasmohq/storage"
 import { getMemoriesAsContext } from "@/db/dexie/memory"
 
@@ -18,120 +18,102 @@ export const humanMessageFormatter = async ({
   useOCR = false
 }: HumanMessageType) => {
   try {
-    // Get memory context if enabled
+    // Memory context enrichment (optional)
     const enableMemory = await storage.get("enableMemory")
     let memoryContext = ""
 
     if (enableMemory) {
       const context = await getMemoriesAsContext()
-      if (context) {
-        memoryContext = `\n\n${context}`
-      }
+      if (context) memoryContext = `\n\n${context}`
     }
 
     const isCustom = isCustomModel(model)
 
-    if (isCustom) {
-      if (typeof content !== "string") {
-        if (content.length > 1) {
-          if (useOCR) {
-            // Process all images for OCR
-            const imageContents = content.filter(
-              (c: any) => c.type === "image_url"
-            )
-            const ocrTexts = await Promise.all(
-              imageContents.map((c: any) => processImageForOCR(c.image_url))
-            )
-            //@ts-ignore
-            const ocrPROMPT = `${content[0].text}
-
-[IMAGE OCR TEXT]
-${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
-            return new HumanMessage({
-              content: ocrPROMPT
-            })
-          }
-
-          // Reformat the image_url for all images
-          const newContent: MessageContent = [
-            {
-              type: "text",
-              //@ts-ignore
-              text: content[0].text + memoryContext
-            }
-          ]
-
-          // Add all images
-          const imageContents = content.filter(
-            (c: any) => c.type === "image_url"
+    // Custom model handling (multi-image aware)
+    if (isCustom && typeof content !== "string" && content.length > 0) {
+      if (content.length > 1) {
+        if (useOCR) {
+          // Process all images for OCR and append to prompt
+          const imageContents = (content as any[]).filter(
+            (c) => c.type === "image_url"
           )
-          if (imageContents.length > 0) {
-            imageContents.forEach((c: any) => {
-              if (c.image_url.length > 0) {
-                console.log(
-                  "Adding image to custom model message:",
-                  c.image_url
-                )
-                newContent.push({
-                  type: "image_url",
-                  image_url: {
-                    url: c.image_url
-                  }
-                })
-              }
-            })
-          }
-
-          return new HumanMessage({
-            content: newContent
-          })
-        } else {
-          return new HumanMessage({
-            //@ts-ignore
-            content: content[0].text + memoryContext
-          })
+          const ocrTexts = await Promise.all(
+            imageContents.map((c: any) =>
+              processImageForOCR(String(c.image_url))
+            )
+          )
+          // @ts-ignore
+          const baseText = (content as any[])[0]?.text ?? ""
+          const ocrPROMPT = `${baseText}\n\n[IMAGE OCR TEXT]\n${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
+          return new HumanMessage({ content: ocrPROMPT })
         }
-      }
-    }
 
-    if (useOCR) {
-      if (typeof content !== "string" && content.length > 1) {
-        // Process all images for OCR
-        const imageContents = content.filter((c: any) => c.type === "image_url")
-        const ocrTexts = await Promise.all(
-          imageContents.map((c: any) => processImageForOCR(c.image_url))
+        // Reformat payload to include all images explicitly, plus memoryContext on text
+        const newContent: MessageContent = [
+          {
+            type: "text",
+            // @ts-ignore
+            text: String((content as any[])[0]?.text ?? "") + memoryContext
+          }
+        ]
+        const imageContents = (content as any[]).filter(
+          (c) => c.type === "image_url"
         )
-        //@ts-ignore
-        const ocrPROMPT = `${content[0].text}
-
-[IMAGE OCR TEXT]
-${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
-        return new HumanMessage({
-          content: ocrPROMPT
+        imageContents.forEach((c: any) => {
+          if (c?.image_url) {
+            newContent.push({
+              type: "image_url",
+              image_url: { url: String(c.image_url) }
+            } as any)
+          }
         })
+        return new HumanMessage({ content: newContent })
       }
-    }
 
-    // Handle string content or fallback
-    if (typeof content === "string") {
+      // Single non-text item fallback
       return new HumanMessage({
-        content: content + memoryContext
+        // @ts-ignore
+        content: String((content as any[])[0]?.text ?? "") + memoryContext
       })
     }
 
+    // Non-custom model handling
+    if (
+      useOCR &&
+      typeof content !== "string" &&
+      (content as any[]).length > 1
+    ) {
+      // OCR for all images, append to first text
+      const imageContents = (content as any[]).filter(
+        (c) => c.type === "image_url"
+      )
+      const ocrTexts = await Promise.all(
+        imageContents.map((c: any) => processImageForOCR(String(c.image_url)))
+      )
+      // @ts-ignore
+      const baseText = (content as any[])[0]?.text ?? ""
+      const ocrPROMPT = `${baseText}\n\n[IMAGE OCR TEXT]\n${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
+      return new HumanMessage({ content: ocrPROMPT })
+    }
 
+    // Plain string content
+    if (typeof content === "string") {
+      return new HumanMessage({ content: content + memoryContext })
+    }
+
+    // Array content without images or OCR disabled: join text parts
     if (Array.isArray(content)) {
       return new HumanMessage({
-        content: content?.map((c: any) => c.text).join(" ") + memoryContext
+        content:
+          (content as any[])
+            .map((c) => (typeof c?.text === "string" ? c.text : ""))
+            .join(" ") + memoryContext
       })
     }
 
-    return new HumanMessage({
-      content
-    })
-  } catch (e) {
-    return new HumanMessage({
-      content
-    })
+    // Fallback
+    return new HumanMessage({ content })
+  } catch (_) {
+    return new HumanMessage({ content })
   }
 }

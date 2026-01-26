@@ -1,9 +1,13 @@
-import { getOllamaURL, isOllamaRunning } from "../services/ollama"
+import { getOllamaURL, isOllamaRunning } from "../services/ai/ollama"
 import { browser } from "wxt/browser"
 import { clearBadge, streamDownload, cancelDownload } from "@/utils/pull-ollama"
 import { Storage } from "@plasmohq/storage"
-import { getInitialConfig } from "@/services/action"
-import { getCustomCopilotPrompts, getCopilotPromptsEnabledState, type CustomCopilotPrompt } from "@/services/application"
+import { getInitialConfig } from "@/services/browser/action"
+import {
+  getCustomCopilotPrompts,
+  getCopilotPromptsEnabledState,
+  type CustomCopilotPrompt
+} from "@/services/browser/application"
 
 export default defineBackground({
   main() {
@@ -58,7 +62,7 @@ export default defineBackground({
 
       // Create new custom copilot menus
       const customPrompts = await getCustomCopilotPrompts()
-      const enabledPrompts = customPrompts.filter(p => p.enabled)
+      const enabledPrompts = customPrompts.filter((p) => p.enabled)
 
       for (const prompt of enabledPrompts) {
         const menuId = `custom_copilot_${prompt.id}`
@@ -145,7 +149,11 @@ export default defineBackground({
         const enabled = await storage.get("youtubeAutoSummarize")
         return Promise.resolve({ enabled: enabled || false })
       } else if (message.type === "sidepanel") {
-        await browser.sidebarAction.open()
+        if (process.env.TARGET === "firefox") {
+          await browser.sidebarAction.open()
+        } else {
+          await chrome.sidePanel.open({ tabId: sender.tab?.id })
+        }
       } else if (message.type === "pull_model") {
         const ollamaURL = await getOllamaURL()
 
@@ -165,8 +173,16 @@ export default defineBackground({
       } else if (message.type === "cancel_download") {
         cancelDownload()
       } else if (message.type === "youtube_summarize") {
-        if (sender.tab?.id) {
-          await browser.sidebarAction.open()
+        if (process.env.TARGET === "firefox") {
+          if (sender.tab?.id) {
+            await browser.sidebarAction.open()
+          }
+        } else {
+          if (sender.tab?.id) {
+            chrome.sidePanel.open({
+              tabId: sender.tab.id
+            })
+          }
         }
 
         setTimeout(
@@ -193,13 +209,25 @@ export default defineBackground({
       }
     })
 
-    browser.browserAction.onClicked.addListener((tab) => {
-      if (actionIconClick === "webui") {
-        browser.tabs.create({ url: browser.runtime.getURL("/options.html") })
-      } else {
-        browser.sidebarAction.toggle()
-      }
-    })
+    if (process.env.TARGET === "firefox") {
+      browser.browserAction.onClicked.addListener((tab) => {
+        if (actionIconClick === "webui") {
+          browser.tabs.create({ url: browser.runtime.getURL("/options.html") })
+        } else {
+          browser.sidebarAction.toggle()
+        }
+      })
+    } else {
+      chrome.action.onClicked.addListener((tab) => {
+        if (actionIconClick === "webui") {
+          chrome.tabs.create({ url: chrome.runtime.getURL("/options.html") })
+        } else {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
+        }
+      })
+    }
 
     const contextMenuTitle = {
       webui: browser.i18n.getMessage("openOptionToChat"),
@@ -211,17 +239,30 @@ export default defineBackground({
       sidePanel: "open-side-panel-pa"
     }
 
-    browser.contextMenus.onClicked.addListener((info, tab) => {
+    browser.contextMenus.onClicked.addListener(async (info, tab) => {
       if (info.menuItemId === "open-side-panel-pa") {
-        browser.sidebarAction.toggle()
+        if (process.env.TARGET === "firefox") {
+          browser.sidebarAction.toggle()
+        } else {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
+        }
       } else if (info.menuItemId === "open-web-ui-pa") {
         browser.tabs.create({
           url: browser.runtime.getURL("/options.html")
         })
       } else if (info.menuItemId === "summarize-pa") {
-        if (!isCopilotRunning) {
-          browser.sidebarAction.toggle()
+        if (process.env.TARGET === "firefox") {
+          if (!isCopilotRunning) {
+            browser.sidebarAction.toggle()
+          }
+        } else {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
         }
+        // this is a bad method hope somone can fix it :)
         setTimeout(
           async () => {
             await browser.runtime.sendMessage({
@@ -233,8 +274,14 @@ export default defineBackground({
           isCopilotRunning ? 0 : 5000
         )
       } else if (info.menuItemId === "rephrase-pa") {
-        if (!isCopilotRunning) {
-          browser.sidebarAction.toggle()
+        if (process.env.TARGET === "firefox") {
+          if (!isCopilotRunning) {
+            browser.sidebarAction.toggle()
+          }
+        } else {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
         }
         setTimeout(
           async () => {
@@ -247,9 +294,16 @@ export default defineBackground({
           isCopilotRunning ? 0 : 5000
         )
       } else if (info.menuItemId === "translate-pg") {
-        if (!isCopilotRunning) {
-          browser.sidebarAction.toggle()
+        if (process.env.TARGET === "firefox") {
+          if (!isCopilotRunning) {
+            browser.sidebarAction.toggle()
+          }
+        } else {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
         }
+
         setTimeout(
           async () => {
             await browser.runtime.sendMessage({
@@ -261,9 +315,16 @@ export default defineBackground({
           isCopilotRunning ? 0 : 5000
         )
       } else if (info.menuItemId === "explain-pa") {
-        if (!isCopilotRunning) {
-          browser.sidebarAction.toggle()
+        if (process.env.TARGET === "firefox") {
+          if (!isCopilotRunning) {
+            browser.sidebarAction.toggle()
+          }
+        } else {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
         }
+
         setTimeout(
           async () => {
             await browser.runtime.sendMessage({
@@ -275,9 +336,16 @@ export default defineBackground({
           isCopilotRunning ? 0 : 5000
         )
       } else if (info.menuItemId === "custom-pg") {
-        if (!isCopilotRunning) {
-          browser.sidebarAction.toggle()
+        if (process.env.TARGET === "firefox") {
+          if (!isCopilotRunning) {
+            browser.sidebarAction.toggle()
+          }
+        } else {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
         }
+
         setTimeout(
           async () => {
             await browser.runtime.sendMessage({
@@ -288,11 +356,21 @@ export default defineBackground({
           },
           isCopilotRunning ? 0 : 5000
         )
-      } else if (typeof info.menuItemId === "string" && info.menuItemId.startsWith("custom_copilot_")) {
+      } else if (
+        typeof info.menuItemId === "string" &&
+        info.menuItemId.startsWith("custom_copilot_")
+      ) {
         // Handle custom copilot prompts
-        if (!isCopilotRunning) {
-          browser.sidebarAction.toggle()
+        if (process.env.TARGET === "firefox") {
+          if (!isCopilotRunning) {
+            browser.sidebarAction.toggle()
+          }
+        } else {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
         }
+
         setTimeout(
           async () => {
             await browser.runtime.sendMessage({
@@ -309,7 +387,19 @@ export default defineBackground({
     browser.commands.onCommand.addListener((command) => {
       switch (command) {
         case "execute_side_panel":
-          browser.sidebarAction.toggle()
+          if (process.env.TARGET === "firefox") {
+            browser.sidebarAction.toggle()
+          } else {
+            chrome.tabs.query(
+              { active: true, currentWindow: true },
+              async (tabs) => {
+                const tab = tabs[0]
+                chrome.sidePanel.open({
+                  tabId: tab.id!
+                })
+              }
+            )
+          }
           break
         default:
           break

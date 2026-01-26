@@ -14,6 +14,7 @@
       "darkMode": {
         "label": "Change Theme",
         "options": {
+          "system": "System",
           "light": "Light",
           "dark": "Dark"
         }

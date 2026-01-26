@@ -5,19 +5,25 @@ import { Route, Routes } from "react-router-dom"
 
 const SidepanelChat = lazy(() => import("./sidepanel-chat"))
 const SidepanelSettings = lazy(() => import("./sidepanel-settings"))
-const SidepanelSettingsOpenAI = lazy(() => import("./sidepanel-settings-openai"))
-const SidepanelSettingsModel = lazy(() => import("./sidepanel-settings-model"))  
+const SidepanelSettingsOpenAI = lazy(
+  () => import("./sidepanel-settings-openai")
+)
+const SidepanelSettingsModel = lazy(() => import("./sidepanel-settings-model"))
 
-const OptionIndex = lazy(() => import("./option-index"))
-const OptionModal = lazy(() => import("./option-settings-model"))
-const OptionPrompt = lazy(() => import("./option-settings-prompt"))
-const OptionOllamaSettings = lazy(() => import("./options-settings-ollama"))
-const OptionSettings = lazy(() => import("./option-settings"))
-const OptionShare = lazy(() => import("./option-settings-share"))
-const OptionKnowledgeBase = lazy(() => import("./option-settings-knowledge"))
-const OptionAbout = lazy(() => import("./option-settings-about"))
-const OptionRagSettings = lazy(() => import("./option-rag"))
-const OptionOpenAI = lazy(() => import("./option-settings-openai"))
+const OptionIndex = lazy(() => import("./settings/option-index"))
+const OptionModal = lazy(() => import("./settings/option-settings-model"))
+const OptionPrompt = lazy(() => import("./settings/option-settings-prompt"))
+const OptionOllamaSettings = lazy(
+  () => import("./settings/options-settings-ollama")
+)
+const OptionSettings = lazy(() => import("./settings/option-settings"))
+const OptionShare = lazy(() => import("./settings/option-settings-share"))
+const OptionKnowledgeBase = lazy(
+  () => import("./settings/option-settings-knowledge")
+)
+const OptionAbout = lazy(() => import("./settings/option-settings-about"))
+const OptionRagSettings = lazy(() => import("./settings/option-rag"))
+const OptionOpenAI = lazy(() => import("./settings/option-settings-openai"))
 
 export const OptionRoutingFirefox = () => {
   return (
@@ -41,8 +47,8 @@ export const SidepanelRoutingFirefox = () => {
     <Routes>
       <Route path="/" element={<SidepanelChat />} />
       <Route path="/settings" element={<SidepanelSettings />} />
-      <Route path="/settings/openai" element={<SidepanelSettingsOpenAI />} /> 
-      <Route path="/settings/model" element={<SidepanelSettingsModel />} /> 
+      <Route path="/settings/openai" element={<SidepanelSettingsOpenAI />} />
+      <Route path="/settings/model" element={<SidepanelSettingsModel />} />
     </Routes>
   )
 }

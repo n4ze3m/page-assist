@@ -1,28 +1,28 @@
-import { cleanUrl } from "~/libs/clean-url"
+import { cleanUrl } from "@/libs/clean-url"
 import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   promptForRag
-} from "~/services/ollama"
-import { type ChatHistory, type Message } from "~/store/option"
+} from "@/services/ai/ollama"
+import { type ChatHistory, type Message } from "@/store/option"
 import { generateID } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"
 import { pageAssistModel } from "@/models"
 import { humanMessageFormatter } from "@/utils/human-message"
-import {
-  isReasoningEnded,
-  isReasoningStarted,
-  mergeReasoningContent,
-  removeReasoning
-} from "@/libs/reasoning"
+import { removeReasoning } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
 import { formatDocs } from "@/chain/chat-with-x"
-import { getAllDefaultModelSettings } from "@/services/model-settings"
-import { getNoOfRetrievedDocs } from "@/services/app"
+import { getAllDefaultModelSettings } from "@/services/ai/model-settings"
+import { getNoOfRetrievedDocs } from "@/services/features/app"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
-import { isChatWithWebsiteEnabled } from "@/services/kb"
+import { isChatWithWebsiteEnabled } from "@/services/features/kb"
 import { getKnowledgeById } from "@/db/dexie/knowledge"
+import {
+  CURSOR,
+  streamChatResponse,
+  type StreamConfig
+} from "./sharedStreaming"
 
 export const ragMode = async (
   message: string,
@@ -50,7 +50,9 @@ export const ragMode = async (
     useOCR: boolean
     selectedKnowledge: any
     currentChatModelSettings: any
-    setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void
+    setMessages: (
+      messages: Message[] | ((prev: Message[]) => Message[])
+    ) => void
     saveMessageOnSuccess: (data: any) => Promise<string | null>
     saveMessageOnError: (data: any) => Promise<string | null>
     setHistory: (history: ChatHistory) => void
@@ -70,56 +72,13 @@ export const ragMode = async (
     baseUrl: cleanUrl(url)
   })
 
-  let newMessage: Message[] = []
-  let generateMessageId = generateID()
-  const modelInfo = await getModelNicknameByID(selectedModel)
-
-  if (!isRegenerate) {
-    newMessage = [
-      ...messages,
-      {
-        isBot: false,
-        name: "You",
-        message,
-        sources: [],
-        images: []
-      },
-      {
-        isBot: true,
-        name: selectedModel,
-        message: "▋",
-        sources: [],
-        id: generateMessageId,
-        modelImage: modelInfo?.model_avatar,
-        modelName: modelInfo?.model_name || selectedModel
-      }
-    ]
-  } else {
-    newMessage = [
-      ...messages,
-      {
-        isBot: true,
-        name: selectedModel,
-        message: "▋",
-        sources: [],
-        id: generateMessageId,
-        modelImage: modelInfo?.model_avatar,
-        modelName: modelInfo?.model_name || selectedModel
-      }
-    ]
-  }
-  setMessages(newMessage)
-  let fullText = ""
-  let contentToSave = ""
-
   const embeddingModle = await defaultEmbeddingModelForRag()
   const ollamaUrl = await getOllamaURL()
   const ollamaEmbedding = await pageAssistEmbeddingModel({
     model: embeddingModle || selectedModel,
     baseUrl: cleanUrl(ollamaUrl),
     keepAlive:
-      currentChatModelSettings?.keepAlive ??
-      userDefaultModelSettings?.keepAlive
+      currentChatModelSettings?.keepAlive ?? userDefaultModelSettings?.keepAlive
   })
 
   const kbInfo = await getKnowledgeById(selectedKnowledge.id)
@@ -131,177 +90,94 @@ export const ragMode = async (
       knownledge_id: selectedKnowledge.id
     }
   )
-  let timetaken = 0
-  try {
-    let query = message
-    let { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
-      await promptForRag()
+  let source: any[] = []
+  let context: string = ""
+  let query = message
+  let { ragPrompt: systemPrompt, ragQuestionPrompt: questionPrompt } =
+    await promptForRag()
 
-    console.log(kbInfo, "kbInfo")
-    if (kbInfo?.systemPrompt?.trim()) {
-      systemPrompt = kbInfo.systemPrompt
-    }
+  console.log(kbInfo, "kbInfo")
+  if (kbInfo?.systemPrompt?.trim()) {
+    systemPrompt = kbInfo.systemPrompt
+  }
 
-    if (kbInfo?.followupPrompt?.trim()) {
-      questionPrompt = kbInfo.followupPrompt
-    }
+  if (kbInfo?.followupPrompt?.trim()) {
+    questionPrompt = kbInfo.followupPrompt
+  }
 
-
-    if (newMessage.length > 2) {
-      const lastTenMessages = newMessage.slice(-10)
-      lastTenMessages.pop()
-      const chat_history = lastTenMessages
-        .map((message) => {
-          return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
-        })
-        .join("\n")
-      const promptForQuestion = questionPrompt
-        .replaceAll("{chat_history}", chat_history)
-        .replaceAll("{question}", message)
-      const questionOllama = await pageAssistModel({
-        model: selectedModel!,
-        baseUrl: cleanUrl(url)
+  if (messages.length > 2) {
+    const lastTenMessages = messages.slice(-10)
+    lastTenMessages.pop()
+    const chat_history = lastTenMessages
+      .map((message) => {
+        return `${message.isBot ? "Assistant: " : "Human: "}${message.message}`
       })
-      const response = await questionOllama.invoke(promptForQuestion)
-      query = response.content.toString()
-      query = removeReasoning(query)
+      .join("\n")
+    const promptForQuestion = questionPrompt
+      .replaceAll("{chat_history}", chat_history)
+      .replaceAll("{question}", message)
+    const questionOllama = await pageAssistModel({
+      model: selectedModel!,
+      baseUrl: cleanUrl(url)
+    })
+    const response = await questionOllama.invoke(promptForQuestion)
+    query = response.content.toString()
+    query = removeReasoning(query)
+  }
+  const docSize = await getNoOfRetrievedDocs()
+  // const useVS = await isChatWithWebsiteEnabled()
+  // if (useVS) {
+  const docs = await vectorstore.similaritySearchKB(query, docSize)
+  context = formatDocs(docs)
+  source = docs.map((doc) => {
+    return {
+      ...doc,
+      name: doc?.metadata?.source || "untitled",
+      type: doc?.metadata?.type || "unknown",
+      mode: "rag",
+      url: ""
     }
-    const docSize = await getNoOfRetrievedDocs()
-    // const useVS = await isChatWithWebsiteEnabled()
-    let context: string = ""
-    let source: any[] = []
-    // if (useVS) {
-    const docs = await vectorstore.similaritySearchKB(query, docSize)
-    context = formatDocs(docs)
-    source = docs.map((doc) => {
-      return {
-        ...doc,
-        name: doc?.metadata?.source || "untitled",
-        type: doc?.metadata?.type || "unknown",
-        mode: "rag",
-        url: ""
-      }
-    })
-    // } else {
-    //   const docs = await vectorstore.getAllPageContent()
-    //   context = docs.pageContent
-    //   source = docs.metadata.map((doc) => {
-    //     return {
-    //       ...doc,
-    //       name: doc?.source || "untitled",
-    //       type: doc?.type || "unknown",
-    //       mode: "rag",
-    //       url: ""
-    //     }
-    //   })
-    // }
-    //  message = message.trim().replaceAll("\n", " ")
+  })
+  // } else {
+  //   const docs = await vectorstore.getAllPageContent()
+  //   context = docs.pageContent
+  //   source = docs.metadata.map((doc) => {
+  //     return {
+  //       ...doc,
+  //       name: doc?.source || "untitled",
+  //       type: doc?.type || "unknown",
+  //       mode: "rag",
+  //       url: ""
+  //     }
+  //   })
+  // }
+  //  message = message.trim().replaceAll("\n", " ")
 
-    let humanMessage = await humanMessageFormatter({
-      content: [
-        {
-          text: systemPrompt
-            .replace("{context}", context)
-            .replace("{question}", message),
-          type: "text"
-        }
-      ],
-      model: selectedModel,
-      useOCR: useOCR
-    })
-
-    const applicationChatHistory = generateHistory(history, selectedModel)
-
-    let generationInfo: any | undefined = undefined
-
-    const chunks = await ollama.stream(
-      [...applicationChatHistory, humanMessage],
+  let humanMessage = await humanMessageFormatter({
+    content: [
       {
-        signal: signal,
-        callbacks: [
-          {
-            handleLLMEnd(output: any): any {
-              try {
-                generationInfo = output?.generations?.[0][0]?.generationInfo
-              } catch (e) {
-                console.error("handleLLMEnd error", e)
-              }
-            }
-          }
-        ]
+        text: systemPrompt
+          .replace("{context}", context)
+          .replace("{question}", message),
+        type: "text"
       }
-    )
-    let count = 0
-    let reasoningStartTime: Date | undefined = undefined
-    let reasoningEndTime: Date | undefined = undefined
-    let apiReasoning = false
+    ],
+    model: selectedModel,
+    useOCR: useOCR
+  })
 
-    for await (const chunk of chunks) {
-      if (chunk?.additional_kwargs?.reasoning_content) {
-        const reasoningContent = mergeReasoningContent(
-          fullText,
-          chunk?.additional_kwargs?.reasoning_content || ""
-        )
-        contentToSave = reasoningContent
-        fullText = reasoningContent
-        apiReasoning = true
-      } else {
-        if (apiReasoning) {
-          fullText += "</think>"
-          contentToSave += "</think>"
-          apiReasoning = false
-        }
-      }
+  const applicationChatHistory = generateHistory(history, selectedModel)
 
-      contentToSave += chunk?.content
-      fullText += chunk?.content
-      if (count === 0) {
-        setIsProcessing(true)
-      }
-      if (isReasoningStarted(fullText) && !reasoningStartTime) {
-        reasoningStartTime = new Date()
-      }
+  const config = {
+    cursor: CURSOR,
+    reveal: STREAM_REVEAL
+  }
 
-      if (
-        reasoningStartTime &&
-        !reasoningEndTime &&
-        isReasoningEnded(fullText)
-      ) {
-        reasoningEndTime = new Date()
-        const reasoningTime =
-          reasoningEndTime.getTime() - reasoningStartTime.getTime()
-        timetaken = reasoningTime
-      }
-      setMessages((prev) => {
-        return prev.map((message) => {
-          if (message.id === generateMessageId) {
-            return {
-              ...message,
-              message: fullText + "▋",
-              reasoning_time_taken: timetaken
-            }
-          }
-          return message
-        })
-      })
-      count++
-    }
-    // update the message with the full text
-    setMessages((prev) => {
-      return prev.map((message) => {
-        if (message.id === generateMessageId) {
-          return {
-            ...message,
-            message: fullText,
-            sources: source,
-            generationInfo,
-            reasoning_time_taken: timetaken
-          }
-        }
-        return message
-      })
-    })
-
+  const onComplete = async (
+    fullText: string,
+    generationInfo?: any,
+    timetaken?: number
+  ) => {
     setHistory([
       ...history,
       {
@@ -330,7 +206,9 @@ export const ragMode = async (
 
     setIsProcessing(false)
     setStreaming(false)
-  } catch (e) {
+  }
+
+  const onError = async (e: any, fullText: string) => {
     console.log(e)
     const errorSave = await saveMessageOnError({
       e,
@@ -350,7 +228,26 @@ export const ragMode = async (
     }
     setIsProcessing(false)
     setStreaming(false)
-  } finally {
-    setAbortController(null)
   }
+
+  setStreaming(true)
+  setIsProcessing(true)
+
+  await streamChatResponse({
+    ollama,
+    applicationChatHistory,
+    humanMessage,
+    userMessage: message,
+    selectedModel,
+    messages,
+    isRegenerate,
+    signal,
+    config,
+    setMessages,
+    onComplete,
+    onError,
+    image,
+    sources: source,
+    messageType: ""
+  })
 }
