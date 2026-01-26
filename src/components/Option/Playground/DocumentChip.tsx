@@ -1,6 +1,6 @@
 import React from "react"
 import { Globe, X } from "lucide-react"
-import { TabInfo } from "~/hooks/useTabMentions"
+import { TabInfo } from "@/hooks/useTabMentions"
 
 interface DocumentChipProps {
   document: TabInfo

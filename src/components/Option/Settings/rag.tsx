@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Avatar, Form, Input, InputNumber, Select, Skeleton } from "antd"
-import { SaveButton } from "~/components/Common/SaveButton"
+import { SaveButton } from "@/components/Common/SaveButton"
 import {
   defaultEmbeddingChunkOverlap,
   defaultEmbeddingChunkSize,
@@ -9,7 +9,7 @@ import {
   defaultSsplttingSeparator,
   getEmbeddingModels,
   saveForRag
-} from "~/services/ai/ollama"
+} from "@/services/ai/ollama"
 import { SettingPrompt } from "./prompt"
 import { useTranslation } from "react-i18next"
 import { getNoOfRetrievedDocs, getTotalFilePerKB } from "@/services/features/app"

@@ -1,42 +1,67 @@
-import React from "react";
-import { create } from "zustand";
+import React from "react"
+import { create } from "zustand"
+import { useStorage } from "@plasmohq/storage/hook"
 
 type DarkModeState = {
-  mode: "dark" | "light";
-  setMode: (mode: "dark" | "light") => void;
-};
+  mode: "dark" | "light"
+  setMode: (mode: "dark" | "light") => void
+}
+
+type ThemePreference = "system" | "dark" | "light"
 
 export const useDarkModeStore = create<DarkModeState>((set) => ({
   mode:
     typeof window !== "undefined" &&
-    // prefer 'dark' if the system is currently dark
     window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light",
   setMode: (mode) => set({ mode })
-}));
+}))
 
 /**
- * System-driven theme:
- * - Follows browser/OS prefers-color-scheme
- * - No DOM class mutations, no localStorage overrides
- * - toggleDarkMode is a no-op to retain API compatibility
+ * Theme handling with override
+ * - preference: system | light | dark (persisted via storage)
+ * - effective mode applied to <html> via `dark` class for Tailwind
+ * - AntD algorithm consumers use returned `mode`
  */
 export const useDarkMode = () => {
-  const { mode, setMode } = useDarkModeStore();
+  const { mode, setMode } = useDarkModeStore()
+  const [preference] = useStorage<ThemePreference>("themePreference", "system")
 
   React.useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const apply = () => setMode(mq.matches ? "dark" : "light");
-    apply();
-    mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
-  }, [setMode]);
+    const mq = window.matchMedia("(prefers-color-scheme: dark)")
+
+    const computeEffective = (): "dark" | "light" => {
+      if (preference === "system") return mq.matches ? "dark" : "light"
+      return preference
+    }
+
+    const apply = () => {
+      const effective = computeEffective()
+      setMode(effective)
+      const root = document.documentElement
+      if (effective === "dark") {
+        root.classList.add("dark")
+      } else {
+        root.classList.remove("dark")
+      }
+    }
+
+    apply()
+
+    // Re-apply on system change only when following system
+    const onChange = () => {
+      if (preference === "system") apply()
+    }
+
+    mq.addEventListener("change", onChange)
+    return () => mq.removeEventListener("change", onChange)
+  }, [setMode, preference])
 
   const toggleDarkMode = () => {
-    // no-op: theming follows system preference
-  };
+    // kept for backward compatibility; settings screen controls preference
+  }
 
-  return { mode, toggleDarkMode };
-};
+  return { mode, toggleDarkMode }
+}

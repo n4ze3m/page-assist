@@ -1,5 +1,5 @@
-import { SettingsLayout } from "~/components/Layouts/SettingsOptionLayout"
-import OptionLayout from "~/components/Layouts/Layout"
+import OptionLayout from "@/components/Layouts/Layout"
+import { SettingsLayout } from "@/components/Layouts/SettingsOptionLayout"
 import { RagSettings } from "@/components/Option/Settings/rag"
 
 const OptionRagSettings = () => {

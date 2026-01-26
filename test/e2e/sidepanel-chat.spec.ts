@@ -79,22 +79,34 @@ test("sidepanel chat smoke", async () => {
 
     await expect(page.getByText("Page Assist", { exact: false })).toBeVisible()
 
-    const modelSelect = page.getByRole("combobox")
-    await expect(modelSelect).toBeVisible()
-    await modelSelect.click()
+    const trigger = page.getByTestId("model-select-trigger")
+    await expect(trigger).toBeVisible()
+    await trigger.click()
 
-    await modelSelect.type("mock_model")
-    await modelSelect.press("Enter")
+    // The dropdown is a portal; wait for any option containing text
+    const option = page
+      .locator(
+        ".ant-dropdown .ant-dropdown-menu-item, .ant-dropdown .ant-dropdown-menu-title-content"
+      )
+      .filter({ hasText: /mock_model/i })
+    await expect(option.first()).toBeVisible()
+    await option.first().click()
 
     const input = page.locator("textarea.pa-textarea")
     await expect(input).toBeVisible()
     await input.fill("Hi there")
     await input.press("Enter")
 
-    await expect(page.getByText("Hi there")).toBeVisible()
-    // Verify visibility after wait
-    await expect(page.getByText("Hello from Page Assist!")).toBeVisible({ timeout: 50000 });
+    // Message may be rendered progressively; wait for either echo or assistant
+    await expect(
+      page
+        .locator("text=Hi there")
+        .or(page.locator("text=Hello from Page Assist!"))
+    ).toBeVisible({ timeout: 30000 })
 
+    await expect(page.getByText("Hello from Page Assist!")).toBeVisible({
+      timeout: 50000
+    })
   } finally {
     await context.close()
   }

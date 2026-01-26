@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { isGptOssModel } from "~/libs/model-utils"
+import { isGptOssModel } from "@/libs/model-utils"
 
 type CurrentChatModelSettings = {
   f16KV?: boolean

@@ -1,5 +1,5 @@
 import React from "react"
-import { type Message } from "~/store/option"
+import { type Message } from "@/store/option"
 import { generateID } from "@/db/dexie/helpers"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import {

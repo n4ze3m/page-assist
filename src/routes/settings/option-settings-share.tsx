@@ -1,8 +1,8 @@
-import { SettingsLayout } from "~/components/Layouts/SettingsOptionLayout"
-import OptionLayout from "~/components/Layouts/Layout"
-import { OptionShareBody } from "~/components/Option/Share"
+import OptionLayout from "@/components/Layouts/Layout"
+import { SettingsLayout } from "@/components/Layouts/SettingsOptionLayout"
+import { OptionShareBody } from "@/components/Option/Share"
 
- const OptionShare = () => {
+const OptionShare = () => {
   return (
     <OptionLayout>
       <SettingsLayout>

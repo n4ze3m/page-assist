@@ -1,7 +1,7 @@
 import { useStorage } from "@plasmohq/storage/hook"
 import { InputNumber, Select, Switch } from "antd"
 import { useTranslation } from "react-i18next"
-import { SUPPORTED_LANGUAGES } from "~/utils/supported-languages"
+import { SUPPORTED_LANGUAGES } from "@/utils/supported-languages"
 
 export const SSTSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
   const { t } = useTranslation("settings")

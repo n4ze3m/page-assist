@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Avatar, Form, Input, Select, Skeleton, Switch } from "antd"
-import { SaveButton } from "~/components/Common/SaveButton" 
+import { SaveButton } from "@/components/Common/SaveButton" 
 import {
   isTitleGenEnabled,
   setTitleGenEnabled,
@@ -9,7 +9,7 @@ import {
   titleGenerationModel,
   DEFAULT_TITLE_GEN_PROMPT,
   setTitleGenerationModel
-} from "~/services/features/title"
+} from "@/services/features/title"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
 import { useStorage } from "@plasmohq/storage/hook"
 import { fetchChatModels } from "@/services/ai/ollama"

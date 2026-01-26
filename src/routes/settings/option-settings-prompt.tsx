@@ -1,8 +1,8 @@
-import { SettingsLayout } from "~/components/Layouts/SettingsOptionLayout"
-import OptionLayout from "~/components/Layouts/Layout"
-import { PromptBody } from "~/components/Option/Prompt"
+import OptionLayout from "@/components/Layouts/Layout"
+import { SettingsLayout } from "@/components/Layouts/SettingsOptionLayout"
+import { PromptBody } from "@/components/Option/Prompt"
 
- const OptionPrompt = () => {
+const OptionPrompt = () => {
   return (
     <OptionLayout>
       <SettingsLayout>

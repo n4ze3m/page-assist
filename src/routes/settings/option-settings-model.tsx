@@ -1,6 +1,6 @@
-import { SettingsLayout } from "~/components/Layouts/SettingsOptionLayout"
-import OptionLayout from "~/components/Layouts/Layout"
-import { ModelsBody } from "~/components/Option/Models"
+import OptionLayout from "@/components/Layouts/Layout"
+import { SettingsLayout } from "@/components/Layouts/SettingsOptionLayout"
+import { ModelsBody } from "@/components/Option/Models"
 
 const OptionModal = () => {
   return (

@@ -1,12 +1,20 @@
 import { useForm } from "@mantine/form"
 import { useMutation } from "@tanstack/react-query"
 import React from "react"
-import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
-import { useMessage } from "~/hooks/useMessage"
-import { toBase64 } from "~/libs/to-base64"
-import { Checkbox, Dropdown, Image, Switch, Tooltip, Popover, Radio } from "antd"
-import { useWebUI } from "~/store/webui"
-import { defaultEmbeddingModelForRag } from "~/services/ai/ollama"
+import useDynamicTextareaSize from "@/hooks/useDynamicTextareaSize"
+import { useMessage } from "@/hooks/useMessage"
+import { toBase64 } from "@/libs/to-base64"
+import {
+  Checkbox,
+  Dropdown,
+  Image,
+  Switch,
+  Tooltip,
+  Popover,
+  Radio
+} from "antd"
+import { useWebUI } from "@/store/webui"
+import { defaultEmbeddingModelForRag } from "@/services/ai/ollama"
 import {
   ImageIcon,
   MicIcon,
@@ -29,8 +37,8 @@ import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/features/search"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useFocusShortcuts } from "@/hooks/keyboard"
-import { isThinkingCapableModel, isGptOssModel } from "~/libs/model-utils"
-import { useStoreChatModelSettings } from "~/store/model"
+import { isThinkingCapableModel, isGptOssModel } from "@/libs/model-utils"
+import { useStoreChatModelSettings } from "@/store/model"
 import { getVariable } from "@/utils/select-variable"
 import { useMessageQueue } from "@/hooks/useMessageQueue"
 import { QueuedMessagesList } from "@/components/Common/QueuedMessagesList"
@@ -602,7 +610,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     <textarea
                       onKeyDown={(e) => handleKeyDown(e)}
                       ref={textareaRef}
-                      className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
+                      className="pa-textarea px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
                       onPaste={handlePaste}
                       rows={1}
                       style={{ minHeight: "60px" }}

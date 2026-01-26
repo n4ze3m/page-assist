@@ -1,6 +1,6 @@
 import { useStorage } from "@plasmohq/storage/hook"
-import OptionLayout from "~/components/Layouts/Layout"
-import { Playground } from "~/components/Option/Playground/Playground"
+import OptionLayout from "@/components/Layouts/Layout"
+import { Playground } from "@/components/Option/Playground/Playground"
 
 const OptionIndex = () => {
   return (

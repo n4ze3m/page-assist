@@ -1,8 +1,8 @@
-import { SettingsLayout } from "~/components/Layouts/SettingsOptionLayout"
-import OptionLayout from "~/components/Layouts/Layout"
+import OptionLayout from "@/components/Layouts/Layout"
+import { SettingsLayout } from "@/components/Layouts/SettingsOptionLayout"
 import { KnowledgeSettings } from "@/components/Option/Knowledge"
 
- const OptionKnowledgeBase = () => {
+const OptionKnowledgeBase = () => {
   return (
     <OptionLayout>
       <SettingsLayout>

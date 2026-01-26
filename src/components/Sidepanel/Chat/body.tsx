@@ -1,6 +1,6 @@
 import React from "react"
-import { PlaygroundMessage } from "~/components/Common/Playground/Message"
-import { useMessage } from "~/hooks/useMessage"
+import { PlaygroundMessage } from "@/components/Common/Playground/Message"
+import { useMessage } from "@/hooks/useMessage"
 import { EmptySidePanel } from "../Chat/empty"
 import { useWebUI } from "@/store/webui"
 import { MessageSourcePopup } from "@/components/Common/Playground/MessageSourcePopup"
@@ -12,7 +12,7 @@ const SidePanelBodyComponent = () => {
     streaming,
     regenerateLastMessage,
     editMessage,
-    isSearchingInternet, 
+    isSearchingInternet,
     createChatBranch,
     temporaryChat,
     actionInfo
@@ -72,6 +72,7 @@ const SidePanelBodyComponent = () => {
             modelImage={message?.modelImage}
             modelName={message?.modelName}
             temporaryChat={temporaryChat}
+            uiStreaming={message?.uiStreaming}
             actionInfo={index === lastGroupIndex ? actionInfo : null}
             messageKind={message?.messageKind}
             toolCalls={message?.toolCalls}

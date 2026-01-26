@@ -1,8 +1,8 @@
-import { SettingsLayout } from "~/components/Layouts/SettingsOptionLayout"
-import OptionLayout from "~/components/Layouts/Layout"
-import { SettingsOllama } from "~/components/Option/Settings/ollama"
+import OptionLayout from "@/components/Layouts/Layout"
+import { SettingsLayout } from "@/components/Layouts/SettingsOptionLayout"
+import { SettingsOllama } from "@/components/Option/Settings/ollama"
 
- const OptionOllamaSettings = () => {
+const OptionOllamaSettings = () => {
   return (
     <OptionLayout>
       <SettingsLayout>
