@@ -133,5 +133,10 @@ export const OAI_API_PROVIDERS = [
     label: "Canopy Wave",
     value: "canopywave",
     baseUrl: "https://inference.canopywave.io/v1"
+  },
+  {
+    label: 'BigModel (Zhipu)',
+    value: 'zhipu',
+    baseUrl: 'https://open.bigmodel.cn/api/paas/v4'
   }
 ]
