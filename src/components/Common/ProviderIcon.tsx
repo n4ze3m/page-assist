@@ -24,6 +24,7 @@ import { HuggingFaceIcon } from "../Icons/HuggingFaceIcon"
 import { VercelIcon } from "../Icons/VercelIcon"
 import { ChutesIcon } from "../Icons/ChutesIcon"
 import { AnthropicIcon } from "../Icons/AnthropicIcon"
+import { BigModelZhipuIcon } from "../Icons/BigModelZhipuIcon"
 
 export const ProviderIcons = ({
   provider,
@@ -87,6 +88,8 @@ export const ProviderIcons = ({
       return <AnthropicIcon className={className} />
     case "canopywave":
       return <TreePineIcon className={className} />
+    case 'zhipu':
+      return <BigModelZhipuIcon className={className} />
     default:
       return <OllamaIcon className={className} />
   }

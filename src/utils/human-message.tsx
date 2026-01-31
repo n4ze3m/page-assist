@@ -111,7 +111,7 @@ ${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
         })
       }
     }
-
+ 
     // Handle string content or fallback
     if (typeof content === "string") {
       return new HumanMessage({
@@ -122,9 +122,12 @@ ${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
 
     if (Array.isArray(content)) {
       return new HumanMessage({
-        content: content?.map((c: any) => c.text).join(" ") + memoryContext
+        content: content?.map((c: any, index: number) => 
+          c.type === "text" && index === 0 ? { ...c, text: c.text + memoryContext } : c
+        )
       })
     }
+
 
     return new HumanMessage({
       content
