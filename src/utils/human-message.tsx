@@ -111,8 +111,7 @@ ${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
         })
       }
     }
-
-    console.log('content', content)
+ 
     // Handle string content or fallback
     if (typeof content === "string") {
       return new HumanMessage({
