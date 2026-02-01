@@ -53,3 +53,5 @@ keys.json
 /docs/.vitepress/cache/
 package-lock.json
 /memory-bank/
+/.planning/
+bun.lock
