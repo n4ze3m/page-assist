@@ -29,6 +29,8 @@ By default, Page Assist supports the following OpenAI Compatible API endpoints:
 - Vercel AI Gateway
 - Chutes
 - Anthropic (Claude)
+- CanopyWave
+- BigModel (Zhipu)
 
 
 ## Adding OpenAI Compatible API
