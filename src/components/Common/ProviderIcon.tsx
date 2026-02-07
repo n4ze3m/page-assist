@@ -1,4 +1,4 @@
-import { ChromeIcon, CpuIcon, TreePineIcon } from "lucide-react"
+import { ChromeIcon, CpuIcon } from "lucide-react"
 import { OllamaIcon } from "../Icons/Ollama"
 import { FireworksMonoIcon } from "../Icons/Fireworks"
 import { GroqMonoIcon } from "../Icons/Groq"
@@ -25,6 +25,7 @@ import { VercelIcon } from "../Icons/VercelIcon"
 import { ChutesIcon } from "../Icons/ChutesIcon"
 import { AnthropicIcon } from "../Icons/AnthropicIcon"
 import { BigModelZhipuIcon } from "../Icons/BigModelZhipuIcon"
+import { CanopyWaveIcon } from "../Icons/CanopyWaveIcon"
 
 export const ProviderIcons = ({
   provider,
@@ -87,7 +88,7 @@ export const ProviderIcons = ({
     case "anthropic":
       return <AnthropicIcon className={className} />
     case "canopywave":
-      return <TreePineIcon className={className} />
+      return <CanopyWaveIcon className={className} />
     case 'zhipu':
       return <BigModelZhipuIcon className={className} />
     default:
