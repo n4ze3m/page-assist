@@ -33,7 +33,12 @@ const reformatMessages = (messages: Message[], username: string) => {
         : username,
       isBot: message.isBot,
       message: message.message,
-      images: message.images
+      reasoning_time_taken: message.reasoning_time_taken,
+      search: message.search,
+      images: message.images,
+      modelName: message.modelName,
+      modelImage: message.modelImage,
+      sources: message.sources
     }
   })
 }
