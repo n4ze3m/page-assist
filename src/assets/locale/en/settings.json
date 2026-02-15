@@ -99,6 +99,9 @@
       "persistChatInput": {
         "label": "Persist Chat Input (Save unsent messages)"
       },
+      "enableMessageQueue": {
+        "label": "Enable Message Queue While Streaming"
+      },
       "tableTextWrap": {
         "label": "Enable Text Wrapping in Markdown Tables"
       },

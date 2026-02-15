@@ -127,6 +127,11 @@ export const GeneralSettings = () => {
     false
   )
 
+  const [enableMessageQueue, setEnableMessageQueue] = useStorage(
+    "enableMessageQueue",
+    false
+  )
+
   const [tableTextWrap, setTableTextWrap] = useStorage("tableTextWrap", false)
 
   const [enableMemory, setEnableMemory] = useStorage("enableMemory", false)
@@ -618,6 +623,22 @@ export const GeneralSettings = () => {
           onChange={(value) => {
             setSidebarPosition(value)
           }}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t(
+              "generalSettings.settings.enableMessageQueue.label",
+              "Enable Message Queue While Streaming"
+            )}
+          </span>
+        </div>
+
+        <Switch
+          checked={enableMessageQueue}
+          onChange={(checked) => setEnableMessageQueue(checked)}
         />
       </div>
 

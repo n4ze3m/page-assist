@@ -28,6 +28,8 @@ import { useFocusShortcuts } from "@/hooks/keyboard"
 import { isThinkingCapableModel, isGptOssModel } from "~/libs/model-utils"
 import { useStoreChatModelSettings } from "~/store/model"
 import { getVariable } from "@/utils/select-variable"
+import { useMessageQueue } from "@/hooks/useMessageQueue"
+import { QueuedMessagesList } from "@/components/Common/QueuedMessagesList"
 
 type Props = {
   dropedFile: File | undefined
@@ -48,6 +50,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     "sidepanelPersistedMessage",
     ""
   )
+  const [enableMessageQueue] = useStorage("enableMessageQueue", false)
 
   const form = useForm({
     initialValues: {
@@ -110,49 +113,11 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         e,
         sendWhenEnter,
         typing,
-        isSending
+        isSending: streaming && !enableMessageQueue
       })
     ) {
       e.preventDefault()
-      form.onSubmit(async (value) => {
-        if (
-          value.message.trim().length === 0 &&
-          (!value.images || value.images.length === 0)
-        ) {
-          return
-        }
-        await stopListening()
-        if (!selectedModel || selectedModel.length === 0) {
-          form.setFieldError("message", t("formError.noModel"))
-          return
-        }
-        if (chatMode === "rag") {
-          const defaultEM = await defaultEmbeddingModelForRag()
-          if (!defaultEM && chatWithWebsiteEmbedding) {
-            form.setFieldError("message", t("formError.noEmbeddingModel"))
-            return
-          }
-        }
-        if (webSearch) {
-          const defaultEM = await defaultEmbeddingModelForRag()
-          const simpleSearch = await getIsSimpleInternetSearch()
-          if (!defaultEM && !simpleSearch) {
-            form.setFieldError("message", t("formError.noEmbeddingModel"))
-            return
-          }
-        }
-        form.reset()
-        // Clear persisted message when sent
-        if (persistChatInput) {
-          setPersistedMessage("")
-        }
-        textAreaFocus()
-        await sendMessage({
-          image: value.images && value.images.length > 0 ? value.images[0] : "",
-          images: value.images,
-          message: value.message.trim()
-        })
-      })()
+      submitForm()
     }
   }
 
@@ -225,6 +190,123 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       textAreaFocus()
     }
   })
+  const validateBeforeMessageSend = async () => {
+    if (!selectedModel || selectedModel.length === 0) {
+      form.setFieldError("message", t("formError.noModel"))
+      return false
+    }
+    if (chatMode === "rag") {
+      const defaultEM = await defaultEmbeddingModelForRag()
+      if (!defaultEM && chatWithWebsiteEmbedding) {
+        form.setFieldError("message", t("formError.noEmbeddingModel"))
+        return false
+      }
+    }
+    if (webSearch) {
+      const defaultEM = await defaultEmbeddingModelForRag()
+      const simpleSearch = await getIsSimpleInternetSearch()
+      if (!defaultEM && !simpleSearch) {
+        form.setFieldError("message", t("formError.noEmbeddingModel"))
+        return false
+      }
+    }
+
+    return true
+  }
+
+  const sendQueuedTextMessage = async (payload: {
+    message: string
+    images: string[]
+  }) => {
+    const trimmedMessage = payload.message.trim()
+    const hasImages = payload.images.length > 0
+    if (!trimmedMessage && !hasImages) {
+      throw new Error("Queue item is empty")
+    }
+
+    const isValid = await validateBeforeMessageSend()
+    if (!isValid) {
+      throw new Error("Validation failed")
+    }
+
+    await sendMessage({
+      image: payload.images.length > 0 ? payload.images[0] : "",
+      images: payload.images,
+      message: trimmedMessage
+    })
+  }
+
+  const {
+    queuedMessages,
+    enqueueMessage,
+    deleteQueuedMessage,
+    takeQueuedMessage,
+    sendQueuedMessageNow
+  } = useMessageQueue({
+    enabled: enableMessageQueue,
+    streaming,
+    onSendMessage: sendQueuedTextMessage,
+    onStopStreaming: stopStreamingRequest
+  })
+
+  const sendFormValue = async (value: {
+    message: string
+    image: string
+    images: string[]
+  }) => {
+    if (
+      value.message.trim().length === 0 &&
+      (!value.images || value.images.length === 0)
+    ) {
+      return
+    }
+
+    const isValid = await validateBeforeMessageSend()
+    if (!isValid) {
+      return
+    }
+
+    form.reset()
+    if (persistChatInput) {
+      setPersistedMessage("")
+    }
+    textAreaFocus()
+
+    await sendMessage({
+      image: value.images && value.images.length > 0 ? value.images[0] : "",
+      images: value.images,
+      message: value.message.trim()
+    })
+  }
+
+  const handleFormSubmit = async (value: {
+    message: string
+    image: string
+    images: string[]
+  }) => {
+    await stopListening()
+
+    if (enableMessageQueue && streaming) {
+      const enqueued = enqueueMessage({
+        message: value.message,
+        images: value.images || []
+      })
+      if (enqueued) {
+        form.setFieldValue("message", "")
+        form.setFieldValue("images", [])
+        if (persistChatInput) {
+          setPersistedMessage("")
+        }
+      }
+      return
+    }
+
+    await sendFormValue(value)
+  }
+
+  const submitForm = () => {
+    form.onSubmit(handleFormSubmit)()
+  }
 
   React.useEffect(() => {
     const handleDrop = (e: DragEvent) => {
@@ -280,6 +362,26 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
           <div
             data-istemporary-chat={temporaryChat}
             className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-[#404040] data-[istemporary-chat='true']:bg-gray-200 data-[istemporary-chat='true']:dark:bg-black`}>
+            {enableMessageQueue && (
+              <QueuedMessagesList
+                queuedMessages={queuedMessages}
+                onDelete={deleteQueuedMessage}
+                onEdit={(id) => {
+                  const queuedItem = takeQueuedMessage(id)
+                  if (!queuedItem) {
+                    return
+                  }
+                  form.setFieldValue("message", queuedItem.message)
+                  form.setFieldValue("images", queuedItem.images || [])
+                  if (persistChatInput) {
+                    setPersistedMessage(queuedItem.message)
+                  }
+                  textAreaFocus()
+                }}
+                onSend={sendQueuedMessageNow}
+                title={t("form.queue.title", "Queued messages")}
+              />
+            )}
             {form.values.images && form.values.images.length > 0 && (
               <div className="p-2 border-b border-gray-200 dark:border-[#404040]">
                 <div className="flex flex-wrap gap-2">
@@ -305,51 +407,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
             <div>
               <div className="flex">
                 <form
-                  onSubmit={form.onSubmit(async (value) => {
-                    if (!selectedModel || selectedModel.length === 0) {
-                      form.setFieldError("message", t("formError.noModel"))
-                      return
-                    }
-                    if (chatMode === "rag") {
-                      const defaultEM = await defaultEmbeddingModelForRag()
-                      if (!defaultEM && chatWithWebsiteEmbedding) {
-                        form.setFieldError(
-                          "message",
-                          t("formError.noEmbeddingModel")
-                        )
-                        return
-                      }
-                    }
-                    if (webSearch) {
-                      const defaultEM = await defaultEmbeddingModelForRag()
-                      const simpleSearch = await getIsSimpleInternetSearch()
-                      if (!defaultEM && !simpleSearch) {
-                        form.setFieldError(
-                          "message",
-                          t("formError.noEmbeddingModel")
-                        )
-                        return
-                      }
-                    }
-                    await stopListening()
-                    if (
-                      value.message.trim().length === 0 &&
-                      (!value.images || value.images.length === 0)
-                    ) {
-                      return
-                    }
-                    form.reset()
-                    // Clear persisted message when sent
-                    if (persistChatInput) {
-                      setPersistedMessage("")
-                    }
-                    textAreaFocus()
-                    await sendMessage({
-                      image: value.images && value.images.length > 0 ? value.images[0] : "",
-                      images: value.images,
-                      message: value.message.trim()
-                    })
-                  })}
+                  onSubmit={form.onSubmit(handleFormSubmit)}
                   className="shrink-0 flex-grow  flex flex-col items-center ">
                   <input
                     id="file-upload"
@@ -512,87 +570,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           <ImageIcon className="h-4 w-4" />
                         </button>
                       </Tooltip>
-                      {!streaming ? (
-                        <Dropdown.Button
-                          htmlType="submit"
-                          disabled={isSending}
-                          className="!justify-end !w-auto"
-                          icon={
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-4 h-4">
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                              />
-                            </svg>
-                          }
-                          menu={{
-                            items: [
-                              {
-                                key: 1,
-                                label: (
-                                  <Checkbox
-                                    checked={sendWhenEnter}
-                                    onChange={(e) =>
-                                      setSendWhenEnter(e.target.checked)
-                                    }>
-                                    {t("sendWhenEnter")}
-                                  </Checkbox>
-                                )
-                              },
-                              {
-                                key: 2,
-                                label: (
-                                  <Checkbox
-                                    checked={chatMode === "rag"}
-                                    onChange={(e) => {
-                                      setChatMode(
-                                        e.target.checked ? "rag" : "normal"
-                                      )
-                                    }}>
-                                    {t("common:chatWithCurrentPage")}
-                                  </Checkbox>
-                                )
-                              },
-                              {
-                                key: 3,
-                                label: (
-                                  <Checkbox
-                                    checked={useOCR}
-                                    onChange={(e) =>
-                                      setUseOCR(e.target.checked)
-                                    }>
-                                    {t("useOCR")}
-                                  </Checkbox>
-                                )
-                              }
-                            ]
-                          }}>
-                          <div className="inline-flex gap-2">
-                            {sendWhenEnter ? (
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                className="h-4 w-4"
-                                viewBox="0 0 24 24">
-                                <path d="M9 10L4 15 9 20"></path>
-                                <path d="M20 4v7a4 4 0 01-4 4H4"></path>
-                              </svg>
-                            ) : null}
-                            {t("common:submit")}
-                          </div>
-                        </Dropdown.Button>
-                      ) : (
+                      {streaming && !enableMessageQueue ? (
                         <Tooltip title={t("tooltip.stopStreaming")}>
                           <button
                             type="button"
@@ -601,6 +579,100 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             <StopCircleIcon className="h-5 w-5" />
                           </button>
                         </Tooltip>
+                      ) : (
+                        <div className="inline-flex items-center gap-2">
+                          {streaming && (
+                            <Tooltip title={t("tooltip.stopStreaming")}>
+                              <button
+                                type="button"
+                                onClick={stopStreamingRequest}
+                                className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-[#404040] rounded-md p-1">
+                                <StopCircleIcon className="h-5 w-5" />
+                              </button>
+                            </Tooltip>
+                          )}
+                          <Dropdown.Button
+                            htmlType="submit"
+                            disabled={isSending && !enableMessageQueue}
+                            className="!justify-end !w-auto"
+                            icon={
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-4 h-4">
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                                />
+                              </svg>
+                            }
+                            menu={{
+                              items: [
+                                {
+                                  key: 1,
+                                  label: (
+                                    <Checkbox
+                                      checked={sendWhenEnter}
+                                      onChange={(e) =>
+                                        setSendWhenEnter(e.target.checked)
+                                      }>
+                                      {t("sendWhenEnter")}
+                                    </Checkbox>
+                                  )
+                                },
+                                {
+                                  key: 2,
+                                  label: (
+                                    <Checkbox
+                                      checked={chatMode === "rag"}
+                                      onChange={(e) => {
+                                        setChatMode(
+                                          e.target.checked ? "rag" : "normal"
+                                        )
+                                      }}>
+                                      {t("common:chatWithCurrentPage")}
+                                    </Checkbox>
+                                  )
+                                },
+                                {
+                                  key: 3,
+                                  label: (
+                                    <Checkbox
+                                      checked={useOCR}
+                                      onChange={(e) =>
+                                        setUseOCR(e.target.checked)
+                                      }>
+                                      {t("useOCR")}
+                                    </Checkbox>
+                                  )
+                                }
+                              ]
+                            }}>
+                            <div className="inline-flex gap-2">
+                              {sendWhenEnter ? (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  className="h-4 w-4"
+                                  viewBox="0 0 24 24">
+                                  <path d="M9 10L4 15 9 20"></path>
+                                  <path d="M20 4v7a4 4 0 01-4 4H4"></path>
+                                </svg>
+                              ) : null}
+                              {streaming && enableMessageQueue
+                                ? t("form.queue.add", "Queue")
+                                : t("common:submit")}
+                            </div>
+                          </Dropdown.Button>
+                        </div>
                       )}
                     </div>
                   </div>
