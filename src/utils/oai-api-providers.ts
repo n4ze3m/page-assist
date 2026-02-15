@@ -138,5 +138,10 @@ export const OAI_API_PROVIDERS = [
     label: 'BigModel (Zhipu)',
     value: 'zhipu',
     baseUrl: 'https://open.bigmodel.cn/api/paas/v4'
+  },
+  {
+    label: 'MiniMax',
+    value: 'minimax',
+    baseUrl: 'https://api.minimax.io/v1'
   }
 ]
