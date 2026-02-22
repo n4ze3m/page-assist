@@ -56,6 +56,9 @@
       "openReasoning": {
         "label": "預設展開推理過程"
       },
+      "defaultThinkingMode": {
+        "label": "在表單中顯示思考模式狀態"
+      },
       "userChatBubble": {
         "label": "使用對話泡泡顯示使用者訊息"
       },
@@ -89,6 +92,28 @@
       },
       "youtubeAutoSummarize": {
         "label": "在 YouTube 影片顯示「總結」按鈕。"
+      },
+      "hideReasoningWidget": {
+        "label": "從 AI 訊息中隱藏推理元件"
+      },
+      "persistChatInput": {
+        "label": "保留聊天輸入（儲存未送出的訊息）"
+      },
+      "enableMessageQueue": {
+        "label": "在串流時啟用訊息佇列"
+      },
+      "tableTextWrap": {
+        "label": "在 Markdown 表格中啟用文字換行"
+      },
+      "showMoreForLargeMessage": {
+        "label": "對於較長的使用者訊息顯示「顯示更多」"
+      },
+      "sidebarPosition": {
+        "label": "側邊欄位置",
+        "options": {
+          "left": "左側",
+          "right": "右側"
+        }
       }
     },
     "sidepanelRag": {
@@ -143,6 +168,16 @@
       "firecrawlAPIKey": {
         "label": "Firecrawl API 金鑰",
         "placeholder": "輸入您的 Firecrawl API 金鑰"
+      },
+      "domainFilter": {
+        "label": "網域過濾清單",
+        "description": "僅顯示來自這些網域的結果",
+        "placeholder": "例如：example.com"
+      },
+      "blockedDomains": {
+        "label": "封鎖網域",
+        "description": "排除來自這些網域的結果",
+        "placeholder": "例如：spam.com"
       }
     },
     "system": {
