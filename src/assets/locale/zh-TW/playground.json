@@ -16,10 +16,21 @@
     "webSearch": {
       "on": "開",
       "off": "關"
+    },
+    "thinking": {
+      "on": "開啟",
+      "off": "關閉",
+      "level": "等級",
+      "levels": {
+        "low": "低",
+        "medium": "中",
+        "high": "高"
+      }
     }
   },
   "tooltip": {
     "searchInternet": "搜尋網路",
+    "thinking": "啟用推理模式以查看模型的思考過程",
     "speechToText": "語音轉文字",
     "uploadImage": "上傳圖片",
     "stopStreaming": "停止串流",
