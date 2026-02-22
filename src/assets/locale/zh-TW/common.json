@@ -201,5 +201,16 @@
   "cancelPullingModel": {
     "confirm": "確定要取消下載嗎？這將會停止下載過程。根據 Ollama 說明文件，您可以從中斷處重新開始下載。"
   },
-  "saveChat": "儲存聊天"
+  "saveChat": "儲存聊天",
+  "projects": "專案",
+  "projectName": "專案名稱",
+  "newProject": "新增專案",
+  "rename": "重新命名",
+  "yourChats": "您的聊天",
+  "search": "搜尋",
+  "searchResults": "搜尋結果",
+  "loading": "載入中",
+  "deleteProjectConfirmation": "確定要刪除此專案資料夾嗎？聊天紀錄將移回「您的聊天」。",
+  "generateTitle": "使用 AI 生成標題",
+  "generateTitleError": "無法生成標題"
 }
