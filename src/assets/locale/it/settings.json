@@ -68,6 +68,55 @@
       },
       "sidepanelTemporaryChat": {
         "label": "Abilita Chat Temporanea nel Pannello Laterale per impostazione predefinita"
+      },
+      "defaultCopilotPrompt": {
+        "label": "Prompt predefinito per il Pannello Laterale (Copilot)",
+        "placeholder": "Seleziona un prompt"
+      },
+      "defaultThinkingMode": {
+        "label": "Mostra lo stato della Modalità Pensiero nei moduli"
+      },
+      "defaultWebUIPrompt": {
+        "label": "Prompt predefinito per la Web UI",
+        "placeholder": "Seleziona un prompt"
+      },
+      "enableMessageQueue": {
+        "label": "Abilita la coda dei messaggi durante lo streaming"
+      },
+      "hideReasoningWidget": {
+        "label": "Nascondi il widget di ragionamento dai messaggi AI"
+      },
+      "ocrLanguage": {
+        "label": "Lingua OCR predefinita",
+        "placeholder": "Seleziona una lingua OCR"
+      },
+      "optimizeQueueForSmallScreen": {
+        "label": "Ottimizza l'interfaccia chat per schermi piccoli"
+      },
+      "persistChatInput": {
+        "label": "Mantieni l'input della chat (salva i messaggi non inviati)"
+      },
+      "removeReasoningTagFromCopy": {
+        "label": "Rimuovi il tag di ragionamento dal testo copiato"
+      },
+      "showMoreForLargeMessage": {
+        "label": "Mostra \"Mostra altro\" per i messaggi utente lunghi"
+      },
+      "sidebarPosition": {
+        "label": "Posizione della barra laterale",
+        "options": {
+          "left": "Sinistra",
+          "right": "Destra"
+        }
+      },
+      "tableTextWrap": {
+        "label": "Abilita l'andata a capo del testo nelle tabelle Markdown"
+      },
+      "webuiTemporaryChat": {
+        "label": "Abilita la chat temporanea nella Web UI per impostazione predefinita"
+      },
+      "youtubeAutoSummarize": {
+        "label": "Mostra il pulsante \"Riassumi\" sui video di YouTube."
       }
     },
     "sidepanelRag": {
@@ -107,6 +156,31 @@
       },
       "searchOnByDefault": {
         "label": "Ricerca Internet attiva per impostazione predefinita"
+      },
+      "blockedDomains": {
+        "description": "Escludi i risultati provenienti da questi domini",
+        "label": "Domini bloccati",
+        "placeholder": "es. spam.com"
+      },
+      "domainFilter": {
+        "description": "Mostra solo i risultati provenienti da questi domini",
+        "label": "Elenco filtro domini",
+        "placeholder": "es. example.com"
+      },
+      "exa": {
+        "label": "Chiave API Exa",
+        "placeholder": "Inserisci la tua chiave API Exa"
+      },
+      "firecrawlAPIKey": {
+        "label": "Chiave API Firecrawl",
+        "placeholder": "Inserisci la tua chiave API Firecrawl"
+      },
+      "googleDomain": {
+        "label": "Dominio Google"
+      },
+      "tavilyApi": {
+        "label": "Chiave API Tavily",
+        "placeholder": "Inserisci la tua chiave API Tavily"
       }
     },
     "system": {
@@ -129,6 +203,21 @@
         "button": "Importa dati",
         "success": "Importazione riuscita",
         "error": "Errore di importazione"
+      },
+      "actionIcon": {
+        "label": "Imposta l'azione predefinita per i clic sull'icona dell'estensione"
+      },
+      "chatBackgroundImage": {
+        "label": "Immagine di sfondo della chat"
+      },
+      "contextMenu": {
+        "label": "Imposta l'azione predefinita per il menu contestuale"
+      },
+      "fontSize": {
+        "label": "Dimensione carattere"
+      },
+      "webuiBtnSidePanel": {
+        "label": "Mostra il pulsante Web UI nel pannello laterale"
       }
     },
     "tts": {
@@ -152,6 +241,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "Rimuovi Tag di Ragionamento dal TTS"
+      },
+      "responseSplitting": {
+        "label": "Suddivisione della risposta"
       }
     },
     "stt": {
@@ -173,7 +265,8 @@
       "digest": "Digest",
       "modifiedAt": "Modificato il",
       "size": "Dimensioni",
-      "actions": "Azioni"
+      "actions": "Azioni",
+      "nickname": "Soprannome"
     },
     "expandedColumns": {
       "parentModel": "Modello Padre",
@@ -184,7 +277,8 @@
     },
     "tooltip": {
       "delete": "Elimina Modello",
-      "repull": "Ri-Scarica Modello"
+      "repull": "Ri-Scarica Modello",
+      "editNickname": "Modifica soprannome"
     },
     "confirm": {
       "delete": "Sei sicuro di voler eliminare questo modello?",
@@ -202,7 +296,9 @@
       "error": "Errore",
       "successDescription": "Scarico del modello completato",
       "successDeleteDescription": "Eliminazione del modello completato",
-      "someError": "Qualcosa è andato storto. Riprova più tardi"
+      "someError": "Qualcosa è andato storto. Riprova più tardi",
+      "cancellingDownload": "Annullamento del download",
+      "cancellingDownloadDescription": "Il download del modello è in fase di annullamento..."
     }
   },
   "managePrompts": {
@@ -419,5 +515,6 @@
   },
   "chromeAiSettings": {
     "title": "Impostazioni IA di Chrome"
-  }
+  },
+  "mermaid": "Mermaid"
 }

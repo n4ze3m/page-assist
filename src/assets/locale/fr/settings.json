@@ -68,6 +68,55 @@
       },
       "sidepanelTemporaryChat": {
         "label": "Activer le chat temporaire dans le panneau latéral par défaut"
+      },
+      "defaultCopilotPrompt": {
+        "label": "Prompt par défaut pour le panneau latéral (Copilot)",
+        "placeholder": "Sélectionner un prompt"
+      },
+      "defaultThinkingMode": {
+        "label": "Afficher l'état du mode de réflexion dans les formulaires"
+      },
+      "defaultWebUIPrompt": {
+        "label": "Prompt par défaut pour l'interface Web",
+        "placeholder": "Sélectionner un prompt"
+      },
+      "enableMessageQueue": {
+        "label": "Activer la file d'attente des messages pendant le streaming"
+      },
+      "hideReasoningWidget": {
+        "label": "Masquer le widget de raisonnement des messages IA"
+      },
+      "ocrLanguage": {
+        "label": "Langue OCR par défaut",
+        "placeholder": "Sélectionner une langue OCR"
+      },
+      "optimizeQueueForSmallScreen": {
+        "label": "Optimiser l'interface de chat pour les petits écrans"
+      },
+      "persistChatInput": {
+        "label": "Conserver la saisie du chat (enregistrer les messages non envoyés)"
+      },
+      "removeReasoningTagFromCopy": {
+        "label": "Supprimer la balise de raisonnement du texte copié"
+      },
+      "showMoreForLargeMessage": {
+        "label": "Afficher « Voir plus » pour les longs messages utilisateur"
+      },
+      "sidebarPosition": {
+        "label": "Position de la barre latérale",
+        "options": {
+          "left": "Gauche",
+          "right": "Droite"
+        }
+      },
+      "tableTextWrap": {
+        "label": "Activer le retour à la ligne dans les tableaux Markdown"
+      },
+      "webuiTemporaryChat": {
+        "label": "Activer le chat temporaire dans l'interface Web par défaut"
+      },
+      "youtubeAutoSummarize": {
+        "label": "Afficher le bouton « Résumer » sur les vidéos YouTube."
       }
     },
     "sidepanelRag": {
@@ -110,6 +159,28 @@
       },
       "searchOnByDefault": {
         "label": "Recherche Internet activée par défaut"
+      },
+      "blockedDomains": {
+        "description": "Exclure les résultats provenant de ces domaines",
+        "label": "Domaines bloqués",
+        "placeholder": "ex. spam.com"
+      },
+      "domainFilter": {
+        "description": "Afficher uniquement les résultats provenant de ces domaines",
+        "label": "Liste de filtres de domaines",
+        "placeholder": "ex. example.com"
+      },
+      "exa": {
+        "label": "Clé API Exa",
+        "placeholder": "Entrer votre clé API Exa"
+      },
+      "firecrawlAPIKey": {
+        "label": "Clé API Firecrawl",
+        "placeholder": "Entrer votre clé API Firecrawl"
+      },
+      "tavilyApi": {
+        "label": "Clé API Tavily",
+        "placeholder": "Entrer votre clé API Tavily"
       }
     },
     "system": {
@@ -132,6 +203,21 @@
         "button": "Importer les données",
         "success": "Importation réussie",
         "error": "Erreur d’importation"
+      },
+      "actionIcon": {
+        "label": "Définir l'action par défaut pour les clics sur l'icône de l'extension"
+      },
+      "chatBackgroundImage": {
+        "label": "Image d'arrière-plan du chat"
+      },
+      "contextMenu": {
+        "label": "Définir l'action par défaut pour le menu contextuel"
+      },
+      "fontSize": {
+        "label": "Taille de police"
+      },
+      "webuiBtnSidePanel": {
+        "label": "Afficher le bouton Web UI dans le panneau latéral"
       }
     },
     "tts": {
@@ -210,7 +296,9 @@
       "error": "Erreur",
       "successDescription": "Modèle récupéré avec succès",
       "successDeleteDescription": "Modèle supprimé avec succès",
-      "someError": "Une erreur s'est produite. Veuillez réessayer plus tard"
+      "someError": "Une erreur s'est produite. Veuillez réessayer plus tard",
+      "cancellingDownload": "Annulation du téléchargement",
+      "cancellingDownloadDescription": "Le téléchargement du modèle est en cours d'annulation..."
     }
   },
   "managePrompts": {

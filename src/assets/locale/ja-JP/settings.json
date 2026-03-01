@@ -64,13 +64,62 @@
         "label": "書式付きテキストとしてコピー"
       },
       "tabMentionsEnabled": {
-        "label": "Abilita menzioni scheda (@tab)"
+        "label": "タブメンション (@tab) を有効にする"
       },
       "pasteLargeTextAsFile": {
         "label": "大きなテキストをファイルとして貼り付け"
       },
       "sidepanelTemporaryChat": {
         "label": "サイドパネルでの一時チャットをデフォルトで有効にする"
+      },
+      "defaultCopilotPrompt": {
+        "label": "サイドパネル (Copilot) のデフォルトプロンプト",
+        "placeholder": "プロンプトを選択"
+      },
+      "defaultThinkingMode": {
+        "label": "フォームに思考モードの状態を表示"
+      },
+      "defaultWebUIPrompt": {
+        "label": "Web UI のデフォルトプロンプト",
+        "placeholder": "プロンプトを選択"
+      },
+      "enableMessageQueue": {
+        "label": "ストリーミング中にメッセージキューを有効にする"
+      },
+      "hideReasoningWidget": {
+        "label": "AIメッセージから推論ウィジェットを非表示にする"
+      },
+      "ocrLanguage": {
+        "label": "デフォルトOCR言語",
+        "placeholder": "OCR言語を選択"
+      },
+      "optimizeQueueForSmallScreen": {
+        "label": "小さな画面向けにチャットUIを最適化する"
+      },
+      "persistChatInput": {
+        "label": "チャット入力を保持する（未送信メッセージを保存）"
+      },
+      "removeReasoningTagFromCopy": {
+        "label": "コピーしたテキストから推論タグを削除"
+      },
+      "showMoreForLargeMessage": {
+        "label": "長いユーザーメッセージに「もっと見る」を表示"
+      },
+      "sidebarPosition": {
+        "label": "サイドバーの位置",
+        "options": {
+          "left": "左",
+          "right": "右"
+        }
+      },
+      "tableTextWrap": {
+        "label": "Markdown テーブルでテキストの折り返しを有効にする"
+      },
+      "webuiTemporaryChat": {
+        "label": "Web UIで一時チャットをデフォルトで有効にする"
+      },
+      "youtubeAutoSummarize": {
+        "label": "YouTube動画に「要約」ボタンを表示する。"
       }
     },
     "sidepanelRag": {
@@ -110,6 +159,31 @@
       },
       "searchOnByDefault": {
         "label": "デフォルトでインターネット検索をオンにする"
+      },
+      "blockedDomains": {
+        "description": "これらのドメインの結果を除外",
+        "label": "ブロックするドメイン",
+        "placeholder": "例: spam.com"
+      },
+      "domainFilter": {
+        "description": "これらのドメインの結果のみ表示",
+        "label": "ドメインフィルター一覧",
+        "placeholder": "例: example.com"
+      },
+      "exa": {
+        "label": "Exa APIキー",
+        "placeholder": "Exa APIキーを入力してください"
+      },
+      "firecrawlAPIKey": {
+        "label": "Firecrawl APIキー",
+        "placeholder": "Firecrawl APIキーを入力してください"
+      },
+      "googleDomain": {
+        "label": "Google ドメイン"
+      },
+      "tavilyApi": {
+        "label": "Tavily APIキー",
+        "placeholder": "Tavily APIキーを入力してください"
       }
     },
     "system": {
@@ -132,6 +206,21 @@
         "button": "データをインポート",
         "success": "インポート成功",
         "error": "インポートエラー"
+      },
+      "actionIcon": {
+        "label": "拡張機能アイコンクリック時のデフォルト動作を設定"
+      },
+      "chatBackgroundImage": {
+        "label": "チャット背景画像"
+      },
+      "contextMenu": {
+        "label": "コンテキストメニューのデフォルト動作を設定"
+      },
+      "fontSize": {
+        "label": "フォントサイズ"
+      },
+      "webuiBtnSidePanel": {
+        "label": "サイドパネルに Web UI ボタンを表示"
       }
     },
     "tts": {
@@ -155,6 +244,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "テキスト読み上げから推論タグを削除"
+      },
+      "responseSplitting": {
+        "label": "応答の分割"
       }
     },
     "stt": {
@@ -176,7 +268,8 @@
       "digest": "ダイジェスト",
       "modifiedAt": "修正日時",
       "size": "サイズ",
-      "actions": "アクション"
+      "actions": "アクション",
+      "nickname": "ニックネーム"
     },
     "expandedColumns": {
       "parentModel": "親モデル",
@@ -187,7 +280,8 @@
     },
     "tooltip": {
       "delete": "モデルを削除",
-      "repull": "モデルを再取得"
+      "repull": "モデルを再取得",
+      "editNickname": "ニックネームを編集"
     },
     "confirm": {
       "delete": "本当にこのモデルを削除しますか？",
@@ -205,7 +299,9 @@
       "error": "エラー",
       "successDescription": "モデルの取得が完了しました",
       "successDeleteDescription": "モデルの削除が完了しました",
-      "someError": "問題が発生しました。後ほど再度お試しください。"
+      "someError": "問題が発生しました。後ほど再度お試しください。",
+      "cancellingDownload": "ダウンロードをキャンセル中",
+      "cancellingDownloadDescription": "モデルのダウンロードをキャンセルしています..."
     }
   },
   "managePrompts": {
@@ -422,5 +518,6 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI設定"
-  }
+  },
+  "mermaid": "Mermaid"
 }

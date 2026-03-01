@@ -102,6 +102,9 @@
       "enableMessageQueue": {
         "label": "在串流時啟用訊息佇列"
       },
+      "optimizeQueueForSmallScreen": {
+        "label": "為小螢幕優化聊天介面"
+      },
       "tableTextWrap": {
         "label": "在 Markdown 表格中啟用文字換行"
       },
