@@ -15,7 +15,11 @@ import {
   EyeIcon,
   EyeOffIcon,
   Brain,
-  BrainCircuit
+  BrainCircuit,
+  PlusIcon,
+  MinusIcon,
+  PaperclipIcon,
+  ArrowUp
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
@@ -51,6 +55,10 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     ""
   )
   const [enableMessageQueue] = useStorage("enableMessageQueue", false)
+  const [optimizeQueueForSmallScreen] = useStorage(
+    "optimizeQueueForSmallScreen",
+    false
+  )
 
   const form = useForm({
     initialValues: {
@@ -248,6 +256,27 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     onSendMessage: sendQueuedTextMessage,
     onStopStreaming: stopStreamingRequest
   })
+  const [isQueuePanelExpanded, setIsQueuePanelExpanded] = React.useState(false)
+  const hasQueuedMessages = queuedMessages.length > 0
+  const useCompactActions = optimizeQueueForSmallScreen
+  const [isCompactActionsPopoverOpen, setIsCompactActionsPopoverOpen] =
+    React.useState(false)
+
+  React.useEffect(() => {
+    if (
+      !enableMessageQueue ||
+      !optimizeQueueForSmallScreen ||
+      !hasQueuedMessages
+    ) {
+      setIsQueuePanelExpanded(false)
+    }
+  }, [enableMessageQueue, hasQueuedMessages, optimizeQueueForSmallScreen])
+
+  React.useEffect(() => {
+    if (!useCompactActions) {
+      setIsCompactActionsPopoverOpen(false)
+    }
+  }, [useCompactActions])
 
   const sendFormValue = async (value: {
     message: string
@@ -354,7 +383,121 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [defaultInternetSearchOn])
 
- 
+  const compactActionsPopoverContent = (
+    <div className="w-60 space-y-2">
+      {chatMode !== "vision" && (
+        <div
+          className={`flex items-center justify-between rounded-lg border border-gray-200 px-2 py-1.5 dark:border-[#404040] ${
+            chatMode === "rag" ? "hidden" : "flex"
+          }`}>
+          <span className="text-xs text-gray-600 dark:text-gray-300">
+            {t("tooltip.searchInternet")}
+          </span>
+          <Switch
+            size="small"
+            checked={webSearch}
+            onChange={(enabled) => setWebSearch(enabled)}
+          />
+        </div>
+      )}
+      {defaultThinkingMode && isThinkingCapableModel(selectedModel) && (
+        isGptOssModel(selectedModel) ? (
+          <div className="flex items-center justify-between rounded-lg border border-gray-200 px-2 py-1.5 dark:border-[#404040]">
+            <span className="text-xs text-gray-600 dark:text-gray-300">
+              {t("tooltip.thinking")}
+            </span>
+            <Radio.Group
+              value={thinking || "medium"}
+              onChange={(e) => setThinking?.(e.target.value)}
+              optionType="button"
+              size="small"
+              options={[
+                {
+                  label: t("common:modelSettings.form.thinking.levels.low"),
+                  value: "low"
+                },
+                {
+                  label: t("common:modelSettings.form.thinking.levels.medium"),
+                  value: "medium"
+                },
+                {
+                  label: t("common:modelSettings.form.thinking.levels.high"),
+                  value: "high"
+                }
+              ]}
+            />
+          </div>
+        ) : (
+          <div className="flex items-center justify-between rounded-lg border border-gray-200 px-2 py-1.5 dark:border-[#404040]">
+            <span className="text-xs text-gray-600 dark:text-gray-300">
+              {t("tooltip.thinking")}
+            </span>
+            <Switch
+              size="small"
+              checked={!!thinking}
+              onChange={(enabled) => setThinking?.(enabled)}
+              checkedChildren={t("form.thinking.on")}
+              unCheckedChildren={t("form.thinking.off")}
+            />
+          </div>
+        )
+      )}
+      <div className="flex items-center justify-between rounded-lg border border-gray-200 px-2 py-1.5 dark:border-[#404040]">
+        <span className="text-xs text-gray-600 dark:text-gray-300">
+          {t("sendWhenEnter")}
+        </span>
+        <Switch
+          size="small"
+          checked={sendWhenEnter}
+          onChange={(enabled) => setSendWhenEnter(enabled)}
+        />
+      </div>
+      <div className="flex items-center justify-between rounded-lg border border-gray-200 px-2 py-1.5 dark:border-[#404040]">
+        <span className="text-xs text-gray-600 dark:text-gray-300">
+          {t("common:chatWithCurrentPage")}
+        </span>
+        <Switch
+          size="small"
+          checked={chatMode === "rag"}
+          onChange={(enabled) => setChatMode(enabled ? "rag" : "normal")}
+        />
+      </div>
+      <div className="flex items-center justify-between rounded-lg border border-gray-200 px-2 py-1.5 dark:border-[#404040]">
+        <span className="text-xs text-gray-600 dark:text-gray-300">
+          {t("useOCR")}
+        </span>
+        <Switch
+          size="small"
+          checked={useOCR}
+          onChange={(enabled) => setUseOCR(enabled)}
+        />
+      </div>
+      <button
+        type="button"
+        onClick={() => {
+          if (chatMode === "vision") {
+            setChatMode("normal")
+          } else {
+            setChatMode("vision")
+          }
+          setIsCompactActionsPopoverOpen(false)
+        }}
+        disabled={chatMode === "rag"}
+        className={`flex w-full items-center justify-between rounded-lg border border-gray-200 px-2 py-1.5 text-left dark:border-[#404040] ${
+          chatMode === "rag" ? "hidden" : "flex"
+        } disabled:opacity-50`}>
+        <span className="text-xs text-gray-600 dark:text-gray-300">
+          {t("tooltip.vision")}
+        </span>
+        {chatMode === "vision" ? (
+          <EyeIcon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
+        ) : (
+          <EyeOffIcon className="h-4 w-4 text-gray-500 dark:text-gray-300" />
+        )}
+      </button>
+    </div>
+  )
+
   return (
     <div className="flex w-full flex-col items-center px-2">
       <div className="relative z-10 flex w-full flex-col items-center justify-center gap-2 text-base">
@@ -362,25 +505,59 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
           <div
             data-istemporary-chat={temporaryChat}
             className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-[#404040] data-[istemporary-chat='true']:bg-gray-200 data-[istemporary-chat='true']:dark:bg-black`}>
+            {enableMessageQueue &&
+              optimizeQueueForSmallScreen &&
+              hasQueuedMessages && (
+                <div className="px-2 pt-2 md:hidden">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setIsQueuePanelExpanded((previous) => !previous)
+                    }
+                    className="flex w-full items-center justify-between rounded-lg border border-dashed border-gray-300 bg-white/70 px-3 py-2 text-xs text-gray-700 dark:border-[#4a4a4a] dark:bg-[#303030]/70 dark:text-gray-200"
+                    aria-expanded={isQueuePanelExpanded}
+                    aria-controls="sidepanel-queued-messages">
+                    <span className="inline-flex items-center gap-2 font-medium">
+                      {t("form.queue.title", "Queued messages")}
+                      <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-gray-200 px-1.5 py-0.5 text-[11px] text-gray-700 dark:bg-[#454545] dark:text-gray-200">
+                        {queuedMessages.length}
+                      </span>
+                    </span>
+                    {isQueuePanelExpanded ? (
+                      <MinusIcon className="h-3.5 w-3.5" />
+                    ) : (
+                      <PlusIcon className="h-3.5 w-3.5" />
+                    )}
+                  </button>
+                </div>
+              )}
             {enableMessageQueue && (
-              <QueuedMessagesList
-                queuedMessages={queuedMessages}
-                onDelete={deleteQueuedMessage}
-                onEdit={(id) => {
-                  const queuedItem = takeQueuedMessage(id)
-                  if (!queuedItem) {
-                    return
-                  }
-                  form.setFieldValue("message", queuedItem.message)
-                  form.setFieldValue("images", queuedItem.images || [])
-                  if (persistChatInput) {
-                    setPersistedMessage(queuedItem.message)
-                  }
-                  textAreaFocus()
-                }}
-                onSend={sendQueuedMessageNow}
-                title={t("form.queue.title", "Queued messages")}
-              />
+              <div
+                id="sidepanel-queued-messages"
+                className={
+                  optimizeQueueForSmallScreen && !isQueuePanelExpanded
+                    ? "hidden md:block"
+                    : "block"
+                }>
+                <QueuedMessagesList
+                  queuedMessages={queuedMessages}
+                  onDelete={deleteQueuedMessage}
+                  onEdit={(id) => {
+                    const queuedItem = takeQueuedMessage(id)
+                    if (!queuedItem) {
+                      return
+                    }
+                    form.setFieldValue("message", queuedItem.message)
+                    form.setFieldValue("images", queuedItem.images || [])
+                    if (persistChatInput) {
+                      setPersistedMessage(queuedItem.message)
+                    }
+                    textAreaFocus()
+                  }}
+                  onSend={sendQueuedMessageNow}
+                  title={t("form.queue.title", "Queued messages")}
+                />
+              </div>
             )}
             {form.values.images && form.values.images.length > 0 && (
               <div className="p-2 border-b border-gray-200 dark:border-[#404040]">
@@ -448,68 +625,187 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         }
                       }}
                     />
-                    <div className="flex mt-4 justify-end gap-3">
-                      {chatMode !== "vision" && (
-                        <Tooltip title={t("tooltip.searchInternet")}>
-                          <button
-                            type="button"
-                            onClick={() => setWebSearch(!webSearch)}
-                            className={`inline-flex items-center gap-2   ${
-                              chatMode === "rag" ? "hidden" : "block"
-                            }`}>
-                            {webSearch ? (
-                              <PiGlobe className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                            ) : (
-                              <PiGlobeX className="h-4 w-4 text-[#404040] dark:text-gray-400" />
-                            )}
-                          </button>
-                        </Tooltip>
-                      )}
-                      {defaultThinkingMode && isThinkingCapableModel(selectedModel) && (
-                        isGptOssModel(selectedModel) ? (
-                          <Popover
-                            content={
-                              <div>
-                                <Radio.Group
-                                  value={thinking || "medium"}
-                                  onChange={(e) => setThinking?.(e.target.value)}
-                                  className="flex flex-col gap-2">
-                                  <Radio value="low">{t("common:modelSettings.form.thinking.levels.low")}</Radio>
-                                  <Radio value="medium">{t("common:modelSettings.form.thinking.levels.medium")}</Radio>
-                                  <Radio value="high">{t("common:modelSettings.form.thinking.levels.high")}</Radio>
-                                </Radio.Group>
-                                <div className="text-xs text-gray-500 dark:text-gray-400 mt-2 px-1 border-t border-gray-200 dark:border-gray-700 pt-2">
-                                  Note: This model always includes reasoning
-                                </div>
-                              </div>
-                            }
-                            title="Reasoning Level"
-                            trigger="click">
-                            <Tooltip title="Adjust reasoning intensity">
-                              <button
-                                type="button"
-                                className="inline-flex items-center gap-2">
-                                <Brain className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                              </button>
-                            </Tooltip>
-                          </Popover>
-                        ) : (
-                          <Tooltip title={t("tooltip.thinking")}>
+                    <div
+                      className={`flex mt-4 items-center gap-3 ${
+                        useCompactActions
+                          ? "w-full justify-between md:w-auto md:justify-end"
+                          : "justify-end"
+                      }`}>
+                      {useCompactActions && (
+                        <Popover
+                          trigger="click"
+                          placement="topRight"
+                          open={isCompactActionsPopoverOpen}
+                          onOpenChange={setIsCompactActionsPopoverOpen}
+                          content={compactActionsPopoverContent}>
+                          <Tooltip title={t("common:more", "More")}>
                             <button
                               type="button"
-                              onClick={() => setThinking?.(!thinking)}
-                              className="inline-flex items-center gap-2">
-                              {thinking ?? true ? (
-                                <Brain className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                              className="inline-flex items-center justify-center rounded-md border border-gray-300 p-1.5 dark:border-[#404040] dark:text-gray-300 md:hidden">
+                              <PlusIcon className="h-4 w-4" />
+                            </button>
+                          </Tooltip>
+                        </Popover>
+                      )}
+                      <div
+                        className={`flex items-center gap-3 ${
+                          useCompactActions ? "ml-auto" : ""
+                        }`}>
+                      <div
+                        className={`items-center gap-3 ${
+                          useCompactActions ? "hidden md:flex" : "flex"
+                        }`}>
+                        {chatMode !== "vision" && (
+                          <Tooltip title={t("tooltip.searchInternet")}>
+                            <button
+                              type="button"
+                              onClick={() => setWebSearch(!webSearch)}
+                              className={`inline-flex items-center gap-2   ${
+                                chatMode === "rag" ? "hidden" : "block"
+                              }`}>
+                              {webSearch ? (
+                                <PiGlobe className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                               ) : (
-                                <BrainCircuit className="h-4 w-4 text-[#404040] dark:text-gray-400" />
+                                <PiGlobeX className="h-4 w-4 text-[#404040] dark:text-gray-400" />
                               )}
                             </button>
                           </Tooltip>
-                        )
+                        )}
+                        {defaultThinkingMode &&
+                          isThinkingCapableModel(selectedModel) &&
+                          (isGptOssModel(selectedModel) ? (
+                            <Popover
+                              content={
+                                <div>
+                                  <Radio.Group
+                                    value={thinking || "medium"}
+                                    onChange={(e) =>
+                                      setThinking?.(e.target.value)
+                                    }
+                                    className="flex flex-col gap-2">
+                                    <Radio value="low">
+                                      {t(
+                                        "common:modelSettings.form.thinking.levels.low"
+                                      )}
+                                    </Radio>
+                                    <Radio value="medium">
+                                      {t(
+                                        "common:modelSettings.form.thinking.levels.medium"
+                                      )}
+                                    </Radio>
+                                    <Radio value="high">
+                                      {t(
+                                        "common:modelSettings.form.thinking.levels.high"
+                                      )}
+                                    </Radio>
+                                  </Radio.Group>
+                                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-2 px-1 border-t border-gray-200 dark:border-gray-700 pt-2">
+                                    Note: This model always includes reasoning
+                                  </div>
+                                </div>
+                              }
+                              title="Reasoning Level"
+                              trigger="click">
+                              <Tooltip title="Adjust reasoning intensity">
+                                <button
+                                  type="button"
+                                  className="inline-flex items-center gap-2">
+                                  <Brain className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                </button>
+                              </Tooltip>
+                            </Popover>
+                          ) : (
+                            <Tooltip title={t("tooltip.thinking")}>
+                              <button
+                                type="button"
+                                onClick={() => setThinking?.(!thinking)}
+                                className="inline-flex items-center gap-2">
+                                {thinking ?? true ? (
+                                  <Brain className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                ) : (
+                                  <BrainCircuit className="h-4 w-4 text-[#404040] dark:text-gray-400" />
+                                )}
+                              </button>
+                            </Tooltip>
+                          ))}
+                        {browserSupportsSpeechRecognition && (
+                          <Tooltip title={t("tooltip.speechToText")}>
+                            <button
+                              type="button"
+                              onClick={async () => {
+                                if (isListening) {
+                                  stopListening()
+                                } else {
+                                  resetTranscript()
+                                  startListening({
+                                    continuous: true,
+                                    lang: speechToTextLanguage
+                                  })
+                                }
+                              }}
+                              className={`flex items-center justify-center dark:text-gray-300`}>
+                              {!isListening ? (
+                                <MicIcon className="h-4 w-4" />
+                              ) : (
+                                <div className="relative">
+                                  <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-red-400 opacity-75"></span>
+                                  <MicIcon className="h-4 w-4" />
+                                </div>
+                              )}
+                            </button>
+                          </Tooltip>
+                        )}
+                        <Tooltip title={t("tooltip.vision")}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (chatMode === "vision") {
+                                setChatMode("normal")
+                              } else {
+                                setChatMode("vision")
+                              }
+                            }}
+                            disabled={chatMode === "rag"}
+                            className={`flex items-center justify-center dark:text-gray-300 ${
+                              chatMode === "rag" ? "hidden" : "block"
+                            } disabled:opacity-50`}>
+                            {chatMode === "vision" ? (
+                              <EyeIcon className="h-4 w-4" />
+                            ) : (
+                              <EyeOffIcon className="h-4 w-4" />
+                            )}
+                          </button>
+                        </Tooltip>
+                        <Tooltip title={t("tooltip.uploadImage")}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              inputRef.current?.click()
+                            }}
+                            disabled={chatMode === "vision"}
+                            className={`flex items-center justify-center disabled:opacity-50 dark:text-gray-300 ${
+                              chatMode === "rag" ? "hidden" : "block"
+                            }`}>
+                            <ImageIcon className="h-4 w-4" />
+                          </button>
+                        </Tooltip>
+                      </div>
+                      {useCompactActions && (
+                        <Tooltip title={t("tooltip.uploadImage")}>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              inputRef.current?.click()
+                            }}
+                            disabled={chatMode === "vision"}
+                            className={`inline-flex items-center justify-center p-1.5 dark:text-gray-300 md:hidden ${
+                              chatMode === "rag" ? "hidden" : "flex"
+                            } disabled:opacity-50`}>
+                            <PaperclipIcon className="h-4 w-4" />
+                          </button>
+                        </Tooltip>
                       )}
-                      <ModelSelect iconClassName="size-4" />
-                      {browserSupportsSpeechRecognition && (
+                      {useCompactActions && browserSupportsSpeechRecognition && (
                         <Tooltip title={t("tooltip.speechToText")}>
                           <button
                             type="button"
@@ -524,7 +820,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                                 })
                               }
                             }}
-                            className={`flex items-center justify-center dark:text-gray-300`}>
+                            className="inline-flex items-center justify-center p-1.5 dark:text-gray-300 md:hidden">
                             {!isListening ? (
                               <MicIcon className="h-4 w-4" />
                             ) : (
@@ -536,144 +832,128 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           </button>
                         </Tooltip>
                       )}
-                      <Tooltip title={t("tooltip.vision")}>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (chatMode === "vision") {
-                              setChatMode("normal")
-                            } else {
-                              setChatMode("vision")
-                            }
-                          }}
-                          disabled={chatMode === "rag"}
-                          className={`flex items-center justify-center dark:text-gray-300 ${
-                            chatMode === "rag" ? "hidden" : "block"
-                          } disabled:opacity-50`}>
-                          {chatMode === "vision" ? (
-                            <EyeIcon className="h-4 w-4" />
-                          ) : (
-                            <EyeOffIcon className="h-4 w-4" />
-                          )}
-                        </button>
-                      </Tooltip>
-                      <Tooltip title={t("tooltip.uploadImage")}>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            inputRef.current?.click()
-                          }}
-                          disabled={chatMode === "vision"}
-                          className={`flex items-center justify-center disabled:opacity-50 dark:text-gray-300 ${
-                            chatMode === "rag" ? "hidden" : "block"
-                          }`}>
-                          <ImageIcon className="h-4 w-4" />
-                        </button>
-                      </Tooltip>
-                      {streaming && !enableMessageQueue ? (
-                        <Tooltip title={t("tooltip.stopStreaming")}>
-                          <button
-                            type="button"
-                            onClick={stopStreamingRequest}
+                      <ModelSelect iconClassName="size-4" />
+                        {streaming && !enableMessageQueue ? (
+                          <Tooltip title={t("tooltip.stopStreaming")}>
+                            <button
+                              type="button"
+                              onClick={stopStreamingRequest}
                             className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-[#404040] rounded-md p-1">
                             <StopCircleIcon className="h-5 w-5" />
                           </button>
                         </Tooltip>
                       ) : (
                         <div className="inline-flex items-center gap-2">
-                          {streaming && (
-                            <Tooltip title={t("tooltip.stopStreaming")}>
-                              <button
-                                type="button"
-                                onClick={stopStreamingRequest}
+                            {streaming && (
+                              <Tooltip title={t("tooltip.stopStreaming")}>
+                                <button
+                                  type="button"
+                                  onClick={stopStreamingRequest}
                                 className="text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-[#404040] rounded-md p-1">
-                                <StopCircleIcon className="h-5 w-5" />
-                              </button>
-                            </Tooltip>
-                          )}
-                          <Dropdown.Button
-                            htmlType="submit"
-                            disabled={isSending && !enableMessageQueue}
-                            className="!justify-end !w-auto"
-                            icon={
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-4 h-4">
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                                />
-                              </svg>
-                            }
-                            menu={{
-                              items: [
-                                {
-                                  key: 1,
-                                  label: (
-                                    <Checkbox
-                                      checked={sendWhenEnter}
-                                      onChange={(e) =>
-                                        setSendWhenEnter(e.target.checked)
-                                      }>
-                                      {t("sendWhenEnter")}
-                                    </Checkbox>
-                                  )
-                                },
-                                {
-                                  key: 2,
-                                  label: (
-                                    <Checkbox
-                                      checked={chatMode === "rag"}
-                                      onChange={(e) => {
-                                        setChatMode(
-                                          e.target.checked ? "rag" : "normal"
-                                        )
-                                      }}>
-                                      {t("common:chatWithCurrentPage")}
-                                    </Checkbox>
-                                  )
-                                },
-                                {
-                                  key: 3,
-                                  label: (
-                                    <Checkbox
-                                      checked={useOCR}
-                                      onChange={(e) =>
-                                        setUseOCR(e.target.checked)
-                                      }>
-                                      {t("useOCR")}
-                                    </Checkbox>
-                                  )
+                                  <StopCircleIcon className="h-5 w-5" />
+                                </button>
+                              </Tooltip>
+                            )}
+                            {useCompactActions ? (
+                              <Tooltip
+                                title={
+                                  streaming && enableMessageQueue
+                                    ? t("form.queue.add", "Queue")
+                                    : t("common:submit")
+                                }>
+                                <button
+                                  type="submit"
+                                  disabled={isSending && !enableMessageQueue}
+                                  className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-white transition hover:bg-black disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-gray-100">
+                                  <ArrowUp className="h-4 w-4" />
+                                </button>
+                              </Tooltip>
+                            ) : (
+                              <Dropdown.Button
+                                htmlType="submit"
+                                disabled={isSending && !enableMessageQueue}
+                                className="!justify-end !w-auto"
+                                icon={
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="w-4 h-4">
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                                    />
+                                  </svg>
                                 }
-                              ]
-                            }}>
-                            <div className="inline-flex gap-2">
-                              {sendWhenEnter ? (
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  className="h-4 w-4"
-                                  viewBox="0 0 24 24">
-                                  <path d="M9 10L4 15 9 20"></path>
-                                  <path d="M20 4v7a4 4 0 01-4 4H4"></path>
-                                </svg>
-                              ) : null}
-                              {streaming && enableMessageQueue
-                                ? t("form.queue.add", "Queue")
-                                : t("common:submit")}
-                            </div>
-                          </Dropdown.Button>
+                                menu={{
+                                  items: [
+                                    {
+                                      key: 1,
+                                      label: (
+                                        <Checkbox
+                                          checked={sendWhenEnter}
+                                          onChange={(e) =>
+                                            setSendWhenEnter(e.target.checked)
+                                          }>
+                                          {t("sendWhenEnter")}
+                                        </Checkbox>
+                                      )
+                                    },
+                                    {
+                                      key: 2,
+                                      label: (
+                                        <Checkbox
+                                          checked={chatMode === "rag"}
+                                          onChange={(e) => {
+                                            setChatMode(
+                                              e.target.checked ? "rag" : "normal"
+                                            )
+                                          }}>
+                                          {t("common:chatWithCurrentPage")}
+                                        </Checkbox>
+                                      )
+                                    },
+                                    {
+                                      key: 3,
+                                      label: (
+                                        <Checkbox
+                                          checked={useOCR}
+                                          onChange={(e) =>
+                                            setUseOCR(e.target.checked)
+                                          }>
+                                          {t("useOCR")}
+                                        </Checkbox>
+                                      )
+                                    }
+                                  ]
+                                }}>
+                                <div className="inline-flex gap-2">
+                                  {sendWhenEnter ? (
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      className="h-4 w-4"
+                                      viewBox="0 0 24 24">
+                                      <path d="M9 10L4 15 9 20"></path>
+                                      <path d="M20 4v7a4 4 0 01-4 4H4"></path>
+                                    </svg>
+                                  ) : null}
+                                  {streaming && enableMessageQueue
+                                    ? t("form.queue.add", "Queue")
+                                    : t("common:submit")}
+                                </div>
+                              </Dropdown.Button>
+                            )}
                         </div>
                       )}
+                      </div>
                     </div>
                   </div>
                 </form>

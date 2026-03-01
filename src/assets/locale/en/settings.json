@@ -102,6 +102,9 @@
       "enableMessageQueue": {
         "label": "Enable Message Queue While Streaming"
       },
+      "optimizeQueueForSmallScreen": {
+        "label": "Optimize Chat UI for Small Screens"
+      },
       "tableTextWrap": {
         "label": "Enable Text Wrapping in Markdown Tables"
       },
