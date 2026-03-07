@@ -1,16 +1,24 @@
-import type { BaseLanguageModelCallOptions } from "@langchain/core/language_models/base";
+import { BaseLanguageModelInput } from "@langchain/core/language_models/base"
 import {
-    SimpleChatModel,
+    BaseChatModel,
     type BaseChatModelParams,
-} from "@langchain/core/language_models/chat_models";
-import { CallbackManagerForLLMRun } from "@langchain/core/callbacks/manager";
+    type BaseChatModelCallOptions,
+    type LangSmithParams,
+    type BindToolsInput,
+} from "@langchain/core/language_models/chat_models"
+import { CallbackManagerForLLMRun } from "@langchain/core/callbacks/manager"
 import {
+    AIMessage,
     AIMessageChunk,
     BaseMessage,
     ChatMessage,
-} from "@langchain/core/messages";
-import { ChatGenerationChunk } from "@langchain/core/outputs";
-import type { StringWithAutocomplete } from "@langchain/core/utils/types";
+    ToolMessage,
+} from "@langchain/core/messages"
+import { ChatGenerationChunk, ChatResult } from "@langchain/core/outputs"
+import type { StringWithAutocomplete } from "@langchain/core/utils/types"
+import { convertToOpenAITool } from "@langchain/core/utils/function_calling"
+import { concat } from "@langchain/core/utils/stream"
+import { Runnable } from "@langchain/core/runnables"
 
 import {
     createOllamaChatStream,
@@ -18,163 +26,173 @@ import {
     parseKeepAlive,
     type OllamaInput,
     type OllamaMessage,
-} from "./utils/ollama";
+} from "./utils/ollama"
+
+export interface ChatOllamaCallOptions extends BaseChatModelCallOptions {
+    tools?: BindToolsInput[]
+}
 
 export interface ChatOllamaInput extends OllamaInput { }
 
-export interface ChatOllamaCallOptions extends BaseLanguageModelCallOptions { }
-
 export class ChatOllama
-    extends SimpleChatModel<ChatOllamaCallOptions>
+    extends BaseChatModel<ChatOllamaCallOptions, AIMessageChunk>
     implements ChatOllamaInput {
     static lc_name() {
-        return "ChatOllama";
+        return "ChatOllama"
     }
 
-    lc_serializable = true;
+    lc_serializable = true
 
-    model = "llama2";
+    model = "llama2"
 
-    baseUrl = "http://localhost:11434";
+    baseUrl = "http://localhost:11434"
 
-    // keepAlive = "5m";
+    keepAlive?: string
 
-    keepAlive?: string;
+    thinking?: boolean | "low" | "medium" | "high"
 
-    thinking?: boolean | "low" | "medium" | "high";
+    embeddingOnly?: boolean
 
-    embeddingOnly?: boolean;
+    f16KV?: boolean
 
-    f16KV?: boolean;
+    frequencyPenalty?: number
 
-    frequencyPenalty?: number;
+    headers?: Record<string, string>
 
-    headers?: Record<string, string>;
+    logitsAll?: boolean
 
-    logitsAll?: boolean;
+    lowVram?: boolean
 
-    lowVram?: boolean;
+    mainGpu?: number
 
-    mainGpu?: number;
+    mirostat?: number
 
-    mirostat?: number;
+    mirostatEta?: number
 
-    mirostatEta?: number;
+    mirostatTau?: number
 
-    mirostatTau?: number;
+    numBatch?: number
 
-    numBatch?: number;
+    numCtx?: number
 
-    numCtx?: number;
+    numGpu?: number
 
-    numGpu?: number;
+    numGqa?: number
 
-    numGqa?: number;
+    numKeep?: number
 
-    numKeep?: number;
+    numPredict?: number
 
-    numPredict?: number;
+    numThread?: number
 
-    numThread?: number;
+    penalizeNewline?: boolean
 
-    penalizeNewline?: boolean;
+    presencePenalty?: number
 
-    presencePenalty?: number;
+    repeatLastN?: number
 
-    repeatLastN?: number;
+    repeatPenalty?: number
 
-    repeatPenalty?: number;
+    ropeFrequencyBase?: number
 
-    ropeFrequencyBase?: number;
+    ropeFrequencyScale?: number
 
-    ropeFrequencyScale?: number;
+    temperature?: number
 
-    temperature?: number;
+    stop?: string[]
 
-    stop?: string[];
+    tfsZ?: number
 
-    tfsZ?: number;
+    topK?: number
 
-    topK?: number;
+    topP?: number
 
-    topP?: number;
+    minP?: number
 
-    minP?: number;
+    typicalP?: number
 
-    typicalP?: number;
+    useMLock?: boolean
 
-    useMLock?: boolean;
+    useMMap?: boolean
 
-    useMMap?: boolean;
+    useMlock?: boolean
 
-    useMlock?: boolean;
+    vocabOnly?: boolean
 
-    vocabOnly?: boolean;
+    seed?: number
 
-    seed?: number;
-
-    format?: StringWithAutocomplete<"json">;
+    format?: StringWithAutocomplete<"json">
 
     constructor(fields: OllamaInput & BaseChatModelParams) {
-        super(fields);
-        this.model = fields.model ?? this.model;
+        super(fields)
+        this.model = fields.model ?? this.model
         this.baseUrl = fields.baseUrl?.endsWith("/")
             ? fields.baseUrl.slice(0, -1)
-            : fields.baseUrl ?? this.baseUrl;
-        this.keepAlive = parseKeepAlive(fields.keepAlive);
-        this.embeddingOnly = fields.embeddingOnly;
-        this.f16KV = fields.f16KV;
-        this.frequencyPenalty = fields.frequencyPenalty;
-        this.headers = fields.headers;
-        this.logitsAll = fields.logitsAll;
-        this.lowVram = fields.lowVram;
-        this.mainGpu = fields.mainGpu;
-        this.mirostat = fields.mirostat;
-        this.mirostatEta = fields.mirostatEta;
-        this.mirostatTau = fields.mirostatTau;
-        this.numBatch = fields.numBatch;
-        this.numCtx = fields.numCtx;
-        this.numGpu = fields.numGpu === null ? undefined : fields.numGpu;
-        this.numGqa = fields.numGqa;
-        this.numKeep = fields.numKeep;
-        this.numPredict = fields.numPredict;
-        this.numThread = fields.numThread;
-        this.penalizeNewline = fields.penalizeNewline;
-        this.presencePenalty = fields.presencePenalty;
-        this.repeatLastN = fields.repeatLastN;
-        this.repeatPenalty = fields.repeatPenalty;
-        this.ropeFrequencyBase = fields.ropeFrequencyBase;
-        this.ropeFrequencyScale = fields.ropeFrequencyScale;
-        this.temperature = fields.temperature;
-        this.stop = fields.stop;
-        this.tfsZ = fields.tfsZ;
-        this.topK = fields.topK;
-        this.topP = fields.topP;
-        this.minP = fields.minP;
-        this.typicalP = fields.typicalP;
-        this.useMLock = fields.useMLock;
-        this.useMMap = fields.useMMap;
-        this.useMlock = fields.useMlock;
-        this.vocabOnly = fields.vocabOnly;
-        this.format = fields.format;
-        this.seed = fields.seed;
-        this.thinking = fields.thinking;
+            : fields.baseUrl ?? this.baseUrl
+        this.keepAlive = parseKeepAlive(fields.keepAlive)
+        this.embeddingOnly = fields.embeddingOnly
+        this.f16KV = fields.f16KV
+        this.frequencyPenalty = fields.frequencyPenalty
+        this.headers = fields.headers
+        this.logitsAll = fields.logitsAll
+        this.lowVram = fields.lowVram
+        this.mainGpu = fields.mainGpu
+        this.mirostat = fields.mirostat
+        this.mirostatEta = fields.mirostatEta
+        this.mirostatTau = fields.mirostatTau
+        this.numBatch = fields.numBatch
+        this.numCtx = fields.numCtx
+        this.numGpu = fields.numGpu === null ? undefined : fields.numGpu
+        this.numGqa = fields.numGqa
+        this.numKeep = fields.numKeep
+        this.numPredict = fields.numPredict
+        this.numThread = fields.numThread
+        this.penalizeNewline = fields.penalizeNewline
+        this.presencePenalty = fields.presencePenalty
+        this.repeatLastN = fields.repeatLastN
+        this.repeatPenalty = fields.repeatPenalty
+        this.ropeFrequencyBase = fields.ropeFrequencyBase
+        this.ropeFrequencyScale = fields.ropeFrequencyScale
+        this.temperature = fields.temperature
+        this.stop = fields.stop
+        this.tfsZ = fields.tfsZ
+        this.topK = fields.topK
+        this.topP = fields.topP
+        this.minP = fields.minP
+        this.typicalP = fields.typicalP
+        this.useMLock = fields.useMLock
+        this.useMMap = fields.useMMap
+        this.useMlock = fields.useMlock
+        this.vocabOnly = fields.vocabOnly
+        this.format = fields.format
+        this.seed = fields.seed
+        this.thinking = fields.thinking
     }
 
-    protected getLsParams(options: this["ParsedCallOptions"]) {
-        const params = this.invocationParams(options);
+    getLsParams(options: this["ParsedCallOptions"]): LangSmithParams {
+        const params = this.invocationParams(options)
         return {
             ls_provider: "ollama",
             ls_model_name: this.model,
-            ls_model_type: "chat",
+            ls_model_type: "chat" as const,
             ls_temperature: this.temperature ?? undefined,
             ls_stop: this.stop,
             ls_max_tokens: params.options.num_predict,
-        };
+        }
     }
 
     _llmType() {
-        return "ollama";
+        return "ollama"
+    }
+
+    override bindTools(
+        tools: BindToolsInput[],
+        kwargs?: Partial<this["ParsedCallOptions"]>
+    ): Runnable<BaseLanguageModelInput, AIMessageChunk, ChatOllamaCallOptions> {
+        return this.withConfig({
+            tools: tools.map((tool) => convertToOpenAITool(tool)),
+            ...kwargs,
+        } as Partial<ChatOllamaCallOptions>)
     }
 
     /**
@@ -224,11 +242,53 @@ export class ChatOllama
                 vocab_only: this.vocabOnly,
                 seed: this.seed,
             },
-        };
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            tools: options?.tools?.length
+                ? options.tools.map((tool) => convertToOpenAITool(tool))
+                : undefined,
+        }
     }
 
     _combineLLMOutput() {
-        return {};
+        return {}
+    }
+
+    async _generate(
+        messages: BaseMessage[],
+        options: this["ParsedCallOptions"],
+        runManager?: CallbackManagerForLLMRun
+    ): Promise<ChatResult> {
+        let finalChunk: AIMessageChunk | undefined
+        for await (const chunk of this._streamResponseChunks(
+            messages,
+            options,
+            runManager
+        )) {
+            if (!finalChunk) {
+                finalChunk = chunk.message as AIMessageChunk
+            } else {
+                finalChunk = concat(finalChunk, chunk.message as AIMessageChunk)
+            }
+        }
+
+        const nonChunkMessage = new AIMessage({
+            content: finalChunk?.content ?? "",
+            additional_kwargs: finalChunk?.additional_kwargs,
+            tool_calls: finalChunk?.tool_calls,
+            response_metadata: finalChunk?.response_metadata,
+            usage_metadata: finalChunk?.usage_metadata,
+        })
+        return {
+            generations: [
+                {
+                    text:
+                        typeof nonChunkMessage.content === "string"
+                            ? nonChunkMessage.content
+                            : "",
+                    message: nonChunkMessage,
+                },
+            ],
+        }
     }
 
     /** @deprecated */
@@ -247,14 +307,14 @@ export class ChatOllama
                 ...options,
                 headers: this.headers,
             }
-        );
+        )
         for await (const chunk of stream) {
             if (!chunk.done) {
                 yield new ChatGenerationChunk({
                     text: chunk.response,
                     message: new AIMessageChunk({ content: chunk.response }),
-                });
-                await runManager?.handleLLMNewToken(chunk.response ?? "");
+                })
+                await runManager?.handleLLMNewToken(chunk.response ?? "")
             } else {
                 yield new ChatGenerationChunk({
                     text: "",
@@ -268,7 +328,7 @@ export class ChatOllama
                         eval_count: chunk.eval_count,
                         eval_duration: chunk.eval_duration,
                     },
-                });
+                })
             }
         }
     }
@@ -291,19 +351,35 @@ export class ChatOllama
                         headers: this.headers,
                     }
                 )
-            );
+            )
             for await (const chunk of stream) {
                 if (!chunk.done) {
+                    const responseMessage = chunk.message
+
+                    // Build tool_call_chunks if Ollama returned tool calls
+                    const toolCallChunks = responseMessage.tool_calls?.map(
+                        (tc, i) => ({
+                            name: tc.function.name,
+                            args: JSON.stringify(tc.function.arguments),
+                            type: "tool_call_chunk" as const,
+                            index: i,
+                            id: crypto.randomUUID(),
+                        })
+                    )
+
+                    const content = responseMessage.content ?? ""
+
                     yield new ChatGenerationChunk({
-                        text: chunk.message.content,
+                        text: content,
                         message: new AIMessageChunk({
-                            content: chunk.message.content,
-                            additional_kwargs: chunk?.message?.thinking ? {
-                                reasoning_content: chunk?.message?.thinking
-                            } : undefined
+                            content,
+                            additional_kwargs: responseMessage?.thinking
+                                ? { reasoning_content: responseMessage.thinking }
+                                : {},
+                            tool_call_chunks: toolCallChunks,
                         }),
-                    });
-                    await runManager?.handleLLMNewToken(chunk.message.content ?? "");
+                    })
+                    await runManager?.handleLLMNewToken(content)
                 } else {
                     yield new ChatGenerationChunk({
                         text: "",
@@ -317,7 +393,7 @@ export class ChatOllama
                             eval_count: chunk.eval_count,
                             eval_duration: chunk.eval_duration,
                         },
-                    });
+                    })
                 }
             }
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -325,10 +401,10 @@ export class ChatOllama
             if (e.response?.status === 404) {
                 console.warn(
                     "[WARNING]: It seems you are using a legacy version of Ollama. Please upgrade to a newer version for better chat support."
-                );
-                yield* this._streamResponseChunksLegacy(input, options, runManager);
+                )
+                yield* this._streamResponseChunksLegacy(input, options, runManager)
             } else {
-                throw e;
+                throw e
             }
         }
     }
@@ -337,37 +413,68 @@ export class ChatOllama
         messages: BaseMessage[]
     ): OllamaMessage[] {
         return messages.map((message) => {
-            let role;
+            let role: string
             if (message._getType() === "human") {
-                role = "user";
+                role = "user"
             } else if (message._getType() === "ai") {
-                role = "assistant";
+                role = "assistant"
             } else if (message._getType() === "system") {
-                role = "system";
+                role = "system"
+            } else if (message._getType() === "tool") {
+                role = "tool"
             } else {
                 throw new Error(
                     `Unsupported message type for Ollama: ${message._getType()}`
-                );
+                )
             }
-            let content = "";
-            const images = [];
+
+            // Handle ToolMessage
+            if (message._getType() === "tool") {
+                const toolMsg = message as ToolMessage
+                return {
+                    role: "tool",
+                    content:
+                        typeof toolMsg.content === "string" ? toolMsg.content : "",
+                }
+            }
+
+            // Handle AI message with tool calls
+            if (message._getType() === "ai") {
+                const aiMsg = message as AIMessage
+                if (aiMsg.tool_calls?.length) {
+                    return {
+                        role: "assistant",
+                        content:
+                            typeof aiMsg.content === "string" ? aiMsg.content : "",
+                        tool_calls: aiMsg.tool_calls.map((tc) => ({
+                            function: {
+                                name: tc.name,
+                                arguments: tc.args,
+                            },
+                        })),
+                    }
+                }
+            }
+
+            let content = ""
+            const images: string[] = []
             if (typeof message.content === "string") {
-                content = message.content;
+                content = message.content
             } else {
                 for (const contentPart of message.content) {
                     if (contentPart.type === "text") {
-                        content = `${content}\n${contentPart.text}`;
+                        content = `${content}\n${contentPart.text}`
                     } else if (
                         contentPart.type === "image_url" &&
                         typeof contentPart.image_url === "string"
                     ) {
-                        const imageUrlComponents = contentPart.image_url.split(",");
+                        const imageUrlComponents = contentPart.image_url.split(",")
                         // Support both data:image/jpeg;base64,<image> format as well
-                        images.push(imageUrlComponents[1] ?? imageUrlComponents[0]);
+                        images.push(imageUrlComponents[1] ?? imageUrlComponents[0])
                     } else {
                         throw new Error(
                             `Unsupported message content type. Must either have type "text" or type "image_url" with a string "image_url" field.`
-                        );
+                        )
                     }
                 }
             }
@@ -375,51 +482,34 @@ export class ChatOllama
                 role,
                 content,
                 images,
-            };
-        });
+            }
+        })
     }
 
     /** @deprecated */
     protected _formatMessagesAsPrompt(messages: BaseMessage[]): string {
         const formattedMessages = messages
             .map((message) => {
-                let messageText;
+                let messageText
                 if (message._getType() === "human") {
-                    messageText = `[INST] ${message.content} [/INST]`;
+                    messageText = `[INST] ${message.content} [/INST]`
                 } else if (message._getType() === "ai") {
-                    messageText = message.content;
+                    messageText = message.content
                 } else if (message._getType() === "system") {
-                    messageText = `<<SYS>> ${message.content} <</SYS>>`;
+                    messageText = `<<SYS>> ${message.content} <</SYS>>`
                 } else if (ChatMessage.isInstance(message)) {
                     messageText = `\n\n${message.role[0].toUpperCase()}${message.role.slice(
                         1
-                    )}: ${message.content}`;
+                    )}: ${message.content}`
                 } else {
                     console.warn(
                         `Unsupported message type passed to Ollama: "${message._getType()}"`
-                    );
-                    messageText = "";
+                    )
+                    messageText = ""
                 }
-                return messageText;
+                return messageText
             })
-            .join("\n");
-        return formattedMessages;
-    }
-
-    /** @ignore */
-    async _call(
-        messages: BaseMessage[],
-        options: this["ParsedCallOptions"],
-        runManager?: CallbackManagerForLLMRun
-    ): Promise<string> {
-        const chunks = [];
-        for await (const chunk of this._streamResponseChunks(
-            messages,
-            options,
-            runManager
-        )) {
-            chunks.push(chunk.message.content);
-        }
-        return chunks.join("");
+            .join("\n")
+        return formattedMessages
     }
 }

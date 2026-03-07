@@ -12,7 +12,7 @@ import {
 } from "@/services/search"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 import type { Document } from "@langchain/core/documents"
-import { MemoryVectorStore } from "langchain/vectorstores/memory"
+import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory"
 
 export const localStartPageSearch = async (query: string) => {
     const TOTAL_SEARCH_RESULTS = await totalSearchResults()

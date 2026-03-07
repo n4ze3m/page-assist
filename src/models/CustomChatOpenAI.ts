@@ -1,12 +1,14 @@
 import { type ClientOptions, OpenAI as OpenAIClient, } from "openai"
 import {
     AIMessage,
+    AIMessageChunk,
     BaseMessage,
     ChatMessage,
     ChatMessageChunk,
     FunctionMessageChunk,
     HumanMessageChunk,
     SystemMessageChunk,
+    ToolMessage,
     ToolMessageChunk
 } from "@langchain/core/messages"
 import { ChatGenerationChunk, ChatResult } from "@langchain/core/outputs"
@@ -76,19 +78,28 @@ export function messageToOpenAIRole(message: BaseMessage): OpenAIRoleEnum {
             return extractGenericMessageCustomRole(message) as OpenAIRoleEnum
         }
         default:
-            return type
+            return type as OpenAIRoleEnum
     }
 }
 function openAIResponseToChatMessage(
     message: OpenAIClient.Chat.Completions.ChatCompletionMessage
 ) {
     switch (message.role) {
-        case "assistant":
-            return new AIMessage(message.content || "", {
-                // function_call: message.function_call,
-                // tool_calls: message.tool_calls
-                // reasoning_content: message?.reasoning_content || null
-            })
+        case "assistant": {
+            if (message.tool_calls?.length) {
+                const msg = new AIMessage({ content: message.content || "" })
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                ;(msg as any).tool_calls = message.tool_calls.map((tc) => ({
+                    id: tc.id,
+                    name: tc.function.name,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    args: (() => { try { return JSON.parse(tc.function.arguments) } catch { return {} } })(),
+                    type: "tool_call" as const,
+                }))
+                return msg
+            }
+            return new AIMessage({ content: message.content || "" })
+        }
         default:
             return new ChatMessage(message.content || "", message.role ?? "unknown")
     }
@@ -107,12 +118,21 @@ function _convertDeltaToMessageChunk(
         additional_kwargs = {
             function_call: delta.function_call
         }
-    } else if (delta?.tool_calls) {
-        additional_kwargs = {
-            tool_calls: delta.tool_calls
-        }
     } else {
         additional_kwargs = {}
+    }
+    // Streaming tool call deltas — use proper tool_call_chunks instead of additional_kwargs
+    if (delta?.tool_calls) {
+        const chunk = new AIMessageChunk({ content, additional_kwargs })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ;(chunk as any).tool_call_chunks = (delta.tool_calls as any[]).map((tc) => ({
+            id: tc.id,
+            name: tc.function?.name,
+            args: tc.function?.arguments ?? "",
+            index: tc.index ?? 0,
+            type: "tool_call_chunk" as const,
+        }))
+        return chunk
     }
     if (role === "user") {
         return new HumanMessageChunk({ content })
@@ -142,18 +162,56 @@ function _convertDeltaToMessageChunk(
         return new ChatMessageChunk({ content, role })
     }
 }
-function convertMessagesToOpenAIParams(messages: any[]) {
-    // TODO: Function messages do not support array content, fix cast
-    return messages.map((message) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const completionParam: { role: string; content: string; name?: string } = {
-            role: messageToOpenAIRole(message),
-            content: message.content
-        }
-        if (message.name != null) {
-            completionParam.name = message.name
+function convertMessagesToOpenAIParams(messages: BaseMessage[]) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return messages.map((message): any => {
+        const role = messageToOpenAIRole(message)
+
+        // ToolMessage → { role: "tool", content, tool_call_id }
+        if (role === "tool") {
+            const toolMsg = message as ToolMessage
+            return {
+                role: "tool",
+                content: typeof toolMsg.content === "string"
+                    ? toolMsg.content
+                    : JSON.stringify(toolMsg.content),
+                tool_call_id: toolMsg.tool_call_id ?? "",
+            }
         }
 
+        // AI message with tool_calls → include tool_calls array
+        if (role === "assistant") {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const aiMsg = message as any
+            if (aiMsg.tool_calls?.length) {
+                return {
+                    role: "assistant",
+                    content: typeof aiMsg.content === "string" ? aiMsg.content : null,
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    tool_calls: aiMsg.tool_calls.map((tc: any) => ({
+                        id: tc.id || "",
+                        type: "function",
+                        function: {
+                            name: tc.name,
+                            arguments: typeof tc.args === "string"
+                                ? tc.args
+                                : JSON.stringify(tc.args ?? {}),
+                        },
+                    })),
+                }
+            }
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const completionParam: any = {
+            role,
+            content: message.content,
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((message as any).name != null) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            completionParam.name = (message as any).name
+        }
         return completionParam
     })
 }
@@ -414,7 +472,7 @@ export class CustomChatOpenAI<
             value: void 0
         })
         this.openAIApiKey =
-            fields?.openAIApiKey ?? getEnvironmentVariable("OPENAI_API_KEY")
+            (fields?.openAIApiKey ?? getEnvironmentVariable("OPENAI_API_KEY")) as string | undefined
 
         this.modelName = fields?.modelName ?? this.modelName
         this.modelKwargs = fields?.modelKwargs ?? {}
@@ -855,7 +913,7 @@ export class CustomChatOpenAI<
         let llm
         let outputParser
         if (method === "jsonMode") {
-            llm = this.bind({})
+            llm = this
             if (isZodSchema(schema)) {
                 outputParser = StructuredOutputParser.fromZodSchema(schema)
             } else {
@@ -880,7 +938,7 @@ export class CustomChatOpenAI<
                     parameters: schema
                 }
             }
-            llm = this.bind({})
+            llm = this
             outputParser = new JsonOutputKeyToolsParser({
                 returnSingle: true,
                 keyName: functionName

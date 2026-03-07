@@ -50,6 +50,9 @@ export interface OllamaRequestParams {
   model: string
   format?: StringWithAutocomplete<"json">
   images?: string[]
+  keep_alive?: any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  think?: boolean | "low" | "medium" | "high"
   options: {
     embedding_only?: boolean
     f16_kv?: boolean
@@ -85,11 +88,22 @@ export interface OllamaRequestParams {
   }
 }
 
+export interface OllamaToolFunction {
+  name: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  arguments: Record<string, any>
+}
+
+export interface OllamaToolCall {
+  function: OllamaToolFunction
+}
+
 export type OllamaMessage = {
-  role: StringWithAutocomplete<"user" | "assistant" | "system">
+  role: StringWithAutocomplete<"user" | "assistant" | "system" | "tool">
   content: string
   thinking?: string
   images?: string[]
+  tool_calls?: OllamaToolCall[]
 }
 
 export interface OllamaGenerateRequestParams extends OllamaRequestParams {
@@ -98,6 +112,8 @@ export interface OllamaGenerateRequestParams extends OllamaRequestParams {
 
 export interface OllamaChatRequestParams extends OllamaRequestParams {
   messages: OllamaMessage[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tools?: any[]
 }
 
 export type BaseOllamaGenerationChunk = {
