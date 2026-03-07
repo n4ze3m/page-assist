@@ -1,7 +1,7 @@
 import {
   RecursiveCharacterTextSplitter,
   CharacterTextSplitter
-} from "langchain/text_splitter"
+} from "@langchain/classic/text_splitter"
 
 import {
   defaultEmbeddingChunkOverlap,

@@ -14,7 +14,7 @@ import {
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 import type { Document } from "@langchain/core/documents"
 import * as cheerio from "cheerio"
-import { MemoryVectorStore } from "langchain/vectorstores/memory"
+import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory"
 const getCorrectTargeUrl = async (url: string) => {
   if (!url) return ""
   const res = await fetch(url)

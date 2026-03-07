@@ -59,6 +59,14 @@ export class CustomAIMessageChunk {
         return merged;
     }
 
+    _getType(): string {
+        return "ai";
+    }
+
+    _updateId(value: string | undefined) {
+        // no-op: CustomAIMessageChunk does not track id
+    }
+
     concat(chunk: CustomAIMessageChunk) {
         return new CustomAIMessageChunk({
             content: this.content + chunk.content,
