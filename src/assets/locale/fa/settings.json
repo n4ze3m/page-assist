@@ -18,11 +18,22 @@
           "dark": "تیره"
         }
       },
+      "defaultCopilotPrompt": {
+        "label": "پرامپت پیش‌فرض برای پنل جانبی (کوپایلوت)",
+        "placeholder": "یک پرامپت را انتخاب کنید"
+      },
+      "defaultWebUIPrompt": {
+        "label": "پرامپت پیش‌فرض برای رابط کاربری وب",
+        "placeholder": "یک پرامپت را انتخاب کنید"
+      },
       "copilotResumeLastChat": {
         "label": "آخرین گفتگو را هنگام باز کردن SidePanel (Copilot) از سر بگیر"
       },
       "turnOnChatWithWebsite": {
         "label": "فعال کردن گپ با وب سایت به صورت پیش‌فرض (کوپایلوت)"
+      },
+      "webUIResumeLastChat": {
+        "label": "آخرین گفتگو را هنگام باز کردن رابط کاربری وب از سر بگیر"
       },
       "hideCurrentChatModelSettings": {
         "label": "مخفی کردن تنظیمات مدل گپ فعلی را"
@@ -45,6 +56,9 @@
       "openReasoning": {
         "label": "باز کردن استدلال به صورت پیش فرض"
       },
+      "defaultThinkingMode": {
+        "label": "نمایش وضعیت حالت تفکر در فرم‌ها"
+      },
       "userChatBubble": {
         "label": "استفاده از حباب گفتگو برای پیام‌های کاربر"
       },
@@ -63,8 +77,46 @@
       "pasteLargeTextAsFile": {
         "label": "الصاق متن طولانی به عنوان فایل"
       },
+      "ocrLanguage": {
+        "label": "زبان پیش‌فرض OCR",
+        "placeholder": "یک زبان OCR انتخاب کنید"
+      },
       "sidepanelTemporaryChat": {
         "label": "فعال کردن چت موقت در پنل جانبی به صورت پیش‌فرض"
+      },
+      "webuiTemporaryChat": {
+        "label": "فعال کردن چت موقت در رابط کاربری وب به صورت پیش‌فرض"
+      },
+      "removeReasoningTagFromCopy": {
+        "label": "حذف برچسب استدلال از متن کپی شده"
+      },
+      "youtubeAutoSummarize": {
+        "label": "نمایش دکمه 'خلاصه‌سازی' در ویدیوهای یوتیوب"
+      },
+      "hideReasoningWidget": {
+        "label": "مخفی کردن ابزارک استدلال از پیام‌های هوش مصنوعی"
+      },
+      "persistChatInput": {
+        "label": "ذخیره ورودی چت (ذخیره پیام‌های ارسال نشده)"
+      },
+      "enableMessageQueue": {
+        "label": "فعال کردن صف پیام در حین استریم"
+      },
+      "optimizeQueueForSmallScreen": {
+        "label": "بهینه‌سازی رابط کاربری چت برای صفحات کوچک"
+      },
+      "tableTextWrap": {
+        "label": "فعال کردن شکستن متن در جداول مارک‌داون"
+      },
+      "showMoreForLargeMessage": {
+        "label": "نمایش 'بیشتر نشان بده' برای پیام‌های طولانی کاربر"
+      },
+      "sidebarPosition": {
+        "label": "موقعیت نوار کناری",
+        "options": {
+          "left": "چپ",
+          "right": "راست"
+        }
       }
     },
     "sidepanelRag": {
@@ -102,15 +154,37 @@
         "label": "کلید API بریو",
         "placeholder": "کلید API بریو خود را وارد کنید"
       },
+      "tavilyApi": {
+        "label": "کلید API تاویلی",
+        "placeholder": "کلید API تاویلی خود را وارد کنید"
+      },
+      "exa": {
+        "label": "کلید API اکسا",
+        "placeholder": "کلید API اکسا خود را وارد کنید"
+      },
+      "googleDomain": {
+        "label": "دامنه گوگل"
+      },
       "searchOnByDefault": {
         "label": "جستجوی اینترنتی به صورت پیش‌فرض فعال باشد"
+      },
+      "firecrawlAPIKey": {
+        "label": "کلید API فایرکرال",
+        "placeholder": "کلید API فایرکرال خود را وارد کنید"
+      },
+      "domainFilter": {
+        "label": "لیست فیلتر دامنه",
+        "description": "فقط نتایج از این دامنه‌ها نشان داده شوند",
+        "placeholder": "مثال: example.com"
+      },
+      "blockedDomains": {
+        "label": "دامنه‌های مسدود شده",
+        "description": "نتایج از این دامنه‌ها را حذف کنید",
+        "placeholder": "مثال: spam.com"
       }
     },
     "system": {
       "heading": "تنظیمات سیستم",
-      "storageSyncEnabled": {
-        "label": "فعال کردن همگام‌سازی ذخیره‌سازی مرورگر (همگام‌سازی تنظیمات در بین دستگاه‌ها)"
-      },
       "deleteChatHistory": {
         "label": "بازنشانی سیستم",
         "button": "بازنشانی همه",
@@ -126,6 +200,24 @@
         "button": "وارد کردن داده‌ها",
         "success": "واردسازی با موفقیت انجام شد",
         "error": "خطا در واردسازی"
+      },
+      "actionIcon": {
+        "label": "تنظیم عملکرد پیش‌فرض برای کلیک روی آیکون افزونه"
+      },
+      "contextMenu": {
+        "label": "تنظیم عملکرد پیش‌فرض برای منوی زمینه"
+      },
+      "fontSize": {
+        "label": "اندازه فونت"
+      },
+      "webuiBtnSidePanel": {
+        "label": "نمایش دکمه رابط کاربری وب در پنل جانبی"
+      },
+      "chatBackgroundImage": {
+        "label": "تصویر پس‌زمینه چت"
+      },
+      "storageSyncEnabled": {
+        "label": "فعال کردن همگام‌سازی ذخیره‌سازی مرورگر (همگام‌سازی تنظیمات در بین دستگاه‌ها)"
       }
     },
     "tts": {
@@ -146,6 +238,9 @@
       },
       "ssmlEnabled": {
         "label": "فعال کردن SSML (Speech Synthesis Markup Language)"
+      },
+      "responseSplitting": {
+        "label": "تقسیم پاسخ"
       },
       "removeReasoningTagTTS": {
         "label": "حذف برچسب استدلال از تبدیل متن به گفتار"
@@ -168,6 +263,7 @@
     "columns": {
       "name": "نام",
       "digest": "هضم",
+      "nickname": "نام مستعار",
       "modifiedAt": "اصلاح شده در",
       "size": "اندازه",
       "actions": "اقدامات"
@@ -181,7 +277,8 @@
     },
     "tooltip": {
       "delete": "حذف مدل",
-      "repull": "دریافت دوباره مدل"
+      "repull": "دریافت دوباره مدل",
+      "editNickname": "ویرایش نام مستعار"
     },
     "confirm": {
       "delete": "آیا مطمئن هستید که می خواهید این مدل را حذف کنید؟",
@@ -195,6 +292,8 @@
     "notification": {
       "pullModel": "در حال دریافت مدل",
       "pullModelDescription": "در حال دریافت مدل {{modelName}}. برای جزئیات بیشتر، آیکون افزونه را بررسی کنید.",
+      "cancellingDownload": "لغو دانلود",
+      "cancellingDownloadDescription": "دانلود مدل در حال لغو شدن است...",
       "success": "موفقیت",
       "error": "خطا",
       "successDescription": "مدل با موفقیت دریافت شد",
@@ -241,7 +340,8 @@
         "label": "پرامپت",
         "placeholder": "پرامپت وارد کنید",
         "required": "لطفا یک پرامپت وارد کنید",
-        "help": "می توانید از {key} به عنوان متغیر در درخواست خود استفاده کنید."
+        "help": "می توانید از {key} به عنوان متغیر در درخواست خود استفاده کنید.",
+        "missingTextPlaceholder": "متغیر {text} در پرامپت وجود ندارد. لطفاً آن را اضافه کنید."
       },
       "isSystem": {
         "label": "یک پرامپت سیستمی باشد"
@@ -415,5 +515,6 @@
   },
   "chromeAiSettings": {
     "title": "تنظیمات هوش مصنوعی کروم"
-  }
+  },
+  "mermaid": "مرماید"
 }

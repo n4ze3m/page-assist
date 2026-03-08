@@ -18,6 +18,14 @@
           "dark": "다크"
         }
       },
+      "defaultCopilotPrompt": {
+        "label": "사이드 패널 기본 프롬프트 (Copilot)",
+        "placeholder": "프롬프트 선택"
+      },
+      "defaultWebUIPrompt": {
+        "label": "웹 UI 기본 프롬프트",
+        "placeholder": "프롬프트 선택"
+      },
       "searchMode": {
         "label": "간편 인터넷 검색 실행"
       },
@@ -51,6 +59,9 @@
       "openReasoning": {
         "label": "추론 섹션을 기본적으로 열기"
       },
+      "defaultThinkingMode": {
+        "label": "폼에서 사고 모드 상태 표시"
+      },
       "userChatBubble": {
         "label": "사용자 메시지에 채팅 버블 사용"
       },
@@ -69,8 +80,46 @@
       "pasteLargeTextAsFile": {
         "label": "큰 텍스트를 파일로 붙여넣기"
       },
+      "ocrLanguage": {
+        "label": "기본 OCR 언어",
+        "placeholder": "OCR 언어 선택"
+      },
       "sidepanelTemporaryChat": {
         "label": "사이드 패널에서 임시 채팅 기본 활성화"
+      },
+      "webuiTemporaryChat": {
+        "label": "웹 UI에서 임시 채팅 기본 활성화"
+      },
+      "removeReasoningTagFromCopy": {
+        "label": "복사된 텍스트에서 추론 태그 제거"
+      },
+      "youtubeAutoSummarize": {
+        "label": "YouTube 동영상에 '요약' 버튼 표시"
+      },
+      "hideReasoningWidget": {
+        "label": "AI 메시지에서 추론 위젯 숨기기"
+      },
+      "persistChatInput": {
+        "label": "채팅 입력 유지 (미전송 메시지 저장)"
+      },
+      "enableMessageQueue": {
+        "label": "스트리밍 중 메시지 큐 활성화"
+      },
+      "optimizeQueueForSmallScreen": {
+        "label": "소형 화면을 위한 채팅 UI 최적화"
+      },
+      "tableTextWrap": {
+        "label": "마크다운 테이블에서 텍스트 줄 바꿈 활성화"
+      },
+      "showMoreForLargeMessage": {
+        "label": "긴 사용자 메시지에 '더 보기' 표시"
+      },
+      "sidebarPosition": {
+        "label": "사이드바 위치",
+        "options": {
+          "left": "왼쪽",
+          "right": "오른쪽"
+        }
       }
     },
     "sidepanelRag": {
@@ -108,15 +157,37 @@
         "label": "Brave API 키",
         "placeholder": "Brave API 키를 입력하세요"
       },
+      "tavilyApi": {
+        "label": "Tavily API 키",
+        "placeholder": "Tavily API 키를 입력하세요"
+      },
+      "exa": {
+        "label": "Exa API 키",
+        "placeholder": "Exa API 키를 입력하세요"
+      },
+      "googleDomain": {
+        "label": "Google 도메인"
+      },
       "searchOnByDefault": {
         "label": "기본적으로 인터넷 검색 켜기"
+      },
+      "firecrawlAPIKey": {
+        "label": "Firecrawl API 키",
+        "placeholder": "Firecrawl API 키를 입력하세요"
+      },
+      "domainFilter": {
+        "label": "도메인 필터 목록",
+        "description": "이 도메인의 결과만 표시",
+        "placeholder": "예: example.com"
+      },
+      "blockedDomains": {
+        "label": "차단된 도메인",
+        "description": "이 도메인의 결과 제외",
+        "placeholder": "예: spam.com"
       }
     },
     "system": {
       "heading": "시스템 설정",
-      "storageSyncEnabled": {
-        "label": "브라우저 저장소 동기화 활성화 (기기 간 설정 동기화)"
-      },
       "deleteChatHistory": {
         "label": "시스템 초기화",
         "button": "전체 초기화",
@@ -132,6 +203,24 @@
         "button": "데이터 가져오기",
         "success": "가져오기 성공",
         "error": "가져오기 오류"
+      },
+      "actionIcon": {
+        "label": "확장 아이콘 클릭 기본 동작 설정"
+      },
+      "contextMenu": {
+        "label": "컨텍스트 메뉴 기본 동작 설정"
+      },
+      "fontSize": {
+        "label": "글꼴 크기"
+      },
+      "webuiBtnSidePanel": {
+        "label": "사이드 패널에 웹 UI 버튼 표시"
+      },
+      "chatBackgroundImage": {
+        "label": "채팅 배경 이미지"
+      },
+      "storageSyncEnabled": {
+        "label": "브라우저 저장소 동기화 활성화 (기기 간 설정 동기화)"
       }
     },
     "tts": {
@@ -152,6 +241,9 @@
       },
       "ssmlEnabled": {
         "label": "SSML (Speech Synthesis Markup Language) 활성화"
+      },
+      "responseSplitting": {
+        "label": "응답 분할"
       },
       "removeReasoningTagTTS": {
         "label": "TTS에서 추론 태그 제거"
@@ -174,6 +266,7 @@
     "columns": {
       "name": "이름",
       "digest": "다이제스트",
+      "nickname": "닉네임",
       "modifiedAt": "수정 일시",
       "size": "크기",
       "actions": "동작"
@@ -187,7 +280,8 @@
     },
     "tooltip": {
       "delete": "모델 삭제",
-      "repull": "모델 다시 가져오기"
+      "repull": "모델 다시 가져오기",
+      "editNickname": "닉네임 수정"
     },
     "confirm": {
       "delete": "이 모델을 정말 삭제하시겠습니까?",
@@ -201,6 +295,8 @@
     "notification": {
       "pullModel": "모델 가져오는 중",
       "pullModelDescription": "{{modelName}} 모델을 가져오는 중입니다. 자세한 내용은 확장 기능 아이콘을 확인하세요.",
+      "cancellingDownload": "다운로드 취소 중",
+      "cancellingDownloadDescription": "모델 다운로드가 취소되고 있습니다...",
       "success": "성공",
       "error": "오류",
       "successDescription": "모델 가져오기가 완료되었습니다",
@@ -422,5 +518,6 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI 설정"
-  }
+  },
+  "mermaid": "Mermaid"
 }
