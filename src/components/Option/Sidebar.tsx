@@ -41,6 +41,7 @@ import {
   deleteByHistoryId,
   deleteHistoriesByDateRange,
   formatToChatHistory,
+  formatToConversationHistory,
   updateHistory,
   pinHistory,
   formatToMessage,
@@ -187,8 +188,7 @@ export const Sidebar = ({
     try {
       const db = new PageAssistDatabase()
       const history = await db.getChatHistory(chat.id)
-      const historyDetails = await db.getHistoryInfo(chat.id)
-      const chatHistory = formatToChatHistory(history)
+      const chatHistory = formatToConversationHistory(history)
       const model = selectedModel
 
       const generatedTitle = await generateTitle(model, chatHistory, chat.title)

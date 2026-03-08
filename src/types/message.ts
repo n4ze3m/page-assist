@@ -1,4 +1,5 @@
 import { ChatDocuments } from "@/models/ChatTypes"
+import { ChatMessageKind, McpToolCall } from "@/libs/mcp/types"
 
 type WebSearch = {
   search_engine: string
@@ -23,4 +24,10 @@ export type Message = {
   modelImage?: string
   modelName?: string
   documents?: ChatDocuments
+  messageKind?: ChatMessageKind
+  toolCalls?: McpToolCall[]
+  toolCallId?: string
+  toolName?: string
+  toolServerName?: string
+  toolError?: boolean
 }

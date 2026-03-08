@@ -443,6 +443,100 @@
     "title": "Manage Web Search",
     "heading": "Configure Web Search"
   },
+  "mcpSettings": {
+    "title": "MCP Servers",
+    "heading": "Manage MCP Servers",
+    "subheading": "Add HTTP MCP servers for normal chat, including bearer auth and custom headers.",
+    "addBtn": "Add MCP Server",
+    "table": {
+      "name": "Name",
+      "url": "URL",
+      "tools": "Cached Tools",
+      "status": "Validation",
+      "notValidated": "Not validated yet",
+      "toolsUnavailable": "No cached tools",
+      "auth": "Auth",
+      "enabled": "Enabled",
+      "actions": "Actions"
+    },
+    "actions": {
+      "refreshTools": "Refresh tools"
+    },
+    "status": {
+      "ready": "{{count}} tools available",
+      "failed": "Validation failed",
+      "notValidated": "Not validated",
+      "lastChecked": "Last checked: {{value}}"
+    },
+    "auth": {
+      "none": "No auth",
+      "bearer": "Bearer token"
+    },
+    "modal": {
+      "titleAdd": "Add MCP Server",
+      "titleEdit": "Edit MCP Server",
+      "deleteConfirm": "Delete {{name}}?",
+      "name": {
+        "label": "Server Name",
+        "placeholder": "My MCP Server",
+        "required": "Please enter a server name"
+      },
+      "url": {
+        "label": "Server URL",
+        "placeholder": "https://example.com/mcp",
+        "help": "Only HTTP and HTTPS MCP servers are supported right now.",
+        "required": "Please enter a server URL",
+        "invalid": "Please enter a valid HTTP or HTTPS URL"
+      },
+      "auth": {
+        "label": "Authentication"
+      },
+      "bearerToken": {
+        "label": "Bearer Token",
+        "placeholder": "Enter bearer token",
+        "required": "Please enter a bearer token"
+      },
+      "enabled": {
+        "label": "Enable server"
+      },
+      "headers": {
+        "label": "Custom Headers",
+        "add": "Add Header",
+        "key": {
+          "label": "Header Key",
+          "placeholder": "X-Request-ID"
+        },
+        "value": {
+          "label": "Header Value",
+          "placeholder": "value"
+        }
+      },
+      "validation": {
+        "title": "Validate Tools",
+        "help": "Connect to the MCP server, fetch available tools, and cache them before saving.",
+        "button": "Validate and Load Tools",
+        "availableTools": "Available tools",
+        "idle": "Validate this server to confirm the connection and load its available tools.",
+        "stale": "Connection details changed. Validate again to refresh the cached tools.",
+        "failed": "Could not validate this MCP server.",
+        "success": "Validated successfully. {{count}} tools are available.",
+        "syncedAt": "Last synced: {{value}}",
+        "saveHint": "Saving will validate the current configuration if the cached tool list is stale or missing."
+      },
+      "submit": "Save MCP Server",
+      "update": "Update MCP Server"
+    },
+    "notification": {
+      "added": "MCP server added",
+      "updated": "MCP server updated",
+      "deleted": "MCP server deleted",
+      "validated": "Loaded {{count}} MCP tools",
+      "toolsRefreshed": "Refreshed tools for {{name}}",
+      "validationFailedTitle": "MCP validation failed",
+      "storageBlockedTitle": "Page Assist can't save data",
+      "storageBlockedDescription": "Firefox Private Mode does not support saving data to IndexedDB. Please manage MCP servers from a normal window."
+    }
+  },
   "about": {
     "title": "About",
     "heading": "About",

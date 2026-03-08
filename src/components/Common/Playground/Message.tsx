@@ -27,6 +27,9 @@ import { PlaygroundUserMessageBubble } from "./PlaygroundUserMessage"
 import { copyToClipboard } from "@/utils/clipboard"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { PiGitBranch } from "react-icons/pi"
+import { ChatActionInfo, ChatMessageKind, McpToolCall } from "@/libs/mcp/types"
+import { isTraceMessageKind } from "@/libs/mcp/utils"
+import { McpTraceCard } from "./McpTraceCard"
 
 type Props = {
   message: string
@@ -57,9 +60,15 @@ type Props = {
   modelName?: string
   onContinue?: () => void
   documents?: ChatDocuments
-  actionInfo?: string | null
+  actionInfo?: ChatActionInfo | null
   onNewBranch?: () => void
   temporaryChat?: boolean
+  messageKind?: ChatMessageKind
+  toolCalls?: McpToolCall[]
+  toolCallId?: string
+  toolName?: string
+  toolServerName?: string
+  toolError?: boolean
 }
 
 export const PlaygroundMessage = (props: Props) => {
@@ -78,11 +87,13 @@ export const PlaygroundMessage = (props: Props) => {
   const { cancel, isSpeaking, speak } = useTTS()
   const isLastMessage: boolean =
     props.currentMessageIndex === props.totalMessages - 1
+  const isTraceMessage = isTraceMessageKind(props.messageKind)
 
   const autoCopyToClipboard = async () => {
     if (
       autoCopyResponseToClipboard &&
       props.isBot &&
+      !isTraceMessage &&
       isLastMessage &&
       !props.isStreaming &&
       !props.isProcessing &&
@@ -104,6 +115,7 @@ export const PlaygroundMessage = (props: Props) => {
   }, [
     autoCopyResponseToClipboard,
     props.isBot,
+    isTraceMessage,
     props.currentMessageIndex,
     props.totalMessages,
     props.isStreaming,
@@ -115,6 +127,7 @@ export const PlaygroundMessage = (props: Props) => {
       autoPlayTTS &&
       props.isTTSEnabled &&
       props.isBot &&
+      !isTraceMessage &&
       isLastMessage &&
       !props.isStreaming &&
       !props.isProcessing &&
@@ -130,6 +143,7 @@ export const PlaygroundMessage = (props: Props) => {
     autoPlayTTS,
     props.isTTSEnabled,
     props.isBot,
+    isTraceMessage,
     props.currentMessageIndex,
     props.totalMessages,
     props.isStreaming,
@@ -197,7 +211,16 @@ export const PlaygroundMessage = (props: Props) => {
           </div>
           <div className="flex flex-grow flex-col">
             {!editMode ? (
-              props.isBot ? (
+              props.isBot && isTraceMessage ? (
+                <McpTraceCard
+                  message={props.message}
+                  messageKind={props.messageKind}
+                  toolCalls={props.toolCalls}
+                  toolName={props.toolName}
+                  toolServerName={props.toolServerName}
+                  toolError={props.toolError}
+                />
+              ) : props.isBot ? (
                 <>
                   {parseReasoning(props.message).map((e, i) => {
                     if (e.type === "reasoning" && !hideReasoningWidget) {
@@ -301,7 +324,10 @@ export const PlaygroundMessage = (props: Props) => {
             </div>
           )} */}
 
-          {props.isBot && props?.sources && props?.sources.length > 0 && (
+          {props.isBot &&
+            !isTraceMessage &&
+            props?.sources &&
+            props?.sources.length > 0 && (
             <Collapse
               className="mt-6"
               ghost
@@ -328,7 +354,7 @@ export const PlaygroundMessage = (props: Props) => {
               ]}
             />
           )}
-          {!props.isProcessing && !editMode ? (
+          {!props.isProcessing && !editMode && !isTraceMessage ? (
             <div
               className={`space-x-2 gap-2 flex ${
                 props.currentMessageIndex !== props.totalMessages - 1
@@ -448,10 +474,11 @@ export const PlaygroundMessage = (props: Props) => {
               )}
             </div>
           ) : (
-            // add invisible div to prevent layout shift
-            <div className="invisible">
-              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"></div>
-            </div>
+            !isTraceMessage && (
+              <div className="invisible">
+                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"></div>
+              </div>
+            )
           )}
         </div>
       </div>

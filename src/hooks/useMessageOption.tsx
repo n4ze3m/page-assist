@@ -246,7 +246,9 @@ export const useMessageOption = () => {
       setHistoryId,
       fileRetrievalEnabled,
       setActionInfo,
-      webSearch
+      webSearch,
+      temporaryChat,
+      messageSource: "web-ui" as const
     }
 
     try {
@@ -408,20 +410,33 @@ export const useMessageOption = () => {
         messageSource
       )
 
+      let timeOffset = 0
+
       // Save all messages to the new history
       for (const msg of messages) {
         await saveMessage({
           history_id: newHistory.id,
           name: selectedModel,
-          role: msg.isBot ? "assistant" : "user",
+          role:
+            msg.messageKind === "tool_result"
+              ? "tool"
+              : msg.isBot
+                ? "assistant"
+                : "user",
           content: msg.message,
           images: msg.images || [],
           source: msg.sources || [],
-          time: msg.isBot ? 2 : 1,
+          time: ++timeOffset,
           message_type: "normal",
           generationInfo: msg.generationInfo,
           reasoning_time_taken: msg.reasoning_time_taken || 0,
-          documents: msg.documents
+          documents: msg.documents,
+          messageKind: msg.messageKind,
+          toolCalls: msg.toolCalls,
+          toolCallId: msg.toolCallId,
+          toolName: msg.toolName,
+          toolServerName: msg.toolServerName,
+          toolError: msg.toolError
         })
       }
 

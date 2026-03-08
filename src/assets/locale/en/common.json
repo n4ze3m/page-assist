@@ -201,6 +201,25 @@
     "semanticSearch": "Performing semantic search",
     "newBranch": "New Branch",
     "downloading": "Downloading" ,
+    "mcp": {
+        "tool": "tool",
+        "server": "server",
+        "toolRequestTitle": "Tools requested",
+        "toolResultTitle": "Tool result",
+        "arguments": "Arguments",
+        "output": "Output",
+        "noOutput": "No output returned.",
+        "status": {
+            "success": "Success",
+            "error": "Error"
+        },
+        "action": {
+            "connecting": "Connecting to MCP servers",
+            "loading_tools": "Loading MCP tools",
+            "calling_tool": "Calling {{tool}} on {{server}}",
+            "waiting_result": "Waiting for {{tool}} on {{server}}"
+        }
+    },
     "cancelPullingModel": {
         "confirm": "Are you sure you want to cancel the download? This will stop the download process. According to the Ollama documentation, you can restart from where you left off."
     },

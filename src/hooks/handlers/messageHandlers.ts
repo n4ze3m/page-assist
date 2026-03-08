@@ -35,13 +35,22 @@ export const createRegenerateLastMessage = ({
       return
     }
     if (history.length > 0) {
-      const lastMessage = history[history.length - 2]
-      let newHistory = history.slice(0, -2)
-      let mewMessages = messages
-      mewMessages.pop()
+      const lastUserIndex = history.findLastIndex(
+        (message) => message.role === "user"
+      )
+
+      if (lastUserIndex === -1) {
+        return
+      }
+
+      const lastMessage = history[lastUserIndex]
+      const newHistory = history.slice(0, lastUserIndex)
+      const newMessages = messages.slice(0, lastUserIndex + 1)
+
       setHistory(newHistory)
-      setMessages(mewMessages)
+      setMessages(newMessages)
       await removeMessageUsingHistoryIdFn(historyId)
+
       if (lastMessage.role === "user") {
         const newController = new AbortController()
         await onSubmit({
@@ -49,6 +58,7 @@ export const createRegenerateLastMessage = ({
           image: lastMessage.image || "",
           images: lastMessage.images || [],
           isRegenerate: true,
+          messages: newMessages,
           memory: newHistory,
           controller: newController
         })

@@ -48,6 +48,7 @@ import {
 } from "./utils/messageHelpers"
 import { updatePageTitle } from "@/utils/update-page-title"
 import { getNoOfRetrievedDocs } from "@/services/app"
+import { normalChatMode as sharedNormalChatMode } from "./chat-modes/normalChatMode"
 
 export const useMessage = () => {
   const {
@@ -67,7 +68,9 @@ export const useMessage = () => {
     setWebSearch,
     isSearchingInternet,
     temporaryChat,
-    setTemporaryChat
+    setTemporaryChat,
+    actionInfo,
+    setActionInfo
   } = useStoreMessageOption()
   const [defaultInternetSearchOn] = useStorage("defaultInternetSearchOn", false)
 
@@ -134,6 +137,7 @@ export const useMessage = () => {
     if (sidepanelTemporaryChat) {
       setTemporaryChat(true)
     }
+    setActionInfo(null)
   }
 
   const saveMessageOnSuccess = createSaveMessageOnSuccess(
@@ -1668,14 +1672,32 @@ export const useMessage = () => {
             images
           )
         } else {
-          await normalChatMode(
+          await sharedNormalChatMode(
             message,
             image,
             isRegenerate,
             chatHistory || messages,
             memory || history,
             signal,
-            images
+            {
+              selectedModel,
+              useOCR,
+              selectedSystemPrompt,
+              currentChatModelSettings,
+              setMessages,
+              saveMessageOnSuccess,
+              saveMessageOnError,
+              setHistory,
+              setIsProcessing,
+              setStreaming,
+              setAbortController,
+              historyId,
+              setHistoryId,
+              images,
+              setActionInfo,
+              temporaryChat,
+              messageSource: "copilot"
+            }
           )
         }
       } else if (chatMode === "vision") {
@@ -1755,10 +1777,17 @@ export const useMessage = () => {
 
   const regenerateLastMessage = async () => {
     if (history.length > 0) {
-      const lastMessage = history[history.length - 2]
-      let newHistory = history.slice(0, -2)
-      let mewMessages = messages
-      mewMessages.pop()
+      const lastUserIndex = history.findLastIndex(
+        (message) => message.role === "user"
+      )
+
+      if (lastUserIndex === -1) {
+        return
+      }
+
+      const lastMessage = history[lastUserIndex]
+      let newHistory = history.slice(0, lastUserIndex)
+      let mewMessages = messages.slice(0, lastUserIndex + 1)
       setHistory(newHistory)
       setMessages(mewMessages)
       await removeMessageUsingHistoryId(historyId)
@@ -1768,6 +1797,7 @@ export const useMessage = () => {
           message: lastMessage.content,
           image: lastMessage.image || "",
           isRegenerate: true,
+          messages: mewMessages,
           memory: newHistory,
           controller: newController,
           messageType: lastMessage.messageType,
@@ -1823,6 +1853,7 @@ export const useMessage = () => {
     createChatBranch,
     temporaryChat,
     setTemporaryChat,
-    sidepanelTemporaryChat
+    sidepanelTemporaryChat,
+    actionInfo
   }
 }

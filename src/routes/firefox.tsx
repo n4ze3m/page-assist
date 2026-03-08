@@ -18,6 +18,7 @@ const OptionKnowledgeBase = lazy(() => import("./option-settings-knowledge"))
 const OptionAbout = lazy(() => import("./option-settings-about"))
 const OptionRagSettings = lazy(() => import("./option-rag"))
 const OptionOpenAI = lazy(() => import("./option-settings-openai"))
+const OptionMCP = lazy(() => import("./option-settings-mcp"))
 
 export const OptionRoutingFirefox = () => {
   return (
@@ -28,6 +29,7 @@ export const OptionRoutingFirefox = () => {
       <Route path="/settings/prompt" element={<OptionPrompt />} />
       <Route path="/settings/ollama" element={<OptionOllamaSettings />} />
       <Route path="/settings/openai" element={<OptionOpenAI />} />
+      <Route path="/settings/mcp" element={<OptionMCP />} />
       <Route path="/settings/share" element={<OptionShare />} />
       <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
       <Route path="/settings/about" element={<OptionAbout />} />

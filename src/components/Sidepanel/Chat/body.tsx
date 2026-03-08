@@ -13,7 +13,8 @@ export const SidePanelBody = () => {
     editMessage,
     isSearchingInternet, 
     createChatBranch,
-    temporaryChat
+    temporaryChat,
+    actionInfo
   } = useMessage()
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
@@ -54,6 +55,13 @@ export const SidePanelBody = () => {
             modelImage={message?.modelImage}
             modelName={message?.modelName}
             temporaryChat={temporaryChat}
+            actionInfo={actionInfo}
+            messageKind={message?.messageKind}
+            toolCalls={message?.toolCalls}
+            toolCallId={message?.toolCallId}
+            toolName={message?.toolName}
+            toolServerName={message?.toolServerName}
+            toolError={message?.toolError}
           />
         ))}
       </div>

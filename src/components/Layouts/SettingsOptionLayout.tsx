@@ -7,7 +7,8 @@ import {
   InfoIcon,
   CombineIcon,
   ChromeIcon,
-  CpuIcon
+  CpuIcon,
+  Server
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
@@ -59,6 +60,12 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     href="/settings/openai"
                     name={t("openai:settings")}
                     icon={CpuIcon}
+                    current={location.pathname}
+                  />
+                  <LinkComponent
+                    href="/settings/mcp"
+                    name={t("mcpSettings.title")}
+                    icon={Server}
                     current={location.pathname}
                   />
                   <LinkComponent

@@ -61,6 +61,12 @@ export const PlaygroundChat = () => {
             modelImage={message?.modelImage}
             modelName={message?.modelName}
             temporaryChat={temporaryChat}  
+            messageKind={message?.messageKind}
+            toolCalls={message?.toolCalls}
+            toolCallId={message?.toolCallId}
+            toolName={message?.toolName}
+            toolServerName={message?.toolServerName}
+            toolError={message?.toolError}
             onContinue={() => {
               onSubmit({
                 image: "",
