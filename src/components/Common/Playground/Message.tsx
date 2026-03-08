@@ -34,6 +34,11 @@ import {
 } from "./message-groups"
 import { McpInvocationBlock } from "./McpInvocationBlock"
 
+const messageRenderStyle: React.CSSProperties = {
+  contentVisibility: "auto",
+  containIntrinsicSize: "220px"
+}
+
 type Props = {
   message: string
   message_type?: string
@@ -43,10 +48,15 @@ type Props = {
   isBot: boolean
   name: string
   images?: string[]
-  currentMessageIndex: number
-  totalMessages: number
-  onRengerate: () => void
-  onEditFormSubmit: (value: string, isSend: boolean) => void
+  isLastMessage: boolean
+  actionIndex: number
+  onRengerate?: () => void
+  onEditFormSubmit: (
+    messageIndex: number,
+    isHuman: boolean,
+    value: string,
+    isSend: boolean
+  ) => void
   isProcessing: boolean
   webSearch?: {}
   isSearchingInternet?: boolean
@@ -64,7 +74,7 @@ type Props = {
   onContinue?: () => void
   documents?: ChatDocuments
   actionInfo?: ChatActionInfo | null
-  onNewBranch?: () => void
+  onNewBranch?: (messageIndex: number) => void
   temporaryChat?: boolean
   messageKind?: ChatMessageKind
   toolCalls?: McpToolCall[]
@@ -185,7 +195,7 @@ const McpInvocationGroup = ({
   </div>
 )
 
-export const PlaygroundMessage = (props: Props) => {
+const PlaygroundMessageComponent = (props: Props) => {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
   const [editMode, setEditMode] = React.useState(false)
   const [checkWideMode] = useStorage("checkWideMode", false)
@@ -199,8 +209,6 @@ export const PlaygroundMessage = (props: Props) => {
   const [copyAsFormattedText] = useStorage("copyAsFormattedText", false)
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
-  const isLastMessage: boolean =
-    props.currentMessageIndex === props.totalMessages - 1
   const hasSegmentedAssistantText = hasStandaloneAssistantText(props.segments)
   const isTraceOnly = props.isBot
     ? props.segments
@@ -218,7 +226,7 @@ export const PlaygroundMessage = (props: Props) => {
       autoCopyResponseToClipboard &&
       props.isBot &&
       !isTraceOnly &&
-      isLastMessage &&
+      props.isLastMessage &&
       !props.isStreaming &&
       !props.isProcessing &&
       copyableMessage.trim().length > 0
@@ -240,8 +248,7 @@ export const PlaygroundMessage = (props: Props) => {
     autoCopyResponseToClipboard,
     props.isBot,
     isTraceOnly,
-    props.currentMessageIndex,
-    props.totalMessages,
+    props.isLastMessage,
     props.isStreaming,
     props.isProcessing,
     copyableMessage
@@ -253,7 +260,7 @@ export const PlaygroundMessage = (props: Props) => {
       props.isTTSEnabled &&
       props.isBot &&
       !isTraceOnly &&
-      isLastMessage &&
+      props.isLastMessage &&
       !props.isStreaming &&
       !props.isProcessing &&
       copyableMessage.trim().length > 0
@@ -267,8 +274,7 @@ export const PlaygroundMessage = (props: Props) => {
     props.isTTSEnabled,
     props.isBot,
     isTraceOnly,
-    props.currentMessageIndex,
-    props.totalMessages,
+    props.isLastMessage,
     props.isStreaming,
     props.isProcessing,
     copyableMessage
@@ -280,7 +286,8 @@ export const PlaygroundMessage = (props: Props) => {
 
   return (
     <div
-      className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 text-gray-800 dark:text-gray-100 md:px-4 lg:w-4/5 ${checkWideMode ? "max-w-none" : ""}`}>
+      className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 text-gray-800 dark:text-gray-100 md:px-4 lg:w-4/5 ${checkWideMode ? "max-w-none" : ""}`}
+      style={messageRenderStyle}>
       <div className="m-auto my-2 flex w-full flex-row gap-4 md:gap-6">
         <div className="relative flex w-8 flex-col items-end">
           {props.isBot ? (
@@ -318,10 +325,10 @@ export const PlaygroundMessage = (props: Props) => {
               : "You"}
           </span>
 
-          {props.isBot && props.isSearchingInternet && isLastMessage ? (
+          {props.isBot && props.isSearchingInternet && props.isLastMessage ? (
             <ActionInfo action={"webSearch"} />
           ) : null}
-          {props.isBot && props.actionInfo && isLastMessage ? (
+          {props.isBot && props.actionInfo && props.isLastMessage ? (
             <ActionInfo action={props.actionInfo} />
           ) : null}
 
@@ -390,7 +397,14 @@ export const PlaygroundMessage = (props: Props) => {
             ) : (
               <EditMessageForm
                 value={copyableMessage}
-                onSumbit={props.onEditFormSubmit}
+                onSumbit={(value, isSend) =>
+                  props.onEditFormSubmit(
+                    props.actionIndex,
+                    !props.isBot,
+                    value,
+                    isSend
+                  )
+                }
                 onClose={() => setEditMode(false)}
                 isBot={props.isBot}
               />
@@ -448,7 +462,7 @@ export const PlaygroundMessage = (props: Props) => {
           {!props.isProcessing && !editMode && !isTraceOnly ? (
             <div
               className={`flex gap-2 space-x-2 ${
-                props.currentMessageIndex !== props.totalMessages - 1
+                !props.isLastMessage
                   ? "invisible group-hover:visible"
                   : ""
               }`}>
@@ -516,7 +530,9 @@ export const PlaygroundMessage = (props: Props) => {
                     </Popover>
                   )}
 
-                  {!props.hideEditAndRegenerate && isLastMessage && (
+                  {!props.hideEditAndRegenerate &&
+                    props.isLastMessage &&
+                    props.onRengerate && (
                     <Tooltip title={t("regenerate")}>
                       <button
                         aria-label={t("regenerate")}
@@ -531,14 +547,14 @@ export const PlaygroundMessage = (props: Props) => {
                     <Tooltip title={t("newBranch")}>
                       <button
                         aria-label={t("newBranch")}
-                        onClick={props?.onNewBranch}
+                        onClick={() => props?.onNewBranch?.(props.actionIndex)}
                         className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-gray-100 transition-colors duration-200 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:border-none dark:bg-[#242424] dark:hover:bg-gray-700">
                         <GitBranchIcon className="h-3 w-3 text-gray-400 group-hover:text-gray-500" />
                       </button>
                     </Tooltip>
                   )}
 
-                  {!props.hideContinue && isLastMessage && (
+                  {!props.hideContinue && props.isLastMessage && (
                     <Tooltip title={t("continue")}>
                       <button
                         aria-label={t("continue")}
@@ -574,3 +590,48 @@ export const PlaygroundMessage = (props: Props) => {
     </div>
   )
 }
+
+const arePlaygroundMessagePropsEqual = (previous: Props, next: Props) =>
+  previous.message === next.message &&
+  previous.message_type === next.message_type &&
+  previous.hideCopy === next.hideCopy &&
+  previous.botAvatar === next.botAvatar &&
+  previous.userAvatar === next.userAvatar &&
+  previous.isBot === next.isBot &&
+  previous.name === next.name &&
+  previous.images === next.images &&
+  previous.isLastMessage === next.isLastMessage &&
+  previous.actionIndex === next.actionIndex &&
+  previous.onRengerate === next.onRengerate &&
+  previous.onEditFormSubmit === next.onEditFormSubmit &&
+  previous.isProcessing === next.isProcessing &&
+  previous.webSearch === next.webSearch &&
+  previous.isSearchingInternet === next.isSearchingInternet &&
+  previous.sources === next.sources &&
+  previous.hideEditAndRegenerate === next.hideEditAndRegenerate &&
+  previous.hideContinue === next.hideContinue &&
+  previous.onSourceClick === next.onSourceClick &&
+  previous.isTTSEnabled === next.isTTSEnabled &&
+  previous.generationInfo === next.generationInfo &&
+  previous.isStreaming === next.isStreaming &&
+  previous.reasoningTimeTaken === next.reasoningTimeTaken &&
+  previous.openReasoning === next.openReasoning &&
+  previous.modelImage === next.modelImage &&
+  previous.modelName === next.modelName &&
+  previous.onContinue === next.onContinue &&
+  previous.documents === next.documents &&
+  previous.actionInfo === next.actionInfo &&
+  previous.onNewBranch === next.onNewBranch &&
+  previous.temporaryChat === next.temporaryChat &&
+  previous.messageKind === next.messageKind &&
+  previous.toolCalls === next.toolCalls &&
+  previous.toolCallId === next.toolCallId &&
+  previous.toolName === next.toolName &&
+  previous.toolServerName === next.toolServerName &&
+  previous.toolError === next.toolError &&
+  previous.segments === next.segments
+
+export const PlaygroundMessage = React.memo(
+  PlaygroundMessageComponent,
+  arePlaygroundMessagePropsEqual
+)

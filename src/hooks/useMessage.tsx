@@ -41,7 +41,10 @@ import {
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
-import { createBranchMessage } from "./handlers/messageHandlers"
+import {
+  createBranchMessage,
+  createRegenerateLastMessage
+} from "./handlers/messageHandlers"
 import {
   createSaveMessageOnError,
   createSaveMessageOnSuccess
@@ -150,6 +153,25 @@ export const useMessage = () => {
     setHistory,
     setHistoryId as (id: string) => void
   )
+
+  const messagesRef = React.useRef(messages)
+  const historyRef = React.useRef(history)
+  const historyIdRef = React.useRef(historyId)
+  const onSubmitRef = React.useRef<(params: any) => Promise<void>>(
+    async () => {}
+  )
+
+  React.useEffect(() => {
+    messagesRef.current = messages
+  }, [messages])
+
+  React.useEffect(() => {
+    historyRef.current = history
+  }, [history])
+
+  React.useEffect(() => {
+    historyIdRef.current = historyId
+  }, [historyId])
 
   const chatWithWebsiteMode = async (
     message: string,
@@ -1726,6 +1748,10 @@ export const useMessage = () => {
     }
   }
 
+  React.useEffect(() => {
+    onSubmitRef.current = onSubmit
+  }, [onSubmit])
+
   const stopStreamingRequest = () => {
     if (isEmbedding) {
       if (embeddingController) {
@@ -1739,27 +1765,43 @@ export const useMessage = () => {
     }
   }
 
-  const editMessage = async (
+  const editMessage = React.useCallback(async (
     index: number,
     message: string,
     isHuman: boolean
   ) => {
-    let newMessages = messages
-    let newHistory = history
+    const currentMessages = messagesRef.current
+    const currentHistory = historyRef.current
+    const currentHistoryId = historyIdRef.current
+    const nextMessages = currentMessages.map((currentMessage, currentIndex) =>
+      currentIndex === index
+        ? {
+            ...currentMessage,
+            message
+          }
+        : currentMessage
+    )
+    const nextHistory = currentHistory.map((currentMessage, currentIndex) =>
+      currentIndex === index
+        ? {
+            ...currentMessage,
+            content: message
+          }
+        : currentMessage
+    )
 
     if (isHuman) {
-      const currentHumanMessage = newMessages[index]
-      newMessages[index].message = message
-      const previousMessages = newMessages.slice(0, index + 1)
+      const currentHumanMessage = nextMessages[index]
+      const previousMessages = nextMessages.slice(0, index + 1)
       setMessages(previousMessages)
-      const previousHistory = newHistory.slice(0, index)
+      const previousHistory = nextHistory.slice(0, index)
       setHistory(previousHistory)
-      await updateMessageByIndex(historyId, index, message)
-      await deleteChatForEdit(historyId, index)
+      await updateMessageByIndex(currentHistoryId, index, message)
+      await deleteChatForEdit(currentHistoryId, index)
       const abortController = new AbortController()
-      await onSubmit({
+      await onSubmitRef.current({
         message: message,
-        image: currentHumanMessage.images[0] || "",
+        image: currentHumanMessage.images?.[0] || "",
         images: currentHumanMessage.images || [],
         isRegenerate: true,
         messages: previousMessages,
@@ -1767,53 +1809,61 @@ export const useMessage = () => {
         controller: abortController
       })
     } else {
-      newMessages[index].message = message
-      setMessages(newMessages)
-      newHistory[index].content = message
-      setHistory(newHistory)
-      await updateMessageByIndex(historyId, index, message)
+      setMessages(nextMessages)
+      setHistory(nextHistory)
+      await updateMessageByIndex(currentHistoryId, index, message)
     }
-  }
+  }, [setMessages, setHistory])
 
-  const regenerateLastMessage = async () => {
-    if (history.length > 0) {
-      const lastUserIndex = history.findLastIndex(
-        (message) => message.role === "user"
-      )
+  const getMessages = React.useCallback(() => messagesRef.current, [])
+  const getHistory = React.useCallback(() => historyRef.current, [])
+  const getHistoryId = React.useCallback(() => historyIdRef.current, [])
+  const submitWithCurrentState = React.useCallback(
+    (params: any) => onSubmitRef.current(params),
+    []
+  )
 
-      if (lastUserIndex === -1) {
-        return
-      }
-
-      const lastMessage = history[lastUserIndex]
-      let newHistory = history.slice(0, lastUserIndex)
-      let mewMessages = messages.slice(0, lastUserIndex + 1)
-      setHistory(newHistory)
-      setMessages(mewMessages)
-      await removeMessageUsingHistoryId(historyId)
-      if (lastMessage.role === "user") {
-        const newController = new AbortController()
-        await onSubmit({
-          message: lastMessage.content,
-          image: lastMessage.image || "",
-          isRegenerate: true,
-          messages: mewMessages,
-          memory: newHistory,
-          controller: newController,
-          messageType: lastMessage.messageType,
-          images: lastMessage.images || []
-        })
-      }
-    }
-  }
-  const createChatBranch = createBranchMessage({
-    historyId,
-    setHistory,
-    setHistoryId,
-    setMessages,
-    setSelectedSystemPrompt,
-    setSystemPrompt: currentChatModelSettings.setSystemPrompt
-  })
+  const regenerateLastMessage = React.useMemo(
+    () =>
+      createRegenerateLastMessage({
+        validateBeforeSubmitFn: () => true,
+        history: getHistory,
+        messages: getMessages,
+        setHistory,
+        setMessages,
+        historyId: getHistoryId,
+        removeMessageUsingHistoryIdFn: removeMessageUsingHistoryId,
+        onSubmit: submitWithCurrentState
+      }),
+    [
+      getHistory,
+      getMessages,
+      setHistory,
+      setMessages,
+      getHistoryId,
+      submitWithCurrentState
+    ]
+  )
+  const createChatBranch = React.useMemo(
+    () =>
+      createBranchMessage({
+        historyId: null,
+        getHistoryId,
+        setHistory,
+        setHistoryId,
+        setMessages,
+        setSelectedSystemPrompt,
+        setSystemPrompt: currentChatModelSettings.setSystemPrompt
+      }),
+    [
+      setHistory,
+      setHistoryId,
+      setMessages,
+      getHistoryId,
+      setSelectedSystemPrompt,
+      currentChatModelSettings.setSystemPrompt
+    ]
+  )
   return {
     messages,
     setMessages,

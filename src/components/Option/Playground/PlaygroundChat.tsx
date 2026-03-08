@@ -4,9 +4,9 @@ import { PlaygroundEmpty } from "./PlaygroundEmpty"
 import { PlaygroundMessage } from "~/components/Common/Playground/Message"
 import { MessageSourcePopup } from "@/components/Common/Playground/MessageSourcePopup"
 import { useStorage } from "@plasmohq/storage/hook"
-import { buildPlaygroundMessageGroups } from "@/components/Common/Playground/message-groups"
+import { usePlaygroundMessageGroups } from "@/components/Common/Playground/message-groups"
 
-export const PlaygroundChat = () => {
+const PlaygroundChatComponent = () => {
   const {
     messages,
     streaming,
@@ -22,7 +22,33 @@ export const PlaygroundChat = () => {
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
   const [openReasoning] = useStorage("openReasoning", false)
-  const messageGroups = buildPlaygroundMessageGroups(messages)
+  const messageGroups = usePlaygroundMessageGroups(messages)
+  const lastGroupIndex = messageGroups.length - 1
+
+  const handleEditMessage = React.useCallback(
+    (
+      actionIndex: number,
+      isHuman: boolean,
+      value: string,
+      isSend: boolean
+    ) => {
+      editMessage(actionIndex, value, isHuman, isSend)
+    },
+    [editMessage]
+  )
+
+  const handleSourceClick = React.useCallback((data: any) => {
+    setSource(data)
+    setIsSourceOpen(true)
+  }, [])
+
+  const handleContinue = React.useCallback(() => {
+    onSubmit({
+      image: "",
+      message: "",
+      isContinue: true
+    })
+  }, [onSubmit])
 
   return (
     <>
@@ -34,30 +60,27 @@ export const PlaygroundChat = () => {
         )}
         {messageGroups.map((message, index) => (
           <PlaygroundMessage
-            key={index}
+            key={message.renderKey}
             isBot={message.isBot}
             message={message.message}
             name={message.name}
             images={message.images || []}
-            currentMessageIndex={index}
-            totalMessages={messageGroups.length}
-            onRengerate={regenerateLastMessage}
-            isProcessing={streaming}
-            isSearchingInternet={isSearchingInternet}
+            isLastMessage={index === lastGroupIndex}
+            actionIndex={message.actionIndex}
+            onRengerate={
+              index === lastGroupIndex ? regenerateLastMessage : undefined
+            }
+            isProcessing={streaming && index === lastGroupIndex}
+            isSearchingInternet={
+              index === lastGroupIndex ? isSearchingInternet : false
+            }
             sources={message.sources}
-            onEditFormSubmit={(value, isSend) => {
-              editMessage(message.actionIndex, value, !message.isBot, isSend)
-            }}
-            onSourceClick={(data) => {
-              setSource(data)
-              setIsSourceOpen(true)
-            }}
-            onNewBranch={()=> {
-              createChatBranch(message.actionIndex)
-            }}
+            onEditFormSubmit={handleEditMessage}
+            onSourceClick={handleSourceClick}
+            onNewBranch={createChatBranch}
             isTTSEnabled={ttsEnabled}
             generationInfo={message?.generationInfo}
-            isStreaming={streaming}
+            isStreaming={streaming && index === lastGroupIndex}
             reasoningTimeTaken={message?.reasoning_time_taken}
             openReasoning={openReasoning}
             modelImage={message?.modelImage}
@@ -70,15 +93,9 @@ export const PlaygroundChat = () => {
             toolServerName={message?.toolServerName}
             toolError={message?.toolError}
             segments={message.segments}
-            onContinue={() => {
-              onSubmit({
-                image: "",
-                message: "",
-                isContinue: true
-              })
-            }}
+            onContinue={index === lastGroupIndex ? handleContinue : undefined}
             documents={message?.documents}
-            actionInfo={actionInfo}
+            actionInfo={index === lastGroupIndex ? actionInfo : null}
           />
         ))}
       </div>
@@ -92,3 +109,5 @@ export const PlaygroundChat = () => {
     </>
   )
 }
+
+export const PlaygroundChat = React.memo(PlaygroundChatComponent)

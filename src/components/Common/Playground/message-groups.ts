@@ -1,3 +1,4 @@
+import React from "react"
 import { parseMcpToolName } from "@/libs/mcp/utils"
 import type { McpToolCall } from "@/libs/mcp/types"
 import type { Message } from "@/store/option"
@@ -32,10 +33,12 @@ export type PlaygroundMessageSegment =
     }
 
 export type PlaygroundMessageGroup = Message & {
+  renderKey: string
   startIndex: number
   endIndex: number
   actionIndex: number
   segments: PlaygroundMessageSegment[]
+  sourceMessages: Message[]
 }
 
 const createToolResult = (message: Message): PlaygroundToolResult => ({
@@ -140,6 +143,33 @@ const createTextSegment = (
   message
 })
 
+const areSourceMessagesEqual = (
+  sourceMessages: Message[],
+  messages: Message[],
+  startIndex: number,
+  endIndex: number
+) => {
+  if (sourceMessages.length !== endIndex - startIndex + 1) {
+    return false
+  }
+
+  for (let index = startIndex; index <= endIndex; index += 1) {
+    if (sourceMessages[index - startIndex] !== messages[index]) {
+      return false
+    }
+  }
+
+  return true
+}
+
+const createRenderKey = (sourceMessages: Message[], startIndex: number) => {
+  const keyParts = sourceMessages
+    .map((message, index) => message.id || `${startIndex + index}-${message.isBot ? "bot" : "user"}`)
+    .join(":")
+
+  return keyParts || `group-${startIndex}`
+}
+
 const findActionIndex = (
   messages: Message[],
   startIndex: number,
@@ -207,21 +237,39 @@ const buildAssistantSegments = (
 }
 
 export const buildPlaygroundMessageGroups = (
-  messages: Message[]
+  messages: Message[],
+  previousGroups: PlaygroundMessageGroup[] = []
 ): PlaygroundMessageGroup[] => {
   const groups: PlaygroundMessageGroup[] = []
+  let groupIndex = 0
 
   for (let index = 0; index < messages.length; index += 1) {
     const currentMessage = messages[index]
 
     if (!currentMessage.isBot) {
-      groups.push({
-        ...currentMessage,
-        startIndex: index,
-        endIndex: index,
-        actionIndex: index,
-        segments: [createTextSegment(currentMessage, index)]
-      })
+      const previousGroup = previousGroups[groupIndex]
+
+      if (
+        previousGroup &&
+        previousGroup.startIndex === index &&
+        previousGroup.endIndex === index &&
+        previousGroup.actionIndex === index &&
+        areSourceMessagesEqual(previousGroup.sourceMessages, messages, index, index)
+      ) {
+        groups.push(previousGroup)
+      } else {
+        const sourceMessages = [currentMessage]
+        groups.push({
+          ...currentMessage,
+          renderKey: createRenderKey(sourceMessages, index),
+          startIndex: index,
+          endIndex: index,
+          actionIndex: index,
+          segments: [createTextSegment(currentMessage, index)],
+          sourceMessages
+        })
+      }
+      groupIndex += 1
       continue
     }
 
@@ -232,18 +280,44 @@ export const buildPlaygroundMessageGroups = (
     }
 
     const actionIndex = findActionIndex(messages, index, endIndex)
-    const actionMessage = messages[actionIndex]
+    const previousGroup = previousGroups[groupIndex]
 
-    groups.push({
-      ...actionMessage,
-      startIndex: index,
-      endIndex,
-      actionIndex,
-      segments: buildAssistantSegments(messages, index, endIndex)
-    })
+    if (
+      previousGroup &&
+      previousGroup.startIndex === index &&
+      previousGroup.endIndex === endIndex &&
+      previousGroup.actionIndex === actionIndex &&
+      areSourceMessagesEqual(previousGroup.sourceMessages, messages, index, endIndex)
+    ) {
+      groups.push(previousGroup)
+    } else {
+      const actionMessage = messages[actionIndex]
+      const sourceMessages = messages.slice(index, endIndex + 1)
+
+      groups.push({
+        ...actionMessage,
+        renderKey: createRenderKey(sourceMessages, index),
+        startIndex: index,
+        endIndex,
+        actionIndex,
+        segments: buildAssistantSegments(messages, index, endIndex),
+        sourceMessages
+      })
+    }
+    groupIndex += 1
 
     index = endIndex
   }
 
   return groups
+}
+
+export const usePlaygroundMessageGroups = (messages: Message[]) => {
+  const previousGroupsRef = React.useRef<PlaygroundMessageGroup[]>([])
+
+  return React.useMemo(() => {
+    const groups = buildPlaygroundMessageGroups(messages, previousGroupsRef.current)
+    previousGroupsRef.current = groups
+    return groups
+  }, [messages])
 }

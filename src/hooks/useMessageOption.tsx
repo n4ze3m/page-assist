@@ -194,7 +194,10 @@ export const useMessageOption = () => {
     setHistoryId as (id: string) => void
   )
 
-  const validateBeforeSubmitFn = () => validateBeforeSubmit(selectedModel, t)
+  const validateBeforeSubmitFn = React.useCallback(
+    () => validateBeforeSubmit(selectedModel, t),
+    [selectedModel, t]
+  )
 
   const onSubmit = async ({
     message,
@@ -354,41 +357,107 @@ export const useMessageOption = () => {
     }
   }
 
-  const regenerateLastMessage = createRegenerateLastMessage({
-    validateBeforeSubmitFn,
-    history,
-    messages,
-    setHistory,
-    setMessages,
-    historyId,
-    removeMessageUsingHistoryIdFn: removeMessageUsingHistoryId,
-    onSubmit
-  })
+  const messagesRef = React.useRef(messages)
+  const historyRef = React.useRef(history)
+  const historyIdRef = React.useRef(historyId)
+  const onSubmitRef = React.useRef(onSubmit)
+
+  React.useEffect(() => {
+    messagesRef.current = messages
+  }, [messages])
+
+  React.useEffect(() => {
+    historyRef.current = history
+  }, [history])
+
+  React.useEffect(() => {
+    historyIdRef.current = historyId
+  }, [historyId])
+
+  React.useEffect(() => {
+    onSubmitRef.current = onSubmit
+  }, [onSubmit])
+
+  const getMessages = React.useCallback(() => messagesRef.current, [])
+  const getHistory = React.useCallback(() => historyRef.current, [])
+  const getHistoryId = React.useCallback(() => historyIdRef.current, [])
+  const submitWithCurrentState = React.useCallback(
+    (params: any) => onSubmitRef.current(params),
+    []
+  )
+
+  const regenerateLastMessage = React.useMemo(
+    () =>
+      createRegenerateLastMessage({
+        validateBeforeSubmitFn,
+        history: getHistory,
+        messages: getMessages,
+        setHistory,
+        setMessages,
+        historyId: getHistoryId,
+        removeMessageUsingHistoryIdFn: removeMessageUsingHistoryId,
+        onSubmit: submitWithCurrentState
+      }),
+    [
+      validateBeforeSubmitFn,
+      getHistory,
+      getMessages,
+      setHistory,
+      setMessages,
+      getHistoryId,
+      submitWithCurrentState
+    ]
+  )
 
   const stopStreamingRequest = createStopStreamingRequest(
     abortController,
     setAbortController
   )
 
-  const editMessage = createEditMessage({
-    messages,
-    history,
-    setMessages,
-    setHistory,
-    historyId,
-    validateBeforeSubmitFn,
-    onSubmit
-  })
+  const editMessage = React.useMemo(
+    () =>
+      createEditMessage({
+        messages: getMessages,
+        history: getHistory,
+        setMessages,
+        setHistory,
+        historyId: getHistoryId,
+        validateBeforeSubmitFn,
+        onSubmit: submitWithCurrentState
+      }),
+    [
+      getMessages,
+      getHistory,
+      setMessages,
+      setHistory,
+      getHistoryId,
+      validateBeforeSubmitFn,
+      submitWithCurrentState
+    ]
+  )
 
-  const createChatBranch = createBranchMessage({
-    historyId,
-    setHistory,
-    setHistoryId,
-    setMessages,
-    setContext: setContextFiles,
-    setSelectedSystemPrompt,
-    setSystemPrompt: currentChatModelSettings.setSystemPrompt
-  })
+  const createChatBranch = React.useMemo(
+    () =>
+      createBranchMessage({
+        historyId: null,
+        getHistoryId,
+        setHistory,
+        setHistoryId,
+        setMessages,
+        setContext: setContextFiles,
+        setSelectedSystemPrompt,
+        setSystemPrompt: currentChatModelSettings.setSystemPrompt
+      }),
+    [
+      getHistoryId,
+      setHistory,
+      setHistoryId,
+      setMessages,
+      setContextFiles,
+      setSelectedSystemPrompt,
+      currentChatModelSettings.setSystemPrompt
+    ]
+  )
 
   const saveTemporaryChat = async () => {
     if (!temporaryChat || messages.length === 0) {

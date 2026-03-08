@@ -43,6 +43,7 @@ const SidepanelChat = () => {
     messages,
     setHistory,
     setHistoryId,
+    historyId,
     setMessages,
     selectedModel,
     defaultChatWithWebsite,
@@ -55,7 +56,7 @@ const SidepanelChat = () => {
     setSelectedQuickPrompt
   } = useMessage()
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
-    useSmartScroll(messages, streaming, 100)
+    useSmartScroll(messages, streaming, 100, historyId)
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev)

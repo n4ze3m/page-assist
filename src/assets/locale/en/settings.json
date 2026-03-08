@@ -484,9 +484,13 @@
       "url": {
         "label": "Server URL",
         "placeholder": "https://example.com/mcp",
-        "help": "Only HTTP and HTTPS MCP servers are supported right now.",
+        "help": "Only Streamable HTTP MCP endpoints over HTTP or HTTPS are supported right now.",
         "required": "Please enter a server URL",
         "invalid": "Please enter a valid HTTP or HTTPS URL"
+      },
+      "transportNotice": {
+        "title": "Transport support",
+        "description": "Page Assist supports Streamable HTTP MCP servers only. Legacy SSE endpoints such as /sse or /messages?sessionId=... are not supported."
       },
       "auth": {
         "label": "Authentication"
@@ -513,7 +517,7 @@
       },
       "validation": {
         "title": "Validate Tools",
-        "help": "Connect to the MCP server, fetch available tools, and cache them before saving.",
+        "help": "Connect to the MCP server, fetch available tools, and cache them before saving. Validation expects a Streamable HTTP MCP endpoint.",
         "button": "Validate and Load Tools",
         "availableTools": "Available tools",
         "idle": "Validate this server to confirm the connection and load its available tools.",

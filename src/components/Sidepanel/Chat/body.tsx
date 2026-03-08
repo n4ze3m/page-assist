@@ -4,9 +4,9 @@ import { useMessage } from "~/hooks/useMessage"
 import { EmptySidePanel } from "../Chat/empty"
 import { useWebUI } from "@/store/webui"
 import { MessageSourcePopup } from "@/components/Common/Playground/MessageSourcePopup"
-import { buildPlaygroundMessageGroups } from "@/components/Common/Playground/message-groups"
+import { usePlaygroundMessageGroups } from "@/components/Common/Playground/message-groups"
 
-export const SidePanelBody = () => {
+const SidePanelBodyComponent = () => {
   const {
     messages,
     streaming,
@@ -20,7 +20,25 @@ export const SidePanelBody = () => {
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
   const { ttsEnabled } = useWebUI()
-  const messageGroups = buildPlaygroundMessageGroups(messages)
+  const messageGroups = usePlaygroundMessageGroups(messages)
+  const lastGroupIndex = messageGroups.length - 1
+
+  const handleEditMessage = React.useCallback(
+    (
+      actionIndex: number,
+      isHuman: boolean,
+      value: string,
+      _isSend: boolean
+    ) => {
+      editMessage(actionIndex, value, isHuman)
+    },
+    [editMessage]
+  )
+
+  const handleSourceClick = React.useCallback((data: any) => {
+    setSource(data)
+    setIsSourceOpen(true)
+  }, [])
 
   return (
     <>
@@ -28,36 +46,33 @@ export const SidePanelBody = () => {
         {messages.length === 0 && <EmptySidePanel />}
         {messageGroups.map((message, index) => (
           <PlaygroundMessage
-            key={index}
+            key={message.renderKey}
             isBot={message.isBot}
             message={message.message}
             name={message.name}
             images={message.images || []}
-            currentMessageIndex={index}
-            totalMessages={messageGroups.length}
-            onRengerate={regenerateLastMessage}
+            isLastMessage={index === lastGroupIndex}
+            actionIndex={message.actionIndex}
+            onRengerate={
+              index === lastGroupIndex ? regenerateLastMessage : undefined
+            }
             message_type={message.messageType}
-            isProcessing={streaming}
-            isSearchingInternet={isSearchingInternet}
+            isProcessing={streaming && index === lastGroupIndex}
+            isSearchingInternet={
+              index === lastGroupIndex ? isSearchingInternet : false
+            }
             sources={message.sources}
-            onEditFormSubmit={(value) => {
-              editMessage(message.actionIndex, value, !message.isBot)
-            }}
-            onNewBranch={() => {
-              createChatBranch(message.actionIndex)
-            }}
-            onSourceClick={(data) => {
-              setSource(data)
-              setIsSourceOpen(true)
-            }}
+            onEditFormSubmit={handleEditMessage}
+            onNewBranch={createChatBranch}
+            onSourceClick={handleSourceClick}
             isTTSEnabled={ttsEnabled}
             generationInfo={message?.generationInfo}
-            isStreaming={streaming}
+            isStreaming={streaming && index === lastGroupIndex}
             reasoningTimeTaken={message?.reasoning_time_taken}
             modelImage={message?.modelImage}
             modelName={message?.modelName}
             temporaryChat={temporaryChat}
-            actionInfo={actionInfo}
+            actionInfo={index === lastGroupIndex ? actionInfo : null}
             messageKind={message?.messageKind}
             toolCalls={message?.toolCalls}
             toolCallId={message?.toolCallId}
@@ -78,3 +93,5 @@ export const SidePanelBody = () => {
     </>
   )
 }
+
+export const SidePanelBody = React.memo(SidePanelBodyComponent)

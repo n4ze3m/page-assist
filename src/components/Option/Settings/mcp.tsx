@@ -649,6 +649,14 @@ export const MCPSettingsApp = () => {
               />
             </Form.Item>
 
+            <Alert
+              type="warning"
+              showIcon
+              className="mb-4"
+              message={t("mcpSettings.modal.transportNotice.title")}
+              description={t("mcpSettings.modal.transportNotice.description")}
+            />
+
             <Form.Item
               name="authType"
               label={t("mcpSettings.modal.auth.label")}>
