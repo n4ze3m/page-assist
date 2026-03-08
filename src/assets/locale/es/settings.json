@@ -18,6 +18,14 @@
           "dark": "Oscuro"
         }
       },
+      "defaultCopilotPrompt": {
+        "label": "Prompt predeterminado para el Panel Lateral (Copilot)",
+        "placeholder": "Seleccionar un prompt"
+      },
+      "defaultWebUIPrompt": {
+        "label": "Prompt predeterminado para la Interfaz Web",
+        "placeholder": "Seleccionar un prompt"
+      },
       "copilotResumeLastChat": {
         "label": "Retomar el último chat al abrir el Panel Lateral (Copilot)"
       },
@@ -48,6 +56,9 @@
       "openReasoning": {
         "label": "Abrir el Razonamiento Colapsado por defecto"
       },
+      "defaultThinkingMode": {
+        "label": "Mostrar Estado del Modo de Pensamiento en Formularios"
+      },
       "userChatBubble": {
         "label": "Usar Burbuja de Chat para Mensajes del Usuario"
       },
@@ -66,8 +77,46 @@
       "pasteLargeTextAsFile": {
         "label": "Pegar Texto Largo como Archivo"
       },
+      "ocrLanguage": {
+        "label": "Idioma OCR predeterminado",
+        "placeholder": "Seleccionar un idioma OCR"
+      },
       "sidepanelTemporaryChat": {
         "label": "Habilitar Chat Temporal en el Panel Lateral por defecto"
+      },
+      "webuiTemporaryChat": {
+        "label": "Habilitar Chat Temporal en la Interfaz Web por defecto"
+      },
+      "removeReasoningTagFromCopy": {
+        "label": "Eliminar Etiqueta de Razonamiento del Texto Copiado"
+      },
+      "youtubeAutoSummarize": {
+        "label": "Mostrar el botón 'Resumir' en videos de YouTube"
+      },
+      "hideReasoningWidget": {
+        "label": "Ocultar Widget de Razonamiento de los Mensajes de IA"
+      },
+      "persistChatInput": {
+        "label": "Persistir Entrada de Chat (Guardar mensajes no enviados)"
+      },
+      "enableMessageQueue": {
+        "label": "Habilitar Cola de Mensajes durante la Transmisión"
+      },
+      "optimizeQueueForSmallScreen": {
+        "label": "Optimizar la Interfaz de Chat para Pantallas Pequeñas"
+      },
+      "tableTextWrap": {
+        "label": "Habilitar Ajuste de Texto en Tablas Markdown"
+      },
+      "showMoreForLargeMessage": {
+        "label": "Mostrar 'Ver más' para mensajes largos del usuario"
+      },
+      "sidebarPosition": {
+        "label": "Posición de la Barra Lateral",
+        "options": {
+          "left": "Izquierda",
+          "right": "Derecha"
+        }
       }
     },
     "sidepanelRag": {
@@ -105,15 +154,37 @@
         "label": "Clave API de Brave",
         "placeholder": "Ingrese su clave API de Brave"
       },
+      "tavilyApi": {
+        "label": "Clave API de Tavily",
+        "placeholder": "Ingrese su clave API de Tavily"
+      },
+      "exa": {
+        "label": "Clave API de Exa",
+        "placeholder": "Ingrese su clave API de Exa"
+      },
+      "googleDomain": {
+        "label": "Dominio de Google"
+      },
       "searchOnByDefault": {
         "label": "Búsqueda en Internet activada por defecto"
+      },
+      "firecrawlAPIKey": {
+        "label": "Clave API de Firecrawl",
+        "placeholder": "Ingrese su clave API de Firecrawl"
+      },
+      "domainFilter": {
+        "label": "Lista de Filtro de Dominio",
+        "description": "Solo mostrar resultados de estos dominios",
+        "placeholder": "ej., example.com"
+      },
+      "blockedDomains": {
+        "label": "Dominios Bloqueados",
+        "description": "Excluir resultados de estos dominios",
+        "placeholder": "ej., spam.com"
       }
     },
     "system": {
       "heading": "Configuraciones del Sistema",
-      "storageSyncEnabled": {
-        "label": "Habilitar sincronización de almacenamiento del navegador (sincronizar configuraciones entre dispositivos)"
-      },
       "deleteChatHistory": {
         "label": "Reinicio del Sistema",
         "button": "Reiniciar Todo",
@@ -129,6 +200,24 @@
         "button": "Importar datos",
         "success": "Importación exitosa",
         "error": "Error de importación"
+      },
+      "actionIcon": {
+        "label": "Establecer Acción Predeterminada para Clics en el Ícono de la Extensión"
+      },
+      "contextMenu": {
+        "label": "Establecer Acción Predeterminada para el Menú Contextual"
+      },
+      "fontSize": {
+        "label": "Tamaño de Fuente"
+      },
+      "webuiBtnSidePanel": {
+        "label": "Mostrar Botón de Interfaz Web en el Panel Lateral"
+      },
+      "chatBackgroundImage": {
+        "label": "Imagen de Fondo del Chat"
+      },
+      "storageSyncEnabled": {
+        "label": "Habilitar sincronización de almacenamiento del navegador (sincronizar configuraciones entre dispositivos)"
       }
     },
     "tts": {
@@ -149,6 +238,9 @@
       },
       "ssmlEnabled": {
         "label": "Habilitar SSML (Speech Synthesis Markup Language)"
+      },
+      "responseSplitting": {
+        "label": "División de Respuesta"
       },
       "removeReasoningTagTTS": {
         "label": "Eliminar Etiqueta de Razonamiento del TTS"
@@ -171,6 +263,7 @@
     "columns": {
       "name": "Nombre",
       "digest": "Resumen",
+      "nickname": "Apodo",
       "modifiedAt": "Modificado",
       "size": "Tamaño",
       "actions": "Acciones"
@@ -184,7 +277,8 @@
     },
     "tooltip": {
       "delete": "Borrar Modelo",
-      "repull": "Traer nuevamente el Modelo"
+      "repull": "Traer nuevamente el Modelo",
+      "editNickname": "Editar Apodo"
     },
     "confirm": {
       "delete": "¿Esta seguro que desea borrar este modelos?",
@@ -198,6 +292,8 @@
     "notification": {
       "pullModel": "Trayendo Modelo",
       "pullModelDescription": "Trayendo modelo {{modelName}}. Para más detalles, verifique el ícono de la extensión.",
+      "cancellingDownload": "Cancelando Descarga",
+      "cancellingDownloadDescription": "La descarga del modelo está siendo cancelada...",
       "success": "Exito",
       "error": "Error",
       "successDescription": "Modelo traido exitosamente",
@@ -419,5 +515,6 @@
   },
   "chromeAiSettings": {
     "title": "Configuración de IA de Chrome"
-  }
+  },
+  "mermaid": "Mermaid"
 }

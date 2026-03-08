@@ -6,9 +6,9 @@ import {
 } from "@/services/search"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 import type { Document } from "@langchain/core/documents"
-import { MemoryVectorStore } from "langchain/vectorstores/memory"
+import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory"
 import { cleanUrl } from "~/libs/clean-url"
-import { PageAssistHtmlLoader } from "~/loader/html"
+import { PageAssistHtmlLoader } from "@/loader/html"
 import {
   defaultEmbeddingModelForRag,
   getOllamaURL,

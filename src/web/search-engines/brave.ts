@@ -15,7 +15,7 @@ import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
 import type { Document } from "@langchain/core/documents"
 import * as cheerio from "cheerio"
-import { MemoryVectorStore } from "langchain/vectorstores/memory"
+import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory"
 
 export const localBraveSearch = async (query: string) => {
     await urlRewriteRuntime(cleanUrl("https://search.brave.com/search?q=" + query), "duckduckgo")

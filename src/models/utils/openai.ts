@@ -36,7 +36,7 @@ import {
       function: {
         name: tool.name,
         description: tool.description,
-        parameters: zodToJsonSchema(tool.schema),
+        parameters: zodToJsonSchema(tool.schema as any),
       },
     };
   }

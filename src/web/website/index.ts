@@ -6,7 +6,7 @@ import { getMaxContextSize, isChatWithWebsiteEnabled } from "@/services/kb"
 import { defaultEmbeddingModelForRag, getOllamaURL } from "@/services/ollama"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
-import { MemoryVectorStore } from "langchain/vectorstores/memory"
+import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory"
 
 export const processSingleWebsite = async (url: string, query: string) => {
     const loader = new PageAssistHtmlLoader({
