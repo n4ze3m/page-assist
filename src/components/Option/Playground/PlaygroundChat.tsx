@@ -4,6 +4,7 @@ import { PlaygroundEmpty } from "./PlaygroundEmpty"
 import { PlaygroundMessage } from "~/components/Common/Playground/Message"
 import { MessageSourcePopup } from "@/components/Common/Playground/MessageSourcePopup"
 import { useStorage } from "@plasmohq/storage/hook"
+import { buildPlaygroundMessageGroups } from "@/components/Common/Playground/message-groups"
 
 export const PlaygroundChat = () => {
   const {
@@ -21,6 +22,7 @@ export const PlaygroundChat = () => {
   const [isSourceOpen, setIsSourceOpen] = React.useState(false)
   const [source, setSource] = React.useState<any>(null)
   const [openReasoning] = useStorage("openReasoning", false)
+  const messageGroups = buildPlaygroundMessageGroups(messages)
 
   return (
     <>
@@ -30,7 +32,7 @@ export const PlaygroundChat = () => {
             <PlaygroundEmpty />
           </div>
         )}
-        {messages.map((message, index) => (
+        {messageGroups.map((message, index) => (
           <PlaygroundMessage
             key={index}
             isBot={message.isBot}
@@ -38,20 +40,20 @@ export const PlaygroundChat = () => {
             name={message.name}
             images={message.images || []}
             currentMessageIndex={index}
-            totalMessages={messages.length}
+            totalMessages={messageGroups.length}
             onRengerate={regenerateLastMessage}
             isProcessing={streaming}
             isSearchingInternet={isSearchingInternet}
             sources={message.sources}
             onEditFormSubmit={(value, isSend) => {
-              editMessage(index, value, !message.isBot, isSend)
+              editMessage(message.actionIndex, value, !message.isBot, isSend)
             }}
             onSourceClick={(data) => {
               setSource(data)
               setIsSourceOpen(true)
             }}
             onNewBranch={()=> {
-              createChatBranch(index)
+              createChatBranch(message.actionIndex)
             }}
             isTTSEnabled={ttsEnabled}
             generationInfo={message?.generationInfo}
@@ -67,6 +69,7 @@ export const PlaygroundChat = () => {
             toolName={message?.toolName}
             toolServerName={message?.toolServerName}
             toolError={message?.toolError}
+            segments={message.segments}
             onContinue={() => {
               onSubmit({
                 image: "",
