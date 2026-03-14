@@ -8,12 +8,12 @@ import {
   CombineIcon,
   ChromeIcon,
   CpuIcon,
-  Server
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
 import { OllamaIcon } from "../Icons/Ollama"
 import { LinkComponent } from "./LinkComponent"
+import { MCPIcon } from "../Icons/MCPIcon"
 
 
 export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
@@ -65,8 +65,9 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                   <LinkComponent
                     href="/settings/mcp"
                     name={t("mcpSettings.title")}
-                    icon={Server}
+                    icon={MCPIcon}
                     current={location.pathname}
+                    beta
                   />
                   <LinkComponent
                     href="/settings/model"

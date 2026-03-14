@@ -14,9 +14,7 @@ import {
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import {
-  AlertCircle,
-  CheckCircle2,
+import { 
   Pencil,
   RefreshCw,
   Trash2,
@@ -48,7 +46,9 @@ type ValidationSnapshot = {
   toolsSyncError?: string
 }
 
-const isFormValidationError = (error: unknown): error is { errorFields: unknown[] } =>
+const isFormValidationError = (
+  error: unknown
+): error is { errorFields: unknown[] } =>
   typeof error === "object" &&
   error !== null &&
   "errorFields" in error &&
@@ -89,9 +89,7 @@ const ToolTags = ({
   return (
     <div className="flex flex-wrap gap-1.5">
       {visibleTools.map((tool) => (
-        <Tooltip
-          key={tool.name}
-          title={tool.description || tool.name}>
+        <Tooltip key={tool.name} title={tool.description || tool.name}>
           <Tag className="mx-0 max-w-full truncate">{tool.name}</Tag>
         </Tooltip>
       ))}
@@ -192,7 +190,8 @@ export const MCPSettingsApp = () => {
     }
   })
 
-  const isValidationCurrent = validationSnapshot?.fingerprint === currentFingerprint
+  const isValidationCurrent =
+    validationSnapshot?.fingerprint === currentFingerprint
   const hasValidatedTools = (validationSnapshot?.cachedTools.length ?? 0) > 0
   const isValidationFresh =
     !!validationSnapshot &&
@@ -425,92 +424,12 @@ export const MCPSettingsApp = () => {
               dataIndex: "url",
               key: "url",
               render: (value: string) => (
-                <span
-                  className="block max-w-xs truncate"
-                  title={value}>
+                <span className="block max-w-xs truncate" title={value}>
                   {value}
                 </span>
               )
             },
-            {
-              title: t("mcpSettings.table.tools"),
-              key: "tools",
-              width: 260,
-              render: (_, record: McpServer) => {
-                if (record.cachedTools?.length) {
-                  return <ToolTags tools={record.cachedTools} />
-                }
 
-                if (record.toolsSyncError) {
-                  return (
-                    <span className="text-sm text-red-500 dark:text-red-400">
-                      {t("mcpSettings.table.toolsUnavailable")}
-                    </span>
-                  )
-                }
-
-                return (
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {t("mcpSettings.table.notValidated")}
-                  </span>
-                )
-              }
-            },
-            {
-              title: t("mcpSettings.table.status"),
-              key: "status",
-              width: 260,
-              render: (_, record: McpServer) => {
-                if (record.toolsSyncError) {
-                  return (
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-sm font-medium text-red-600 dark:text-red-400">
-                        <AlertCircle className="size-4" />
-                        {t("mcpSettings.status.failed")}
-                      </div>
-                      <p
-                        className="line-clamp-2 text-xs text-red-500 dark:text-red-400"
-                        title={record.toolsSyncError}>
-                        {record.toolsSyncError}
-                      </p>
-                      {record.toolsLastSyncedAt ? (
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {t("mcpSettings.status.lastChecked", {
-                            value: formatTimestamp(record.toolsLastSyncedAt)
-                          })}
-                        </p>
-                      ) : null}
-                    </div>
-                  )
-                }
-
-                if (record.cachedTools?.length) {
-                  return (
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                        <CheckCircle2 className="size-4" />
-                        {t("mcpSettings.status.ready", {
-                          count: record.cachedTools.length
-                        })}
-                      </div>
-                      {record.toolsLastSyncedAt ? (
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {t("mcpSettings.status.lastChecked", {
-                            value: formatTimestamp(record.toolsLastSyncedAt)
-                          })}
-                        </p>
-                      ) : null}
-                    </div>
-                  )
-                }
-
-                return (
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    {t("mcpSettings.status.notValidated")}
-                  </span>
-                )
-              }
-            },
             {
               title: t("mcpSettings.table.auth"),
               dataIndex: "authType",
@@ -519,22 +438,6 @@ export const MCPSettingsApp = () => {
                 value === "bearer"
                   ? t("mcpSettings.auth.bearer")
                   : t("mcpSettings.auth.none")
-            },
-            {
-              title: t("mcpSettings.table.enabled"),
-              key: "enabled",
-              render: (_, record: McpServer) => (
-                <Switch
-                  checked={record.enabled}
-                  disabled={isFireFoxPrivateMode}
-                  onChange={(checked) => {
-                    updateMutation.mutate({
-                      id: record.id,
-                      enabled: checked
-                    })
-                  }}
-                />
-              )
             },
             {
               title: t("mcpSettings.table.actions"),
@@ -624,7 +527,7 @@ export const MCPSettingsApp = () => {
             <Form.Item
               name="url"
               label={t("mcpSettings.modal.url.label")}
-              extra={t("mcpSettings.modal.url.help")}
+              extra={t("mcpSettings.modal.transportNotice.description")}
               rules={[
                 {
                   required: true,
@@ -648,14 +551,6 @@ export const MCPSettingsApp = () => {
                 placeholder={t("mcpSettings.modal.url.placeholder")}
               />
             </Form.Item>
-
-            <Alert
-              type="warning"
-              showIcon
-              className="mb-4"
-              message={t("mcpSettings.modal.transportNotice.title")}
-              description={t("mcpSettings.modal.transportNotice.description")}
-            />
 
             <Form.Item
               name="authType"
@@ -750,45 +645,6 @@ export const MCPSettingsApp = () => {
                 </div>
               )}
             </Form.List>
-
-            <div className="mt-6 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-              <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div className="space-y-1">
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                    {t("mcpSettings.modal.validation.title")}
-                  </h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {t("mcpSettings.modal.validation.help")}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="inline-flex items-center justify-center rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:text-white dark:hover:bg-gray-800"
-                  onClick={handleValidateTools}
-                  disabled={validateMutation.isPending}>
-                  <RefreshCw
-                    className={`mr-2 size-4 ${
-                      validateMutation.isPending ? "animate-spin" : ""
-                    }`}
-                  />
-                  {t("mcpSettings.modal.validation.button")}
-                </button>
-              </div>
-
-              {renderValidationAlert()}
-
-              {validationSnapshot?.cachedTools.length ? (
-                <div className="mt-4 space-y-2">
-                  <p className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                    {t("mcpSettings.modal.validation.availableTools")}
-                  </p>
-                  <ToolTags
-                    tools={validationSnapshot.cachedTools}
-                    maxVisible={validationSnapshot.cachedTools.length}
-                  />
-                </div>
-              ) : null}
-            </div>
 
             <button
               type="submit"
