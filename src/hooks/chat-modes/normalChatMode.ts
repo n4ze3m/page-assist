@@ -66,6 +66,7 @@ export const normalChatMode = async (
   }
 ) => {
   console.log("Using normalChatMode")
+  setStreaming(true)
   try {
     const handledByMcp = await runMcpNormalChatMode(
       message,

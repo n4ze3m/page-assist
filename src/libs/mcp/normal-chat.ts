@@ -382,13 +382,13 @@ export const runMcpNormalChatMode = async (
     promptContent = currentChatModelSettings.systemPrompt
   }
 
-  setActionInfo(createMcpActionInfo("connecting", { toolCount: configuredServers.length }))
+  createMcpActionInfo("connecting", { toolCount: configuredServers.length })
 
   const client = createMcpClient(configuredServers)
   let boundModel: any
 
   try {
-    setActionInfo(createMcpActionInfo("loading_tools", { toolCount: configuredServers.length }))
+    createMcpActionInfo("loading_tools", { toolCount: configuredServers.length })
     const tools = await client.getTools()
 
     if (tools.length === 0) {
@@ -563,12 +563,10 @@ export const runMcpNormalChatMode = async (
 
       for (const toolCall of storedToolCalls) {
         const parsedTool = parseMcpToolName(toolCall.name)
-        setActionInfo(
           createMcpActionInfo("calling_tool", {
             toolName: parsedTool.displayName,
             serverName: toolCall.serverName || parsedTool.serverName
           })
-        )
 
         try {
           const tool = tools.find((currentTool) => currentTool.name === toolCall.name)
@@ -576,12 +574,10 @@ export const runMcpNormalChatMode = async (
             throw new Error(`Tool "${toolCall.name}" is no longer available.`)
           }
 
-          setActionInfo(
             createMcpActionInfo("waiting_result", {
               toolName: parsedTool.displayName,
               serverName: toolCall.serverName || parsedTool.serverName
             })
-          )
 
           const result = await tool.invoke(toolCall, { signal })
           const toolMessage =
