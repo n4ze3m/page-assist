@@ -9,6 +9,7 @@ export type McpAvailableTool = {
   name: string
   description?: string
   inputSchema?: unknown
+  enabled?: boolean
 }
 
 export type McpOAuthTokens = {

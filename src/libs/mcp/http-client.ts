@@ -134,7 +134,8 @@ const createLangChainTool = ({
   remoteTool: any
   callbacks?: McpClientCallbacks
 }) => {
-  const prefixedToolName = `${server.name}${MCP_TOOL_NAME_SEPARATOR}${remoteTool.name}`
+  const sanitizedServerName = server.name.replace(/\s+/g, "_")
+  const prefixedToolName = `${sanitizedServerName}${MCP_TOOL_NAME_SEPARATOR}${remoteTool.name}`
 
   const resolveClient = async () => {
     if (client) return client
