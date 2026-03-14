@@ -6,6 +6,43 @@ import { MCPIcon } from "@/components/Icons/MCPIcon"
 import { getAllMcpServers, updateMcpServer } from "@/db/dexie/mcp"
 import type { McpServer } from "@/libs/mcp/types"
 
+const getRootDomain = (hostname: string) => {
+  const parts = hostname.split(".")
+  if (parts.length <= 2) return hostname
+  return parts.slice(-2).join(".")
+}
+
+const getServerFaviconUrl = (serverUrl: string) => {
+  try {
+    const { hostname } = new URL(serverUrl)
+    const domain = getRootDomain(hostname)
+    return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
+  } catch {
+    return null
+  }
+}
+
+export { getServerFaviconUrl }
+
+const ServerFavicon = ({ url, name }: { url: string; name: string }) => {
+  const faviconUrl = getServerFaviconUrl(url)
+
+  if (!faviconUrl) {
+    return <MCPIcon className="h-4 w-4 shrink-0 text-gray-400" />
+  }
+
+  return (
+    <img
+      src={faviconUrl}
+      alt=""
+      className="h-4 w-4 shrink-0 rounded-sm"
+      onError={(e) => {
+        e.currentTarget.style.display = "none"
+      }}
+    />
+  )
+}
+
 export const McpServerToggle = () => {
   const { t } = useTranslation("playground")
   const queryClient = useQueryClient()
@@ -34,11 +71,14 @@ export const McpServerToggle = () => {
           <div
             key={server.id}
             className="flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-gray-50 dark:hover:bg-[#353535]">
-            <span
-              className="truncate text-sm text-gray-700 dark:text-gray-200 mr-3"
-              title={server.name}>
-              {server.name}
-            </span>
+            <div className="flex items-center gap-2 min-w-0 mr-3">
+              <ServerFavicon url={server.url} name={server.name} />
+              <span
+                className="truncate text-sm text-gray-700 dark:text-gray-200"
+                title={server.name}>
+                {server.name}
+              </span>
+            </div>
             <Switch
               size="small"
               checked={server.enabled}

@@ -38,6 +38,7 @@ import {
   getMcpServerConfigFingerprint,
   normalizeMcpServerInput
 } from "@/libs/mcp/utils"
+import { getServerFaviconUrl } from "@/components/Common/McpServerToggle"
 
 type ValidationSnapshot = {
   fingerprint: string
@@ -417,7 +418,25 @@ export const MCPSettingsApp = () => {
             {
               title: t("mcpSettings.table.name"),
               dataIndex: "name",
-              key: "name"
+              key: "name",
+              render: (value: string, record: McpServer) => {
+                const faviconUrl = getServerFaviconUrl(record.url)
+                return (
+                  <div className="flex items-center gap-2">
+                    {faviconUrl && (
+                      <img
+                        src={faviconUrl}
+                        alt=""
+                        className="h-4 w-4 shrink-0 rounded-sm"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none"
+                        }}
+                      />
+                    )}
+                    <span>{value}</span>
+                  </div>
+                )
+              }
             },
             {
               title: t("mcpSettings.table.url"),
