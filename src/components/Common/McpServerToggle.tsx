@@ -2,6 +2,8 @@ import { Popover, Switch } from "antd"
 import { useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
+import { Plus } from "lucide-react"
 import { MCPIcon } from "@/components/Icons/MCPIcon"
 import { getAllMcpServers, updateMcpServer } from "@/db/dexie/mcp"
 import type { McpServer } from "@/libs/mcp/types"
@@ -24,7 +26,7 @@ const getServerFaviconUrl = (serverUrl: string) => {
 
 export { getServerFaviconUrl }
 
-const ServerFavicon = ({ url, name }: { url: string; name: string }) => {
+const ServerFavicon = ({ url }: { url: string }) => {
   const faviconUrl = getServerFaviconUrl(url)
 
   if (!faviconUrl) {
@@ -43,9 +45,35 @@ const ServerFavicon = ({ url, name }: { url: string; name: string }) => {
   )
 }
 
+const EmptyState = ({
+  t,
+  onNavigate
+}: {
+  t: (key: string) => string
+  onNavigate: () => void
+}) => (
+  <div className="flex w-56 flex-col items-center py-4 text-center">
+    <MCPIcon className="h-8 w-8 text-gray-300 dark:text-gray-600" />
+    <p className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-200">
+      {t("tooltip.mcpEmpty")}
+    </p>
+    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+      {t("tooltip.mcpEmptyDesc")}
+    </p>
+    <button
+      type="button"
+      onClick={onNavigate}
+      className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-black px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100">
+      <Plus className="h-3 w-3" />
+      {t("tooltip.mcpAddServer")}
+    </button>
+  </div>
+)
+
 export const McpServerToggle = () => {
   const { t } = useTranslation("playground")
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
   const { data: servers } = useQuery({
@@ -53,18 +81,17 @@ export const McpServerToggle = () => {
     queryFn: getAllMcpServers
   })
 
-  if (!servers || servers.length === 0) {
-    return null
-  }
-
-  const enabledCount = servers.filter((s) => s.enabled).length
+  const hasServers = servers && servers.length > 0
+  const enabledCount = hasServers
+    ? servers.filter((s) => s.enabled).length
+    : 0
 
   const handleToggle = async (server: McpServer, checked: boolean) => {
     await updateMcpServer({ id: server.id, enabled: checked })
     queryClient.invalidateQueries({ queryKey: ["mcpServers"] })
   }
 
-  const content = (
+  const content = hasServers ? (
     <div className="w-56">
       <div className="space-y-1">
         {servers.map((server) => (
@@ -72,7 +99,7 @@ export const McpServerToggle = () => {
             key={server.id}
             className="flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-gray-50 dark:hover:bg-[#353535]">
             <div className="flex items-center gap-2 min-w-0 mr-3">
-              <ServerFavicon url={server.url} name={server.name} />
+              <ServerFavicon url={server.url} />
               <span
                 className="truncate text-sm text-gray-700 dark:text-gray-200"
                 title={server.name}>
@@ -88,12 +115,20 @@ export const McpServerToggle = () => {
         ))}
       </div>
     </div>
+  ) : (
+    <EmptyState
+      t={t}
+      onNavigate={() => {
+        setOpen(false)
+        navigate("/settings/mcp")
+      }}
+    />
   )
 
   return (
     <Popover
       content={content}
-      title={t("tooltip.mcpServers")}
+      title={hasServers ? t("tooltip.mcpServers") : undefined}
       trigger="click"
       open={open}
       onOpenChange={setOpen}
