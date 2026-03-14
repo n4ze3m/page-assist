@@ -158,7 +158,8 @@ export const discoverOAuthFrom401 = async (
 
 export const getOAuthRedirectUri = async (): Promise<string> => {
   const pageShareUrl = await getPageShareUrl()
-  return `${cleanUrl(pageShareUrl)}/mcp/oauth/callback`
+  const base = cleanUrl(pageShareUrl).replace(/\/+$/, "")
+  return `${base}/mcp/oauth/callback`
 }
 
 export const registerOAuthClient = async (
@@ -184,11 +185,13 @@ export const registerOAuthClient = async (
   }
 
   const data = await response.json()
+  console.log("[MCP OAuth] DCR response:", JSON.stringify(data, null, 2))
 
   return {
     clientId: data.client_id,
     clientSecret: data.client_secret || undefined,
-    registrationAccessToken: data.registration_access_token || undefined
+    registrationAccessToken: data.registration_access_token || undefined,
+    redirectUris: data.redirect_uris
   }
 }
 
@@ -236,6 +239,8 @@ export const exchangeCodeForTokens = async ({
   redirectUri: string
   codeVerifier: string
 }): Promise<McpOAuthTokens> => {
+  console.log("[MCP OAuth] Token exchange redirect_uri:", redirectUri)
+  console.log("[MCP OAuth] Token exchange client_id:", clientRegistration.clientId)
   const body = new URLSearchParams({
     grant_type: "authorization_code",
     code,

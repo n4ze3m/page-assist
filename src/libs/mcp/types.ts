@@ -24,6 +24,7 @@ export type McpOAuthClientRegistration = {
   clientId: string
   clientSecret?: string
   registrationAccessToken?: string
+  redirectUris?: string[]
 }
 
 export type McpOAuthMetadata = {
