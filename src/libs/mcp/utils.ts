@@ -2,6 +2,7 @@ import {
   ChatActionInfo,
   ChatMessageKind,
   McpHeader,
+  McpOAuthTokens,
   McpServerInput,
   McpToolCall
 } from "./types"
@@ -63,7 +64,11 @@ export const normalizeMcpServerInput = (
     authType,
     bearerToken:
       authType === "bearer" ? server.bearerToken?.trim() || undefined : undefined,
-    headers: sanitizeHeaders(server.headers)
+    headers: sanitizeHeaders(server.headers),
+    oauthTokens: authType === "oauth" ? server.oauthTokens : undefined,
+    oauthClientRegistration:
+      authType === "oauth" ? server.oauthClientRegistration : undefined,
+    oauthMetadata: authType === "oauth" ? server.oauthMetadata : undefined
   }
 }
 
@@ -87,16 +92,20 @@ export const getMcpServerConfigFingerprint = (
 export const buildMcpHeaders = ({
   authType,
   bearerToken,
-  headers
+  headers,
+  oauthTokens
 }: {
-  authType: "none" | "bearer"
+  authType: "none" | "bearer" | "oauth"
   bearerToken?: string
   headers?: McpHeader[]
+  oauthTokens?: McpOAuthTokens
 }) => {
   const defaultHeaders: Record<string, string> = {}
 
   if (authType === "bearer" && bearerToken?.trim()) {
     defaultHeaders.Authorization = `Bearer ${bearerToken.trim()}`
+  } else if (authType === "oauth" && oauthTokens?.accessToken) {
+    defaultHeaders.Authorization = `Bearer ${oauthTokens.accessToken}`
   }
 
   for (const header of sanitizeHeaders(headers)) {

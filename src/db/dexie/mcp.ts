@@ -135,5 +135,6 @@ export const getMcpServerHeaders = (server: McpServer) =>
   buildMcpHeaders({
     authType: server.authType,
     bearerToken: server.bearerToken,
-    headers: server.headers
+    headers: server.headers,
+    oauthTokens: server.oauthTokens
   })

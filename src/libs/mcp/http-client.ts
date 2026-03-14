@@ -8,6 +8,7 @@ import {
   listRemoteMcpTools,
   openMcpServerConnection
 } from "./remote-tools"
+import { ensureFreshOAuthTokens } from "./oauth-flow"
 
 type McpClientCallbacks = {
   onProgress?: (...args: any[]) => void
@@ -297,10 +298,19 @@ export class HttpOnlyMcpClient {
     if (existingConnection) {
       return existingConnection
     }
-    const { client, transport } = await openMcpServerConnection(server)
+
+    let connectServer = server
+    if (server.authType === "oauth" && server.oauthTokens) {
+      const refreshed = await ensureFreshOAuthTokens(server)
+      if (refreshed) {
+        connectServer = refreshed
+      }
+    }
+
+    const { client, transport } = await openMcpServerConnection(connectServer)
 
     const connection: ConnectedServer = {
-      server,
+      server: connectServer,
       client,
       transport
     }

@@ -7,7 +7,7 @@ import { buildMcpHeaders } from "./utils"
 
 export type McpConnectableServer = Pick<
   McpServerInput,
-  "name" | "url" | "authType" | "bearerToken" | "headers"
+  "name" | "url" | "authType" | "bearerToken" | "headers" | "oauthTokens"
 >
 
 export type McpRemoteTool = {
@@ -45,7 +45,8 @@ export const openMcpServerConnection = async (
   const headers = buildMcpHeaders({
     authType: server.authType,
     bearerToken: server.bearerToken,
-    headers: server.headers
+    headers: server.headers,
+    oauthTokens: server.oauthTokens
   })
 
   const transport = new StreamableHTTPClientTransport(url, {

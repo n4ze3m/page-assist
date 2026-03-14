@@ -1,12 +1,13 @@
-import { Popover, Switch } from "antd"
+import { Popover, Switch, Tooltip } from "antd"
 import { useState } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { Plus } from "lucide-react"
+import { KeyRound, Plus } from "lucide-react"
 import { MCPIcon } from "@/components/Icons/MCPIcon"
 import { getAllMcpServers, updateMcpServer } from "@/db/dexie/mcp"
 import type { McpServer } from "@/libs/mcp/types"
+import { hasValidOAuthTokens } from "@/libs/mcp/oauth"
 
 const getRootDomain = (hostname: string) => {
   const parts = hostname.split(".")
@@ -105,6 +106,22 @@ export const McpServerToggle = () => {
                 title={server.name}>
                 {server.name}
               </span>
+              {server.authType === "oauth" && (
+                <Tooltip
+                  title={
+                    hasValidOAuthTokens(server.oauthTokens)
+                      ? "OAuth connected"
+                      : "OAuth not connected"
+                  }>
+                  <KeyRound
+                    className={`h-3 w-3 shrink-0 ${
+                      hasValidOAuthTokens(server.oauthTokens)
+                        ? "text-green-500"
+                        : "text-orange-400"
+                    }`}
+                  />
+                </Tooltip>
+              )}
             </div>
             <Switch
               size="small"

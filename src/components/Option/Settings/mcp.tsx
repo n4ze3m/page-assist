@@ -14,12 +14,16 @@ import {
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { 
+import {
+  KeyRound,
+  LogOut,
   Pencil,
   RefreshCw,
   Trash2,
   Trash2Icon
 } from "lucide-react"
+import { browser } from "wxt/browser"
+import { hasValidOAuthTokens } from "@/libs/mcp/oauth"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import {
   addMcpServer,
@@ -120,13 +124,27 @@ export const MCPSettingsApp = () => {
 
   const addMutation = useMutation({
     mutationFn: addMcpServer,
-    onSuccess: () => {
+    onSuccess: async (serverId, variables) => {
       queryClient.invalidateQueries({ queryKey: ["mcpServers"] })
       setOpen(false)
       setEditingServer(null)
       setValidationSnapshot(null)
       form.resetFields()
       message.success(t("mcpSettings.notification.added"))
+
+      // Auto-start OAuth flow after adding an OAuth server
+      if (variables.authType === "oauth") {
+        const result = await browser.runtime.sendMessage({
+          type: "mcp_oauth_start",
+          serverId
+        })
+        if (result?.error) {
+          notification.error({
+            message: "OAuth Error",
+            description: result.error
+          })
+        }
+      }
     }
   })
 
@@ -276,6 +294,29 @@ export const MCPSettingsApp = () => {
 
   const handleSubmit = async (values: McpServerInput) => {
     const draft = toServerDraft(values)
+
+    // Skip tool validation for OAuth servers that aren't connected yet
+    if (draft.authType === "oauth" && !editingServer?.oauthTokens?.accessToken) {
+      const payload = {
+        ...draft,
+        cachedTools: editingServer?.cachedTools || [],
+        toolsLastSyncedAt: editingServer?.toolsLastSyncedAt,
+        toolsSyncError: undefined
+      }
+
+      if (editingServer?.id) {
+        updateMutation.mutate({
+          id: editingServer.id,
+          ...payload,
+          oauthMetadata: editingServer.oauthMetadata,
+          oauthClientRegistration: editingServer.oauthClientRegistration,
+          oauthTokens: editingServer.oauthTokens
+        })
+      } else {
+        addMutation.mutate(payload)
+      }
+      return
+    }
 
     try {
       const validation = await ensureValidatedTools(draft)
@@ -454,14 +495,24 @@ export const MCPSettingsApp = () => {
               title: t("mcpSettings.table.auth"),
               dataIndex: "authType",
               key: "authType",
-              render: (value: string, record: McpServer) =>
-                value === "bearer" ? (
-                  <Tooltip title={record.bearerToken ? "••••••••" : ""}>
-                    <span>{t("mcpSettings.auth.bearer")}</span>
-                  </Tooltip>
-                ) : (
-                  t("mcpSettings.auth.none")
-                )
+              render: (value: string, record: McpServer) => {
+                if (value === "bearer") {
+                  return (
+                    <Tooltip title={record.bearerToken ? "••••••••" : ""}>
+                      <span>{t("mcpSettings.auth.bearer")}</span>
+                    </Tooltip>
+                  )
+                }
+                if (value === "oauth") {
+                  const connected = hasValidOAuthTokens(record.oauthTokens)
+                  return (
+                    <Tag color={connected ? "green" : "orange"}>
+                      {connected ? "OAuth Connected" : "OAuth Disconnected"}
+                    </Tag>
+                  )
+                }
+                return t("mcpSettings.auth.none")
+              }
             },
             {
               title: t("mcpSettings.table.actions"),
@@ -489,6 +540,64 @@ export const MCPSettingsApp = () => {
                       }
                     />
                   </Tooltip>
+                  {record.authType === "oauth" && (
+                    <Tooltip
+                      title={
+                        hasValidOAuthTokens(record.oauthTokens)
+                          ? "Disconnect OAuth"
+                          : "Connect with OAuth"
+                      }>
+                      <button
+                        className={`p-1 ${
+                          hasValidOAuthTokens(record.oauthTokens)
+                            ? "text-green-600 dark:text-green-400"
+                            : "text-orange-500 dark:text-orange-400"
+                        }`}
+                        onClick={async () => {
+                          if (hasValidOAuthTokens(record.oauthTokens)) {
+                            await browser.runtime.sendMessage({
+                              type: "mcp_oauth_disconnect",
+                              serverId: record.id
+                            })
+                            queryClient.invalidateQueries({
+                              queryKey: ["mcpServers"]
+                            })
+                            message.success("OAuth disconnected")
+                          } else {
+                            const result = await browser.runtime.sendMessage({
+                              type: "mcp_oauth_start",
+                              serverId: record.id
+                            })
+                            if (result?.error) {
+                              notification.error({
+                                message: "OAuth Error",
+                                description: result.error
+                              })
+                            } else {
+                              message.info(
+                                "OAuth flow started. Complete authorization in the opened tab."
+                              )
+                              // Poll for completion
+                              const pollInterval = setInterval(async () => {
+                                queryClient.invalidateQueries({
+                                  queryKey: ["mcpServers"]
+                                })
+                              }, 2000)
+                              setTimeout(
+                                () => clearInterval(pollInterval),
+                                120_000
+                              )
+                            }
+                          }
+                        }}>
+                        {hasValidOAuthTokens(record.oauthTokens) ? (
+                          <LogOut className="size-4" />
+                        ) : (
+                          <KeyRound className="size-4" />
+                        )}
+                      </button>
+                    </Tooltip>
+                  )}
                   <Tooltip title={t("mcpSettings.actions.refreshTools")}>
                     <button
                       className="p-1 text-gray-700 dark:text-gray-400"
@@ -610,6 +719,10 @@ export const MCPSettingsApp = () => {
                   {
                     label: t("mcpSettings.auth.bearer"),
                     value: "bearer"
+                  },
+                  {
+                    label: "OAuth 2.1",
+                    value: "oauth"
                   }
                 ]}
               />
@@ -630,6 +743,12 @@ export const MCPSettingsApp = () => {
                   placeholder={t("mcpSettings.modal.bearerToken.placeholder")}
                 />
               </Form.Item>
+            ) : null}
+
+            {authType === "oauth" ? (
+              <p className="mb-4 text-xs text-gray-400 dark:text-gray-500">
+                Uses your Page Share URL as the OAuth redirect. You can change it in Manage Share settings.
+              </p>
             ) : null}
 
             <Form.Item
