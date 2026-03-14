@@ -212,6 +212,10 @@ const buildAssistantSegments = (
     const message = messages[index]
 
     if (message.messageKind === "assistant_tool_calls") {
+      if (message.message && message.message.trim().length > 0) {
+        segments.push(createTextSegment(message, index))
+      }
+
       const toolResultMessages: Message[] = []
       let cursor = index + 1
 
@@ -224,7 +228,11 @@ const buildAssistantSegments = (
       }
 
       segments.push(
-        createToolInvocationSegment(message, toolResultMessages, index)
+        createToolInvocationSegment(
+          { ...message, message: "" },
+          toolResultMessages,
+          index
+        )
       )
       index = cursor - 1
       continue
