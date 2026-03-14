@@ -11,7 +11,7 @@ export const generateMcpServerId = () => {
 
 export class McpServerDb {
   getAll = async (): Promise<McpServer[]> => {
-    return await db.mcpServers.orderBy("updatedAt").reverse().toArray()
+    return await db.mcpServers.orderBy("createdAt").reverse().toArray()
   }
 
   getEnabled = async (): Promise<McpServer[]> => {

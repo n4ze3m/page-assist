@@ -37,7 +37,8 @@
         "knowledge": "Knowledge",
         "vision": "[Experimental] Vision Chat",
         "clearContext": "Clear Context",
-        "uploadDocuments": "Upload Documents (beta)"
+        "uploadDocuments": "Upload Documents (beta)",
+        "mcpServers": "MCP Servers"
     },
     "sendWhenEnter": "Send when Enter pressed",
     "welcome": "Hello! How can I help you today?",

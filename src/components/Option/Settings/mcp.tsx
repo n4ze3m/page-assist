@@ -423,8 +423,9 @@ export const MCPSettingsApp = () => {
               title: t("mcpSettings.table.url"),
               dataIndex: "url",
               key: "url",
+              width: 200,
               render: (value: string) => (
-                <span className="block max-w-xs truncate" title={value}>
+                <span className="block max-w-[180px] truncate" title={value}>
                   {value}
                 </span>
               )
@@ -434,16 +435,41 @@ export const MCPSettingsApp = () => {
               title: t("mcpSettings.table.auth"),
               dataIndex: "authType",
               key: "authType",
-              render: (value: string) =>
-                value === "bearer"
-                  ? t("mcpSettings.auth.bearer")
-                  : t("mcpSettings.auth.none")
+              render: (value: string, record: McpServer) =>
+                value === "bearer" ? (
+                  <Tooltip title={record.bearerToken ? "••••••••" : ""}>
+                    <span>{t("mcpSettings.auth.bearer")}</span>
+                  </Tooltip>
+                ) : (
+                  t("mcpSettings.auth.none")
+                )
             },
             {
               title: t("mcpSettings.table.actions"),
               key: "actions",
               render: (_, record: McpServer) => (
                 <div className="flex items-center gap-3">
+                  <Tooltip
+                    title={
+                      record.enabled
+                        ? t("mcpSettings.actions.disable")
+                        : t("mcpSettings.actions.enable")
+                    }>
+                    <Switch
+                      size="small"
+                      checked={record.enabled}
+                      onChange={(checked) =>
+                        updateMcpServer({
+                          id: record.id,
+                          enabled: checked
+                        }).then(() =>
+                          queryClient.invalidateQueries({
+                            queryKey: ["mcpServers"]
+                          })
+                        )
+                      }
+                    />
+                  </Tooltip>
                   <Tooltip title={t("mcpSettings.actions.refreshTools")}>
                     <button
                       className="p-1 text-gray-700 dark:text-gray-400"

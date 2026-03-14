@@ -117,6 +117,9 @@
           "left": "Left",
           "right": "Right"
         }
+      },
+      "showMcpServersInChat": {
+        "label": "Show MCP Servers Toggle in Chat"
       }
     },
     "sidepanelRag": {
@@ -460,7 +463,9 @@
       "actions": "Actions"
     },
     "actions": {
-      "refreshTools": "Refresh tools"
+      "refreshTools": "Refresh tools",
+      "enable": "Enable",
+      "disable": "Disable"
     },
     "status": {
       "ready": "{{count}} tools available",
@@ -501,7 +506,7 @@
         "required": "Please enter a bearer token"
       },
       "enabled": {
-        "label": "Enable server"
+        "label": "Global Enable"
       },
       "headers": {
         "label": "Custom Headers",
