@@ -29,7 +29,7 @@ export type McpToolValidationResult = {
 
 const MCP_CLIENT_INFO = {
   name: "page-assist",
-  version: "1.0.9"
+  version: "1"
 }
 
 export const openMcpServerConnection = async (
