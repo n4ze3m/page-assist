@@ -12,6 +12,7 @@ import Markdown from "../Markdown"
 import { PlaygroundToolInvocation } from "./message-groups"
 
 const OUTPUT_CLAMP_HEIGHT = 200
+const MAX_PREVIEW_CHARS = 2000
 
 type Props = {
   invocation: PlaygroundToolInvocation
@@ -39,17 +40,22 @@ const ToolOutput = ({
   outputLabel: string
 }) => {
   const contentRef = React.useRef<HTMLDivElement>(null)
-  const [isClamped, setIsClamped] = React.useState(false)
   const [isExpanded, setIsExpanded] = React.useState(false)
-  const displayContent =
-    content.trim().length > 0 ? content : noOutputLabel
+  const rawContent = content.trim().length > 0 ? content : noOutputLabel
+  const isTruncatable = rawContent.length > MAX_PREVIEW_CHARS
+  const displayContent = !isExpanded && isTruncatable
+    ? rawContent.slice(0, MAX_PREVIEW_CHARS)
+    : rawContent
+  const [isHeightClamped, setIsHeightClamped] = React.useState(false)
 
   React.useEffect(() => {
     const el = contentRef.current
     if (el) {
-      setIsClamped(el.scrollHeight > OUTPUT_CLAMP_HEIGHT)
+      setIsHeightClamped(el.scrollHeight > OUTPUT_CLAMP_HEIGHT)
     }
   }, [displayContent])
+
+  const showToggle = isTruncatable || isHeightClamped
 
   return (
     <div>
@@ -60,16 +66,16 @@ const ToolOutput = ({
         ref={contentRef}
         className="relative overflow-hidden rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-700 dark:bg-white/5 dark:text-gray-300"
         style={
-          !isExpanded && isClamped
+          !isExpanded && isHeightClamped
             ? { maxHeight: OUTPUT_CLAMP_HEIGHT }
             : undefined
         }>
         <Markdown message={displayContent} />
-        {!isExpanded && isClamped && (
+        {!isExpanded && isHeightClamped && (
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-gray-50 dark:from-[#1a1a1a]" />
         )}
       </div>
-      {isClamped && (
+      {showToggle && (
         <button
           type="button"
           onClick={() => setIsExpanded((v) => !v)}
