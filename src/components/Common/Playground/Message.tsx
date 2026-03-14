@@ -173,7 +173,7 @@ const McpInvocationGroup = ({
   hideReasoningWidget: boolean
   t: (key: string, options?: any) => string
 }) => (
-  <div className="space-y-3 border-l border-gray-200 pl-4 dark:border-white/10">
+  <div className="space-y-3  dark:border-white/10">
     {content.trim().length > 0 && (
       <div className="space-y-3">
         {renderAssistantText({

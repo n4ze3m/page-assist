@@ -1,58 +1,153 @@
-import { ChevronDown, ChevronRight, Wrench } from "lucide-react"
+import {
+  CheckCircle2,
+  ChevronDown,
+  ChevronRight,
+  Loader2,
+  Wrench,
+  XCircle
+} from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
 import Markdown from "../Markdown"
 import { PlaygroundToolInvocation } from "./message-groups"
 
+const OUTPUT_CLAMP_HEIGHT = 200
+
 type Props = {
   invocation: PlaygroundToolInvocation
 }
 
-export const McpInvocationBlock = ({ invocation }: Props) => {
-  const { t } = useTranslation("common")
-  const [isOpen, setIsOpen] = React.useState(Boolean(invocation.result?.toolError))
+const formatArgs = (args: unknown): string => {
+  if (!args || (typeof args === "object" && Object.keys(args).length === 0)) {
+    return ""
+  }
+
+  try {
+    return JSON.stringify(args, null, 2)
+  } catch {
+    return String(args)
+  }
+}
+
+const ToolOutput = ({
+  content,
+  noOutputLabel,
+  outputLabel
+}: {
+  content: string
+  noOutputLabel: string
+  outputLabel: string
+}) => {
+  const contentRef = React.useRef<HTMLDivElement>(null)
+  const [isClamped, setIsClamped] = React.useState(false)
+  const [isExpanded, setIsExpanded] = React.useState(false)
+  const displayContent =
+    content.trim().length > 0 ? content : noOutputLabel
+
+  React.useEffect(() => {
+    const el = contentRef.current
+    if (el) {
+      setIsClamped(el.scrollHeight > OUTPUT_CLAMP_HEIGHT)
+    }
+  }, [displayContent])
 
   return (
-    <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
-        <span className="flex size-5 items-center justify-center rounded-full border border-gray-200 text-gray-500 dark:border-white/10 dark:text-gray-400">
+    <div>
+      <p className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+        {outputLabel}
+      </p>
+      <div
+        ref={contentRef}
+        className="relative overflow-hidden rounded-lg bg-gray-50 px-3 py-2 text-sm text-gray-700 dark:bg-white/5 dark:text-gray-300"
+        style={
+          !isExpanded && isClamped
+            ? { maxHeight: OUTPUT_CLAMP_HEIGHT }
+            : undefined
+        }>
+        <Markdown message={displayContent} />
+        {!isExpanded && isClamped && (
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-gray-50 dark:from-[#1a1a1a]" />
+        )}
+      </div>
+      {isClamped && (
+        <button
+          type="button"
+          onClick={() => setIsExpanded((v) => !v)}
+          className="mt-1 text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+          {isExpanded ? "Show less" : "Show more"}
+        </button>
+      )}
+    </div>
+  )
+}
+
+export const McpInvocationBlock = ({ invocation }: Props) => {
+  const { t } = useTranslation("common")
+  const [isOpen, setIsOpen] = React.useState(
+    Boolean(invocation.result?.toolError)
+  )
+
+  const hasResult = Boolean(invocation.result)
+  const isError = Boolean(invocation.result?.toolError)
+  const formattedArgs = formatArgs(invocation.args)
+
+  return (
+    <div className="rounded-xl border border-gray-200/80 dark:border-white/10">
+      <button
+        type="button"
+        onClick={() => setIsOpen((v) => !v)}
+        className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-white/5 rounded-xl">
+        <span className="flex size-5 shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-500 dark:border-white/10 dark:text-gray-400">
           <Wrench className="size-3" />
         </span>
-        <span className="font-medium">{invocation.displayName}</span>
+        <span className="min-w-0 flex-1 text-left font-medium truncate">
+          {invocation.displayName}
+        </span>
         {invocation.serverName && (
-          <span className="text-xs text-gray-500 dark:text-gray-400">
+          <span className="hidden sm:inline shrink-0 text-xs text-gray-400 dark:text-gray-500">
             {invocation.serverName}
           </span>
         )}
-      </div>
-
-      {invocation.result ? (
-        <div className="pl-7">
-          <button
-            type="button"
-            onClick={() => setIsOpen((currentValue) => !currentValue)}
-            className="inline-flex items-center gap-1 rounded-full border border-gray-200 px-3 py-1 text-xs text-gray-700 transition-colors hover:border-gray-300 hover:text-gray-900 dark:border-white/10 dark:text-gray-300 dark:hover:border-white/20 dark:hover:text-white">
-            {isOpen ? (
-              <ChevronDown className="size-3" />
+        <span className="shrink-0">
+          {hasResult ? (
+            isError ? (
+              <XCircle className="size-3.5 text-red-500" />
             ) : (
-              <ChevronRight className="size-3" />
-            )}
-            {t("mcp.toolResultTitle")}
-          </button>
+              <CheckCircle2 className="size-3.5 text-green-500" />
+            )
+          ) : (
+            <Loader2 className="size-3.5 animate-spin text-gray-400" />
+          )}
+        </span>
+        {isOpen ? (
+          <ChevronDown className="size-3.5 shrink-0 text-gray-400" />
+        ) : (
+          <ChevronRight className="size-3.5 shrink-0 text-gray-400" />
+        )}
+      </button>
 
-          {isOpen && (
-            <div className="mt-3 rounded-2xl border border-gray-200/80 px-4 py-3 text-sm text-gray-700 dark:border-white/10 dark:text-gray-200">
-              <Markdown
-                message={
-                  invocation.result.content.trim().length > 0
-                    ? invocation.result.content
-                    : t("mcp.noOutput")
-                }
-              />
+      {isOpen && (
+        <div className="border-t border-gray-200/80 px-3 py-2.5 dark:border-white/10">
+          {formattedArgs.length > 0 && (
+            <div className="mb-2.5">
+              <p className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+                {t("mcp.arguments")}
+              </p>
+              <pre className="overflow-x-auto rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-700 dark:bg-white/5 dark:text-gray-300">
+                {formattedArgs}
+              </pre>
             </div>
           )}
+
+          {invocation.result && (
+            <ToolOutput
+              content={invocation.result.content}
+              noOutputLabel={t("mcp.noOutput")}
+              outputLabel={t("mcp.output")}
+            />
+          )}
         </div>
-      ) : null}
+      )}
     </div>
   )
 }

@@ -16,6 +16,7 @@ export type PlaygroundToolInvocation = {
   name: string
   displayName: string
   serverName?: string
+  args?: unknown
   result?: PlaygroundToolResult
 }
 
@@ -60,6 +61,7 @@ const createToolInvocation = (
     name: toolCall.name,
     displayName: toolCall.displayName || parsedTool.displayName,
     serverName: toolCall.serverName || parsedTool.serverName,
+    args: toolCall.args,
     result
   }
 }
