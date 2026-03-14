@@ -15,9 +15,19 @@ const getRootDomain = (hostname: string) => {
   return parts.slice(-2).join(".")
 }
 
+const isPrivateHost = (hostname: string) => {
+  if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "0.0.0.0") return true
+  if (hostname.endsWith(".local") || hostname.endsWith(".internal")) return true
+  if (/^10\./.test(hostname) || /^192\.168\./.test(hostname)) return true
+  if (/^172\.(1[6-9]|2\d|3[01])\./.test(hostname)) return true
+  if (!hostname.includes(".")) return true
+  return false
+}
+
 const getServerFaviconUrl = (serverUrl: string) => {
   try {
     const { hostname } = new URL(serverUrl)
+    if (isPrivateHost(hostname)) return null
     const domain = getRootDomain(hostname)
     return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
   } catch {
