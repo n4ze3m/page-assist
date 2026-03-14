@@ -1,6 +1,5 @@
 import { cleanUrl } from "@/libs/clean-url"
 import {
-  createMcpActionInfo,
   normalizeToolContent,
   parseMcpToolName,
   toStoredToolCalls
@@ -278,18 +277,18 @@ export const runMcpNormalChatMode = async (
   let uiMessages = isRegenerate
     ? [...messages]
     : [
-        ...messages,
-        {
-          isBot: false,
-          name: "You",
-          message,
-          sources: [],
-          images: userImages,
-          modelImage: modelInfo?.model_avatar,
-          modelName: modelInfo?.model_name || selectedModel,
-          documents: userDocuments
-        }
-      ]
+      ...messages,
+      {
+        isBot: false,
+        name: "You",
+        message,
+        sources: [],
+        images: userImages,
+        modelImage: modelInfo?.model_avatar,
+        modelName: modelInfo?.model_name || selectedModel,
+        documents: userDocuments
+      }
+    ]
   let uiHistory = [...history]
   let historyWithUser = [...history, userEntry]
   let nextTimeOffset = 0
@@ -382,13 +381,11 @@ export const runMcpNormalChatMode = async (
     promptContent = currentChatModelSettings.systemPrompt
   }
 
-  createMcpActionInfo("connecting", { toolCount: configuredServers.length })
 
   const client = createMcpClient(configuredServers)
   let boundModel: any
 
   try {
-    createMcpActionInfo("loading_tools", { toolCount: configuredServers.length })
     const tools = await client.getTools()
 
     if (tools.length === 0) {
@@ -563,10 +560,7 @@ export const runMcpNormalChatMode = async (
 
       for (const toolCall of storedToolCalls) {
         const parsedTool = parseMcpToolName(toolCall.name)
-          createMcpActionInfo("calling_tool", {
-            toolName: parsedTool.displayName,
-            serverName: toolCall.serverName || parsedTool.serverName
-          })
+
 
         try {
           const tool = tools.find((currentTool) => currentTool.name === toolCall.name)
@@ -574,20 +568,16 @@ export const runMcpNormalChatMode = async (
             throw new Error(`Tool "${toolCall.name}" is no longer available.`)
           }
 
-            createMcpActionInfo("waiting_result", {
-              toolName: parsedTool.displayName,
-              serverName: toolCall.serverName || parsedTool.serverName
-            })
 
           const result = await tool.invoke(toolCall, { signal })
           const toolMessage =
             result instanceof ToolMessage
               ? result
               : new ToolMessage({
-                  content: normalizeToolContent(result),
-                  tool_call_id: toolCall.id,
-                  status: "success"
-                })
+                content: normalizeToolContent(result),
+                tool_call_id: toolCall.id,
+                status: "success"
+              })
 
           toolMessages.push(toolMessage)
 
