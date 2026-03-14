@@ -8,6 +8,7 @@ export type McpHeader = {
 export type McpAvailableTool = {
   name: string
   description?: string
+  inputSchema?: unknown
 }
 
 export type McpServer = {

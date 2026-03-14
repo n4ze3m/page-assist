@@ -123,7 +123,8 @@ export const toCachedMcpTools = (
 ): McpAvailableTool[] =>
   tools.map((tool) => ({
     name: tool.name,
-    description: tool.description
+    description: tool.description,
+    inputSchema: tool.inputSchema
   }))
 
 export const inspectMcpServerTools = async (

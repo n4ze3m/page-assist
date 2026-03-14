@@ -122,16 +122,24 @@ const buildRequestOptions = ({
 
 const createLangChainTool = ({
   client,
+  getClient,
   server,
   remoteTool,
   callbacks
 }: {
-  client: Client
+  client?: Client
+  getClient?: () => Promise<Client>
   server: McpServer
   remoteTool: any
   callbacks?: McpClientCallbacks
 }) => {
   const prefixedToolName = `${server.name}${MCP_TOOL_NAME_SEPARATOR}${remoteTool.name}`
+
+  const resolveClient = async () => {
+    if (client) return client
+    if (getClient) return await getClient()
+    throw new Error(`No MCP client available for server "${server.name}"`)
+  }
 
   return new DynamicStructuredTool({
     name: prefixedToolName,
@@ -143,6 +151,8 @@ const createLangChainTool = ({
       toolName: remoteTool.name
     },
     func: async (args, _runManager, config) => {
+      const resolvedClient = await resolveClient()
+
       const interception = await callbacks?.beforeToolCall?.(
         {
           name: remoteTool.name,
@@ -159,7 +169,7 @@ const createLangChainTool = ({
         ...toArgumentRecord(interception?.args)
       }
 
-      const response = await client.callTool(
+      const response = await resolvedClient.callTool(
         {
           name: remoteTool.name,
           arguments: finalArgs
@@ -251,7 +261,16 @@ export class HttpOnlyMcpClient {
   private async loadTools() {
     const toolGroups = await Promise.all(
       this.servers.map(async (server) => {
-        const connection = await this.getConnection(server)
+        const hasCachedSchemas =
+          server.cachedTools &&
+          server.cachedTools.length > 0 &&
+          server.cachedTools.every((t) => t.inputSchema != null)
+
+        if (hasCachedSchemas) {
+          return this.buildToolsFromCache(server)
+        }
+
+        const connection = await this.getOrCreateConnection(server)
         return await this.loadToolsForConnection(connection)
       })
     )
@@ -259,7 +278,21 @@ export class HttpOnlyMcpClient {
     return toolGroups.flat()
   }
 
-  private async getConnection(server: McpServer) {
+  private buildToolsFromCache(server: McpServer) {
+    return (server.cachedTools || []).map((cachedTool) =>
+      createLangChainTool({
+        getClient: async () => {
+          const conn = await this.getOrCreateConnection(server)
+          return conn.client
+        },
+        server,
+        remoteTool: cachedTool,
+        callbacks: this.callbacks
+      })
+    )
+  }
+
+  private async getOrCreateConnection(server: McpServer) {
     const existingConnection = this.connections.get(server.id)
     if (existingConnection) {
       return existingConnection
