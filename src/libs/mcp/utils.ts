@@ -42,7 +42,12 @@ export const parseMcpToolName = (rawName: string) => {
 
 export const sanitizeHeaders = (headers?: McpHeader[]) =>
   (headers || []).filter(
-    (header) => header.key.trim().length > 0 && header.value.trim().length > 0
+    (header) =>
+      header &&
+      typeof header.key === "string" &&
+      typeof header.value === "string" &&
+      header.key.trim().length > 0 &&
+      header.value.trim().length > 0
   )
 
 export const normalizeMcpServerInput = (
