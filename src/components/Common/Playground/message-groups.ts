@@ -143,6 +143,21 @@ const createTextSegment = (
   message
 })
 
+const isMessageEqual = (a: Message, b: Message) => {
+  if (a === b) return true
+  return (
+    a.message === b.message &&
+    a.isBot === b.isBot &&
+    a.id === b.id &&
+    a.messageKind === b.messageKind &&
+    a.toolCallId === b.toolCallId &&
+    a.toolError === b.toolError &&
+    a.toolCalls === b.toolCalls &&
+    a.generationInfo === b.generationInfo &&
+    a.reasoning_time_taken === b.reasoning_time_taken
+  )
+}
+
 const areSourceMessagesEqual = (
   sourceMessages: Message[],
   messages: Message[],
@@ -154,7 +169,7 @@ const areSourceMessagesEqual = (
   }
 
   for (let index = startIndex; index <= endIndex; index += 1) {
-    if (sourceMessages[index - startIndex] !== messages[index]) {
+    if (!isMessageEqual(sourceMessages[index - startIndex], messages[index])) {
       return false
     }
   }

@@ -88,6 +88,8 @@ const createUserDocuments = (uploadedFiles?: any[]): ChatDocuments =>
     processed: file.processed
   })) || []
 
+const STREAM_THROTTLE_MS = 50
+
 const streamModelResponse = async ({
   runnable,
   messages,
@@ -107,6 +109,8 @@ const streamModelResponse = async ({
   let reasoningEndTime: Date | null = null
   let apiReasoning = false
   let finalChunk: any
+  let lastFlushTime = 0
+  let pendingFlush = false
 
   const chunks = await runnable.stream(messages, {
     signal,
@@ -133,7 +137,9 @@ const streamModelResponse = async ({
       )
       fullText = reasoningContent
       apiReasoning = true
-    } else if (apiReasoning) {
+    }
+
+    if (apiReasoning && chunk?.content) {
       fullText += "</think>"
       apiReasoning = false
     }
@@ -149,11 +155,30 @@ const streamModelResponse = async ({
       timetaken = reasoningEndTime.getTime() - reasoningStartTime.getTime()
     }
 
+    const now = Date.now()
+    if (count === 0 || now - lastFlushTime >= STREAM_THROTTLE_MS) {
+      onToken({
+        text: fullText,
+        reasoningTimeTaken: timetaken
+      })
+      lastFlushTime = now
+      pendingFlush = false
+    } else {
+      pendingFlush = true
+    }
+    count++
+  }
+
+  if (apiReasoning) {
+    fullText += "</think>"
+    apiReasoning = false
+  }
+
+  if (pendingFlush) {
     onToken({
       text: fullText,
       reasoningTimeTaken: timetaken
     })
-    count++
   }
 
   if (count === 0) {
@@ -438,7 +463,6 @@ export const runMcpNormalChatMode = async (
             return
           }
 
-          setIsProcessing(true)
           updateAssistantRow((currentMessage) => ({
             ...currentMessage,
             message: `${text}▋`,
@@ -515,20 +539,24 @@ export const runMcpNormalChatMode = async (
       historyWithUser = [...historyWithUser, assistantToolCallEntry]
       syncHistory(historyWithUser)
 
+      const pendingDbWrites: Promise<any>[] = []
+
       if (!temporaryChat && activeHistoryId) {
-        await saveMessage({
-          history_id: activeHistoryId,
-          name: selectedModel,
-          role: "assistant",
-          content: fullText,
-          images: [],
-          source: [],
-          time: ++nextTimeOffset,
-          message_type: "normal",
-          messageKind: "assistant_tool_calls",
-          toolCalls: storedToolCalls,
-          reasoning_time_taken: reasoningTimeTaken
-        })
+        pendingDbWrites.push(
+          saveMessage({
+            history_id: activeHistoryId,
+            name: selectedModel,
+            role: "assistant",
+            content: fullText,
+            images: [],
+            source: [],
+            time: ++nextTimeOffset,
+            message_type: "normal",
+            messageKind: "assistant_tool_calls",
+            toolCalls: storedToolCalls,
+            reasoning_time_taken: reasoningTimeTaken
+          })
+        )
       }
 
       const toolMessages: ToolMessage[] = []
@@ -597,20 +625,22 @@ export const runMcpNormalChatMode = async (
           ])
 
           if (!temporaryChat && activeHistoryId) {
-            await saveMessage({
-              history_id: activeHistoryId,
-              name: selectedModel,
-              role: "tool",
-              content: toolResultEntry.content,
-              images: [],
-              time: ++nextTimeOffset,
-              message_type: "normal",
-              messageKind: "tool_result",
-              toolCallId: toolResultEntry.toolCallId,
-              toolName: toolResultEntry.toolName,
-              toolServerName: toolResultEntry.toolServerName,
-              toolError: toolResultEntry.toolError
-            })
+            pendingDbWrites.push(
+              saveMessage({
+                history_id: activeHistoryId,
+                name: selectedModel,
+                role: "tool",
+                content: toolResultEntry.content,
+                images: [],
+                time: ++nextTimeOffset,
+                message_type: "normal",
+                messageKind: "tool_result",
+                toolCallId: toolResultEntry.toolCallId,
+                toolName: toolResultEntry.toolName,
+                toolServerName: toolResultEntry.toolServerName,
+                toolError: toolResultEntry.toolError
+              })
+            )
           }
         } catch (error) {
           const toolErrorMessage = getMcpErrorMessage(error)
@@ -652,23 +682,27 @@ export const runMcpNormalChatMode = async (
           ])
 
           if (!temporaryChat && activeHistoryId) {
-            await saveMessage({
-              history_id: activeHistoryId,
-              name: selectedModel,
-              role: "tool",
-              content: toolErrorMessage,
-              images: [],
-              time: ++nextTimeOffset,
-              message_type: "normal",
-              messageKind: "tool_result",
-              toolCallId: toolCall.id,
-              toolName: parsedTool.displayName,
-              toolServerName: toolCall.serverName || parsedTool.serverName,
-              toolError: true
-            })
+            pendingDbWrites.push(
+              saveMessage({
+                history_id: activeHistoryId,
+                name: selectedModel,
+                role: "tool",
+                content: toolErrorMessage,
+                images: [],
+                time: ++nextTimeOffset,
+                message_type: "normal",
+                messageKind: "tool_result",
+                toolCallId: toolCall.id,
+                toolName: parsedTool.displayName,
+                toolServerName: toolCall.serverName || parsedTool.serverName,
+                toolError: true
+              })
+            )
           }
         }
       }
+
+      await Promise.all(pendingDbWrites)
 
       lcConversation = [...lcConversation, aiMessage, ...toolMessages]
       appendAssistantPlaceholder()

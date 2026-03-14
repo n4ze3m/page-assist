@@ -591,6 +591,39 @@ const PlaygroundMessageComponent = (props: Props) => {
   )
 }
 
+const areSegmentsEqual = (
+  a?: PlaygroundMessageSegment[],
+  b?: PlaygroundMessageSegment[]
+) => {
+  if (a === b) return true
+  if (!a || !b || a.length !== b.length) return false
+  for (let i = 0; i < a.length; i++) {
+    const sa = a[i]
+    const sb = b[i]
+    if (sa.type !== sb.type || sa.key !== sb.key) return false
+    if (sa.type === "text" && sb.type === "text") {
+      if (sa.message.message !== sb.message.message) return false
+    } else if (sa.type === "tool_invocations" && sb.type === "tool_invocations") {
+      if (
+        sa.content !== sb.content ||
+        sa.invocations.length !== sb.invocations.length
+      )
+        return false
+      for (let j = 0; j < sa.invocations.length; j++) {
+        const ia = sa.invocations[j]
+        const ib = sb.invocations[j]
+        if (
+          ia.id !== ib.id ||
+          ia.result?.content !== ib.result?.content ||
+          ia.result?.toolError !== ib.result?.toolError
+        )
+          return false
+      }
+    }
+  }
+  return true
+}
+
 const arePlaygroundMessagePropsEqual = (previous: Props, next: Props) =>
   previous.message === next.message &&
   previous.message_type === next.message_type &&
@@ -629,7 +662,7 @@ const arePlaygroundMessagePropsEqual = (previous: Props, next: Props) =>
   previous.toolName === next.toolName &&
   previous.toolServerName === next.toolServerName &&
   previous.toolError === next.toolError &&
-  previous.segments === next.segments
+  areSegmentsEqual(previous.segments, next.segments)
 
 export const PlaygroundMessage = React.memo(
   PlaygroundMessageComponent,
