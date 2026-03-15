@@ -13,6 +13,8 @@ import {
   isReasoningStarted,
   mergeReasoningContent
 } from "@/libs/reasoning"
+import { runMcpNormalChatMode } from "@/libs/mcp/normal-chat"
+import { McpBootstrapError } from "@/libs/mcp/errors"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
 
@@ -38,7 +40,10 @@ export const normalChatMode = async (
     historyId,
     setHistoryId,
     uploadedFiles,
-    images
+    images,
+    setActionInfo,
+    temporaryChat,
+    messageSource
   }: {
     selectedModel: string
     useOCR: boolean
@@ -55,9 +60,81 @@ export const normalChatMode = async (
     setHistoryId: (id: string) => void
     uploadedFiles?: any[]
     images?: string[]
+    setActionInfo?: (value: any) => void
+    temporaryChat?: boolean
+    messageSource?: "copilot" | "web-ui"
   }
 ) => {
   console.log("Using normalChatMode")
+  setStreaming(true)
+  try {
+    const handledByMcp = await runMcpNormalChatMode(
+      message,
+      image,
+      isRegenerate,
+      messages,
+      history,
+      signal,
+      {
+        selectedModel,
+        useOCR,
+        selectedSystemPrompt,
+        currentChatModelSettings,
+        setMessages,
+        setHistory,
+        setIsProcessing,
+        setStreaming,
+        setActionInfo: setActionInfo || (() => {}),
+        historyId,
+        setHistoryId,
+        uploadedFiles,
+        images,
+        temporaryChat,
+        messageSource
+      }
+    )
+
+    if (handledByMcp) {
+      return
+    }
+  } catch (error) {
+    if (error instanceof McpBootstrapError) {
+      const processedImages = (images || []).map((currentImage) => {
+        if (currentImage.length > 0 && !currentImage.startsWith("data:image")) {
+          return `data:image/jpeg;base64,${currentImage.split(",")[1]}`
+        }
+
+        return currentImage
+      })
+      const imagesToSave =
+        processedImages.length > 0 ? processedImages : image ? [image] : []
+
+      const errorSave = await saveMessageOnError({
+        e: error,
+        botMessage: "",
+        history,
+        historyId,
+        image: imagesToSave.length > 0 ? imagesToSave[0] : "",
+        images: imagesToSave,
+        selectedModel,
+        setHistory,
+        setHistoryId,
+        userMessage: message,
+        isRegenerating: isRegenerate,
+        message_source: messageSource
+      })
+
+      if (!errorSave) {
+        throw error
+      }
+
+      setIsProcessing(false)
+      setStreaming(false)
+      return
+    }
+
+    throw error
+  }
   const url = await getOllamaURL()
   let promptId: string | undefined = selectedSystemPrompt
   let promptContent: string | undefined = undefined
@@ -228,12 +305,12 @@ export const normalChatMode = async (
         contentToSave = reasoningContent
         fullText = reasoningContent
         apiReasoning = true
-      } else {
-        if (apiReasoning) {
-          fullText += "</think>"
-          contentToSave += "</think>"
-          apiReasoning = false
-        }
+      }
+
+      if (apiReasoning && chunk?.content) {
+        fullText += "</think>"
+        contentToSave += "</think>"
+        apiReasoning = false
       }
 
       contentToSave += chunk?.content

@@ -20,28 +20,43 @@ export const createRegenerateLastMessage = ({
   onSubmit
 }: {
   validateBeforeSubmitFn: () => boolean
-  history: ChatHistory
-  messages: Message[]
+  history: ChatHistory | (() => ChatHistory)
+  messages: Message[] | (() => Message[])
   setHistory: (history: ChatHistory) => void
   setMessages: (messages: Message[]) => void
-  historyId: string | null
+  historyId: string | null | (() => string | null)
   removeMessageUsingHistoryIdFn: (id: string | null) => Promise<void>
   onSubmit: (params: any) => Promise<void>
 }) => {
   return async () => {
+    const currentHistory =
+      typeof history === "function" ? history() : history
+    const currentMessages =
+      typeof messages === "function" ? messages() : messages
+    const currentHistoryId =
+      typeof historyId === "function" ? historyId() : historyId
     const isOk = validateBeforeSubmitFn()
 
     if (!isOk) {
       return
     }
-    if (history.length > 0) {
-      const lastMessage = history[history.length - 2]
-      let newHistory = history.slice(0, -2)
-      let mewMessages = messages
-      mewMessages.pop()
+    if (currentHistory.length > 0) {
+      const lastUserIndex = currentHistory.findLastIndex(
+        (message) => message.role === "user"
+      )
+
+      if (lastUserIndex === -1) {
+        return
+      }
+
+      const lastMessage = currentHistory[lastUserIndex]
+      const newHistory = currentHistory.slice(0, lastUserIndex)
+      const newMessages = currentMessages.slice(0, lastUserIndex + 1)
+
       setHistory(newHistory)
-      setMessages(mewMessages)
-      await removeMessageUsingHistoryIdFn(historyId)
+      setMessages(newMessages)
+      await removeMessageUsingHistoryIdFn(currentHistoryId)
+
       if (lastMessage.role === "user") {
         const newController = new AbortController()
         await onSubmit({
@@ -49,6 +64,7 @@ export const createRegenerateLastMessage = ({
           image: lastMessage.image || "",
           images: lastMessage.images || [],
           isRegenerate: true,
+          messages: newMessages,
           memory: newHistory,
           controller: newController
         })
@@ -66,11 +82,11 @@ export const createEditMessage = ({
   validateBeforeSubmitFn,
   onSubmit
 }: {
-  messages: Message[]
-  history: ChatHistory
+  messages: Message[] | (() => Message[])
+  history: ChatHistory | (() => ChatHistory)
   setMessages: (messages: Message[]) => void
   setHistory: (history: ChatHistory) => void
-  historyId: string | null
+  historyId: string | null | (() => string | null)
   validateBeforeSubmitFn: () => boolean
   onSubmit: (params: any) => Promise<void>
 }) => {
@@ -80,8 +96,28 @@ export const createEditMessage = ({
     isHuman: boolean,
     isSend: boolean
   ) => {
-    let newMessages = messages
-    let newHistory = history
+    const currentMessages =
+      typeof messages === "function" ? messages() : messages
+    const currentHistory =
+      typeof history === "function" ? history() : history
+    const currentHistoryId =
+      typeof historyId === "function" ? historyId() : historyId
+    const newMessages = currentMessages.map((currentMessage, currentIndex) =>
+      currentIndex === index
+        ? {
+            ...currentMessage,
+            message
+          }
+        : currentMessage
+    )
+    const newHistory = currentHistory.map((currentMessage, currentIndex) =>
+      currentIndex === index
+        ? {
+            ...currentMessage,
+            content: message
+          }
+        : currentMessage
+    )
 
     // if human message and send then only trigger the submit
     if (isHuman && isSend) {
@@ -92,13 +128,12 @@ export const createEditMessage = ({
       }
 
       const currentHumanMessage = newMessages[index]
-      newMessages[index].message = message
       const previousMessages = newMessages.slice(0, index + 1)
       setMessages(previousMessages)
       const previousHistory = newHistory.slice(0, index)
       setHistory(previousHistory)
-      await updateMessageByIndex(historyId, index, message)
-      await deleteChatForEdit(historyId, index)
+      await updateMessageByIndex(currentHistoryId, index, message)
+      await deleteChatForEdit(currentHistoryId, index)
       const abortController = new AbortController()
       await onSubmit({
         message: message,
@@ -111,11 +146,10 @@ export const createEditMessage = ({
       })
       return
     }
-    newMessages[index].message = message
+
     setMessages(newMessages)
-    newHistory[index].content = message
     setHistory(newHistory)
-    await updateMessageByIndex(historyId, index, message)
+    await updateMessageByIndex(currentHistoryId, index, message)
   }
 }
 
@@ -123,6 +157,7 @@ export const createBranchMessage = ({
   setMessages,
   setHistory,
   historyId,
+  getHistoryId,
   setHistoryId,
   setContext,
   setSelectedSystemPrompt,
@@ -131,6 +166,7 @@ export const createBranchMessage = ({
   setMessages: (messages: Message[]) => void
   setHistory: (history: ChatHistory) => void
   historyId: string | null
+  getHistoryId?: () => string | null
   setHistoryId: (id: string | null) => void
   setSelectedSystemPrompt?: (prompt: string) => void
   setSystemPrompt?: (prompt: string) => void
@@ -138,7 +174,8 @@ export const createBranchMessage = ({
 }) => {
   return async (index: number) => {
     try {
-      const newBranch = await generateBranchMessage(historyId, index)
+      const activeHistoryId = getHistoryId?.() ?? historyId
+      const newBranch = await generateBranchMessage(activeHistoryId, index)
       setHistory(formatToChatHistory(newBranch.messages))
       setMessages(formatToMessage(newBranch.messages))
       setHistoryId(newBranch.history.id)

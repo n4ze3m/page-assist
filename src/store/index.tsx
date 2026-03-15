@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { ChatMessageKind, McpToolCall } from "@/libs/mcp/types"
 
 export type Message = {
   isBot: boolean
@@ -8,14 +9,30 @@ export type Message = {
   images?: string[]
   modelName?: string
   modelImage?: string
+  id?: string
+  messageType?: string
+  generationInfo?: any
+  reasoning_time_taken?: number
+  messageKind?: ChatMessageKind
+  toolCalls?: McpToolCall[]
+  toolCallId?: string
+  toolName?: string
+  toolServerName?: string
+  toolError?: boolean
 }
 
 export type ChatHistory = {
-  role: "user" | "assistant" | "system"
+  role: "user" | "assistant" | "system" | "tool"
   content: string
   image?: string
   images?: string[]
   messageType?: string
+  messageKind?: ChatMessageKind
+  toolCalls?: McpToolCall[]
+  toolCallId?: string
+  toolName?: string
+  toolServerName?: string
+  toolError?: boolean
 }[]
 
 type State = {

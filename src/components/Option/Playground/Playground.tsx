@@ -15,7 +15,7 @@ import { ChevronDown } from "lucide-react"
 import { useStorage } from "@plasmohq/storage/hook"
 import { Storage } from "@plasmohq/storage"
 import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
-export const Playground = () => {
+const PlaygroundComponent = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
   const [defaultWebUIPrompt] = useStorage("defaultWebUIPrompt", undefined)
@@ -30,6 +30,7 @@ export const Playground = () => {
   const {
     selectedKnowledge,
     messages,
+    historyId,
     setHistoryId,
     setHistory,
     setMessages,
@@ -41,7 +42,7 @@ export const Playground = () => {
   } = useMessageOption()
   const { setSystemPrompt } = useStoreChatModelSettings()
   const { containerRef, isAutoScrollToBottom, autoScrollToBottom } =
-    useSmartScroll(messages, streaming, 120)
+    useSmartScroll(messages, streaming, 120, historyId)
 
   const [dropState, setDropState] = React.useState<
     "idle" | "dragging" | "error"
@@ -214,3 +215,5 @@ export const Playground = () => {
     </div>
   )
 }
+
+export const Playground = React.memo(PlaygroundComponent)

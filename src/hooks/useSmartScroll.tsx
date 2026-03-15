@@ -1,16 +1,19 @@
-import { useRef, useEffect, useState, useCallback, useMemo } from "react"
+import { useRef, useEffect, useState, useCallback } from "react"
 
 export const useSmartScroll = (
   messages: any[],
   streaming: boolean,
-  threshold: number = 100 
+  threshold: number = 100,
+  resetKey?: string | null
 ) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isAutoScrollEnabled, setIsAutoScrollEnabled] = useState(true)
-  const scrollTimeout = useRef<NodeJS.Timeout | null>(null)
+  const scrollTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastScrollTop = useRef(0)
   const lastScrollHeight = useRef(0)
   const isScrollingProgrammatically = useRef(false)
+  const previousResetKey = useRef<string | null | undefined>(resetKey)
+  const pendingResetScroll = useRef(false)
 
   const isAtBottom = useCallback(() => {
     const container = containerRef.current
@@ -30,6 +33,9 @@ export const useSmartScroll = (
       top: container.scrollHeight,
       behavior: smooth ? "smooth" : "auto"
     })
+
+    lastScrollTop.current = container.scrollTop
+    lastScrollHeight.current = container.scrollHeight
 
     setTimeout(
       () => {
@@ -84,6 +90,27 @@ export const useSmartScroll = (
       })
     }
   }, [streaming, isAutoScrollEnabled, scrollToBottom])
+
+  useEffect(() => {
+    if (previousResetKey.current !== resetKey) {
+      previousResetKey.current = resetKey
+      pendingResetScroll.current = true
+      setIsAutoScrollEnabled(true)
+    }
+  }, [resetKey])
+
+  useEffect(() => {
+    if (!pendingResetScroll.current || messages.length === 0) {
+      return
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        scrollToBottom(false)
+        pendingResetScroll.current = false
+      })
+    })
+  }, [messages, scrollToBottom])
 
   useEffect(() => {
     if (messages.length === 0) {

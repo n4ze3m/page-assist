@@ -12,6 +12,7 @@ import SidepanelSettings from "./sidepanel-settings"
 import OptionRagSettings from "./option-rag"
 import OptionChrome from "./option-settings-chrome"
 import OptionOpenAI from "./option-settings-openai"
+import OptionMCP from "./option-settings-mcp"
 import SidepanelSettingsOpenAI from "./sidepanel-settings-openai"
 import SidepanelSettingsModel from "./sidepanel-settings-model"
 
@@ -25,6 +26,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/ollama" element={<OptionOllamaSettings />} />
       <Route path="/settings/chrome" element={<OptionChrome />} />
       <Route path="/settings/openai" element={<OptionOpenAI />} />
+      <Route path="/settings/mcp" element={<OptionMCP />} />
       <Route path="/settings/share" element={<OptionShare />} />
       <Route path="/settings/knowledge" element={<OptionKnowledgeBase />} />
       <Route path="/settings/rag" element={<OptionRagSettings />} />

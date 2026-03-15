@@ -4,6 +4,8 @@ import { clearBadge, streamDownload, cancelDownload } from "@/utils/pull-ollama"
 import { Storage } from "@plasmohq/storage"
 import { getInitialConfig } from "@/services/action"
 import { getCustomCopilotPrompts, getCopilotPromptsEnabledState, type CustomCopilotPrompt } from "@/services/application"
+import { startMcpOAuthFlow, disconnectMcpOAuth } from "@/libs/mcp/oauth-flow"
+import { McpServerDb } from "@/db/dexie/mcp"
 
 export default defineBackground({
   main() {
@@ -164,6 +166,17 @@ export default defineBackground({
         await streamDownload(ollamaURL, message.modelName)
       } else if (message.type === "cancel_download") {
         cancelDownload()
+      } else if (message.type === "mcp_oauth_start") {
+        const mcpDb = new McpServerDb()
+        const server = await mcpDb.getById(message.serverId)
+        if (!server) {
+          return Promise.resolve({ success: false, error: "Server not found" })
+        }
+        const result = await startMcpOAuthFlow(server)
+        return Promise.resolve(result)
+      } else if (message.type === "mcp_oauth_disconnect") {
+        await disconnectMcpOAuth(message.serverId)
+        return Promise.resolve({ success: true })
       } else if (message.type === "youtube_summarize") {
         if (sender.tab?.id) {
           await browser.sidebarAction.open()

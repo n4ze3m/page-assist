@@ -10,6 +10,12 @@ import { ChatDocuments } from "@/models/ChatTypes"
 import { DocumentChip } from "./DocumentChip"
 import { DocumentFile } from "./DocumentFile"
 import { tagColors } from "@/utils/color"
+
+const messageRenderStyle: React.CSSProperties = {
+  contentVisibility: "auto",
+  containIntrinsicSize: "180px"
+}
+
 type Props = {
   message: string
   message_type?: string
@@ -19,10 +25,15 @@ type Props = {
   isBot: boolean
   name: string
   images?: string[]
-  currentMessageIndex: number
-  totalMessages: number
-  onRengerate: () => void
-  onEditFormSubmit: (value: string, isSend: boolean) => void
+  isLastMessage: boolean
+  actionIndex: number
+  onRengerate?: () => void
+  onEditFormSubmit: (
+    messageIndex: number,
+    isHuman: boolean,
+    value: string,
+    isSend: boolean
+  ) => void
   isProcessing: boolean
   webSearch?: {}
   isSearchingInternet?: boolean
@@ -48,7 +59,8 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
 
   return (
     <div
-      className={`group gap-2 relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-[#242424] dark:text-gray-100 ${checkWideMode ? "max-w-none" : ""}`}>
+      className={`group gap-2 relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-[#242424] dark:text-gray-100 ${checkWideMode ? "max-w-none" : ""}`}
+      style={messageRenderStyle}>
       {!editMode && props?.message_type ? (
         <Tag color={props?.message_type?.startsWith("custom_copilot_custom_") ? "orange" : tagColors[props?.message_type] || "default"}>
           {props?.message_type?.startsWith("custom_copilot_custom_")
@@ -114,7 +126,14 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
           <div className="w-screen max-w-[100%]">
             <EditMessageForm
               value={props.message}
-              onSumbit={props.onEditFormSubmit}
+              onSumbit={(value, isSend) =>
+                props.onEditFormSubmit(
+                  props.actionIndex,
+                  true,
+                  value,
+                  isSend
+                )
+              }
               onClose={() => setEditMode(false)}
               isBot={props.isBot}
             />
@@ -142,7 +161,7 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
       {!props.isProcessing && !editMode ? (
         <div
           className={`space-x-2 gap-2 flex ${
-            props.currentMessageIndex !== props.totalMessages - 1
+            !props.isLastMessage
               ? //  there is few style issue so i am commenting this out for v1.4.5 release
                 // next release we will fix this
                 "invisible group-hover:visible"

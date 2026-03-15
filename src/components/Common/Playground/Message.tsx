@@ -26,7 +26,18 @@ import { useStorage } from "@plasmohq/storage/hook"
 import { PlaygroundUserMessageBubble } from "./PlaygroundUserMessage"
 import { copyToClipboard } from "@/utils/clipboard"
 import { ChatDocuments } from "@/models/ChatTypes"
-import { PiGitBranch } from "react-icons/pi"
+import { ChatActionInfo, ChatMessageKind, McpToolCall } from "@/libs/mcp/types"
+import { isTraceMessageKind } from "@/libs/mcp/utils"
+import {
+  PlaygroundMessageSegment,
+  PlaygroundToolInvocation
+} from "./message-groups"
+import { McpInvocationBlock } from "./McpInvocationBlock"
+
+const messageRenderStyle: React.CSSProperties = {
+  contentVisibility: "auto",
+  containIntrinsicSize: "220px"
+}
 
 type Props = {
   message: string
@@ -37,10 +48,15 @@ type Props = {
   isBot: boolean
   name: string
   images?: string[]
-  currentMessageIndex: number
-  totalMessages: number
-  onRengerate: () => void
-  onEditFormSubmit: (value: string, isSend: boolean) => void
+  isLastMessage: boolean
+  actionIndex: number
+  onRengerate?: () => void
+  onEditFormSubmit: (
+    messageIndex: number,
+    isHuman: boolean,
+    value: string,
+    isSend: boolean
+  ) => void
   isProcessing: boolean
   webSearch?: {}
   isSearchingInternet?: boolean
@@ -57,17 +73,134 @@ type Props = {
   modelName?: string
   onContinue?: () => void
   documents?: ChatDocuments
-  actionInfo?: string | null
-  onNewBranch?: () => void
+  actionInfo?: ChatActionInfo | null
+  onNewBranch?: (messageIndex: number) => void
   temporaryChat?: boolean
+  messageKind?: ChatMessageKind
+  toolCalls?: McpToolCall[]
+  toolCallId?: string
+  toolName?: string
+  toolServerName?: string
+  toolError?: boolean
+  segments?: PlaygroundMessageSegment[]
 }
 
-export const PlaygroundMessage = (props: Props) => {
+const hasStandaloneAssistantText = (segments?: PlaygroundMessageSegment[]) =>
+  (segments || []).some(
+    (segment) =>
+      segment.type === "text" && segment.message.message.trim().length > 0
+  )
+
+const getPrimaryAssistantText = (
+  message: string,
+  segments?: PlaygroundMessageSegment[]
+) => {
+  const textSegment = [...(segments || [])]
+    .reverse()
+    .find(
+      (segment) =>
+        segment.type === "text" && segment.message.message.trim().length > 0
+    )
+
+  if (textSegment?.type === "text") {
+    return textSegment.message.message
+  }
+
+  return segments ? "" : message
+}
+
+const renderAssistantText = ({
+  keyPrefix,
+  message,
+  isStreaming,
+  openReasoning,
+  hideReasoningWidget,
+  reasoningTimeTaken,
+  t
+}: {
+  keyPrefix: string
+  message: string
+  isStreaming: boolean
+  openReasoning?: boolean
+  hideReasoningWidget: boolean
+  reasoningTimeTaken?: number
+  t: (key: string, options?: any) => string
+}) =>
+  parseReasoning(message).map((entry, index) => {
+    if (entry.type === "reasoning" && !hideReasoningWidget) {
+      return (
+        <Collapse
+          key={`${keyPrefix}-reasoning-${index}`}
+          className="border-none text-gray-500 dark:text-gray-400 !mb-3 "
+          defaultActiveKey={openReasoning ? "reasoning" : undefined}
+          items={[
+            {
+              key: "reasoning",
+              label:
+                isStreaming && entry?.reasoning_running ? (
+                  <div className="flex items-center gap-2">
+                    <span className="italic shimmer-text">
+                      {t("reasoning.thinking")}
+                    </span>
+                  </div>
+                ) : (
+                  t("reasoning.thought", {
+                    time: humanizeMilliseconds(reasoningTimeTaken)
+                  })
+                ),
+              children: <Markdown message={entry.content} />
+            }
+          ]}
+        />
+      )
+    }
+
+    return <Markdown key={`${keyPrefix}-content-${index}`} message={entry.content} />
+  })
+
+const McpInvocationGroup = ({
+  content,
+  invocations,
+  isStreaming,
+  openReasoning,
+  hideReasoningWidget,
+  t
+}: {
+  content: string
+  invocations: PlaygroundToolInvocation[]
+  isStreaming: boolean
+  openReasoning?: boolean
+  hideReasoningWidget: boolean
+  t: (key: string, options?: any) => string
+}) => (
+  <div className="space-y-3  dark:border-white/10">
+    {content.trim().length > 0 && (
+      <div className="space-y-3">
+        {renderAssistantText({
+          keyPrefix: `tool-content-${content.length}`,
+          message: content,
+          isStreaming,
+          openReasoning,
+          hideReasoningWidget,
+          t
+        })}
+      </div>
+    )}
+
+    <div className="space-y-4">
+      {invocations.map((invocation) => (
+        <McpInvocationBlock key={invocation.id} invocation={invocation} />
+      ))}
+    </div>
+  </div>
+)
+
+const PlaygroundMessageComponent = (props: Props) => {
   const [isBtnPressed, setIsBtnPressed] = React.useState(false)
   const [editMode, setEditMode] = React.useState(false)
   const [checkWideMode] = useStorage("checkWideMode", false)
   const [isUserChatBubble] = useStorage("userChatBubble", true)
-  const [hideReasoningWidget] = useStorage('hideReasoningWidget', false)
+  const [hideReasoningWidget] = useStorage("hideReasoningWidget", false)
   const [autoCopyResponseToClipboard] = useStorage(
     "autoCopyResponseToClipboard",
     false
@@ -76,20 +209,30 @@ export const PlaygroundMessage = (props: Props) => {
   const [copyAsFormattedText] = useStorage("copyAsFormattedText", false)
   const { t } = useTranslation("common")
   const { cancel, isSpeaking, speak } = useTTS()
-  const isLastMessage: boolean =
-    props.currentMessageIndex === props.totalMessages - 1
+  const hasSegmentedAssistantText = hasStandaloneAssistantText(props.segments)
+  const isTraceOnly = props.isBot
+    ? props.segments
+      ? !hasSegmentedAssistantText
+      : isTraceMessageKind(props.messageKind)
+    : false
+  const primaryAssistantText = getPrimaryAssistantText(
+    props.message,
+    props.segments
+  )
+  const copyableMessage = props.isBot ? primaryAssistantText : props.message
 
   const autoCopyToClipboard = async () => {
     if (
       autoCopyResponseToClipboard &&
       props.isBot &&
-      isLastMessage &&
+      !isTraceOnly &&
+      props.isLastMessage &&
       !props.isStreaming &&
       !props.isProcessing &&
-      props.message.trim().length > 0
+      copyableMessage.trim().length > 0
     ) {
       await copyToClipboard({
-        text: props.message,
+        text: copyableMessage,
         formatted: copyAsFormattedText
       })
       setIsBtnPressed(true)
@@ -104,38 +247,37 @@ export const PlaygroundMessage = (props: Props) => {
   }, [
     autoCopyResponseToClipboard,
     props.isBot,
-    props.currentMessageIndex,
-    props.totalMessages,
+    isTraceOnly,
+    props.isLastMessage,
     props.isStreaming,
     props.isProcessing,
-    props.message
+    copyableMessage
   ])
+
   useEffect(() => {
     if (
       autoPlayTTS &&
       props.isTTSEnabled &&
       props.isBot &&
-      isLastMessage &&
+      !isTraceOnly &&
+      props.isLastMessage &&
       !props.isStreaming &&
       !props.isProcessing &&
-      props.message.trim().length > 0
+      copyableMessage.trim().length > 0
     ) {
-      let messageToSpeak = props.message
-
       speak({
-        utterance: messageToSpeak
+        utterance: copyableMessage
       })
     }
   }, [
     autoPlayTTS,
     props.isTTSEnabled,
     props.isBot,
-    props.currentMessageIndex,
-    props.totalMessages,
+    isTraceOnly,
+    props.isLastMessage,
     props.isStreaming,
     props.isProcessing,
-    props.message,
-    copyAsFormattedText
+    copyableMessage
   ])
 
   if (isUserChatBubble && !props.isBot) {
@@ -144,13 +286,13 @@ export const PlaygroundMessage = (props: Props) => {
 
   return (
     <div
-      className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-gray-800 dark:text-gray-100 ${checkWideMode ? "max-w-none" : ""}`}>
-      {/* <div className="text-base md:max-w-2xl lg:max-w-xl xl:max-w-3xl flex lg:px-0 m-auto w-full"> */}
-      <div className="flex flex-row gap-4 md:gap-6 my-2 m-auto w-full">
-        <div className="w-8 flex flex-col relative items-end">
+      className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 text-gray-800 dark:text-gray-100 md:px-4 lg:w-4/5 ${checkWideMode ? "max-w-none" : ""}`}
+      style={messageRenderStyle}>
+      <div className="m-auto my-2 flex w-full flex-row gap-4 md:gap-6">
+        <div className="relative flex w-8 flex-col items-end">
           {props.isBot ? (
             !props.modelImage ? (
-              <div className="relative h-7 w-7 p-1 rounded-sm text-white flex items-center justify-center  text-opacity-100">
+              <div className="relative flex h-7 w-7 items-center justify-center rounded-sm p-1 text-white text-opacity-100">
                 <div className="absolute h-8 w-8 rounded-full bg-gradient-to-r from-green-300 to-purple-400"></div>
               </div>
             ) : (
@@ -161,13 +303,14 @@ export const PlaygroundMessage = (props: Props) => {
               />
             )
           ) : !props.userAvatar ? (
-            <div className="relative h-7 w-7 p-1 rounded-sm text-white flex items-center justify-center  text-opacity-100">
-              <div className="absolute h-8 w-8 rounded-full from-blue-400 to-blue-600 bg-gradient-to-r"></div>
+            <div className="relative flex h-7 w-7 items-center justify-center rounded-sm p-1 text-white text-opacity-100">
+              <div className="absolute h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-600"></div>
             </div>
           ) : (
             props.userAvatar
           )}
         </div>
+
         <div className="flex w-[calc(100%-50px)] flex-col gap-2 lg:w-[calc(100%-115px)]">
           <span className="text-xs font-bold text-gray-800 dark:text-white">
             {props.isBot
@@ -182,12 +325,13 @@ export const PlaygroundMessage = (props: Props) => {
               : "You"}
           </span>
 
-          {props.isBot && props.isSearchingInternet && isLastMessage ? (
+          {props.isBot && props.isSearchingInternet && props.isLastMessage ? (
             <ActionInfo action={"webSearch"} />
           ) : null}
-          {props.isBot && props.actionInfo && isLastMessage ? (
+          {props.isBot && props.actionInfo && props.isLastMessage ? (
             <ActionInfo action={props.actionInfo} />
           ) : null}
+
           <div>
             {props?.message_type && (
               <Tag color={tagColors[props?.message_type] || "default"}>
@@ -195,70 +339,81 @@ export const PlaygroundMessage = (props: Props) => {
               </Tag>
             )}
           </div>
-          <div className="flex flex-grow flex-col">
+
+          <div className="flex flex-grow flex-col gap-4">
             {!editMode ? (
               props.isBot ? (
-                <>
-                  {parseReasoning(props.message).map((e, i) => {
-                    if (e.type === "reasoning" && !hideReasoningWidget) {
+                props.segments && props.segments.length > 0 ? (
+                  props.segments.map((segment) => {
+                    if (segment.type === "text") {
                       return (
-                        <Collapse
-                          key={i}
-                          className="border-none text-gray-500 dark:text-gray-400 !mb-3 "
-                          defaultActiveKey={
-                            props?.openReasoning ? "reasoning" : undefined
-                          }
-                          items={[
-                            {
-                              key: "reasoning",
-                              label:
-                                props.isStreaming && e?.reasoning_running ? (
-                                  <div className="flex items-center gap-2">
-                                    <span className="italic shimmer-text">
-                                      {t("reasoning.thinking")}
-                                    </span>
-                                  </div>
-                                ) : (
-                                  t("reasoning.thought", {
-                                    time: humanizeMilliseconds(
-                                      props.reasoningTimeTaken
-                                    )
-                                  })
-                                ),
-                              children: <Markdown message={e.content} />
-                            }
-                          ]}
-                        />
+                        <div key={segment.key} className="space-y-3">
+                          {renderAssistantText({
+                            keyPrefix: segment.key,
+                            message: segment.message.message,
+                            isStreaming: props.isStreaming,
+                            openReasoning: props.openReasoning,
+                            hideReasoningWidget,
+                            reasoningTimeTaken:
+                              segment.message.reasoning_time_taken,
+                            t
+                          })}
+                        </div>
                       )
                     }
 
-                    return <Markdown key={i} message={e.content} />
-                  })}
-                </>
+                    return (
+                      <McpInvocationGroup
+                        key={segment.key}
+                        content={segment.content}
+                        invocations={segment.invocations}
+                        isStreaming={props.isStreaming}
+                        openReasoning={props.openReasoning}
+                        hideReasoningWidget={hideReasoningWidget}
+                        t={t}
+                      />
+                    )
+                  })
+                ) : (
+                  renderAssistantText({
+                    keyPrefix: "assistant",
+                    message: props.message,
+                    isStreaming: props.isStreaming,
+                    openReasoning: props.openReasoning,
+                    hideReasoningWidget,
+                    reasoningTimeTaken: props.reasoningTimeTaken,
+                    t
+                  })
+                )
               ) : (
                 <p
-                  className={`prose dark:prose-invert whitespace-pre-line prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark ${
+                  className={`prose whitespace-pre-line text-sm prose-p:leading-relaxed prose-pre:p-0 dark:prose-invert dark:prose-dark ${
                     props.message_type &&
-                    "italic text-gray-500 dark:text-gray-400 text-sm"
-                  }
-                  ${checkWideMode ? "max-w-none" : ""}
-                  `}>
+                    "italic text-sm text-gray-500 dark:text-gray-400"
+                  } ${checkWideMode ? "max-w-none" : ""}`}>
                   {props.message}
                 </p>
               )
             ) : (
               <EditMessageForm
-                value={props.message}
-                onSumbit={props.onEditFormSubmit}
+                value={copyableMessage}
+                onSumbit={(value, isSend) =>
+                  props.onEditFormSubmit(
+                    props.actionIndex,
+                    !props.isBot,
+                    value,
+                    isSend
+                  )
+                }
                 onClose={() => setEditMode(false)}
                 isBot={props.isBot}
               />
             )}
           </div>
-          {/* images if available */}
+
           {props.images &&
             props.images.filter((img) => img.length > 0).length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
+              <div className="mt-2 flex flex-wrap gap-2">
                 {props.images
                   .filter((image) => image.length > 0)
                   .map((image, index) => (
@@ -267,77 +422,49 @@ export const PlaygroundMessage = (props: Props) => {
                       src={image}
                       alt={`Uploaded Image ${index + 1}`}
                       width={180}
-                      className="rounded-md relative"
+                      className="relative rounded-md"
                     />
                   ))}
               </div>
             )}
 
-          {/* uploaded documents if available */}
-          {/* {props.documents && props.documents.length > 0 && (
-            <div className="mt-3">
-              <div className="flex flex-wrap gap-2">
-                {props.documents.map((doc, index) => (
-                  <div
-                    key={index}
-                    className="inline-flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg text-sm border border-blue-200 dark:border-blue-800">
-                    <FileIcon className="h-4 w-4" />
-                    <div className="flex flex-col">
-                      <span className="font-medium">{doc.filename || "Unknown file"}</span>
-                      {doc.fileSize && (
-                        <span className="text-xs opacity-70">
-                          {(doc.fileSize / 1024).toFixed(1)} KB
-                          {doc.processed !== undefined && (
-                            <span className="ml-2">
-                              {doc.processed ? "✓ Processed" : "⚠ Processing..."}
-                            </span>
-                          )}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )} */}
+          {props.isBot &&
+            !isTraceOnly &&
+            props?.sources &&
+            props?.sources.length > 0 && (
+              <Collapse
+                className="mt-2"
+                ghost
+                items={[
+                  {
+                    key: "1",
+                    label: (
+                      <div className="italic text-gray-500 dark:text-gray-400">
+                        {t("citations")}
+                      </div>
+                    ),
+                    children: (
+                      <div className="mb-3 flex flex-wrap gap-2">
+                        {props?.sources?.map((source, index) => (
+                          <MessageSource
+                            onSourceClick={props.onSourceClick}
+                            key={index}
+                            source={source}
+                          />
+                        ))}
+                      </div>
+                    )
+                  }
+                ]}
+              />
+            )}
 
-          {props.isBot && props?.sources && props?.sources.length > 0 && (
-            <Collapse
-              className="mt-6"
-              ghost
-              items={[
-                {
-                  key: "1",
-                  label: (
-                    <div className="italic text-gray-500 dark:text-gray-400">
-                      {t("citations")}
-                    </div>
-                  ),
-                  children: (
-                    <div className="mb-3 flex flex-wrap gap-2">
-                      {props?.sources?.map((source, index) => (
-                        <MessageSource
-                          onSourceClick={props.onSourceClick}
-                          key={index}
-                          source={source}
-                        />
-                      ))}
-                    </div>
-                  )
-                }
-              ]}
-            />
-          )}
-          {!props.isProcessing && !editMode ? (
+          {!props.isProcessing && !editMode && !isTraceOnly ? (
             <div
-              className={`space-x-2 gap-2 flex ${
-                props.currentMessageIndex !== props.totalMessages - 1
-                  ? //  there is few style issue so i am commenting this out for v1.4.5 release
-                    // next release we will fix this
-                    "invisible group-hover:visible"
-                  : // ? "hidden group-hover:flex"
-                    ""
-                // : "flex"
+              className={`flex gap-2 space-x-2 ${
+                !props.isLastMessage
+                  ? "invisible group-hover:visible"
+                  : ""
               }`}>
               {props.isTTSEnabled && (
                 <Tooltip title={t("tts")}>
@@ -348,44 +475,45 @@ export const PlaygroundMessage = (props: Props) => {
                         cancel()
                       } else {
                         speak({
-                          utterance: props.message
+                          utterance: copyableMessage
                         })
                       }
                     }}
-                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-gray-100 transition-colors duration-200 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:border-none dark:bg-[#242424] dark:hover:bg-gray-700">
                     {!isSpeaking ? (
-                      <Volume2Icon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                      <Volume2Icon className="h-3 w-3 text-gray-400 group-hover:text-gray-500" />
                     ) : (
-                      <Square className="w-3 h-3 text-red-400 group-hover:text-red-500" />
+                      <Square className="h-3 w-3 text-red-400 group-hover:text-red-500" />
                     )}
                   </button>
                 </Tooltip>
               )}
+
               {!props.hideCopy && (
                 <Tooltip title={t("copyToClipboard")}>
                   <button
                     aria-label={t("copyToClipboard")}
                     onClick={async () => {
                       await copyToClipboard({
-                        text: props.message,
+                        text: copyableMessage,
                         formatted: copyAsFormattedText
                       })
 
-                      // navigator.clipboard.writeText(props.message)
                       setIsBtnPressed(true)
                       setTimeout(() => {
                         setIsBtnPressed(false)
                       }, 2000)
                     }}
-                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-gray-100 transition-colors duration-200 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:border-none dark:bg-[#242424] dark:hover:bg-gray-700">
                     {!isBtnPressed ? (
-                      <CopyIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                      <CopyIcon className="h-3 w-3 text-gray-400 group-hover:text-gray-500" />
                     ) : (
-                      <CheckIcon className="w-3 h-3 text-green-400 group-hover:text-green-500" />
+                      <CheckIcon className="h-3 w-3 text-green-400 group-hover:text-green-500" />
                     )}
                   </button>
                 </Tooltip>
               )}
+
               {props.isBot && (
                 <>
                   {props.generationInfo && (
@@ -396,19 +524,21 @@ export const PlaygroundMessage = (props: Props) => {
                       title={t("generationInfo")}>
                       <button
                         aria-label={t("generationInfo")}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                        <InfoIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                        className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-gray-100 transition-colors duration-200 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:border-none dark:bg-[#242424] dark:hover:bg-gray-700">
+                        <InfoIcon className="h-3 w-3 text-gray-400 group-hover:text-gray-500" />
                       </button>
                     </Popover>
                   )}
 
-                  {!props.hideEditAndRegenerate && isLastMessage && (
+                  {!props.hideEditAndRegenerate &&
+                    props.isLastMessage &&
+                    props.onRengerate && (
                     <Tooltip title={t("regenerate")}>
                       <button
                         aria-label={t("regenerate")}
                         onClick={props.onRengerate}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                        <RotateCcw className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                        className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-gray-100 transition-colors duration-200 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:border-none dark:bg-[#242424] dark:hover:bg-gray-700">
+                        <RotateCcw className="h-3 w-3 text-gray-400 group-hover:text-gray-500" />
                       </button>
                     </Tooltip>
                   )}
@@ -417,45 +547,124 @@ export const PlaygroundMessage = (props: Props) => {
                     <Tooltip title={t("newBranch")}>
                       <button
                         aria-label={t("newBranch")}
-                        onClick={props?.onNewBranch}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                        <GitBranchIcon className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                        onClick={() => props?.onNewBranch?.(props.actionIndex)}
+                        className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-gray-100 transition-colors duration-200 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:border-none dark:bg-[#242424] dark:hover:bg-gray-700">
+                        <GitBranchIcon className="h-3 w-3 text-gray-400 group-hover:text-gray-500" />
                       </button>
                     </Tooltip>
                   )}
 
-                  {!props.hideContinue && isLastMessage && (
+                  {!props.hideContinue && props.isLastMessage && (
                     <Tooltip title={t("continue")}>
                       <button
                         aria-label={t("continue")}
                         onClick={props?.onContinue}
-                        className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                        <PlayCircle className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                        className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-gray-100 transition-colors duration-200 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:border-none dark:bg-[#242424] dark:hover:bg-gray-700">
+                        <PlayCircle className="h-3 w-3 text-gray-400 group-hover:text-gray-500" />
                       </button>
                     </Tooltip>
                   )}
                 </>
               )}
+
               {!props.hideEditAndRegenerate && (
                 <Tooltip title={t("edit")}>
                   <button
                     onClick={() => setEditMode(true)}
                     aria-label={t("edit")}
-                    className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                    <Pen className="w-3 h-3 text-gray-400 group-hover:text-gray-500" />
+                    className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-gray-100 transition-colors duration-200 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:border-none dark:bg-[#242424] dark:hover:bg-gray-700">
+                    <Pen className="h-3 w-3 text-gray-400 group-hover:text-gray-500" />
                   </button>
                 </Tooltip>
               )}
             </div>
           ) : (
-            // add invisible div to prevent layout shift
-            <div className="invisible">
-              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 dark:bg-[#242424] border border-gray-300 dark:border-none hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"></div>
-            </div>
+            !isTraceOnly && (
+              <div className="invisible">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-gray-100 transition-colors duration-200 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:border-none dark:bg-[#242424] dark:hover:bg-gray-700"></div>
+              </div>
+            )
           )}
         </div>
       </div>
-      {/* </div> */}
     </div>
   )
 }
+
+const areSegmentsEqual = (
+  a?: PlaygroundMessageSegment[],
+  b?: PlaygroundMessageSegment[]
+) => {
+  if (a === b) return true
+  if (!a || !b || a.length !== b.length) return false
+  for (let i = 0; i < a.length; i++) {
+    const sa = a[i]
+    const sb = b[i]
+    if (sa.type !== sb.type || sa.key !== sb.key) return false
+    if (sa.type === "text" && sb.type === "text") {
+      if (sa.message.message !== sb.message.message) return false
+    } else if (sa.type === "tool_invocations" && sb.type === "tool_invocations") {
+      if (
+        sa.content !== sb.content ||
+        sa.invocations.length !== sb.invocations.length
+      )
+        return false
+      for (let j = 0; j < sa.invocations.length; j++) {
+        const ia = sa.invocations[j]
+        const ib = sb.invocations[j]
+        if (
+          ia.id !== ib.id ||
+          ia.result?.content !== ib.result?.content ||
+          ia.result?.toolError !== ib.result?.toolError
+        )
+          return false
+      }
+    }
+  }
+  return true
+}
+
+const arePlaygroundMessagePropsEqual = (previous: Props, next: Props) =>
+  previous.message === next.message &&
+  previous.message_type === next.message_type &&
+  previous.hideCopy === next.hideCopy &&
+  previous.botAvatar === next.botAvatar &&
+  previous.userAvatar === next.userAvatar &&
+  previous.isBot === next.isBot &&
+  previous.name === next.name &&
+  previous.images === next.images &&
+  previous.isLastMessage === next.isLastMessage &&
+  previous.actionIndex === next.actionIndex &&
+  previous.onRengerate === next.onRengerate &&
+  previous.onEditFormSubmit === next.onEditFormSubmit &&
+  previous.isProcessing === next.isProcessing &&
+  previous.webSearch === next.webSearch &&
+  previous.isSearchingInternet === next.isSearchingInternet &&
+  previous.sources === next.sources &&
+  previous.hideEditAndRegenerate === next.hideEditAndRegenerate &&
+  previous.hideContinue === next.hideContinue &&
+  previous.onSourceClick === next.onSourceClick &&
+  previous.isTTSEnabled === next.isTTSEnabled &&
+  previous.generationInfo === next.generationInfo &&
+  previous.isStreaming === next.isStreaming &&
+  previous.reasoningTimeTaken === next.reasoningTimeTaken &&
+  previous.openReasoning === next.openReasoning &&
+  previous.modelImage === next.modelImage &&
+  previous.modelName === next.modelName &&
+  previous.onContinue === next.onContinue &&
+  previous.documents === next.documents &&
+  previous.actionInfo === next.actionInfo &&
+  previous.onNewBranch === next.onNewBranch &&
+  previous.temporaryChat === next.temporaryChat &&
+  previous.messageKind === next.messageKind &&
+  previous.toolCalls === next.toolCalls &&
+  previous.toolCallId === next.toolCallId &&
+  previous.toolName === next.toolName &&
+  previous.toolServerName === next.toolServerName &&
+  previous.toolError === next.toolError &&
+  areSegmentsEqual(previous.segments, next.segments)
+
+export const PlaygroundMessage = React.memo(
+  PlaygroundMessageComponent,
+  arePlaygroundMessagePropsEqual
+)
