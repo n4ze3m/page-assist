@@ -563,7 +563,11 @@ export const runMcpNormalChatMode = async (
 
 
         try {
+          const lowerCallName = toolCall.name.toLowerCase()
           const tool = tools.find((currentTool) => currentTool.name === toolCall.name)
+            ?? tools.find((currentTool) => currentTool.name.toLowerCase() === lowerCallName)
+            ?? tools.find((currentTool) => parseMcpToolName(currentTool.name).displayName === toolCall.name)
+            ?? tools.find((currentTool) => parseMcpToolName(currentTool.name).displayName.toLowerCase() === lowerCallName)
           if (!tool) {
             throw new Error(`Tool "${toolCall.name}" is no longer available.`)
           }
