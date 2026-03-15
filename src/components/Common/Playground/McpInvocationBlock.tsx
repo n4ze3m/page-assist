@@ -90,7 +90,7 @@ const ToolOutput = ({
 export const McpInvocationBlock = ({ invocation }: Props) => {
   const { t } = useTranslation("common")
   const [isOpen, setIsOpen] = React.useState(
-    Boolean(invocation.result?.toolError)
+    false
   )
 
   const hasResult = Boolean(invocation.result)
