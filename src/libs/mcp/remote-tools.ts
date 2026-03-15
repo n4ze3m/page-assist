@@ -4,6 +4,7 @@ import { CfWorkerJsonSchemaValidator } from "@modelcontextprotocol/sdk/validatio
 import { getMcpErrorMessage } from "./errors"
 import { McpAvailableTool, McpServer, McpServerInput } from "./types"
 import { buildMcpHeaders } from "./utils"
+import { Implementation } from "@modelcontextprotocol/sdk/types.js"
 
 export type McpConnectableServer = Pick<
   McpServerInput,
@@ -27,9 +28,19 @@ export type McpToolValidationResult = {
   toolsSyncError?: string
 }
 
-const MCP_CLIENT_INFO = {
+const MCP_CLIENT_INFO: Implementation = {
   name: "page-assist",
-  version: "1"
+  version: "1",
+  description: "Use your locally running AI models to assist you in your web browsing",
+  title: "Page Assist",
+  websiteUrl: "https://pageassist.xyz",
+  icons: [
+    {
+      src: "https://pageassist.xyz/favicon.ico",
+      mimeType: "image/x-icon",
+      theme: "dark"
+    }
+  ]
 }
 
 export const openMcpServerConnection = async (
