@@ -245,12 +245,12 @@ export const ragMode = async (
         contentToSave = reasoningContent
         fullText = reasoningContent
         apiReasoning = true
-      } else {
-        if (apiReasoning) {
-          fullText += "</think>"
-          contentToSave += "</think>"
-          apiReasoning = false
-        }
+      }
+
+      if (apiReasoning && chunk?.content) {
+        fullText += "</think>"
+        contentToSave += "</think>"
+        apiReasoning = false
       }
 
       contentToSave += chunk?.content

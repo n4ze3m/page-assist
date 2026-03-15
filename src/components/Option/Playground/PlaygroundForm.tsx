@@ -41,6 +41,7 @@ import { isThinkingCapableModel, isGptOssModel } from "~/libs/model-utils"
 import { useStoreChatModelSettings } from "~/store/model"
 import { useMessageQueue } from "@/hooks/useMessageQueue"
 import { QueuedMessagesList } from "@/components/Common/QueuedMessagesList"
+import { McpServerToggle } from "@/components/Common/McpServerToggle"
 type Props = {
   dropedFile: File | undefined
 }
@@ -114,6 +115,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     ""
   )
   const [enableMessageQueue] = useStorage("enableMessageQueue", false)
+  const [showMcpServersInChat] = useStorage("showMcpServersInChat", true)
   const [optimizeQueueForSmallScreen] = useStorage(
     "optimizeQueueForSmallScreen",
     false
@@ -991,6 +993,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                           )}
                         </div>
                         <KnowledgeSelect />
+                        {showMcpServersInChat && <McpServerToggle />}
                         <Tooltip title={t("tooltip.uploadDocuments")}>
                           <button
                             type="button"

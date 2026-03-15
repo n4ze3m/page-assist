@@ -34,6 +34,7 @@ import { useStoreChatModelSettings } from "~/store/model"
 import { getVariable } from "@/utils/select-variable"
 import { useMessageQueue } from "@/hooks/useMessageQueue"
 import { QueuedMessagesList } from "@/components/Common/QueuedMessagesList"
+import { McpServerToggle } from "@/components/Common/McpServerToggle"
 
 type Props = {
   dropedFile: File | undefined
@@ -55,6 +56,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     ""
   )
   const [enableMessageQueue] = useStorage("enableMessageQueue", false)
+  const [showMcpServersInChat] = useStorage("showMcpServersInChat", true)
   const [optimizeQueueForSmallScreen] = useStorage(
     "optimizeQueueForSmallScreen",
     false
@@ -832,6 +834,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                           </button>
                         </Tooltip>
                       )}
+                      {showMcpServersInChat && <McpServerToggle />}
                       <ModelSelect iconClassName="size-4" />
                         {streaming && !enableMessageQueue ? (
                           <Tooltip title={t("tooltip.stopStreaming")}>

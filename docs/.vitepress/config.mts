@@ -74,6 +74,10 @@ export default defineConfig({
             link: "/features/page-share"
           },
           {
+            text: "MCP",
+            link: "/features/mcp"
+          },
+          {
             text: "Ollama",
             link: "/features/ollama"
           },

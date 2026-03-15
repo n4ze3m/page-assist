@@ -1,11 +1,13 @@
 import { importChatHistory, importPrompts } from "@/db"
 import {
   exportChatHistory,
+  exportMcpServers,
   exportModels,
   exportNicknames,
   exportOAIConfigs,
   exportPrompts,
   importChatHistoryV2,
+  importMcpServersV2,
   importModelsV2,
   importNicknamesV2,
   importOAIConfigsV2,
@@ -53,6 +55,7 @@ export const exportPageAssistData = async () => {
   const oaiConfigs = await exportOAIConfigs()
   const nicknames = await exportNicknames()
   const models = await exportModels()
+  const mcpServers = await exportMcpServers()
 
   const storageLocal = await chrome.storage.local.get()
   const storageSyncEnabled = await getStorageSyncEnabled()
@@ -68,6 +71,7 @@ export const exportPageAssistData = async () => {
     oaiConfigs,
     nicknames,
     models,
+    mcpServers,
     storageLocal,
     storageSync
   }
@@ -101,7 +105,8 @@ export const importPageAssistData = async (file: File) => {
             db.sessionFiles,
             db.openaiConfigs,
             db.modelNickname,
-            db.customModels
+            db.customModels,
+            db.mcpServers
           ],
           async () => {
             if (data?.knowledge && Array.isArray(data.knowledge)) {
@@ -129,6 +134,10 @@ export const importPageAssistData = async (file: File) => {
 
             if (data?.models && Array.isArray(data.models)) {
               await importModelsV2(data.models, options)
+            }
+
+            if (data?.mcpServers && Array.isArray(data.mcpServers)) {
+              await importMcpServersV2(data.mcpServers, options)
             }
           }
         )

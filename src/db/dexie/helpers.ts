@@ -3,6 +3,7 @@ import {
   type Message as MessageType
 } from "~/store/option"
 import { ChatDocuments } from "@/models/ChatTypes"
+import { isConversationMessage } from "@/libs/mcp/utils"
 import {
   type HistoryInfo,
   type MessageHistory,
@@ -31,6 +32,7 @@ import {
 import { OpenAIModelDb } from "./openai"
 import { ModelNickname } from "./nickname"
 import { ModelDb } from "./models"
+import { exportMcpServers, importMcpServersV2 } from "./mcp"
 
 // Helper function to generate IDs (keeping the same format)
 export const generateID = () => {
@@ -89,7 +91,13 @@ export const saveMessage = async ({
   modelName,
   reasoning_time_taken,
   time,
-  documents
+  documents,
+  messageKind,
+  toolCalls,
+  toolCallId,
+  toolName,
+  toolServerName,
+  toolError
 }: {
   history_id: string
   name: string
@@ -104,6 +112,12 @@ export const saveMessage = async ({
   modelName?: string
   modelImage?: string
   documents?: ChatDocuments
+  messageKind?: Message["messageKind"]
+  toolCalls?: Message["toolCalls"]
+  toolCallId?: string
+  toolName?: string
+  toolServerName?: string
+  toolError?: boolean
 }) => {
   const id = generateID()
   let createdAt = Date.now()
@@ -124,7 +138,13 @@ export const saveMessage = async ({
     reasoning_time_taken,
     modelName,
     modelImage,
-    documents
+    documents,
+    messageKind,
+    toolCalls,
+    toolCallId,
+    toolName,
+    toolServerName,
+    toolError
   }
   const db = new PageAssistDatabase()
   await db.addMessage(message)
@@ -138,21 +158,40 @@ export const formatToChatHistory = (
   return messages.map((message) => {
     return {
       content: message.content,
-      role: message.role as "user" | "assistant" | "system",
+      role: message.role as "user" | "assistant" | "system" | "tool",
       image:
         message.images && message.images.length > 0
           ? message.images[0]
           : undefined,
-      images: message.images
+      images: message.images,
+      messageType: message.messageType,
+      messageKind: message.messageKind,
+      toolCalls: message.toolCalls,
+      toolCallId: message.toolCallId,
+      toolName: message.toolName,
+      toolServerName: message.toolServerName,
+      toolError: message.toolError
     }
   })
 }
+
+export const formatToConversationHistory = (
+  messages: MessageHistory
+): ChatHistoryType =>
+  formatToChatHistory(
+    messages.filter((message) =>
+      isConversationMessage({
+        role: message.role,
+        messageKind: message.messageKind
+      })
+    )
+  )
 
 export const formatToMessage = (messages: MessageHistory): MessageType[] => {
   messages.sort((a, b) => a.createdAt - b.createdAt)
   return messages.map((message) => {
     return {
-      isBot: message.role === "assistant",
+      isBot: message.role !== "user",
       message: message.content,
       name: message.name,
       sources: message?.sources || [],
@@ -162,7 +201,14 @@ export const formatToMessage = (messages: MessageHistory): MessageType[] => {
       modelName: message?.modelName,
       modelImage: message?.modelImage,
       id: message.id,
-      documents: message?.documents
+      documents: message?.documents,
+      messageType: message?.messageType,
+      messageKind: message?.messageKind,
+      toolCalls: message?.toolCalls,
+      toolCallId: message?.toolCallId,
+      toolName: message?.toolName,
+      toolServerName: message?.toolServerName,
+      toolError: message?.toolError
     }
   })
 }
@@ -186,10 +232,19 @@ export const removeMessageUsingHistoryId = async (history_id: string) => {
   const db = new PageAssistDatabase()
   const chatHistory = await db.getChatHistory(history_id)
   if (chatHistory.length > 0) {
-    const firstMessage = chatHistory.sort(
-      (a, b) => b.createdAt - a.createdAt
-    )[0]
-    await db.removeMessage(history_id, firstMessage.id)
+    const sortedHistory = chatHistory.sort((a, b) => a.createdAt - b.createdAt)
+    const lastUserIndex = sortedHistory.findLastIndex(
+      (message) => message.role === "user"
+    )
+
+    if (lastUserIndex === -1) {
+      return
+    }
+
+    const messagesToDelete = sortedHistory.slice(lastUserIndex + 1)
+    for (const message of messagesToDelete) {
+      await db.removeMessage(history_id, message.id)
+    }
   }
 }
 
@@ -483,10 +538,13 @@ export const getLastChatHistory = async (history_id: string) => {
   const db = new PageAssistDatabase()
   const messages = await db.getChatHistory(history_id)
   messages.sort((a, b) => a.createdAt - b.createdAt)
-  const lastMessage = messages[messages.length - 1]
-  return lastMessage?.role === "assistant"
-    ? lastMessage
-    : messages.findLast((m) => m.role === "assistant")
+  const lastAssistantMessage = messages.findLast(
+    (message) =>
+      message.role === "assistant" &&
+      (!message.messageKind || message.messageKind === "text")
+  )
+
+  return lastAssistantMessage
 }
 
 export const deleteHistoriesByDateRange = async (
@@ -630,6 +688,8 @@ export const importOAIConfigsV2 = async (
   const db = new OpenAIModelDb()
   return db.importDataV2(data, options)
 }
+
+export { exportMcpServers, importMcpServersV2 }
 
 export const getProjectFolders = async (): Promise<ProjectFolders> => {
   const db = new PageAssistDatabase()

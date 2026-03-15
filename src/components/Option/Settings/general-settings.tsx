@@ -131,6 +131,11 @@ export const GeneralSettings = () => {
     "enableMessageQueue",
     false
   )
+
+  const [showMcpServersInChat, setShowMcpServersInChat] = useStorage(
+    "showMcpServersInChat",
+    true
+  )
   const [optimizeQueueForSmallScreen, setOptimizeQueueForSmallScreen] =
     useStorage("optimizeQueueForSmallScreen", false)
 
@@ -656,6 +661,22 @@ export const GeneralSettings = () => {
         <Switch
           checked={optimizeQueueForSmallScreen}
           onChange={(checked) => setOptimizeQueueForSmallScreen(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t(
+              "generalSettings.settings.showMcpServersInChat.label",
+              "Show MCP Servers Toggle in Chat"
+            )}
+          </span>
+        </div>
+
+        <Switch
+          checked={showMcpServersInChat}
+          onChange={(checked) => setShowMcpServersInChat(checked)}
         />
       </div>
 

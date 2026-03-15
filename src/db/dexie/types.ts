@@ -1,4 +1,5 @@
 import { ChatDocuments } from "@/models/ChatTypes"
+import { ChatMessageKind, McpHeader, McpServer, McpToolCall } from "@/libs/mcp/types"
 
 export type LastUsedModelType = { prompt_id?: string; prompt_content?: string }
 
@@ -56,6 +57,12 @@ export type Message = {
   createdAt: number
   reasoning_time_taken?: number
   messageType?: string
+  messageKind?: ChatMessageKind
+  toolCalls?: McpToolCall[]
+  toolCallId?: string
+  toolName?: string
+  toolServerName?: string
+  toolError?: boolean
   generationInfo?: any
   modelName?: string
   modelImage?: string
@@ -151,6 +158,8 @@ export type OpenAIModelConfig = {
   headers?: { key: string; value: string }[]
 }
 
+export type McpServerConfig = McpServer
+
 export type Model = {
   id: string
   model_id: string
@@ -199,6 +208,7 @@ export type MessageHistory = Message[]
 export type ChatHistory = HistoryInfo[]
 export type Prompts = Prompt[]
 export type OpenAIModelConfigs = OpenAIModelConfig[]
+export type McpServerConfigs = McpServerConfig[]
 export type Models = Model[]
 export type ModelNicknames = ModelNickname[]
 export type ModelStates = ModelState[]

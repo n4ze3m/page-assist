@@ -15,10 +15,12 @@ import { ChatGenerationChunk, ChatResult } from "@langchain/core/outputs"
 import { getEnvironmentVariable } from "@langchain/core/utils/env"
 import {
     BaseChatModel,
-    BaseChatModelParams
+    BaseChatModelParams,
+    type BindToolsInput
 } from "@langchain/core/language_models/chat_models"
 import { convertToOpenAITool } from "@langchain/core/utils/function_calling"
 import {
+    Runnable,
     RunnablePassthrough,
     RunnableSequence
 } from "@langchain/core/runnables"
@@ -35,9 +37,11 @@ import {
     OpenAICoreRequestOptions
 } from "@langchain/openai"
 import { CallbackManagerForLLMRun } from "@langchain/core/callbacks/manager"
-import { TokenUsage } from "@langchain/core/language_models/base"
+import {
+    BaseLanguageModelInput,
+    TokenUsage
+} from "@langchain/core/language_models/base"
 import { LegacyOpenAIInput } from "./types.js"
-import { CustomAIMessageChunk } from "./CustomAIMessageChunk.js"
 
 type OpenAIRoleEnum = "system" | "assistant" | "user" | "function" | "tool"
 type ReasoningEffort = 'low' | 'medium' | 'high' | null
@@ -87,16 +91,21 @@ function openAIResponseToChatMessage(
     switch (message.role) {
         case "assistant": {
             if (message.tool_calls?.length) {
-                const msg = new AIMessage({ content: message.content || "" })
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                ;(msg as any).tool_calls = message.tool_calls.map((tc) => ({
-                    id: tc.id,
-                    name: tc.function.name,
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    args: (() => { try { return JSON.parse(tc.function.arguments) } catch { return {} } })(),
-                    type: "tool_call" as const,
-                }))
-                return msg
+                return new AIMessage({
+                    content: message.content || "",
+                    tool_calls: message.tool_calls.map((tc) => ({
+                        id: tc.id,
+                        name: tc.function.name,
+                        args: (() => {
+                            try {
+                                return JSON.parse(tc.function.arguments)
+                            } catch {
+                                return {}
+                            }
+                        })(),
+                        type: "tool_call" as const
+                    }))
+                })
             }
             return new AIMessage({ content: message.content || "" })
         }
@@ -121,29 +130,37 @@ function _convertDeltaToMessageChunk(
     } else {
         additional_kwargs = {}
     }
+
+    if (reasoning_content != null) {
+        additional_kwargs.reasoning_content = reasoning_content
+    }
+
+    if (delta?.reasoning_details != null) {
+        additional_kwargs.reasoning_details = delta.reasoning_details
+    }
+
     // Streaming tool call deltas — use proper tool_call_chunks instead of additional_kwargs
     if (delta?.tool_calls) {
-        const chunk = new AIMessageChunk({ content, additional_kwargs })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(chunk as any).tool_call_chunks = (delta.tool_calls as any[]).map((tc) => ({
-            id: tc.id,
-            name: tc.function?.name,
-            args: tc.function?.arguments ?? "",
-            index: tc.index ?? 0,
-            type: "tool_call_chunk" as const,
-        }))
-        return chunk
+        return new AIMessageChunk({
+            content,
+            additional_kwargs,
+            // Let LangChain collapse streamed tool deltas into final tool_calls.
+            tool_call_chunks: delta.tool_calls.map((tc: any) => ({
+                id: tc.id,
+                name: tc.function?.name,
+                args: tc.function?.arguments ?? "",
+                index: tc.index,
+                type: "tool_call_chunk" as const
+            }))
+        })
     }
     if (role === "user") {
         return new HumanMessageChunk({ content })
     } else if (role === "assistant") {
-        return new CustomAIMessageChunk({
+        return new AIMessageChunk({
             content,
-            additional_kwargs: {
-                ...additional_kwargs,
-                reasoning_content
-            }
-        }) as any
+            additional_kwargs
+        })
     } else if (role === "system") {
         return new SystemMessageChunk({ content })
     } else if (role === "function") {
@@ -871,6 +888,15 @@ export class CustomChatOpenAI<
     }
     _llmType() {
         return "openai"
+    }
+    override bindTools(
+        tools: BindToolsInput[],
+        kwargs?: Partial<this["ParsedCallOptions"]>
+    ): Runnable<BaseLanguageModelInput, AIMessageChunk, CallOptions> {
+        return this.withConfig({
+            tools: tools.map((tool) => convertToOpenAITool(tool)),
+            ...kwargs
+        } as Partial<CallOptions>)
     }
     /** @ignore */
     _combineLLMOutput(...llmOutputs) {

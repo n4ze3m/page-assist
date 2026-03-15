@@ -194,7 +194,10 @@ export const useMessageOption = () => {
     setHistoryId as (id: string) => void
   )
 
-  const validateBeforeSubmitFn = () => validateBeforeSubmit(selectedModel, t)
+  const validateBeforeSubmitFn = React.useCallback(
+    () => validateBeforeSubmit(selectedModel, t),
+    [selectedModel, t]
+  )
 
   const onSubmit = async ({
     message,
@@ -246,7 +249,9 @@ export const useMessageOption = () => {
       setHistoryId,
       fileRetrievalEnabled,
       setActionInfo,
-      webSearch
+      webSearch,
+      temporaryChat,
+      messageSource: "web-ui" as const
     }
 
     try {
@@ -352,41 +357,107 @@ export const useMessageOption = () => {
     }
   }
 
-  const regenerateLastMessage = createRegenerateLastMessage({
-    validateBeforeSubmitFn,
-    history,
-    messages,
-    setHistory,
-    setMessages,
-    historyId,
-    removeMessageUsingHistoryIdFn: removeMessageUsingHistoryId,
-    onSubmit
-  })
+  const messagesRef = React.useRef(messages)
+  const historyRef = React.useRef(history)
+  const historyIdRef = React.useRef(historyId)
+  const onSubmitRef = React.useRef(onSubmit)
+
+  React.useEffect(() => {
+    messagesRef.current = messages
+  }, [messages])
+
+  React.useEffect(() => {
+    historyRef.current = history
+  }, [history])
+
+  React.useEffect(() => {
+    historyIdRef.current = historyId
+  }, [historyId])
+
+  React.useEffect(() => {
+    onSubmitRef.current = onSubmit
+  }, [onSubmit])
+
+  const getMessages = React.useCallback(() => messagesRef.current, [])
+  const getHistory = React.useCallback(() => historyRef.current, [])
+  const getHistoryId = React.useCallback(() => historyIdRef.current, [])
+  const submitWithCurrentState = React.useCallback(
+    (params: any) => onSubmitRef.current(params),
+    []
+  )
+
+  const regenerateLastMessage = React.useMemo(
+    () =>
+      createRegenerateLastMessage({
+        validateBeforeSubmitFn,
+        history: getHistory,
+        messages: getMessages,
+        setHistory,
+        setMessages,
+        historyId: getHistoryId,
+        removeMessageUsingHistoryIdFn: removeMessageUsingHistoryId,
+        onSubmit: submitWithCurrentState
+      }),
+    [
+      validateBeforeSubmitFn,
+      getHistory,
+      getMessages,
+      setHistory,
+      setMessages,
+      getHistoryId,
+      submitWithCurrentState
+    ]
+  )
 
   const stopStreamingRequest = createStopStreamingRequest(
     abortController,
     setAbortController
   )
 
-  const editMessage = createEditMessage({
-    messages,
-    history,
-    setMessages,
-    setHistory,
-    historyId,
-    validateBeforeSubmitFn,
-    onSubmit
-  })
+  const editMessage = React.useMemo(
+    () =>
+      createEditMessage({
+        messages: getMessages,
+        history: getHistory,
+        setMessages,
+        setHistory,
+        historyId: getHistoryId,
+        validateBeforeSubmitFn,
+        onSubmit: submitWithCurrentState
+      }),
+    [
+      getMessages,
+      getHistory,
+      setMessages,
+      setHistory,
+      getHistoryId,
+      validateBeforeSubmitFn,
+      submitWithCurrentState
+    ]
+  )
 
-  const createChatBranch = createBranchMessage({
-    historyId,
-    setHistory,
-    setHistoryId,
-    setMessages,
-    setContext: setContextFiles,
-    setSelectedSystemPrompt,
-    setSystemPrompt: currentChatModelSettings.setSystemPrompt
-  })
+  const createChatBranch = React.useMemo(
+    () =>
+      createBranchMessage({
+        historyId: null,
+        getHistoryId,
+        setHistory,
+        setHistoryId,
+        setMessages,
+        setContext: setContextFiles,
+        setSelectedSystemPrompt,
+        setSystemPrompt: currentChatModelSettings.setSystemPrompt
+      }),
+    [
+      getHistoryId,
+      setHistory,
+      setHistoryId,
+      setMessages,
+      setContextFiles,
+      setSelectedSystemPrompt,
+      currentChatModelSettings.setSystemPrompt
+    ]
+  )
 
   const saveTemporaryChat = async () => {
     if (!temporaryChat || messages.length === 0) {
@@ -408,20 +479,33 @@ export const useMessageOption = () => {
         messageSource
       )
 
+      let timeOffset = 0
+
       // Save all messages to the new history
       for (const msg of messages) {
         await saveMessage({
           history_id: newHistory.id,
           name: selectedModel,
-          role: msg.isBot ? "assistant" : "user",
+          role:
+            msg.messageKind === "tool_result"
+              ? "tool"
+              : msg.isBot
+                ? "assistant"
+                : "user",
           content: msg.message,
           images: msg.images || [],
           source: msg.sources || [],
-          time: msg.isBot ? 2 : 1,
+          time: ++timeOffset,
           message_type: "normal",
           generationInfo: msg.generationInfo,
           reasoning_time_taken: msg.reasoning_time_taken || 0,
-          documents: msg.documents
+          documents: msg.documents,
+          messageKind: msg.messageKind,
+          toolCalls: msg.toolCalls,
+          toolCallId: msg.toolCallId,
+          toolName: msg.toolName,
+          toolServerName: msg.toolServerName,
+          toolError: msg.toolError
         })
       }
 

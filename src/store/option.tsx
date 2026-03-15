@@ -3,6 +3,7 @@ import { ChatDocuments } from "@/models/ChatTypes"
 import { create } from "zustand"
 import { type UploadedFile } from "@/db/dexie/types"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
+import { ChatActionInfo, ChatMessageKind, McpToolCall } from "@/libs/mcp/types"
 
 type WebSearch = {
   search_engine: string
@@ -26,14 +27,27 @@ export type Message = {
   modelName?: string
   modelImage?: string
   documents?: ChatDocuments
+  generationInfo?: any
+  messageKind?: ChatMessageKind
+  toolCalls?: McpToolCall[]
+  toolCallId?: string
+  toolName?: string
+  toolServerName?: string
+  toolError?: boolean
 }
 
 export type ChatHistory = {
-  role: "user" | "assistant" | "system"
+  role: "user" | "assistant" | "system" | "tool"
   content: string
   image?: string
   images?: string[]
   messageType?: string
+  messageKind?: ChatMessageKind
+  toolCalls?: McpToolCall[]
+  toolCallId?: string
+  toolName?: string
+  toolServerName?: string
+  toolError?: boolean
 }[]
 
 type State = {
@@ -89,8 +103,8 @@ type State = {
   contextFiles: UploadedFile[]
   setContextFiles: (contextFiles: UploadedFile[]) => void
 
-  actionInfo: string | null
-  setActionInfo: (actionInfo: string) => void
+  actionInfo: ChatActionInfo | null
+  setActionInfo: (actionInfo: ChatActionInfo | null) => void
 
   fileRetrievalEnabled: boolean
   setFileRetrievalEnabled: (fileRetrievalEnabled: boolean) => void
