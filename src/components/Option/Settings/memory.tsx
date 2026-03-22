@@ -1,8 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Empty, List, Modal, Input, Form, Popconfirm, Skeleton } from "antd"
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons"
+import { Empty, Table, Modal, Input, Form, Popconfirm, Switch, Tooltip } from "antd"
+import { PlusOutlined } from "@ant-design/icons"
+import { Pencil, Trash2 } from "lucide-react"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { useStorage } from "@plasmohq/storage/hook"
 import {
   getAllMemories,
   addMemory,
@@ -14,6 +16,7 @@ import { Memory } from "@/db/dexie/types"
 
 export const MemorySettings = () => {
   const { t } = useTranslation("settings")
+  const [enableMemory, setEnableMemory] = useStorage("enableMemory", false)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null)
@@ -122,62 +125,87 @@ export const MemorySettings = () => {
         )}
       </p>
 
+      <div className="flex flex-row justify-between items-center mb-4">
+        <span className="text-gray-700 dark:text-neutral-50">
+          {t(
+            "generalSettings.settings.enableMemory.label",
+            "Enable Memory (Experimental)"
+          )}
+        </span>
+        <Switch
+          checked={enableMemory}
+          onChange={(checked) => setEnableMemory(checked)}
+        />
+      </div>
+
       <div className="border border-b border-gray-200 dark:border-gray-600 mb-6"></div>
 
-      {isLoading && <Skeleton active paragraph={{ rows: 3 }} />}
-
-      {!isLoading && (!memories || memories.length === 0) && (
-        <Empty
-          description={t(
-            "memory.empty",
-            "No memories yet. Add your first memory to get started."
-          )}
-        />
-      )}
-
-      {!isLoading && memories && memories.length > 0 && (
-        <List
-          dataSource={memories}
-          renderItem={(memory) => (
-            <List.Item
-              key={memory.id}
-              actions={[
-                <button
-                  key="edit"
-                  onClick={() => handleOpenEditModal(memory)}
-                  className="inline-flex items-center p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-                  <EditOutlined />
-                </button>,
+      <Table
+        rowKey="id"
+        loading={isLoading}
+        dataSource={memories || []}
+        bordered
+        locale={{
+          emptyText: (
+            <Empty
+              description={t(
+                "memory.empty",
+                "No memories yet. Add your first memory to get started."
+              )}
+            />
+          )
+        }}
+        columns={[
+          {
+            title: t("memory.table.content", "Content"),
+            dataIndex: "content",
+            key: "content",
+            render: (value: string) => (
+              <div className="text-sm text-gray-900 dark:text-white">
+                {value}
+              </div>
+            )
+          },
+          {
+            title: t("memory.table.created", "Created"),
+            dataIndex: "createdAt",
+            key: "createdAt",
+            width: 180,
+            render: (value: number) => (
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {new Date(value).toLocaleString()}
+              </span>
+            )
+          },
+          {
+            title: t("memory.table.actions", "Actions"),
+            key: "actions",
+            width: 100,
+            render: (_: unknown, record: Memory) => (
+              <div className="flex items-center gap-3">
+                <Tooltip title={t("common:edit", "Edit")}>
+                  <button
+                    className="p-1 text-gray-700 dark:text-gray-400"
+                    onClick={() => handleOpenEditModal(record)}>
+                    <Pencil className="size-4" />
+                  </button>
+                </Tooltip>
                 <Popconfirm
-                  key="delete"
                   title={t("memory.delete.confirm", "Delete this memory?")}
-                  onConfirm={() => deleteMemoryMutation(memory.id)}
+                  onConfirm={() => deleteMemoryMutation(record.id)}
                   okText={t("memory.delete.ok", "Yes")}
                   cancelText={t("memory.delete.cancel", "No")}>
-                  <button className="inline-flex items-center p-2 text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400">
-                    <DeleteOutlined />
-                  </button>
+                  <Tooltip title={t("common:delete", "Delete")}>
+                    <button className="p-1 text-red-500 dark:text-red-400">
+                      <Trash2 className="size-4" />
+                    </button>
+                  </Tooltip>
                 </Popconfirm>
-              ]}>
-              <List.Item.Meta
-                title={
-                  <div className="text-sm text-gray-900 dark:text-white">
-                    {memory.content}
-                  </div>
-                }
-                description={
-                  <div className="text-xs text-gray-500 dark:text-gray-400">
-                    {t("memory.created", "Created")}{": "}
-                    {new Date(memory.createdAt).toLocaleString()}
-                    {memory.updatedAt !== memory.createdAt &&
-                      ` • ${t("memory.updated", "Updated")}: ${new Date(memory.updatedAt).toLocaleString()}`}
-                  </div>
-                }
-              />
-            </List.Item>
-          )}
-        />
-      )}
+              </div>
+            )
+          }
+        ]}
+      />
 
       <Modal
         title={t("memory.add.title", "Add New Memory")}

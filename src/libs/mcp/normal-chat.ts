@@ -12,6 +12,7 @@ import { type ChatHistory, type Message } from "@/store/option"
 import { generateHistory } from "@/utils/generate-history"
 import { humanMessageFormatter } from "@/utils/human-message"
 import { systemPromptFormatter } from "@/utils/system-message"
+import { getMemoriesAsContext } from "@/db/dexie/memory"
 import { AIMessage, ToolMessage } from "@langchain/core/messages"
 import { concat } from "@langchain/core/utils/stream"
 import { getConfiguredMcpServers, createMcpClient } from "./client"
@@ -37,6 +38,7 @@ import {
   isReasoningStarted,
   mergeReasoningContent
 } from "@/libs/reasoning"
+import { createMemoryTool, isMemoryEnabled } from "./tools/memory-tool"
 
 type SetMessages = (messages: Message[] | ((prev: Message[]) => Message[])) => void
 type SetHistory = (history: ChatHistory) => void
@@ -226,7 +228,9 @@ export const runMcpNormalChatMode = async (
   }: RunMcpNormalChatParams
 ) => {
   const configuredServers = await getConfiguredMcpServers()
-  if (configuredServers.length === 0) {
+  const memoryEnabled = await isMemoryEnabled()
+
+  if (configuredServers.length === 0 && !memoryEnabled) {
     return false
   }
 
@@ -240,9 +244,12 @@ export const runMcpNormalChatMode = async (
     typeof ollama?.bindTools !== "function" ||
     ollama?._llmType?.() === "chrome-ai"
   ) {
-    throw new McpBootstrapError(
-      "The selected model does not support MCP tools. Choose an Ollama or OpenAI-compatible tool-calling model."
-    )
+    if (configuredServers.length > 0) {
+      throw new McpBootstrapError(
+        "The selected model does not support MCP tools. Choose an Ollama or OpenAI-compatible tool-calling model."
+      )
+    }
+    return false
   }
 
   const prompt = await systemPromptForNonRagOption()
@@ -350,13 +357,21 @@ export const runMcpNormalChatMode = async (
   })
 
   const applicationChatHistory = generateHistory(history, selectedModel)
-
+  let isMemoryContextAdded = false
+  let memoryContext = ""
+  if (memoryEnabled) {
+    const memoryContextRes = await getMemoriesAsContext()
+    if (memoryContextRes) {
+      memoryContext = `\n\n\n${memoryContextRes}`
+    }
+  }
   if (prompt && !selectedPrompt) {
     applicationChatHistory.unshift(
       await systemPromptFormatter({
-        content: prompt
+        content: prompt + memoryContext
       })
     )
+    isMemoryContextAdded = true
   }
 
   const isTempSystemprompt =
@@ -366,32 +381,47 @@ export const runMcpNormalChatMode = async (
   if (!isTempSystemprompt && selectedPrompt) {
     applicationChatHistory.unshift(
       await systemPromptFormatter({
-        content: selectedPrompt.content
+        content: selectedPrompt.content + memoryContext
       })
     )
     promptContent = selectedPrompt.content
+    isMemoryContextAdded = true
   }
 
   if (isTempSystemprompt) {
     applicationChatHistory.unshift(
       await systemPromptFormatter({
-        content: currentChatModelSettings.systemPrompt
+        content: currentChatModelSettings.systemPrompt + memoryContext
       })
     )
     promptContent = currentChatModelSettings.systemPrompt
+    isMemoryContextAdded = true
   }
 
+  if (memoryEnabled && !isMemoryContextAdded) {
+    const memoryContext = await getMemoriesAsContext()
+    if (memoryContext) {
+      applicationChatHistory.push(
+        await systemPromptFormatter({
+          content: memoryContext
+        })
+      )
+    }
+  }
 
-  const client = createMcpClient(configuredServers)
+  const hasMcpServers = configuredServers.length > 0
+  const client = hasMcpServers ? createMcpClient(configuredServers) : null
   let boundModel: any
 
   try {
-    const tools = await client.getTools()
+    const tools = hasMcpServers ? await client!.getTools() : []
+
+    if (memoryEnabled) {
+      tools.push(createMemoryTool())
+    }
 
     if (tools.length === 0) {
-      throw new McpBootstrapError(
-        "No MCP tools were loaded from the configured servers."
-      )
+      return false
     }
 
     try {
@@ -726,6 +756,6 @@ export const runMcpNormalChatMode = async (
     throw error
   } finally {
     setActionInfo(null)
-    await client.close()
+    await client?.close()
   }
 }

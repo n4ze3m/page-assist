@@ -1,10 +1,7 @@
 import { isCustomModel } from "@/db/dexie/models"
 import { HumanMessage, type MessageContent } from "@langchain/core/messages"
 import { processImageForOCR } from "./ocr"
-import { Storage } from "@plasmohq/storage"
-import { getMemoriesAsContext } from "@/db/dexie/memory"
 
-const storage = new Storage()
 
 type HumanMessageType = {
   content: MessageContent
@@ -18,17 +15,6 @@ export const humanMessageFormatter = async ({
   useOCR = false
 }: HumanMessageType) => {
   try {
-    // Get memory context if enabled
-    const enableMemory = await storage.get("enableMemory")
-    let memoryContext = ""
-
-    if (enableMemory) {
-      const context = await getMemoriesAsContext()
-      if (context) {
-        memoryContext = `\n\n${context}`
-      }
-    }
-
     const isCustom = isCustomModel(model)
 
     if (isCustom) {
@@ -46,7 +32,7 @@ export const humanMessageFormatter = async ({
             const ocrPROMPT = `${content[0].text}
 
 [IMAGE OCR TEXT]
-${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
+${ocrTexts.join("\n\n---\n\n")}`
             return new HumanMessage({
               content: ocrPROMPT
             })
@@ -105,7 +91,7 @@ ${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
         const ocrPROMPT = `${content[0].text}
 
 [IMAGE OCR TEXT]
-${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
+${ocrTexts.join("\n\n---\n\n")}`
         return new HumanMessage({
           content: ocrPROMPT
         })
@@ -115,7 +101,7 @@ ${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
     // Handle string content or fallback
     if (typeof content === "string") {
       return new HumanMessage({
-        content: content + memoryContext
+        content: content
       })
     }
 
@@ -123,7 +109,7 @@ ${ocrTexts.join("\n\n---\n\n")}${memoryContext}`
     if (Array.isArray(content)) {
       return new HumanMessage({
         content: content?.map((c: any, index: number) => 
-          c.type === "text" && index === 0 ? { ...c, text: c.text + memoryContext } : c
+          c.type === "text" && index === 0 ? { ...c, text: c.text } : c
         )
       })
     }

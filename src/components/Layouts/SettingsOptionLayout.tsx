@@ -8,6 +8,7 @@ import {
   CombineIcon,
   ChromeIcon,
   CpuIcon,
+  BrainIcon,
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
@@ -66,6 +67,13 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     href="/settings/mcp"
                     name={t("mcpSettings.title")}
                     icon={MCPIcon}
+                    current={location.pathname}
+                    beta
+                  />
+                  <LinkComponent
+                    href="/settings/memory"
+                    name={t("memory.title", "Memory")}
+                    icon={BrainIcon}
                     current={location.pathname}
                     beta
                   />

@@ -141,8 +141,6 @@ export const GeneralSettings = () => {
 
   const [tableTextWrap, setTableTextWrap] = useStorage("tableTextWrap", false)
 
-  const [enableMemory, setEnableMemory] = useStorage("enableMemory", false)
-
   const [showMoreForLargeMessage, setShowMoreForLargeMessage] = useStorage(
     "showMoreForLargeMessage",
     false
@@ -575,23 +573,6 @@ export const GeneralSettings = () => {
         <Switch
           checked={tableTextWrap}
           onChange={(checked) => setTableTextWrap(checked)}
-        />
-      </div>
-
-      <div className="flex flex-row justify-between">
-        <div className="inline-flex items-center gap-2">
-          <BetaTag />
-          <span className="text-gray-700   dark:text-neutral-50">
-            {t(
-              "generalSettings.settings.enableMemory.label",
-              "Enable Memory (Experimental)"
-            )}
-          </span>
-        </div>
-
-        <Switch
-          checked={enableMemory}
-          onChange={(checked) => setEnableMemory(checked)}
         />
       </div>
 
