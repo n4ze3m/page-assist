@@ -2,7 +2,7 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js"
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js"
 import { CfWorkerJsonSchemaValidator } from "@modelcontextprotocol/sdk/validation/cfworker"
 import { getMcpErrorMessage } from "./errors"
-import { McpAvailableTool, McpServer, McpServerInput } from "./types"
+import { McpAvailableTool, McpServerInput } from "./types"
 import { buildMcpHeaders } from "./utils"
 import { Implementation } from "@modelcontextprotocol/sdk/types.js"
 
@@ -131,22 +131,29 @@ export const listRemoteMcpTools = async (
 }
 
 export const toCachedMcpTools = (
-  tools: McpRemoteTool[]
-): McpAvailableTool[] =>
-  tools.map((tool) => ({
+  tools: McpRemoteTool[],
+  existingTools?: McpAvailableTool[]
+): McpAvailableTool[] => {
+  const existingByName = new Map(
+    (existingTools || []).map((t) => [t.name, t])
+  )
+  return tools.map((tool) => ({
     name: tool.name,
     description: tool.description,
-    inputSchema: tool.inputSchema
+    inputSchema: tool.inputSchema,
+    enabled: existingByName.get(tool.name)?.enabled ?? true
   }))
+}
 
 export const inspectMcpServerTools = async (
-  server: McpConnectableServer
+  server: McpConnectableServer & { cachedTools?: McpAvailableTool[] }
 ): Promise<McpToolValidationResult> => {
   const connection = await openMcpServerConnection(server)
 
   try {
     const cachedTools = toCachedMcpTools(
-      await listRemoteMcpTools(connection.client, server.name)
+      await listRemoteMcpTools(connection.client, server.name),
+      server.cachedTools
     )
 
     if (cachedTools.length === 0) {

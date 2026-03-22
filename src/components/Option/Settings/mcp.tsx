@@ -223,6 +223,18 @@ export const MCPSettingsApp = () => {
     validationSnapshot.fingerprint.length > 0 &&
     validationSnapshot.fingerprint !== currentFingerprint
 
+  const handleToggleTool = async (
+    server: McpServer,
+    toolName: string,
+    enabled: boolean
+  ) => {
+    const updatedTools = (server.cachedTools || []).map((tool) =>
+      tool.name === toolName ? { ...tool, enabled } : tool
+    )
+    await updateMcpServer({ id: server.id, cachedTools: updatedTools })
+    queryClient.invalidateQueries({ queryKey: ["mcpServers"] })
+  }
+
   const closeModal = () => {
     setOpen(false)
     setEditingServer(null)
@@ -459,6 +471,48 @@ export const MCPSettingsApp = () => {
           dataSource={servers || []}
           bordered
           scroll={{ x: 980 }}
+          expandable={{
+            expandedRowRender: (record: McpServer) => {
+              const tools = record.cachedTools || []
+              if (tools.length === 0) {
+                return (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {t("mcpSettings.table.toolsUnavailable")}
+                  </p>
+                )
+              }
+              return (
+                <Table
+                  rowKey="name"
+                  dataSource={tools}
+                  pagination={false}
+                  size="small"
+                  columns={[
+                    {
+                      title: t("mcpSettings.table.toolName"),
+                      dataIndex: "name",
+                      key: "name"
+                    },
+                    {
+                      title: t("mcpSettings.table.actions"),
+                      key: "actions",
+                      render: (_: unknown, tool: McpAvailableTool) => (
+                        <Switch
+                          size="small"
+                          checked={tool.enabled !== false}
+                          onChange={(checked) =>
+                            handleToggleTool(record, tool.name, checked)
+                          }
+                        />
+                      )
+                    }
+                  ]}
+                />
+              )
+            },
+            rowExpandable: (record: McpServer) =>
+              (record.cachedTools || []).length > 0
+          }}
           footer={() => (
             <a
               href="https://docs.pageassist.xyz/features/mcp.html"
