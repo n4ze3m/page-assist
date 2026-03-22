@@ -281,7 +281,9 @@ export class HttpOnlyMcpClient {
   }
 
   private buildToolsFromCache(server: McpServer) {
-    return (server.cachedTools || []).map((cachedTool) =>
+    return (server.cachedTools || [])
+      .filter((cachedTool) => cachedTool.enabled !== false)
+      .map((cachedTool) =>
       createLangChainTool({
         getClient: async () => {
           const conn = await this.getOrCreateConnection(server)
@@ -339,13 +341,21 @@ export class HttpOnlyMcpClient {
       connection.server.name
     )
 
-    return remoteTools.map((remoteTool) =>
-      createLangChainTool({
-        client: connection.client,
-        server: connection.server,
-        remoteTool,
-        callbacks: this.callbacks
-      })
+    const disabledNames = new Set(
+      (connection.server.cachedTools || [])
+        .filter((t) => t.enabled === false)
+        .map((t) => t.name)
     )
+
+    return remoteTools
+      .filter((remoteTool) => !disabledNames.has(remoteTool.name))
+      .map((remoteTool) =>
+        createLangChainTool({
+          client: connection.client,
+          server: connection.server,
+          remoteTool,
+          callbacks: this.callbacks
+        })
+      )
   }
 }

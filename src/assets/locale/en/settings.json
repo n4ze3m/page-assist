@@ -460,7 +460,9 @@
       "toolsUnavailable": "No cached tools",
       "auth": "Auth",
       "enabled": "Enabled",
-      "actions": "Actions"
+      "actions": "Actions",
+      "toolName": "Tool Name",
+      "toolDescription": "Description"
     },
     "actions": {
       "refreshTools": "Refresh tools",
