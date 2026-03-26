@@ -175,6 +175,14 @@
         "label": "Firecrawl API Key",
         "placeholder": "Enter your Firecrawl API key"
       },
+      "crwBaseURL": {
+        "label": "CRW Base URL",
+        "placeholder": "https://your-crw-instance.com"
+      },
+      "crwAPIKey": {
+        "label": "CRW API Key",
+        "placeholder": "Enter your CRW API key (optional)"
+      },
       "domainFilter": {
         "label": "Domain Filter List",
         "description": "Only show results from these domains",
