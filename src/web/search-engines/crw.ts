@@ -102,11 +102,16 @@ const apiCrwSearch = async (
 ) => {
     const TOTAL_SEARCH_RESULTS = await totalSearchResults()
 
-    const normalizedBase = baseURL.replace(/\/+$/, "")
-    const searchURL = `${normalizedBase}/v1/search`
+    const trimmedBase = baseURL.trim()
+    const cleanedBase = cleanUrl(trimmedBase)
+    const baseWithoutTrailingSlash = cleanedBase.replace(/\/+$/, "")
+    const normalizedBase = baseWithoutTrailingSlash.endsWith("/v1")
+        ? baseWithoutTrailingSlash
+        : `${baseWithoutTrailingSlash}/v1`
+    const searchURL = `${normalizedBase}/search`
 
     const abortController = new AbortController()
-    setTimeout(() => abortController.abort(), 20000)
+    const timeoutId = setTimeout(() => abortController.abort(), 20000)
 
     const headers: Record<string, string> = {
         Accept: "application/json",
@@ -146,5 +151,7 @@ const apiCrwSearch = async (
     } catch (error) {
         console.error("CRW API search failed:", error)
         return []
+    } finally {
+        clearTimeout(timeoutId)
     }
 }
