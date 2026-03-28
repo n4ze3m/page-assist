@@ -50,6 +50,7 @@ import {
   normalizeMcpServerInput
 } from "@/libs/mcp/utils"
 import { getServerFaviconUrl } from "@/components/Common/McpServerToggle"
+import { ToolExecutionModeControl } from "@/components/MCP/ToolExecutionModeControl"
 
 type ValidationSnapshot = {
   fingerprint: string
@@ -83,99 +84,6 @@ const toValidationSnapshot = (
 
 const formatTimestamp = (value?: number) =>
   value ? new Date(value).toLocaleString() : ""
-
-const ToolTags = ({
-  tools,
-  maxVisible = 3
-}: {
-  tools: McpAvailableTool[]
-  maxVisible?: number
-}) => {
-  if (tools.length === 0) {
-    return null
-  }
-
-  const visibleTools = tools.slice(0, maxVisible)
-  const remainingTools = tools.length - visibleTools.length
-
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {visibleTools.map((tool) => (
-        <Tooltip key={tool.name} title={tool.description || tool.name}>
-          <Tag className="mx-0 max-w-full truncate">{tool.name}</Tag>
-        </Tooltip>
-      ))}
-      {remainingTools > 0 ? (
-        <Tag className="mx-0">+{remainingTools}</Tag>
-      ) : null}
-    </div>
-  )
-}
-
-const ToolExecutionModeControl = ({
-  value,
-  onChange,
-  humanInLoopEnabled
-}: {
-  value: McpToolExecutionMode
-  onChange: (value: McpToolExecutionMode) => void
-  humanInLoopEnabled: boolean
-}) => {
-  const { t } = useTranslation(["settings", "common"])
-
-  const items = [
-    {
-      mode: "allow" as const,
-      icon: Check,
-      title: t(
-        "mcpSettings.toolModes.allow",
-        "Allow without human-in-the-loop"
-      )
-    },
-    {
-      mode: "human_in_loop" as const,
-      icon: Hand,
-      title: humanInLoopEnabled
-        ? t(
-            "mcpSettings.toolModes.humanInLoop",
-            "Require human-in-the-loop approval"
-          )
-        : t(
-            "mcpSettings.toolModes.humanInLoopDisabled",
-            "Stored now and used only when global human-in-the-loop is enabled"
-          )
-    },
-    {
-      mode: "disabled" as const,
-      icon: Ban,
-      title: t("mcpSettings.toolModes.disabled", "Disable tool")
-    }
-  ]
-
-  return (
-    <div className="inline-flex items-center rounded-2xl border border-gray-200 bg-gray-100  dark:border-white/10 dark:bg-[#1f1f1f]">
-      {items.map(({ mode, icon: Icon, title }) => {
-        const isActive = value === mode
-
-        return (
-          <Tooltip key={mode} title={title}>
-            <button
-              type="button"
-              aria-label={title}
-              onClick={() => onChange(mode)}
-              className={`inline-flex size-7 items-center justify-center rounded-xl transition-colors ${
-                isActive
-                  ? "bg-white text-gray-900 shadow-sm dark:bg-black/40 dark:text-white"
-                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              }`}>
-              <Icon className="size-3" />
-            </button>
-          </Tooltip>
-        )
-      })}
-    </div>
-  )
-}
 
 export const MCPSettingsApp = () => {
   const { t } = useTranslation(["settings", "common"])
