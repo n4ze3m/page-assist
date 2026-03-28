@@ -17,6 +17,27 @@ Page Assist supports MCP which allows your LLM to use external tools like search
 
 Once added, the server tools will be automatically fetched and cached.
 
+## Human-in-the-Loop Approval
+
+You can enable `Require approval before running MCP tools` directly from `Settings > MCP Settings`.
+
+When this setting is on, Page Assist asks for confirmation before a tool runs. This is especially recommended for MCP servers that can:
+
+- Write or delete files
+- Create, edit, or remove records in a database
+- Send messages, emails, or API mutations
+- Trigger any other real-world side effect
+
+After enabling it, you can expand a server and set each tool to:
+
+- `Allow` to run without approval
+- `Human in loop` to require approval
+- `Disable` to hide the tool from the agent
+
+::: warning
+If an MCP server has write permissions, turning on human-in-the-loop is strongly recommended.
+:::
+
 ## Using STDIO MCP Servers
 
 Page Assist is a browser extension, so it can't run STDIO-based MCP servers directly. You can use [supergateway](https://github.com/supercorp-ai/supergateway) to convert any STDIO MCP server to HTTP.

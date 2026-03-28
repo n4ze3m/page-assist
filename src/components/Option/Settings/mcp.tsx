@@ -87,7 +87,10 @@ const formatTimestamp = (value?: number) =>
 
 export const MCPSettingsApp = () => {
   const { t } = useTranslation(["settings", "common"])
-  const [mcpHumanInLoop] = useStorage("mcpHumanInLoop", false)
+  const [mcpHumanInLoop, setMcpHumanInLoop] = useStorage(
+    "mcpHumanInLoop",
+    false
+  )
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
@@ -445,11 +448,39 @@ export const MCPSettingsApp = () => {
               {t("mcpSettings.addBtn")}
             </button>
           </div>
-          <p className="mt-3 text-xs text-amber-600 dark:text-amber-400">
-            {mcpHumanInLoop
-              ? "Human-in-the-loop is enabled. MCP tools will ask for approval before they run."
-              : "MCP tools run without approval by default. You can enable human-in-the-loop in General Settings."}
-          </p>
+          <div className="mt-4 rounded-xl border border-amber-200/80 bg-amber-50/70 px-4 py-3 dark:border-amber-500/20 dark:bg-amber-500/10">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {t(
+                    "mcpSettings.humanInLoop.label",
+                    "Require approval before running MCP tools"
+                  )}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-gray-300">
+                  {t(
+                    "mcpSettings.humanInLoop.description",
+                    "Recommended for MCP servers with write permissions or other side effects. You can still allow or disable individual tools below."
+                  )}
+                </p>
+              </div>
+              <Switch
+                checked={mcpHumanInLoop}
+                onChange={(checked) => setMcpHumanInLoop(checked)}
+              />
+            </div>
+            <p className="mt-3 text-xs text-amber-700 dark:text-amber-300">
+              {mcpHumanInLoop
+                ? t(
+                    "mcpSettings.humanInLoop.enabledHint",
+                    "Human-in-the-loop is enabled. MCP tools will ask for approval before they run."
+                  )
+                : t(
+                    "mcpSettings.humanInLoop.disabledHint",
+                    "MCP tools run without approval by default. Turn this on when an MCP server can write files, modify data, send messages, or make other changes."
+                  )}
+            </p>
+          </div>
           <div className="mt-4 border border-b border-gray-200 dark:border-gray-600"></div>
         </div>
 

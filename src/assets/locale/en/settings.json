@@ -454,6 +454,12 @@
     "heading": "Manage MCP Servers",
     "subheading": "Add HTTP MCP servers for normal chat, including bearer auth and custom headers.",
     "addBtn": "Add MCP Server",
+    "humanInLoop": {
+      "label": "Require approval before running MCP tools",
+      "description": "Recommended for MCP servers with write permissions or other side effects. You can still allow or disable individual tools below.",
+      "enabledHint": "Human-in-the-loop is enabled. MCP tools will ask for approval before they run.",
+      "disabledHint": "MCP tools run without approval by default. Turn this on when an MCP server can write files, modify data, send messages, or make other changes."
+    },
     "table": {
       "name": "Name",
       "url": "URL",
