@@ -3,7 +3,12 @@ import { ChatDocuments } from "@/models/ChatTypes"
 import { create } from "zustand"
 import { type UploadedFile } from "@/db/dexie/types"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
-import { ChatActionInfo, ChatMessageKind, McpToolCall } from "@/libs/mcp/types"
+import {
+  ChatActionInfo,
+  ChatMessageKind,
+  McpPendingApprovalRequest,
+  McpToolCall
+} from "@/libs/mcp/types"
 
 type WebSearch = {
   search_engine: string
@@ -49,6 +54,11 @@ export type ChatHistory = {
   toolServerName?: string
   toolError?: boolean
 }[]
+
+type PendingMcpApproval = McpPendingApprovalRequest & {
+  approve: () => void
+  reject: (reason?: string) => void
+}
 
 type State = {
   messages: Message[]
@@ -105,6 +115,9 @@ type State = {
 
   actionInfo: ChatActionInfo | null
   setActionInfo: (actionInfo: ChatActionInfo | null) => void
+
+  pendingMcpApproval: PendingMcpApproval | null
+  setPendingMcpApproval: (pendingMcpApproval: PendingMcpApproval | null) => void
 
   fileRetrievalEnabled: boolean
   setFileRetrievalEnabled: (fileRetrievalEnabled: boolean) => void
@@ -163,6 +176,9 @@ export const useStoreMessageOption = create<State>((set) => ({
 
   actionInfo: null,
   setActionInfo: (actionInfo) => set({ actionInfo }),
+
+  pendingMcpApproval: null,
+  setPendingMcpApproval: (pendingMcpApproval) => set({ pendingMcpApproval }),
 
   fileRetrievalEnabled: false,
   setFileRetrievalEnabled: (fileRetrievalEnabled) =>

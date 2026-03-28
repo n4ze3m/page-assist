@@ -76,10 +76,12 @@ export const useMessageOption = () => {
     setContextFiles,
     actionInfo,
     setActionInfo,
+    setPendingMcpApproval,
     setFileRetrievalEnabled,
     fileRetrievalEnabled
   } = useStoreMessageOption()
   const [webuiTemporaryChat] = useStorage("webuiTemporaryChat", false)
+  const [mcpHumanInLoop] = useStorage("mcpHumanInLoop", false)
 
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
@@ -157,6 +159,7 @@ export const useMessageOption = () => {
   }
 
   const clearChat = () => {
+    stopStreamingRequest()
     navigate("/")
     setMessages([])
     setHistory([])
@@ -178,6 +181,7 @@ export const useMessageOption = () => {
     setUploadedFiles([])
     setFileRetrievalEnabled(false)
     setActionInfo(null)
+    setPendingMcpApproval(null)
     if (webuiTemporaryChat) {
       setTemporaryChat(true)
     }
@@ -251,6 +255,7 @@ export const useMessageOption = () => {
       setActionInfo,
       webSearch,
       temporaryChat,
+      requireMcpApproval: mcpHumanInLoop,
       messageSource: "web-ui" as const
     }
 

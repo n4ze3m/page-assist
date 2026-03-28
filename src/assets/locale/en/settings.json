@@ -120,6 +120,9 @@
       },
       "showMcpServersInChat": {
         "label": "Show MCP Servers Toggle in Chat"
+      },
+      "mcpHumanInLoop": {
+        "label": "Require approval before running MCP tools"
       }
     },
     "sidepanelRag": {

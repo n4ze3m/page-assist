@@ -208,6 +208,12 @@
         "toolResultTitle": "Tool result",
         "arguments": "Arguments",
         "output": "Output",
+        "approvalRequired": "Approval required",
+        "approvalPrompt": "Approve this MCP tool call before it runs.",
+        "approve": "Approve",
+        "reject": "Reject",
+        "rejectWithReason": "Reject with note",
+        "rejectionReasonPlaceholder": "Optional rejection reason",
         "noOutput": "No output returned.",
         "status": {
             "success": "Success",
@@ -216,6 +222,7 @@
         "action": {
             "connecting": "Connecting to MCP servers",
             "loading_tools": "Loading MCP tools",
+            "awaiting_approval": "Waiting for approval to run {{tool}} on {{server}}",
             "calling_tool": "Calling {{tool}} on {{server}}",
             "waiting_result": "Waiting for {{tool}} on {{server}}"
         }

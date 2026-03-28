@@ -73,7 +73,8 @@ export const useMessage = () => {
     temporaryChat,
     setTemporaryChat,
     actionInfo,
-    setActionInfo
+    setActionInfo,
+    setPendingMcpApproval
   } = useStoreMessageOption()
   const [defaultInternetSearchOn] = useStorage("defaultInternetSearchOn", false)
 
@@ -111,6 +112,7 @@ export const useMessage = () => {
     setUseOCR
   } = useStoreMessage()
   const [sidepanelTemporaryChat] = useStorage("sidepanelTemporaryChat", false)
+  const [mcpHumanInLoop] = useStorage("mcpHumanInLoop", false)
   const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
     "speechToTextLanguage",
     "en-US"
@@ -141,6 +143,7 @@ export const useMessage = () => {
       setTemporaryChat(true)
     }
     setActionInfo(null)
+    setPendingMcpApproval(null)
   }
 
   const saveMessageOnSuccess = createSaveMessageOnSuccess(
@@ -1718,7 +1721,8 @@ export const useMessage = () => {
               images,
               setActionInfo,
               temporaryChat,
-              messageSource: "copilot"
+              messageSource: "copilot",
+              requireMcpApproval: mcpHumanInLoop
             }
           )
         }

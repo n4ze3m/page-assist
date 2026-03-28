@@ -5,11 +5,14 @@ export type McpHeader = {
   value: string
 }
 
+export type McpToolExecutionMode = "allow" | "human_in_loop" | "disabled"
+
 export type McpAvailableTool = {
   name: string
   description?: string
   inputSchema?: unknown
   enabled?: boolean
+  executionMode?: McpToolExecutionMode
 }
 
 export type McpOAuthTokens = {
@@ -78,11 +81,23 @@ export type McpToolCall = {
   displayName?: string
 }
 
+export type McpPendingApprovalRequest = {
+  toolCallId: string
+  toolName: string
+  serverName?: string
+  args?: unknown
+}
+
 export type ChatActionInfo =
   | string
   | {
     type: "mcp"
-    phase: "connecting" | "loading_tools" | "calling_tool" | "waiting_result"
+    phase:
+      | "connecting"
+      | "loading_tools"
+      | "awaiting_approval"
+      | "calling_tool"
+      | "waiting_result"
     serverName?: string
     toolName?: string
     toolCount?: number
