@@ -38,7 +38,7 @@ import {
   isReasoningStarted,
   mergeReasoningContent
 } from "@/libs/reasoning"
-import { createMemoryTool, isMemoryEnabled } from "./tools/memory-tool"
+import { createMemoryTool, isMemoryEnabled, isMemoryToolEnabled } from "./tools/memory-tool"
 
 type SetMessages = (messages: Message[] | ((prev: Message[]) => Message[])) => void
 type SetHistory = (history: ChatHistory) => void
@@ -229,6 +229,7 @@ export const runMcpNormalChatMode = async (
 ) => {
   const configuredServers = await getConfiguredMcpServers()
   const memoryEnabled = await isMemoryEnabled()
+  const memoryToolEnabled = await isMemoryToolEnabled()
 
   if (configuredServers.length === 0 && !memoryEnabled) {
     return false
@@ -416,7 +417,7 @@ export const runMcpNormalChatMode = async (
   try {
     const tools = hasMcpServers ? await client!.getTools() : []
 
-    if (memoryEnabled) {
+    if (memoryEnabled && memoryToolEnabled) {
       tools.push(createMemoryTool())
     }
 

@@ -17,6 +17,7 @@ import { Memory } from "@/db/dexie/types"
 export const MemorySettings = () => {
   const { t } = useTranslation("settings")
   const [enableMemory, setEnableMemory] = useStorage("enableMemory", false)
+  const [enableMemoryTool, setEnableMemoryTool] = useStorage("enableMemoryTool", false)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null)
@@ -135,6 +136,19 @@ export const MemorySettings = () => {
         <Switch
           checked={enableMemory}
           onChange={(checked) => setEnableMemory(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between items-center mb-4">
+        <span className="text-gray-700 dark:text-neutral-50">
+          {t(
+            "memory.enableMemoryTool.label",
+            "Enable Memory Tool"
+          )}
+        </span>
+        <Switch
+          checked={enableMemoryTool}
+          onChange={(checked) => setEnableMemoryTool(checked)}
         />
       </div>
 

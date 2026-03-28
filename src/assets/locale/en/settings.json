@@ -621,5 +621,10 @@
   "chromeAiSettings": {
     "title": "Chrome AI Settings"
   },
+  "memory": {
+    "enableMemoryTool": {
+      "label": "Enable Memory Tool"
+    }
+  },
   "mermaid": "Mermaid"
 }

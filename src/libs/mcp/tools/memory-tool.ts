@@ -35,3 +35,8 @@ export const isMemoryEnabled = async (): Promise<boolean> => {
   const enabled = await storage.get("enableMemory")
   return !!enabled
 }
+
+export const isMemoryToolEnabled = async (): Promise<boolean> => {
+  const toolEnabled = await storage.get("enableMemoryTool")
+  return !!toolEnabled
+}
