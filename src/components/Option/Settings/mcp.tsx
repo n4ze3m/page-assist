@@ -153,7 +153,7 @@ const ToolExecutionModeControl = ({
   ]
 
   return (
-    <div className="inline-flex items-center rounded-2xl border border-gray-200 bg-gray-100 p-1 dark:border-white/10 dark:bg-[#1f1f1f]">
+    <div className="inline-flex items-center rounded-2xl border border-gray-200 bg-gray-100  dark:border-white/10 dark:bg-[#1f1f1f]">
       {items.map(({ mode, icon: Icon, title }) => {
         const isActive = value === mode
 
@@ -163,12 +163,12 @@ const ToolExecutionModeControl = ({
               type="button"
               aria-label={title}
               onClick={() => onChange(mode)}
-              className={`inline-flex h-8 w-8 items-center justify-center rounded-xl transition-colors ${
+              className={`inline-flex size-7 items-center justify-center rounded-xl transition-colors ${
                 isActive
                   ? "bg-white text-gray-900 shadow-sm dark:bg-black/40 dark:text-white"
                   : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               }`}>
-              <Icon className="size-4" />
+              <Icon className="size-3" />
             </button>
           </Tooltip>
         )
@@ -576,19 +576,48 @@ export const MCPSettingsApp = () => {
                     {
                       title: t("mcpSettings.table.actions"),
                       key: "actions",
-                      render: (_: unknown, tool: McpAvailableTool) => (
-                        <ToolExecutionModeControl
-                          value={getMcpToolExecutionMode(tool)}
-                          humanInLoopEnabled={mcpHumanInLoop}
-                          onChange={(executionMode) =>
-                            handleUpdateToolExecutionMode(
-                              record,
-                              tool.name,
-                              executionMode
-                            )
-                          }
-                        />
-                      )
+                      render: (_: unknown, tool: McpAvailableTool) => {
+                        const executionMode = getMcpToolExecutionMode(tool)
+
+                        if (!mcpHumanInLoop) {
+                          const enabled = executionMode !== "disabled"
+
+                          return (
+                            <Tooltip
+                              title={
+                                enabled
+                                  ? t("mcpSettings.actions.disable")
+                                  : t("mcpSettings.actions.enable")
+                              }>
+                              <Switch
+                                size="small"
+                                checked={enabled}
+                                onChange={(checked) =>
+                                  handleUpdateToolExecutionMode(
+                                    record,
+                                    tool.name,
+                                    checked ? "human_in_loop" : "disabled"
+                                  )
+                                }
+                              />
+                            </Tooltip>
+                          )
+                        }
+
+                        return (
+                          <ToolExecutionModeControl
+                            value={executionMode}
+                            humanInLoopEnabled={mcpHumanInLoop}
+                            onChange={(nextExecutionMode) =>
+                              handleUpdateToolExecutionMode(
+                                record,
+                                tool.name,
+                                nextExecutionMode
+                              )
+                            }
+                          />
+                        )
+                      }
                     }
                   ]}
                 />
