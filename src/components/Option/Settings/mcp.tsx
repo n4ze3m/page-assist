@@ -14,9 +14,13 @@ import {
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useStorage } from "@plasmohq/storage/hook"
 import {
+  Ban,
+  Check,
   KeyRound,
   LogOut,
+  Hand,
   Pencil,
   RefreshCw,
   Trash2,
@@ -37,13 +41,16 @@ import { inspectMcpServerTools } from "@/libs/mcp/remote-tools"
 import type {
   McpAvailableTool,
   McpServer,
-  McpServerInput
+  McpServerInput,
+  McpToolExecutionMode
 } from "@/libs/mcp/types"
 import {
+  getMcpToolExecutionMode,
   getMcpServerConfigFingerprint,
   normalizeMcpServerInput
 } from "@/libs/mcp/utils"
 import { getServerFaviconUrl } from "@/components/Common/McpServerToggle"
+import { ToolExecutionModeControl } from "@/components/MCP/ToolExecutionModeControl"
 
 type ValidationSnapshot = {
   fingerprint: string
@@ -78,36 +85,12 @@ const toValidationSnapshot = (
 const formatTimestamp = (value?: number) =>
   value ? new Date(value).toLocaleString() : ""
 
-const ToolTags = ({
-  tools,
-  maxVisible = 3
-}: {
-  tools: McpAvailableTool[]
-  maxVisible?: number
-}) => {
-  if (tools.length === 0) {
-    return null
-  }
-
-  const visibleTools = tools.slice(0, maxVisible)
-  const remainingTools = tools.length - visibleTools.length
-
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {visibleTools.map((tool) => (
-        <Tooltip key={tool.name} title={tool.description || tool.name}>
-          <Tag className="mx-0 max-w-full truncate">{tool.name}</Tag>
-        </Tooltip>
-      ))}
-      {remainingTools > 0 ? (
-        <Tag className="mx-0">+{remainingTools}</Tag>
-      ) : null}
-    </div>
-  )
-}
-
 export const MCPSettingsApp = () => {
   const { t } = useTranslation(["settings", "common"])
+  const [mcpHumanInLoop, setMcpHumanInLoop] = useStorage(
+    "mcpHumanInLoop",
+    false
+  )
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
@@ -223,13 +206,19 @@ export const MCPSettingsApp = () => {
     validationSnapshot.fingerprint.length > 0 &&
     validationSnapshot.fingerprint !== currentFingerprint
 
-  const handleToggleTool = async (
+  const handleUpdateToolExecutionMode = async (
     server: McpServer,
     toolName: string,
-    enabled: boolean
+    executionMode: McpToolExecutionMode
   ) => {
     const updatedTools = (server.cachedTools || []).map((tool) =>
-      tool.name === toolName ? { ...tool, enabled } : tool
+      tool.name === toolName
+        ? {
+            ...tool,
+            executionMode,
+            enabled: executionMode !== "disabled"
+          }
+        : tool
     )
     await updateMcpServer({ id: server.id, cachedTools: updatedTools })
     queryClient.invalidateQueries({ queryKey: ["mcpServers"] })
@@ -459,9 +448,39 @@ export const MCPSettingsApp = () => {
               {t("mcpSettings.addBtn")}
             </button>
           </div>
-          <p className="mt-3 text-xs text-amber-600 dark:text-amber-400">
-            MCP tools run without approval. Review connected servers carefully before use.
-          </p>
+          <div className="mt-4 rounded-xl border border-amber-200/80 bg-amber-50/70 px-4 py-3 dark:border-amber-500/20 dark:bg-amber-500/10">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {t(
+                    "mcpSettings.humanInLoop.label",
+                    "Require approval before running MCP tools"
+                  )}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-gray-300">
+                  {t(
+                    "mcpSettings.humanInLoop.description",
+                    "Recommended for MCP servers with write permissions or other side effects. You can still allow or disable individual tools below."
+                  )}
+                </p>
+              </div>
+              <Switch
+                checked={mcpHumanInLoop}
+                onChange={(checked) => setMcpHumanInLoop(checked)}
+              />
+            </div>
+            <p className="mt-3 text-xs text-amber-700 dark:text-amber-300">
+              {mcpHumanInLoop
+                ? t(
+                    "mcpSettings.humanInLoop.enabledHint",
+                    "Human-in-the-loop is enabled. MCP tools will ask for approval before they run."
+                  )
+                : t(
+                    "mcpSettings.humanInLoop.disabledHint",
+                    "MCP tools run without approval by default. Turn this on when an MCP server can write files, modify data, send messages, or make other changes."
+                  )}
+            </p>
+          </div>
           <div className="mt-4 border border-b border-gray-200 dark:border-gray-600"></div>
         </div>
 
@@ -496,15 +515,48 @@ export const MCPSettingsApp = () => {
                     {
                       title: t("mcpSettings.table.actions"),
                       key: "actions",
-                      render: (_: unknown, tool: McpAvailableTool) => (
-                        <Switch
-                          size="small"
-                          checked={tool.enabled !== false}
-                          onChange={(checked) =>
-                            handleToggleTool(record, tool.name, checked)
-                          }
-                        />
-                      )
+                      render: (_: unknown, tool: McpAvailableTool) => {
+                        const executionMode = getMcpToolExecutionMode(tool)
+
+                        if (!mcpHumanInLoop) {
+                          const enabled = executionMode !== "disabled"
+
+                          return (
+                            <Tooltip
+                              title={
+                                enabled
+                                  ? t("mcpSettings.actions.disable")
+                                  : t("mcpSettings.actions.enable")
+                              }>
+                              <Switch
+                                size="small"
+                                checked={enabled}
+                                onChange={(checked) =>
+                                  handleUpdateToolExecutionMode(
+                                    record,
+                                    tool.name,
+                                    checked ? "human_in_loop" : "disabled"
+                                  )
+                                }
+                              />
+                            </Tooltip>
+                          )
+                        }
+
+                        return (
+                          <ToolExecutionModeControl
+                            value={executionMode}
+                            humanInLoopEnabled={mcpHumanInLoop}
+                            onChange={(nextExecutionMode) =>
+                              handleUpdateToolExecutionMode(
+                                record,
+                                tool.name,
+                                nextExecutionMode
+                              )
+                            }
+                          />
+                        )
+                      }
                     }
                   ]}
                 />

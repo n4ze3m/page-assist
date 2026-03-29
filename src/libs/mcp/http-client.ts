@@ -2,7 +2,12 @@ import { DynamicStructuredTool } from "@langchain/core/tools"
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js"
 import { normalizeMcpToolSchema } from "./tool-schema"
 import { McpServer } from "./types"
-import { createMcpActionInfo, MCP_TOOL_NAME_SEPARATOR } from "./utils"
+import {
+  createMcpActionInfo,
+  getMcpToolExecutionMode,
+  isMcpToolEnabled,
+  MCP_TOOL_NAME_SEPARATOR
+} from "./utils"
 import {
   closeMcpServerConnection,
   listRemoteMcpTools,
@@ -150,7 +155,8 @@ const createLangChainTool = ({
     responseFormat: "content_and_artifact",
     metadata: {
       serverName: server.name,
-      toolName: remoteTool.name
+      toolName: remoteTool.name,
+      executionMode: getMcpToolExecutionMode(remoteTool)
     },
     func: async (args, _runManager, config) => {
       const resolvedClient = await resolveClient()
@@ -282,7 +288,7 @@ export class HttpOnlyMcpClient {
 
   private buildToolsFromCache(server: McpServer) {
     return (server.cachedTools || [])
-      .filter((cachedTool) => cachedTool.enabled !== false)
+      .filter((cachedTool) => isMcpToolEnabled(cachedTool))
       .map((cachedTool) =>
       createLangChainTool({
         getClient: async () => {
@@ -341,19 +347,24 @@ export class HttpOnlyMcpClient {
       connection.server.name
     )
 
-    const disabledNames = new Set(
-      (connection.server.cachedTools || [])
-        .filter((t) => t.enabled === false)
-        .map((t) => t.name)
+    const configuredToolsByName = new Map(
+      (connection.server.cachedTools || []).map((tool) => [tool.name, tool])
     )
 
     return remoteTools
-      .filter((remoteTool) => !disabledNames.has(remoteTool.name))
+      .filter((remoteTool) =>
+        isMcpToolEnabled(configuredToolsByName.get(remoteTool.name))
+      )
       .map((remoteTool) =>
         createLangChainTool({
           client: connection.client,
           server: connection.server,
-          remoteTool,
+          remoteTool: {
+            ...remoteTool,
+            executionMode: getMcpToolExecutionMode(
+              configuredToolsByName.get(remoteTool.name)
+            )
+          },
           callbacks: this.callbacks
         })
       )

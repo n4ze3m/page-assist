@@ -3,7 +3,7 @@ import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/
 import { CfWorkerJsonSchemaValidator } from "@modelcontextprotocol/sdk/validation/cfworker"
 import { getMcpErrorMessage } from "./errors"
 import { McpAvailableTool, McpServerInput } from "./types"
-import { buildMcpHeaders } from "./utils"
+import { buildMcpHeaders, getMcpToolExecutionMode, isMcpToolEnabled } from "./utils"
 import { Implementation } from "@modelcontextprotocol/sdk/types.js"
 
 export type McpConnectableServer = Pick<
@@ -137,12 +137,18 @@ export const toCachedMcpTools = (
   const existingByName = new Map(
     (existingTools || []).map((t) => [t.name, t])
   )
-  return tools.map((tool) => ({
-    name: tool.name,
-    description: tool.description,
-    inputSchema: tool.inputSchema,
-    enabled: existingByName.get(tool.name)?.enabled ?? true
-  }))
+  return tools.map((tool) => {
+    const existingTool = existingByName.get(tool.name)
+    const executionMode = getMcpToolExecutionMode(existingTool)
+
+    return {
+      name: tool.name,
+      description: tool.description,
+      inputSchema: tool.inputSchema,
+      enabled: isMcpToolEnabled({ executionMode }),
+      executionMode
+    }
+  })
 }
 
 export const inspectMcpServerTools = async (

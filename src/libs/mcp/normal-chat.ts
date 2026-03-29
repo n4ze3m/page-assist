@@ -13,6 +13,7 @@ import { generateHistory } from "@/utils/generate-history"
 import { humanMessageFormatter } from "@/utils/human-message"
 import { systemPromptFormatter } from "@/utils/system-message"
 import { getMemoriesAsContext } from "@/db/dexie/memory"
+import { useStoreMessageOption } from "@/store/option"
 import { AIMessage, ToolMessage } from "@langchain/core/messages"
 import { concat } from "@langchain/core/utils/stream"
 import { getConfiguredMcpServers, createMcpClient } from "./client"
@@ -38,7 +39,7 @@ import {
   isReasoningStarted,
   mergeReasoningContent
 } from "@/libs/reasoning"
-import { createMemoryTool, isMemoryEnabled } from "./tools/memory-tool"
+import { createMemoryTool, isMemoryEnabled, isMemoryToolEnabled } from "./tools/memory-tool"
 
 type SetMessages = (messages: Message[] | ((prev: Message[]) => Message[])) => void
 type SetHistory = (history: ChatHistory) => void
@@ -58,6 +59,7 @@ type RunMcpNormalChatParams = {
   uploadedFiles?: any[]
   images?: string[]
   temporaryChat?: boolean
+  requireMcpApproval?: boolean
   messageSource?: "copilot" | "web-ui"
 }
 
@@ -90,6 +92,91 @@ const createUserDocuments = (uploadedFiles?: any[]): ChatDocuments =>
   })) || []
 
 const STREAM_THROTTLE_MS = 50
+
+const createAbortError = () => {
+  const error = new Error("The operation was aborted.")
+  error.name = "AbortError"
+  return error
+}
+
+type McpApprovalDecision = {
+  approved: boolean
+  reason?: string
+}
+
+const waitForMcpToolApproval = ({
+  signal,
+  toolCallId,
+  toolName,
+  serverName,
+  args
+}: {
+  signal: AbortSignal
+  toolCallId: string
+  toolName: string
+  serverName?: string
+  args?: unknown
+}) =>
+  new Promise<McpApprovalDecision>((resolve, reject) => {
+    let settled = false
+
+    const clearPendingApproval = () => {
+      const currentApproval = useStoreMessageOption.getState().pendingMcpApproval
+      if (currentApproval?.toolCallId === toolCallId) {
+        useStoreMessageOption.getState().setPendingMcpApproval(null)
+      }
+    }
+
+    const cleanup = () => {
+      signal.removeEventListener("abort", handleAbort)
+      clearPendingApproval()
+    }
+
+    const settle = (
+      result:
+        | {
+            approved: boolean
+            reason?: string
+          }
+        | "abort"
+    ) => {
+      if (settled) {
+        return
+      }
+
+      settled = true
+      cleanup()
+
+      if (result === "abort") {
+        reject(createAbortError())
+        return
+      }
+
+      resolve(result)
+    }
+
+    const handleAbort = () => settle("abort")
+
+    if (signal.aborted) {
+      settle("abort")
+      return
+    }
+
+    useStoreMessageOption.getState().setPendingMcpApproval({
+      toolCallId,
+      toolName,
+      serverName,
+      args,
+      approve: () => settle({ approved: true }),
+      reject: (reason?: string) =>
+        settle({
+          approved: false,
+          reason
+        })
+    })
+
+    signal.addEventListener("abort", handleAbort, { once: true })
+  })
 
 const streamModelResponse = async ({
   runnable,
@@ -224,11 +311,13 @@ export const runMcpNormalChatMode = async (
     uploadedFiles,
     images: inputImages,
     temporaryChat = false,
+    requireMcpApproval = false,
     messageSource = "web-ui"
   }: RunMcpNormalChatParams
 ) => {
   const configuredServers = await getConfiguredMcpServers()
   const memoryEnabled = await isMemoryEnabled()
+  const memoryToolEnabled = await isMemoryToolEnabled()
 
   if (configuredServers.length === 0 && !memoryEnabled) {
     return false
@@ -406,7 +495,7 @@ export const runMcpNormalChatMode = async (
           content: memoryContext
         })
       )
-    }
+  }
   }
 
   const hasMcpServers = configuredServers.length > 0
@@ -416,7 +505,7 @@ export const runMcpNormalChatMode = async (
   try {
     const tools = hasMcpServers ? await client!.getTools() : []
 
-    if (memoryEnabled) {
+    if (memoryEnabled && memoryToolEnabled) {
       tools.push(createMemoryTool())
     }
 
@@ -591,7 +680,6 @@ export const runMcpNormalChatMode = async (
       for (const toolCall of storedToolCalls) {
         const parsedTool = parseMcpToolName(toolCall.name)
 
-
         try {
           const lowerCallName = toolCall.name.toLowerCase()
           const tool = tools.find((currentTool) => currentTool.name === toolCall.name)
@@ -602,6 +690,29 @@ export const runMcpNormalChatMode = async (
             throw new Error(`Tool "${toolCall.name}" is no longer available.`)
           }
 
+          if (requireMcpApproval) {
+            const shouldRequireApproval =
+              (tool as any)?.metadata?.executionMode !== "allow"
+
+            if (shouldRequireApproval) {
+              const approval = await waitForMcpToolApproval({
+                signal,
+                toolCallId: toolCall.id,
+                toolName: parsedTool.displayName,
+                serverName: toolCall.serverName || parsedTool.serverName,
+                args: toolCall.args
+              })
+
+              if (!approval.approved) {
+                const rejectionReason = approval.reason?.trim()
+                throw new Error(
+                  rejectionReason?.length
+                    ? `Tool execution denied by user: ${rejectionReason}`
+                    : `Tool execution denied by user for "${parsedTool.displayName}".`
+                )
+              }
+            }
+          }
 
           const result = await tool.invoke(toolCall, { signal })
           const toolMessage =
@@ -719,6 +830,8 @@ export const runMcpNormalChatMode = async (
               })
             )
           }
+        } finally {
+          setActionInfo(null)
         }
       }
 
