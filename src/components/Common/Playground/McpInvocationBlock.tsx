@@ -1,4 +1,5 @@
 import {
+  AlertTriangle,
   CheckCircle2,
   ChevronDown,
   ChevronRight,
@@ -10,6 +11,7 @@ import React from "react"
 import { useTranslation } from "react-i18next"
 import Markdown from "../Markdown"
 import { PlaygroundToolInvocation } from "./message-groups"
+import { useStoreMessageOption } from "@/store/option"
 
 const OUTPUT_CLAMP_HEIGHT = 200
 const MAX_PREVIEW_CHARS = 2000
@@ -89,6 +91,10 @@ const ToolOutput = ({
 
 export const McpInvocationBlock = ({ invocation }: Props) => {
   const { t } = useTranslation("common")
+  const pendingMcpApproval = useStoreMessageOption(
+    (state) => state.pendingMcpApproval
+  )
+  const [feedback, setFeedback] = React.useState("")
   const [isOpen, setIsOpen] = React.useState(
     false
   )
@@ -96,6 +102,30 @@ export const McpInvocationBlock = ({ invocation }: Props) => {
   const hasResult = Boolean(invocation.result)
   const isError = Boolean(invocation.result?.toolError)
   const formattedArgs = formatArgs(invocation.args)
+  const isPendingApproval =
+    pendingMcpApproval?.toolCallId === invocation.id && !hasResult
+
+  const handleApprove = React.useCallback(() => {
+    setIsOpen(false)
+    pendingMcpApproval?.approve()
+  }, [pendingMcpApproval])
+
+  const handleReject = React.useCallback((reason?: string) => {
+    setIsOpen(false)
+    pendingMcpApproval?.reject(reason)
+  }, [pendingMcpApproval])
+
+  React.useEffect(() => {
+    if (isPendingApproval) {
+      setIsOpen(true)
+    }
+  }, [isPendingApproval])
+
+  React.useEffect(() => {
+    if (!isPendingApproval) {
+      setFeedback("")
+    }
+  }, [isPendingApproval])
 
   return (
     <div className="rounded-xl border border-gray-200/80 dark:border-white/10">
@@ -114,8 +144,15 @@ export const McpInvocationBlock = ({ invocation }: Props) => {
             {invocation.serverName}
           </span>
         )}
+        {isPendingApproval && (
+          <span className="hidden sm:inline shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
+            {t("mcp.approvalRequired", "Approval required")}
+          </span>
+        )}
         <span className="shrink-0">
-          {hasResult ? (
+          {isPendingApproval ? (
+            <AlertTriangle className="size-3.5 text-amber-500" />
+          ) : hasResult ? (
             isError ? (
               <XCircle className="size-3.5 text-red-500" />
             ) : (
@@ -134,6 +171,52 @@ export const McpInvocationBlock = ({ invocation }: Props) => {
 
       {isOpen && (
         <div className="border-t border-gray-200/80 px-3 py-2.5 dark:border-white/10">
+          {isPendingApproval && (
+            <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 dark:border-amber-500/20 dark:bg-amber-500/10">
+              <p className="mb-2 text-sm font-medium text-amber-800 dark:text-amber-200">
+                {t("mcp.approvalPrompt", "Approve this MCP tool call before it runs.")}
+              </p>
+              <input
+                type="text"
+                value={feedback}
+                onChange={(event) => setFeedback(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" && feedback.trim().length > 0) {
+                    event.preventDefault()
+                    handleReject(feedback.trim())
+                  }
+                }}
+                placeholder={t(
+                  "mcp.rejectionReasonPlaceholder",
+                  "Optional rejection reason"
+                )}
+                className="mb-2 w-full rounded-md border border-amber-200 bg-white px-3 py-2 text-sm text-gray-700 outline-none ring-0 placeholder:text-gray-400 focus:border-amber-400 dark:border-amber-500/20 dark:bg-[#1f1f1f] dark:text-gray-200 dark:placeholder:text-gray-500"
+              />
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    handleApprove()
+                  }}
+                  className="inline-flex items-center justify-center rounded-md bg-black px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100">
+                  {t("mcp.approve", "Approve")}
+                </button>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    handleReject(feedback.trim() || undefined)
+                  }}
+                  className="inline-flex items-center justify-center rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-white/15 dark:text-gray-200 dark:hover:bg-white/5">
+                  {feedback.trim().length > 0
+                    ? t("mcp.rejectWithReason", "Reject with note")
+                    : t("mcp.reject", "Reject")}
+                </button>
+              </div>
+            </div>
+          )}
+
           {formattedArgs.length > 0 && (
             <div className="mb-2.5">
               <p className="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">

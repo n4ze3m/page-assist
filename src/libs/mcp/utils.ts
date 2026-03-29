@@ -1,9 +1,11 @@
 import {
   ChatActionInfo,
   ChatMessageKind,
+  McpAvailableTool,
   McpHeader,
   McpOAuthTokens,
   McpServerInput,
+  McpToolExecutionMode,
   McpToolCall
 } from "./types"
 
@@ -50,6 +52,24 @@ export const sanitizeHeaders = (headers?: McpHeader[]) =>
       header.key.trim().length > 0 &&
       header.value.trim().length > 0
   )
+
+export const getMcpToolExecutionMode = (
+  tool?: Pick<McpAvailableTool, "enabled" | "executionMode">
+): McpToolExecutionMode => {
+  if (tool?.executionMode) {
+    return tool.executionMode
+  }
+
+  if (tool?.enabled === false) {
+    return "disabled"
+  }
+
+  return "human_in_loop"
+}
+
+export const isMcpToolEnabled = (
+  tool?: Pick<McpAvailableTool, "enabled" | "executionMode">
+) => getMcpToolExecutionMode(tool) !== "disabled"
 
 export const normalizeMcpServerInput = (
   server: Partial<McpServerInput>
@@ -188,7 +208,12 @@ export const normalizeToolContent = (content: unknown): string => {
 }
 
 export const createMcpActionInfo = (
-  phase: "connecting" | "loading_tools" | "calling_tool" | "waiting_result",
+  phase:
+    | "connecting"
+    | "loading_tools"
+    | "awaiting_approval"
+    | "calling_tool"
+    | "waiting_result",
   details?: Omit<Extract<ChatActionInfo, { type: "mcp" }>, "type" | "phase">
 ): ChatActionInfo => ({
   type: "mcp",

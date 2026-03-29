@@ -43,6 +43,7 @@ export const normalChatMode = async (
     images,
     setActionInfo,
     temporaryChat,
+    requireMcpApproval,
     messageSource
   }: {
     selectedModel: string
@@ -62,6 +63,7 @@ export const normalChatMode = async (
     images?: string[]
     setActionInfo?: (value: any) => void
     temporaryChat?: boolean
+    requireMcpApproval?: boolean
     messageSource?: "copilot" | "web-ui"
   }
 ) => {
@@ -90,6 +92,7 @@ export const normalChatMode = async (
         uploadedFiles,
         images,
         temporaryChat,
+        requireMcpApproval,
         messageSource
       }
     )
