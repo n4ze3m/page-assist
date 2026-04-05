@@ -654,14 +654,16 @@ export const ollamaFormatAllCustomModels = async (
       const modelEnabled = modelStates[model.id] ?? true // Default to enabled
       const providerEnabled = providerStates[model.provider_id] ?? true // Default to enabled
       const isEnabled = modelEnabled && providerEnabled // Both must be enabled
+      const providerConfig = allProviders.find(
+        (provider) => provider.id === model.provider_id
+      )
 
       return {
         name: model.name,
         model: model.id,
         modified_at: "",
-        provider:
-          allProviders.find((provider) => provider.id === model.provider_id)
-            ?.provider || "custom",
+        provider: providerConfig?.provider || "custom",
+        provider_name: providerConfig?.name,
         size: 0,
         digest: "",
         is_enabled: isEnabled,
