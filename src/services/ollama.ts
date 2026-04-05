@@ -144,6 +144,7 @@ export const getAllModels = async ({
       nickname?: string
       avatar?: string
       is_enabled: boolean
+      provider_name?: string
       details: {
         parent_model: string
         format: string
@@ -211,6 +212,40 @@ export const deleteModel = async (model: string) => {
   return "ok"
 }
 
+const truncateMiddle = (text: string, maxLength = 22): string => {
+  if (text.length <= maxLength) return text
+  const available = maxLength - 3
+  const keepEnd = Math.max(3, Math.floor(available / 3))
+  const keepStart = Math.max(4, available - keepEnd)
+  return `${text.slice(0, keepStart)}...${text.slice(-keepEnd)}`
+}
+
+const applyProviderNameToModels = async <
+  T extends { nickname?: string; name?: string; provider_name?: string }
+>(
+  models: T[]
+): Promise<T[]> => {
+  const showProviderNameInModelList = await storage.get<boolean>(
+    "showProviderNameInModelList"
+  )
+  if (!showProviderNameInModelList) {
+    return models
+  }
+  return models.map((model) => {
+    if (!model?.provider_name) {
+      return model
+    }
+    const baseLabel = model.nickname || model.name
+    const shortened = baseLabel ? truncateMiddle(baseLabel) : ""
+    return {
+      ...model,
+      nickname: shortened
+        ? `${shortened} · ${model.provider_name}`
+        : model.provider_name
+    }
+  })
+}
+
 export const fetchChatModels = async ({
   returnEmpty = false
 }: {
@@ -236,7 +271,11 @@ export const fetchChatModels = async ({
 
     const customModels = await ollamaFormatAllCustomModels("chat")
 
-    return [...chatModels, ...chromeModel, ...customModels]
+    return await applyProviderNameToModels([
+      ...chatModels,
+      ...chromeModel,
+      ...customModels
+    ])
   } catch (e) {
     console.error("error", e)
     const allModels = await getAllModels({ returnEmpty })
@@ -248,7 +287,11 @@ export const fetchChatModels = async ({
     })
     const chromeModel = await getChromeAIModel()
     const customModels = await ollamaFormatAllCustomModels("chat")
-    return [...models, ...chromeModel, ...customModels]
+    return await applyProviderNameToModels([
+      ...models,
+      ...chromeModel,
+      ...customModels
+    ])
   }
 }
 

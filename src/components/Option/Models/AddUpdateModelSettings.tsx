@@ -12,6 +12,7 @@ import {
 import { Loader2 } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
+import { isThinkingCapableModel, isGptOssModel } from "@/libs/model-utils"
 
 type Props = {
   model_id: string
@@ -34,7 +35,7 @@ export const AddUpdateModelSettings: React.FC<Props> = ({
       const data = await getModelSettings(model_id)
       form.setFieldsValue({
         ...data,
-        thinking: data?.thinking || false
+        thinking: data?.thinking !== false
       })
       return data
     },
@@ -113,11 +114,14 @@ export const AddUpdateModelSettings: React.FC<Props> = ({
             />
           </Form.Item>
 
-          <Form.Item
-            name="thinking"
-            label={t("modelSettings.form.thinking.label")}>
-            <Switch />
-          </Form.Item>
+          {isThinkingCapableModel(model_id) && !isGptOssModel(model_id) && (
+            <Form.Item
+              name="thinking"
+              valuePropName="checked"
+              label={t("modelSettings.form.thinking.label")}>
+              <Switch />
+            </Form.Item>
+          )}
 
           <Collapse
             ghost
@@ -214,11 +218,13 @@ export const AddUpdateModelSettings: React.FC<Props> = ({
                     </Form.Item>
                     <Form.Item
                       name="useMMap"
+                      valuePropName="checked"
                       label={t("modelSettings.form.useMMap.label")}>
                       <Switch />
                     </Form.Item>
                     <Form.Item
                       name="useMlock"
+                      valuePropName="checked"
                       label={t("modelSettings.form.useMlock.label")}>
                       <Switch />
                     </Form.Item>

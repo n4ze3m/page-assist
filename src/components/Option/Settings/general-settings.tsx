@@ -136,6 +136,8 @@ export const GeneralSettings = () => {
     "showMcpServersInChat",
     true
   )
+  const [showProviderNameInModelList, setShowProviderNameInModelList] =
+    useStorage("showProviderNameInModelList", false)
   const [mcpHumanInLoop, setMcpHumanInLoop] = useStorage(
     "mcpHumanInLoop",
     false
@@ -662,6 +664,21 @@ export const GeneralSettings = () => {
         <Switch
           checked={showMcpServersInChat}
           onChange={(checked) => setShowMcpServersInChat(checked)}
+        />
+      </div>
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t(
+              "generalSettings.settings.showProviderNameInModelList.label",
+              "Show Provider Name in Model List"
+            )}
+          </span>
+        </div>
+
+        <Switch
+          checked={showProviderNameInModelList}
+          onChange={(checked) => setShowProviderNameInModelList(checked)}
         />
       </div>
       <div className="flex flex-row justify-between">

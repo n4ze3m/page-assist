@@ -49,3 +49,8 @@ keys.json
 
 /docs/.vitepress/cache/
 package-lock.json
+
+# Agents
+.agents
+.claude
+skills-lock.json

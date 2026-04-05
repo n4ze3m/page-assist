@@ -123,6 +123,9 @@
       },
       "mcpHumanInLoop": {
         "label": "Require approval before running MCP tools"
+      },
+      "showProviderNameInModelList": {
+        "label": "Show Provider Name in Model List"
       }
     },
     "sidepanelRag": {

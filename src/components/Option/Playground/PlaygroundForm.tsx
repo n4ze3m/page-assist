@@ -557,7 +557,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
             </span>
             <Switch
               size="small"
-              checked={!!thinking}
+              checked={thinking !== false}
               onChange={(enabled) => setThinking?.(enabled)}
               checkedChildren={t("form.thinking.on")}
               unCheckedChildren={t("form.thinking.off")}
@@ -896,7 +896,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                                 <div className="inline-flex items-center gap-2">
                                   <Brain className="h-5 w-5 dark:text-gray-300" />
                                   <Switch
-                                    checked={!!thinking}
+                                    checked={thinking !== false}
                                     onChange={(e) => setThinking?.(e)}
                                     checkedChildren={t("form.thinking.on")}
                                     unCheckedChildren={t("form.thinking.off")}
