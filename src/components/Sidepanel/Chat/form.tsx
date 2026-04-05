@@ -436,7 +436,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
             </span>
             <Switch
               size="small"
-              checked={!!thinking}
+              checked={thinking !== false}
               onChange={(enabled) => setThinking?.(enabled)}
               checkedChildren={t("form.thinking.on")}
               unCheckedChildren={t("form.thinking.off")}
@@ -720,7 +720,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             <Tooltip title={t("tooltip.thinking")}>
                               <button
                                 type="button"
-                                onClick={() => setThinking?.(!thinking)}
+                                onClick={() =>
+                                  setThinking?.(!(thinking ?? true))
+                                }
                                 className="inline-flex items-center gap-2">
                                 {thinking ?? true ? (
                                   <Brain className="h-4 w-4 text-blue-600 dark:text-blue-400" />

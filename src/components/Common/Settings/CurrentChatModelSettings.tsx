@@ -22,6 +22,7 @@ import { SaveButton } from "../SaveButton"
 import { getOCRLanguage } from "@/services/ocr"
 import { ocrLanguages } from "@/data/ocr-language"
 import { useMessage } from "@/hooks/useMessage"
+import { isThinkingCapableModel, isGptOssModel } from "@/libs/model-utils"
 
 type Props = {
   open: boolean
@@ -113,7 +114,8 @@ export const CurrentChatModelSettings = ({
         numKeep: cUserSettings.numKeep ?? modelSpecificSettings?.numKeep ?? data.numKeep,
         numThread: cUserSettings.numThread ?? modelSpecificSettings?.numThread ?? data.numThread,
         reasoningEffort: cUserSettings?.reasoningEffort ?? modelSpecificSettings?.reasoningEffort,
-        thinking: cUserSettings?.thinking ?? modelSpecificSettings?.thinking
+        thinking:
+          (cUserSettings?.thinking ?? modelSpecificSettings?.thinking) !== false
       })
       return data
     },
@@ -223,11 +225,15 @@ export const CurrentChatModelSettings = ({
               />
             </Form.Item>
 
-            <Form.Item
-              name="thinking"
-              label={t("modelSettings.form.thinking.label")}>
-              <Switch />
-            </Form.Item>
+            {isThinkingCapableModel(selectedModel) &&
+              !isGptOssModel(selectedModel) && (
+                <Form.Item
+                  name="thinking"
+                  valuePropName="checked"
+                  label={t("modelSettings.form.thinking.label")}>
+                  <Switch />
+                </Form.Item>
+              )}
 
             {uploadedFiles.length > 0 && (
               <>
@@ -388,11 +394,13 @@ export const CurrentChatModelSettings = ({
                       </Form.Item>
                       <Form.Item
                         name="useMMap"
+                        valuePropName="checked"
                         label={t("modelSettings.form.useMMap.label")}>
                         <Switch />
                       </Form.Item>
                       <Form.Item
                         name="useMlock"
+                        valuePropName="checked"
                         label={t("modelSettings.form.useMlock.label")}>
                         <Switch />
                       </Form.Item>
