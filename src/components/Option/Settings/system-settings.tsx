@@ -1,14 +1,20 @@
 import { BetaTag } from "@/components/Common/Beta"
+import { SaveButton } from "@/components/Common/SaveButton"
 import { useFontSize } from "@/context/FontSizeProvider"
 import { useMessageOption } from "@/hooks/useMessageOption"
 import {
+  ALL_EXPORT_SECTIONS,
   exportPageAssistData,
-  importPageAssistData
+  ExportSection,
+  getAvailableImportSections,
+  importPageAssistDataFromObject,
+  parseImportFile
 } from "@/libs/export-import"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Select, notification, Switch } from "antd"
+import { Checkbox, Modal, Select, notification, Switch } from "antd"
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Loader2, RotateCcw, Upload } from "lucide-react"
 import { toBase64 } from "@/libs/to-base64"
@@ -63,22 +69,73 @@ export const SystemSettings = () => {
     })
   })
 
+  const SECTION_LABELS: Record<ExportSection, string> = {
+    knowledge: "Knowledge Base",
+    chat: "Chat History",
+    vector: "Vector Embeddings",
+    prompts: "Prompts",
+    oaiConfigs: "OpenAI Configurations",
+    nicknames: "Model Nicknames",
+    models: "Custom Models",
+    mcpServers: "MCP Servers",
+    storageLocal: "Local Settings",
+    storageSync: "Synced Settings"
+  }
+
+  const [exportModalOpen, setExportModalOpen] = useState(false)
+  const [exportSelected, setExportSelected] =
+    useState<ExportSection[]>(ALL_EXPORT_SECTIONS)
+
+  const [importModalOpen, setImportModalOpen] = useState(false)
+  const [importParsedData, setImportParsedData] = useState<any>(null)
+  const [importAvailable, setImportAvailable] = useState<
+    Partial<Record<ExportSection, number>>
+  >({})
+  const [importSelected, setImportSelected] = useState<ExportSection[]>([])
+
+  const exportDataMutation = useMutation({
+    mutationFn: async (sections: ExportSection[]) => {
+      await exportPageAssistData(sections)
+    },
+    onSuccess: () => {
+      setExportModalOpen(false)
+      notification.success({
+        message: "Exported data successfully"
+      })
+    },
+    onError: (error) => {
+      console.error("Export error:", error)
+      notification.error({
+        message: "Export error"
+      })
+    }
+  })
+
   const importDataMutation = useMutation({
-    mutationFn: async (file: File) => {
-      await importPageAssistData(file)
+    mutationFn: async ({
+      data,
+      sections
+    }: {
+      data: any
+      sections: ExportSection[]
+    }) => {
+      await importPageAssistDataFromObject(data, sections)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["fetchChatHistory"]
       })
 
+      setImportModalOpen(false)
+      setImportParsedData(null)
+
       notification.success({
         message: "Imported data successfully"
       })
 
-      setTimeout(() => { 
-        window.location.reload() 
-      }, 1000)   
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
     },
     onError: (error) => {
       console.error("Import error:", error)
@@ -87,6 +144,31 @@ export const SystemSettings = () => {
       })
     }
   })
+
+  const handleImportFileSelected = async (file: File) => {
+    try {
+      const parsed = await parseImportFile(file)
+      const available = getAvailableImportSections(parsed)
+      const availableKeys = Object.keys(available) as ExportSection[]
+
+      if (availableKeys.length === 0) {
+        notification.error({
+          message: "No importable data found in this file"
+        })
+        return
+      }
+
+      setImportParsedData(parsed)
+      setImportAvailable(available)
+      setImportSelected(availableKeys)
+      setImportModalOpen(true)
+    } catch (e) {
+      console.error("Parse import file error:", e)
+      notification.error({
+        message: "Invalid file"
+      })
+    }
+  }
 
   const syncFirefoxData = useMutation({
     mutationFn: firefoxSyncDataForPrivateMode,
@@ -293,7 +375,10 @@ export const SystemSettings = () => {
           {t("generalSettings.system.export.label")}
         </span>
         <button
-          onClick={exportPageAssistData}
+          onClick={() => {
+            setExportSelected(ALL_EXPORT_SECTIONS)
+            setExportModalOpen(true)
+          }}
           className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer w-full sm:w-auto">
           {t("generalSettings.system.export.button")}
         </button>
@@ -321,11 +406,121 @@ export const SystemSettings = () => {
           disabled={importDataMutation.isPending}
           onChange={(e) => {
             if (e.target.files && e.target.files[0]) {
-              importDataMutation.mutate(e.target.files[0])
+              handleImportFileSelected(e.target.files[0])
+              e.target.value = ""
             }
           }}
         />
       </div>
+
+      <Modal
+        title="Export Page Assist Data"
+        open={exportModalOpen}
+        onCancel={() => setExportModalOpen(false)}
+        footer={
+          <SaveButton
+            text="Export"
+            textOnSave="Exported"
+            disabled={
+              exportSelected.length === 0 || exportDataMutation.isPending
+            }
+            onClick={() => exportDataMutation.mutate(exportSelected)}
+            className="!mt-0 w-full justify-center"
+          />
+        }>
+        <p className="text-sm text-gray-600 dark:text-neutral-300 mb-3">
+          Select which data to include in the export file.
+        </p>
+        <Checkbox.Group
+          value={exportSelected}
+          onChange={(values) => setExportSelected(values as ExportSection[])}
+          className="flex flex-col w-full border border-gray-300 dark:border-gray-600 rounded-md overflow-hidden">
+          {ALL_EXPORT_SECTIONS.map((section, idx) => (
+            <label
+              key={section}
+              className={`flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
+                idx < ALL_EXPORT_SECTIONS.length - 1
+                  ? "border-b border-gray-300 dark:border-gray-600"
+                  : ""
+              }`}>
+              <Checkbox value={section}>
+                <span className="text-gray-800 dark:text-neutral-100">
+                  {SECTION_LABELS[section]}
+                </span>
+              </Checkbox>
+            </label>
+          ))}
+        </Checkbox.Group>
+        {exportSelected.includes("knowledge") &&
+          !exportSelected.includes("vector") && (
+            <p className="text-xs text-amber-600 dark:text-amber-400 mt-3">
+              Knowledge entries depend on vector embeddings. Exporting without
+              vectors may leave imports unusable for retrieval.
+            </p>
+          )}
+      </Modal>
+
+      <Modal
+        title="Import Page Assist Data"
+        open={importModalOpen}
+        onCancel={() => {
+          if (importDataMutation.isPending) return
+          setImportModalOpen(false)
+          setImportParsedData(null)
+        }}
+        footer={
+          <SaveButton
+            text="Import"
+            textOnSave="Imported"
+            disabled={
+              importSelected.length === 0 ||
+              !importParsedData ||
+              importDataMutation.isPending
+            }
+            onClick={() =>
+              importDataMutation.mutate({
+                data: importParsedData,
+                sections: importSelected
+              })
+            }
+            className="!mt-0 w-full justify-center"
+          />
+        }>
+        <p className="text-sm text-gray-600 dark:text-neutral-300 mb-3">
+          The file contains the following data. Select which sections to
+          import.
+        </p>
+        <Checkbox.Group
+          value={importSelected}
+          onChange={(values) => setImportSelected(values as ExportSection[])}
+          className="flex flex-col w-full border border-gray-300 dark:border-gray-600 rounded-md overflow-hidden">
+          {(() => {
+            const keys = Object.keys(importAvailable) as ExportSection[]
+            return keys.map((section, idx) => (
+              <label
+                key={section}
+                className={`flex items-center justify-between gap-2 px-3 py-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
+                  idx < keys.length - 1
+                    ? "border-b border-gray-300 dark:border-gray-600"
+                    : ""
+                }`}>
+                <Checkbox value={section}>
+                  <span className="text-gray-800 dark:text-neutral-100">
+                    {SECTION_LABELS[section]}
+                  </span>
+                </Checkbox>
+                <span className="text-xs text-gray-500 dark:text-neutral-400 tabular-nums">
+                  {importAvailable[section]}
+                </span>
+              </label>
+            ))
+          })()}
+        </Checkbox.Group>
+        <p className="text-xs text-amber-600 dark:text-amber-400 mt-3">
+          Importing will merge with or overwrite existing data in the selected
+          sections.
+        </p>
+      </Modal>
 
       <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
         <span className="text-gray-700 dark:text-neutral-50">
