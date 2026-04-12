@@ -1,4 +1,4 @@
-import { isCustomModel } from "@/db/dexie/models"
+import { isCustomModel, isLMStudioModel } from "@/db/dexie/models"
 import { HumanMessage, type MessageContent } from "@langchain/core/messages"
 import { processImageForOCR } from "./ocr"
 
@@ -43,7 +43,7 @@ ${ocrTexts.join("\n\n---\n\n")}`
             {
               type: "text",
               //@ts-ignore
-              text: content[0].text + memoryContext
+              text: content[0].text
             }
           ]
 
@@ -73,8 +73,7 @@ ${ocrTexts.join("\n\n---\n\n")}`
           })
         } else {
           return new HumanMessage({
-            //@ts-ignore
-            content: content[0].text + memoryContext
+            content: (content[0] as any).text
           })
         }
       }
@@ -107,8 +106,24 @@ ${ocrTexts.join("\n\n---\n\n")}`
 
 
     if (Array.isArray(content)) {
+      if (isLMStudioModel(model)) {
+        return new HumanMessage({
+          content: content.map((c: any) => {
+            if (c.type === "image_url") {
+              return {
+                type: "image_url",
+                image_url: {
+                  url: c.image_url
+                }
+              }
+            }
+            return c
+          })
+        })
+      }
+
       return new HumanMessage({
-        content: content?.map((c: any, index: number) => 
+        content: content?.map((c: any, index: number) =>
           c.type === "text" && index === 0 ? { ...c, text: c.text } : c
         )
       })
