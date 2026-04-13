@@ -21,6 +21,10 @@ export const supportLanguage = [
         value: "uk"
     },
     {
+        label: "Čeština",
+        value: "cz"
+    },
+    {
         label: "Russian",
         value: "ru"
     },

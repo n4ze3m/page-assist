@@ -1,0 +1,642 @@
+{
+  "generalSettings": {
+    "title": "Obecná nastavení",
+    "settings": {
+      "heading": "Nastavení webového uživatelského rozhraní",
+      "speechRecognitionLang": {
+        "label": "Jazyk pro rozpoznávání hlasu",
+        "placeholder": "Vyberte jazyk"
+      },
+      "language": {
+        "label": "Jazyk",
+        "placeholder": "Vyberte jazyk"
+      },
+      "darkMode": {
+        "label": "Změnit vzhled",
+        "options": {
+          "light": "Světlý",
+          "dark": "Tmavý"
+        }
+      },
+      "defaultCopilotPrompt": {
+        "label": "Výchozí prompt pro postranní panel (Copilot)",
+        "placeholder": "Vyberte prompt"
+      },
+      "defaultWebUIPrompt": {
+        "label": "Výchozí prompt pro webové rozhraní",
+        "placeholder": "Vyberte prompt"
+      },
+      "copilotResumeLastChat": {
+        "label": "Při otevření postranního panelu pokračovat v posledním chatu (Copilot)"
+      },
+      "turnOnChatWithWebsite": {
+        "label": "Ve výchozím režimu povolit chatování nad stránkou (Copilot)"
+      },
+      "webUIResumeLastChat": {
+        "label": "Po otevření webového rozhraní pokračovat v posledním chatu"
+      },
+      "hideCurrentChatModelSettings": {
+        "label": "Skrýt nastavení modelu v aktuálním chatu"
+      },
+      "restoreLastChatModel": {
+        "label": "Znovu načíst model, který byl použit pro předchozí chaty"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "Odeslat oznámení po dokončení zpracování báze znalostí"
+      },
+      "generateTitle": {
+        "label": "Vygenerovat titulek pomocí AI"
+      },
+      "ollamaStatus": {
+        "label": "Povolit nebo zakázat kontrolu stavu spojení s Ollamou"
+      },
+      "wideMode": {
+        "label": "Povolit režim pro široké obrazovky"
+      },
+      "openReasoning": {
+        "label": "Ve výchozím nastavení automaticky rozevírat obsah přemýšlení"
+      },
+      "defaultThinkingMode": {
+        "label": "Zobrazit stav přemýšlení ve formulářích"
+      },
+      "userChatBubble": {
+        "label": "Použít pro uživatelské zprávy chatovou bublinu"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Automaticky kopírovat odpovědi do schránky"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "Povolit formátování markdown pro zprávy od uživatelů"
+      },
+      "copyAsFormattedText": {
+        "label": "Zkopírovat jako formátovaný text"
+      },
+      "tabMentionsEnabled": {
+        "label": "Povolit zmiňování kartiček (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "Vložit velké množství textu jako soubor"
+      },
+      "ocrLanguage": {
+        "label": "Výchozí jazyk OCR",
+        "placeholder": "Zvolte jazyk pro OCR"
+      },
+      "sidepanelTemporaryChat": {
+        "label": "Nastavit v postranním panelu všechny chaty na dočasné"
+      },
+      "webuiTemporaryChat": {
+        "label": "Nastav ve webovém rozhraní všechny chaty při jejich vytvoření na dočasné"
+      },
+      "removeReasoningTagFromCopy": {
+        "label": "Odstraň ze zkopírovaného textu sekci 'uvažování'"
+      },
+      "youtubeAutoSummarize": {
+        "label": "Zobrazit tlačítko 'Shrnout' na YouTube videích"
+      },
+      "hideReasoningWidget": {
+        "label": "Skrýt ve zprávách od AI widget uvažování"
+      },
+      "persistChatInput": {
+        "label": "Zachovávej vstup chatu (Ukládej neodeslané zprávy)"
+      },
+      "enableMessageQueue": {
+        "label": "Povolit frontu zpráv během streamování"
+      },
+      "optimizeQueueForSmallScreen": {
+        "label": "Optimalizace rozhraní chatu pro malé obrazovky"
+      },
+      "tableTextWrap": {
+        "label": "Povolit v tabulkách Markdown zalamování textu"
+      },
+      "showMoreForLargeMessage": {
+        "label": "Zobrazovat tlačítko 'Zobrazit více' pro velké zprávy napsané člověkem"
+      },
+      "sidebarPosition": {
+        "label": "Umístění postranní lišty",
+        "options": {
+          "left": "Vlevo",
+          "right": "Vpravo"
+        }
+      },
+      "showMcpServersInChat": {
+        "label": "Zobrazit v chatu přepínač serverů MCP"
+      },
+      "mcpHumanInLoop": {
+        "label": "Před spouštěním nástrojů MCP vyžaduj potvrzení"
+      },
+      "showProviderNameInModelList": {
+        "label": "Zobrazit v seznamu modelů jména jejich poskytovatelů"
+      }
+    },
+    "sidepanelRag": {
+      "heading": "Nastavení znalostí (RAG)",
+      "ragEnabled": {
+        "label": "Povolit vkládání a získávání dat"
+      },
+      "maxWebsiteContext": {
+        "label": "Největší velikost obsahu pro režim plného kontextu",
+        "placeholder": "Velikost obsahu (výchozí 4028)"
+      }
+    },
+    "webSearch": {
+      "heading": "Spravovat vyhledávání na internetu",
+      "searchMode": {
+        "label": "Prováděj jednoduchá vyhledávání na internetu"
+      },
+      "provider": {
+        "label": "Vyhledávací engine",
+        "placeholder": "Vyberte vyhledávací engine"
+      },
+      "totalSearchResults": {
+        "label": "Počet využitých výsledků hledání",
+        "placeholder": "Zadejte celkový počet výsledků, které se mají použít"
+      },
+      "visitSpecificWebsite": {
+        "label": "Navštiv webovou stránku zmíněnou ve zprávě"
+      },
+      "searxng": {
+        "url": {
+          "label": "SearXNG URL"
+        }
+      },
+      "braveApi": {
+        "label": "Klíč API Brave",
+        "placeholder": "Zadejte klíč Brave API"
+      },
+      "tavilyApi": {
+        "label": "Klíč API Tavily",
+        "placeholder": "Zadejte klíč Tavily API"
+      },
+      "exa": {
+        "label": "Klíč API Exa",
+        "placeholder": "Zadejte klíč Exa API"
+      },
+      "googleDomain": {
+        "label": "Doména Google"
+      },
+      "searchOnByDefault": {
+        "label": "Vyhledávání na internetu je ve výchozím nastavení ZAPNUTO"
+      },
+      "firecrawlAPIKey": {
+        "label": "Klíč API Firecrawl",
+        "placeholder": "Zadejte klíč Firecrawl API"
+      },
+      "domainFilter": {
+        "label": "Filtr dle seznamu domén",
+        "description": "Zobrazuj výsledky jen z těchto domén",
+        "placeholder": "např. example.com"
+      },
+      "blockedDomains": {
+        "label": "Zakázené domény",
+        "description": "Nepoužívej výsledky z těchto domén",
+        "placeholder": "např. spam.com"
+      }
+    },
+    "system": {
+      "heading": "Nastavení systému",
+      "deleteChatHistory": {
+        "label": "Reset systému",
+        "button": "Resetovat všechno",
+        "confirm": "Jste si jisti, že chcete provést úplný reset? Vymažete tím všechna data (nenávratně tak o ně přijdete)."
+      },
+      "export": {
+        "label": "Exportovat všechna data (Historie chatů, báze znalostí, prompty a nastavení)",
+        "button": "Exportovat data",
+        "success": "Úspěšně exportováno"
+      },
+      "import": {
+        "label": "Importovat data (Historie chatů, báze znalostí, prompty a nastavení)",
+        "button": "Importovat data",
+        "success": "Úspěšně importováno",
+        "error": "Chyba importu"
+      },
+      "actionIcon": {
+        "label": "Nastavit výchozí akci pro kliknutí na ikonku rozšíření"
+      },
+      "contextMenu": {
+        "label": "Nastavit výchozí akci pro kontextovou nabídku"
+      },
+      "fontSize": {
+        "label": "Velikost písma"
+      },
+      "webuiBtnSidePanel": {
+        "label": "Show Web UI Button in Side Panel"
+      },
+      "chatBackgroundImage": {
+        "label": "Obrázek na pozadí chatu"
+      },
+      "storageSyncEnabled": {
+        "label": "Povolit synchronizaci přes úložiště prohlížeče (sladění nastavení napříč zařízeními)"
+      }
+    },
+    "tts": {
+      "heading": "Nastavení TTS",
+      "ttsEnabled": {
+        "label": "Povolit Text-to-Speech"
+      },
+      "ttsAutoPlay": {
+        "label": "Automaticky přehraj hlasovou odpověď po dokončení generace"
+      },
+      "ttsProvider": {
+        "label": "Poskytovatel TTS",
+        "placeholder": "Vyberte poskytovatele"
+      },
+      "ttsVoice": {
+        "label": "Hlas TTS",
+        "placeholder": "Vyberte hlas"
+      },
+      "ssmlEnabled": {
+        "label": "Povolit SSML (Speech Synthesis Markup Language)"
+      },
+      "responseSplitting": {
+        "label": "Rozdělování odpovědi"
+      },
+      "removeReasoningTagTTS": {
+        "label": "Nepředávat TTS obsah uvažování"
+      }
+    },
+    "stt": {
+      "heading": "Nastavení mluveného slova na text (Speech-to-Text)",
+      "autoStopTimeout": {
+        "label": "Časový práh pro automatické zastavení (ms)",
+        "placeholder": "Zadejte čas pro auto-stop v milisekundách"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "Automaticky odesílat hlasové zprávy"
+      }
+    }
+  },
+  "manageModels": {
+    "title": "Spravovat modely",
+    "addBtn": "Přidat model",
+    "columns": {
+      "name": "Název",
+      "digest": "Digest",
+      "nickname": "Přezdívka",
+      "modifiedAt": "Upraven",
+      "size": "Velikost",
+      "actions": "Akce"
+    },
+    "expandedColumns": {
+      "parentModel": "Mateřský model",
+      "format": "Formát",
+      "family": "Rodina",
+      "parameterSize": "Velikost parametrů",
+      "quantizationLevel": "Úroveň kvantifikace"
+    },
+    "tooltip": {
+      "delete": "Smazat model",
+      "repull": "Znovu stáhnout model",
+      "editNickname": "Upravit přezdívku"
+    },
+    "confirm": {
+      "delete": "Jste si jisti že chcete tento model smazat?",
+      "repull": "Jste si jisti že chcete tento model znovu stáhnout?"
+    },
+    "modal": {
+      "title": "Přidat nový model",
+      "placeholder": "Zadejte název modelu",
+      "pull": "Stáhnout model"
+    },
+    "notification": {
+      "pullModel": "Stahuji model",
+      "pullModelDescription": "Stahuji model {{modelName}}. Pro podrobnosti rozklikněte ikonku rozšíření.",
+      "cancellingDownload": "Ruším stahování",
+      "cancellingDownloadDescription": "Ruším stahování modelu...",
+      "success": "Zdařilo se",
+      "error": "Chyba",
+      "successDescription": "Model byl stáhnut",
+      "successDeleteDescription": "Model byl smazán",
+      "someError": "Něco se pokazilo. Zkuste to znovu později"
+    }
+  },
+  "managePrompts": {
+    "title": "Spravovat prompty",
+    "addBtn": "Přidat prompt",
+    "option1": "Normální",
+    "option2": "RAG",
+    "questionPrompt": "Otázkový prompt",
+    "segmented": {
+      "custom": "Vlastní prompty",
+      "copilot": "Prompty Copilot"
+    },
+    "columns": {
+      "title": "Titulek",
+      "prompt": "Prompt",
+      "type": "Druh promptu",
+      "actions": "Akce"
+    },
+    "systemPrompt": "Systémový prompt",
+    "quickPrompt": "Rychlý prompt",
+    "tooltip": {
+      "delete": "Smazat prompt",
+      "edit": "Upravit prompt"
+    },
+    "confirm": {
+      "delete": "Jste si smazáním tohoto promptu jisti? Tuto akci nelze vzít zpět."
+    },
+    "modal": {
+      "addTitle": "Přidat prompt",
+      "editTitle": "Upravit prompt"
+    },
+    "form": {
+      "title": {
+        "label": "Titulek",
+        "placeholder": "Můj úžasný prompt",
+        "required": "Prosím, zadejte titulek"
+      },
+      "prompt": {
+        "label": "Prompt",
+        "placeholder": "Zadejte prompt",
+        "required": "Zadejte, prosím, prompt",
+        "help": "Můžete použít {klíč} jako proměnnou.",
+        "missingTextPlaceholder": "Proměnná {text} v promptu chybí. Prosím, přidejte ji."
+      },
+      "isSystem": {
+        "label": "Je systémovým propmtem"
+      },
+      "btnSave": {
+        "saving": "Přidávám prompt...",
+        "save": "Přidat prompt"
+      },
+      "btnEdit": {
+        "saving": "Aktualizuji prompt...",
+        "save": "Aktualizuj prompt"
+      }
+    },
+    "notification": {
+      "addSuccess": "Prompt přidán",
+      "addSuccessDesc": "Prompt byl přidán",
+      "error": "Chyba",
+      "someError": "Něco se zvrhlo. Prosím, zkuste to znovu později",
+      "updatedSuccess": "Prompt aktualizován",
+      "updatedSuccessDesc": "Prompt byl aktualizován",
+      "deletedSuccess": "Prompt smazán",
+      "deletedSuccessDesc": "Prompt byl smazán"
+    }
+  },
+  "manageShare": {
+    "title": "Spravovat sdílení",
+    "heading": "Nastavit URL sdílení",
+    "form": {
+      "url": {
+        "label": "URL sdílení stránky",
+        "placeholder": "Zadejte URL sdílení stránky",
+        "required": "Prosím, zadejte URL!",
+        "help": "Pro ochranu soukromí si můžete sami hostovat stránku z funkce 'page-share' a zde pak zadáte URL. <anchor>Přečíst si více</anchor>."
+      }
+    },
+    "webshare": {
+      "heading": "Sdílení webu",
+      "columns": {
+        "title": "Titulek",
+        "url": "URL",
+        "actions": "Akce"
+      },
+      "tooltip": {
+        "delete": "Smazat sdílení"
+      },
+      "confirm": {
+        "delete": "Jste si jisti smazáním? Tuto akci nelze vzít zpět."
+      },
+      "label": "Spravovat sdílení stránky",
+      "description": "Povolit nebo vypnout funkci sdílení stránky"
+    },
+    "notification": {
+      "pageShareSuccess": "URL sdílení stránky aktualizována",
+      "someError": "Něco se podělalo. Zkuste to znovu později",
+      "webShareDeleteSuccess": "Sdílení webu bylo smazáno"
+    }
+  },
+  "ollamaSettings": {
+    "title": "Nastavení Ollama",
+    "heading": "Konfigurace Ollama",
+    "settings": {
+      "ollamaUrl": {
+        "label": "Ollama URL",
+        "placeholder": "Zadejte URL k Ollama"
+      },
+      "globalEnable": {
+        "label": "Globálně povolit nebo vypnout integraci Ollama",
+        "warning": "Vypnutím integrace Page Assist přestane načítat modely z Ollamy. Můžete i tak přidat instance Ollamy ze sekce nastavení <anchor>OpenAI compatible API</anchor>, což taktéž funguje dobře."
+      },
+      "advanced": {
+        "label": "Pokročilá konfigurace Ollama URL",
+        "urlRewriteEnabled": {
+          "label": "Povolit nebo vypnout vlastní Origin URL"
+        },
+        "rewriteUrl": {
+          "label": "Vlastní Origin URL",
+          "placeholder": "Zadejte vlastní Origin URL"
+        },
+        "autoCORSFix": {
+          "label": "Vypnutí nebo zapnutí automatické opravy Ollama CORS"
+        },
+        "headers": {
+          "label": "Vlastní hlavičky",
+          "add": "Přidat hlavičku",
+          "key": {
+            "label": "Klíč hlavičky",
+            "placeholder": "Autorizace"
+          },
+          "value": {
+            "label": "Hodnota hlavičky",
+            "placeholder": "Bearer token"
+          }
+        },
+        "help": "Pokud máte potíže s využíváním Ollamy, můžete nastavit vlastní origin URL. Pro více informací ke konfiguraci <anchor>klikněte zde</anchor>."
+      }
+    }
+  },
+  "manageSearch": {
+    "title": "Spravovat vyhledávání na webu",
+    "heading": "Nastavení vyhledávání na webu"
+  },
+  "mcpSettings": {
+    "title": "MCP servery",
+    "heading": "Spravovat servery MCP",
+    "subheading": "Přidejte HTTP MCP servery pro běžné chaty, včetně autorizace bearer a vlastních hlaviček.",
+    "addBtn": "Přidat server MCP",
+    "humanInLoop": {
+      "label": "Před spuštěním nástrojů MCP vyžadovat schválení",
+      "description": "Doporučeno pro servery MCP s oprávněními pro zápis, spouštění nebo pro servery, které mohou vyvolat další vedlejší účinky. Níže naleznete nastavení jednotlivých nástrojů.",
+      "enabledHint": "Nastavení 'Human-in-the-loop' je povoleno. Nástroje MCP si budou muset před spuštěním vyžádat povolení.",
+      "disabledHint": "Nástroje MCP běží ve výchozím nastavení bez povolení. Tuto možnost zapněte pokud server MCP může zapisovat soubory, upravovat data, odesílat zprávy nebo provádět jiné, potencionálně nebezpečné nebo destruktivní úkony."
+    },
+    "table": {
+      "name": "Jméno",
+      "url": "URL",
+      "tools": "Nakešované nástroje",
+      "status": "Validace",
+      "notValidated": "Ještě nevalidováno",
+      "toolsUnavailable": "Žádné nakešované nástroje",
+      "auth": "Auth",
+      "enabled": "Povoleno",
+      "actions": "Akce",
+      "toolName": "Název nástroje",
+      "toolDescription": "Popis"
+    },
+    "actions": {
+      "refreshTools": "Znovu načíst nástroje",
+      "enable": "Povolit",
+      "disable": "Zakázat"
+    },
+    "status": {
+      "ready": "{{count}} dostupný/ch nástroj/e/ů",
+      "failed": "Validace selhala",
+      "notValidated": "Nevalidováno",
+      "lastChecked": "Naposledy zkontrolováno: {{value}}"
+    },
+    "auth": {
+      "none": "No auth",
+      "bearer": "Bearer token"
+    },
+    "modal": {
+      "titleAdd": "Přidat MCP server",
+      "titleEdit": "Upravit MCP server",
+      "deleteConfirm": "Smazat {{name}}?",
+      "name": {
+        "label": "Název serveru",
+        "placeholder": "Můj MCP server",
+        "required": "Prosím, zadejte název serveru"
+      },
+      "url": {
+        "label": "URL serveru",
+        "placeholder": "https://example.com/mcp",
+        "help": "Prozatím jsou podporovány jen koncové body HTTP MCP přes HTTP nebo HTTPS.",
+        "required": "Prosím, zadejte URL serveru",
+        "invalid": "Prosím, zadejte platnou URL HTTP nebo HTTPS"
+      },
+      "transportNotice": {
+        "title": "Transport support",
+        "description": "Page Assist supports Streamable HTTP MCP servers only. Legacy SSE endpoints such as /sse or /messages?sessionId=... are not supported."
+      },
+      "auth": {
+        "label": "Autentikace"
+      },
+      "bearerToken": {
+        "label": "Bearer Token",
+        "placeholder": "Zadejte bearer token",
+        "required": "Zadejte bearer token"
+      },
+      "enabled": {
+        "label": "Povolit globálně"
+      },
+      "headers": {
+        "label": "Vlastní hlavičky",
+        "add": "Přidat hlavičku",
+        "key": {
+          "label": "Klíč hlavičky",
+          "placeholder": "X-Request-ID"
+        },
+        "value": {
+          "label": "Hodnota hlavičky",
+          "placeholder": "value"
+        }
+      },
+      "validation": {
+        "title": "Validatovat nástroje",
+        "help": "Připojte se k MCP serveru, načtěte dostupné nástroje a před uložením je nakešujte. Validace očekává koncový bod typu Streamable HTTP MCP.",
+        "button": "Validovat a načíst nástroje",
+        "availableTools": "Dostupné nástroje",
+        "idle": "Validujte tento server abyste potvrdili spojení a načetli dostupné nástroje.",
+        "stale": "Podrobností spojení se změnily. Pro znovunačtení nakešovaných nástrojů znovu proveďte validaci.",
+        "failed": "Tento MCP server se nepodařilo validovat.",
+        "success": "Úspěšně validováno. Nyní je dostupný/ch {{count}} nástroj/e/ů.",
+        "syncedAt": "Naposledy synchronizováno: {{value}}",
+        "saveHint": "Uložení provede validaci stávající konfigurace, pokud je seznam nakešovaných nástrojů zastaralý nebo pokud chybí."
+      },
+      "submit": "Uložit MCP server",
+      "update": "Aktualizovat MCP server"
+    },
+    "notification": {
+      "added": "MCP server přidán",
+      "updated": "MCP server aktualizován",
+      "deleted": "MCP server smazán",
+      "validated": "Načten/o {{count}} MCP nástroj/e/ů",
+      "toolsRefreshed": "Znovu načteny nástroje pro {{name}}",
+      "validationFailedTitle": "Validace MCP selhala",
+      "storageBlockedTitle": "Page Assist nemůže uložit data",
+      "storageBlockedDescription": "Režim anonymního prohlížení ve Firefoxu neumožňuje ukládání dat do IndexedDB. Servery MCP, prosím, spravujte v normálním okně."
+    }
+  },
+  "about": {
+    "title": "O programu",
+    "heading": "O programu",
+    "chromeVersion": "Verze Page Assist",
+    "ollamaVersion": "Verze Ollama",
+    "support": "Projekt Page Assist můžete podpořit darováním nebo sponzorováním skrze následující platformy:",
+    "koFi": "Podpora na Ko-fi",
+    "githubSponsor": "Sponsoring na GitHubu",
+    "githubRepo": "Repozitář GitHub"
+  },
+  "manageKnowledge": {
+    "title": "Spravovat znalosti",
+    "heading": "Spravovat bázi znalostí"
+  },
+  "rag": {
+    "title": "Nastavení RAG pipeline",
+    "ragSettings": {
+      "label": "Nastavení RAG",
+      "model": {
+        "label": "Vkládací model",
+        "required": "Prosím, zvolte model",
+        "help": "Doporučujeme využít vkládací modely, například `nomic-embed-text`.",
+        "placeholder": "Vyberte model"
+      },
+      "chunkSize": {
+        "label": "Velikost dávky informace (chunk)",
+        "placeholder": "Zadejte velikost chunku",
+        "required": "Zadejte velikost chunku"
+      },
+      "chunkOverlap": {
+        "label": "Přesah dávky informace",
+        "placeholder": "Zadejte přesah dávky informace",
+        "required": "Zadejte přesah dávky informace"
+      },
+      "totalFilePerKB": {
+        "label": "Omezení velikosti souborů pro bázi znalostí",
+        "placeholder": "Zadejte limit (např. 10)",
+        "required": "Zadejte, prosím, výchozí limit"
+      },
+      "noOfRetrievedDocs": {
+        "label": "Počet navracených dokumentů",
+        "placeholder": "Zadejte číslo počtu navracených dokumentů",
+        "required": "Zadejte číslo počtu navracených dokumentů"
+      },
+      "splittingSeparator": {
+        "label": "Oddělovač",
+        "placeholder": "Zadejte oddělovač (např. \\n\\n)",
+        "required": "Zadejte oddělovač"
+      },
+      "splittingStrategy": {
+        "label": "Rozdělovač textu"
+      }
+    },
+    "prompt": {
+      "label": "Nastavení promptu RAG",
+      "option1": "Normal",
+      "option2": "Web",
+      "alert": "Nastavování promptu v tomto oddílu nastavení je zastaralé. Pro nastavení, prosím, využijte oddíl Správa promptů.",
+      "systemPrompt": "System Prompt",
+      "systemPromptPlaceholder": "Enter System Prompt",
+      "webSearchPrompt": "Web Search Prompt",
+      "webSearchPromptHelp": "Do not remove `{search_results}` from the prompt.",
+      "webSearchPromptError": "Please enter a web search prompt",
+      "webSearchPromptPlaceholder": "Enter Web Search Prompt",
+      "webSearchFollowUpPrompt": "Web Search Follow Up Prompt",
+      "webSearchFollowUpPromptHelp": "Do not remove `{chat_history}` and `{question}` from the prompt.",
+      "webSearchFollowUpPromptError": "Please input your Web Search Follow Up Prompt!",
+      "webSearchFollowUpPromptPlaceholder": "Your Web Search Follow Up Prompt"
+    }
+  },
+  "chromeAiSettings": {
+    "title": "Nastavení Chrome AI"
+  },
+  "memory": {
+    "enableMemoryTool": {
+      "label": "Povolit nástroj paměti"
+    }
+  },
+  "mermaid": "Mermaid"
+}

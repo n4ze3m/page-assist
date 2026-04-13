@@ -1,0 +1,234 @@
+{
+    "pageAssist": "Page Assist",
+    "selectAModel": "Zvolte model",
+    "save": "Uložit",
+    "saved": "Uloženo",
+    "cancel": "Zrušit",
+    "retry": "Zkusit znovu",
+    "loadMore": "Načíst více...",
+    "share": {
+        "tooltip": {
+            "share": "Sdílet"
+        },
+        "modal": {
+            "title": "Sdílet odkaz na chat"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "Anonym",
+                "title": "Nepojmenovaný chat"
+            },
+            "title": {
+                "label": "Název chatu",
+                "placeholder": "Zadejte Název chatu",
+                "required": "Musíte zadat název chatu"
+            },
+            "name": {
+                "label": "Vaše jméno",
+                "placeholder": "Zadejte Vaše jméno",
+                "required": "Vaše jméno je vyžadováno"
+            },
+            "btn": {
+                "save": "Vytvořit odkaz",
+                "saving": "Vytvářím odkaz..."
+            }
+        },
+        "notification": {
+            "successGenerate": "Odkaz zkopírován do schránky",
+            "failGenerate": "Nepodařilo se vytvořit odkaz"
+        }
+    },
+    "copyToClipboard": "Zkopírovat do schránky",
+    "webSearch": "Vyhledávám na webu",
+    "regenerate": "Regenerovat",
+    "edit": "Upravit",
+    "delete": "Smazat",
+    "continue": "Pokračuj v odpovědi",
+    "saveAndSubmit": "Uložit a odeslat",
+    "editMessage": {
+        "placeholder": "Zadejte zprávu..."
+    },
+    "submit": "Odeslat",
+    "noData": "Bez dat",
+    "noHistory": "Žádná historie chatů",
+    "chatWithCurrentPage": "Chatovat nad aktuální stránkou",
+    "beta": "Beta",
+    "tts": "Přečíst nahlas",
+    "currentChatModelSettings": "Nynější nastavení modelu",
+    "modelSettings": {
+        "label": "Nastavení modelu",
+        "description": "Nastavte parametry modelu pro všechny chaty (globálně)",
+        "form": {
+            "keepAlive": {
+                "label": "Udržování naživu",
+                "help": "ovlivňuje jak dlouho po posledním požadavku zůstane model načtený v paměti (výchozí: 5m)",
+                "placeholder": "e.g. 5m, 10m, 1h"
+            },
+            "temperature": {
+                "label": "Teplota",
+                "placeholder": "např. 0.7, 1.0"
+            },
+            "numCtx": {
+                "label": "Velikost kontextového okna (num_ctx)",
+                "placeholder": "Zadejte hodnotu velikosti kontextového okna (výchozí: 2048)"
+            },
+            "numPredict": {
+                "label": "Nejvíce tokenů (num_predict)",
+                "placeholder": "např. 2048, 4096"
+            },
+            "thinking": {
+                "label": "Režim přemýšlení (Ollama)",
+                "levels": {
+                    "off": "Vypnuto",
+                    "on": "Zapnuto",
+                    "low": "Low reasoning effort",
+                    "medium": "Medium reasoning effort",
+                    "high": "High reasoning effort"
+                }
+            },
+            "seed": {
+                "label": "Semeno",
+                "placeholder": "např. 1234",
+                "help": "Reprodukovatelnost výstupu modelu"
+            },
+            "topK": {
+                "label": "Top K",
+                "placeholder": "např. 40, 100"
+            },
+            "topP": {
+                "label": "Top P",
+                "placeholder": "např. 0.9, 0.95"
+            },
+            "useMMap": {
+                "label": "useMmap"
+            },
+            "tfsZ": {
+                "label": "TFS-Z",
+                "placeholder": "např. 1.0, 1.1"
+            },
+            "numKeep": {
+                "label": "Num Keep",
+                "placeholder": "např. 256, 512"
+            },
+            "numThread": {
+                "label": "Počet vláken (Num Thread)",
+                "placeholder": "např. 8, 16"
+            },
+            "useMlock": {
+                "label": "useMlock"
+            },
+            "reasoningEffort": {
+                "label": "Snaha v uvažování",
+                "placeholder": "low, medium, high"
+            },
+            "minP": {
+                "label": "Min P",
+                "placeholder": "např. 0.05"
+            },
+            "repeatPenalty": {
+                "label": "Penále za opakování se",
+                "placeholder": "např. 1.1, 1.2"
+            },
+            "repeatLastN": {
+                "label": "Opakuj posledních N (Repeat Last N)",
+                "placeholder": "např. 64, 128"
+            },
+            "numGpu": {
+                "label": "Vrstev na GPU (Num GPU)",
+                "placeholder": "Zadejte počet vrstev odesílaných na GPU"
+            },
+            "systemPrompt": {
+                "label": "Dočasný systémový prompt",
+                "placeholder": "Zadejte systémový prompt",
+                "help": "Tohle je snadný způsob jak nastavit (nebo pokud existuje tak přepsat) systémový prompt v tomto chatu."
+            }
+        },
+        "advanced": "Další nastavení modelu"
+    },
+    "copilot": {
+        "summary": "Shrň",
+        "explain": "Vysvětli",
+        "rephrase": "Přeformuluj",
+        "translate": "Přelož",
+        "custom": "Vlastní"
+    },
+    "citations": "Citace",
+    "segmented": {
+        "ollama": "Modely Ollama",
+        "custom": "Vlastní modely"
+    },
+    "downloadCode": "Stáhnout kód",
+    "date": {
+        "pinned": "Připnuté",
+        "today": "Dnes",
+        "yesterday": "Včera",
+        "last7Days": "Posledních 7 dnů",
+        "older": "Starší"
+    },
+    "range": {
+        "deleteConfirm": {
+            "pinned": "Jste si jist/a, že chcete smazat všechny připnuté zprávy?",
+            "today": "Jste si jist/a, že chcete smazat všechny zprávy napsané dnes?",
+            "yesterday": "Jste si jist/a, že chcete smazat všechny zprávy napsané včera?",
+            "last7Days": "Jste si jist/a, že chcete smazat všechny zprávy za posledních 7 dnů?",
+            "older": "Jste si jist/a, že chcete smazat všechny starší zprávy?"
+        },
+        "tooltip": {
+            "pinned": "Smazat všechny připnuté zprávy",
+            "today": "Smazat všechny dnešní zprávy",
+            "yesterday": "Smazat všechny včerejší zprávy",
+            "last7Days": "Smazat všechny zprávy za posledních 7 dnů",
+            "older": "Smazat všechny starší zprávy"
+        }
+    },
+    "historiesDeleted": "{{count}} Histories Deleted",
+    "deleteHistoriesError": "Chyba při mazání historie",
+    "pin": "Připnout",
+    "unpin": "Odepnout",
+    "generationInfo": "Informace o generování",
+    "sidebarChat": "Postranní chat",
+    "reasoning": {
+        "thinking": "Přemýšlím....",
+        "thought": "Přemýšlel jssem {{time}}",
+        "title": "Proces uvažování",
+        "expand": "Zobraz uvažování",
+        "collapse": "Skryj uvažování"
+    },
+    "mermaid": "Mermaid",
+    "search": "Vyhledávání",
+    "searchResults": "Výsledky vyhledávání",
+    "embeddingGen": "Vyvtářím vklady, což může chvíli trvat",
+    "semanticSearch": "Provádím sémantické vyhledávání",
+    "newBranch": "Nová větev",
+    "downloading": "Stahuji" ,
+    "mcp": {
+        "tool": "nástroj",
+        "server": "server",
+        "toolRequestTitle": "Požadované nástroje",
+        "toolResultTitle": "Výstup nástroje",
+        "arguments": "Argumenty",
+        "output": "Výstup",
+        "approvalRequired": "Vyžadováno povolení",
+        "approvalPrompt": "Povolte toto volání nástroje MCP.",
+        "approve": "Povolit",
+        "reject": "Zamítnout",
+        "rejectWithReason": "Odmítnuto s poznámkou",
+        "rejectionReasonPlaceholder": "Optional rejection reason",
+        "noOutput": "Bez výstupu.",
+        "status": {
+            "success": "Úspěch",
+            "error": "Chyba"
+        },
+        "action": {
+            "connecting": "Spojuji se se servery MCP",
+            "loading_tools": "Načítám sadu nástrojů MCP",
+            "awaiting_approval": "Čekám na povolení spuštění nástroje {{tool}} na {{server}}",
+            "calling_tool": "Volám {{tool}} na {{server}}",
+            "waiting_result": "Čekám na nástroj {{tool}} na {{server}}"
+        }
+    },
+    "cancelPullingModel": {
+        "confirm": "Jste si jisti, že chcete zastavit stahování modelu? Dle dokumentace Ollamy můžete ve stahování později pokračovat z místa, kde jste stahování ukončili."
+    },
+    "saveChat": "Uložit chat"
+}

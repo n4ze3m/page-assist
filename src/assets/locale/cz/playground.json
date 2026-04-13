@@ -1,0 +1,50 @@
+{
+    "ollamaState": {
+        "searching": "Vyhledávám Vaší instanci Ollama 🦙",
+        "running": "Ollama běží 🦙",
+        "notRunning": "Nepodařilo se spojit s Ollamou 🦙",
+        "connectionError": "Zdá se, že máte problém se spojením. Prosím, podívejte se do <anchor>dokumentace</anchor> jako ho vyřešit."
+    },
+    "formError": {
+        "noModel": "Prosím vyberte model",
+        "noEmbeddingModel": "Prosím, zvolte na stránce /Nastavení > RAG/ vkládací model"
+    },
+    "form": {
+        "textarea": {
+            "placeholder": "Zadejte zprávu..."
+        },
+        "webSearch": {
+            "on": "Zapnuto",
+            "off": "Vypnuto"
+        },
+        "thinking": {
+            "on": "Zapnuto",
+            "off": "Vypnuto",
+            "level": "Úroveň",
+            "levels": {
+                "low": "Nízká",
+                "medium": "Střední",
+                "high": "Vysoká"
+            }
+        }
+    },
+    "tooltip": {
+        "searchInternet": "Vyhledávej na internetu",
+        "thinking": "Povolte režim uvažování abyste mohli zobrazit proces přemýšlení daného modelu",
+        "speechToText": "Mluvené slovo na text",
+        "uploadImage": "Nahrát obrázek",
+        "stopStreaming": "Zastavit živý proud",
+        "knowledge": "Znalost",
+        "vision": "[Experimental] Vision Chat",
+        "clearContext": "Vymazat kontext",
+        "uploadDocuments": "Nahrát dokumenty (beta)",
+        "mcpServers": "MCP servery",
+        "mcpEmpty": "Nejsou nastaveny žádné MCP servery",
+        "mcpEmptyDesc": "Připojte servery MCP pro využití nástrojů v chatu.",
+        "mcpAddServer": "Přidat server MCP"
+    },
+    "sendWhenEnter": "Odeslat při stisknutí Enteru",
+    "welcome": "Zdravím! Jak Vám dnes mohu pomoct?",
+    "useOCR": "Extrakce textu z obrázku (OCR)",
+    "fileRetrievalEnabled": "Povolit pro dokumenty systém RAG"
+}

@@ -1,0 +1,92 @@
+{
+    "addBtn": "Přidat nové znalosti",
+    "columns": {
+        "title": "Titulek",
+        "status": "Stav",
+        "embeddings": "Vkládací model",
+        "createdAt": "Vytvořeno",
+        "action": "Akce"
+    },
+    "expandedColumns": {
+        "name": "Jméno"
+    },
+    "confirm": {
+        "delete": "Jste si smazáním této znalosti jisti?",
+        "deleteSource": "Jste si smazáním tohoto zdroje jisti?"
+    },
+    "deleteSuccess": "Znalost smazána",
+    "status": {
+        "pending": "Očekávám",
+        "finished": "Hotovo",
+        "processing": "Zpracovávám",
+        "failed": "Selhalo"
+    },
+    "addKnowledge": "Přidat znalosti",
+    "updateKnowledge": "Přidat zdroje",
+    "form": {
+        "tabs": {
+            "upload": "Nahrát soubor",
+            "text": "Textový vstup"
+        },
+        "title": {
+            "label": "Název znalosti (nepovinné)",
+            "placeholder": "Zadejte titulek znalosti",
+            "placeholderOptional": "Doplňkový titulek (pokud nezadáte, použije se prvních 50 znaků)",
+            "required": "Knowledge title is required"
+        },
+        "uploadFile": {
+            "label": "Nahrát soubor",
+            "uploadText": "Přetáhněte sem soubor nebo klikněte pro jeho vybrání k nahrání",
+            "uploadHint": "Podporované typy souborů: .pdf, .csv, .txt, .md, .docx",
+            "required": "Soubor je vyžadován",
+            "uploadError": "Nepodporovaný typ souboru"
+        },
+        "textInput": {
+            "typeLabel": "Typ",
+            "type": {
+                "plain": "Čistý text",
+                "markdown": "Markdown",
+                "code": "Kód"
+            },
+            "contentLabel": "Obsah",
+            "placeholder": "Sem vložte nebo vepište Váš text...",
+            "required": "Obsah je vyžadován",
+            "tooLarge": "Obsah je příliš velký. Prosím, nepřekračujte hranici 500 tisíc znaků.",
+            "defaultTitle": "Nepojmenovaný text"
+        },
+        "submit": "Odeslat",
+        "success": "Znalost úspěšně přidána"
+    },
+    "noEmbeddingModel": "Prosím, nejprve přidejte vkládací model ze stránky nastavení RAG.",
+    "newSource": "Nový zdroj",
+    "editSettings": {
+        "title": "Spravovat nastavení znalosti",
+        "success": "Nastavení znalosti byla aktualizována",
+        "variableInfo": {
+            "title": "Dostupné proměnné",
+            "description": "Ve svých promptech můžete používat následující proměnné:",
+            "context": "Kontext navrácený Vaší znalostní bází",
+            "query": "Uživatelův dotaz nebo vstup"
+        },
+        "form": {
+            "title": {
+                "label": "Název znalosti",
+                "placeholder": "Zadejte název znalosti",
+                "required": "Zadání názvu znalosti je požadováno"
+            },
+            "systemPrompt": {
+                "label": "Systémový prompt",
+                "help": "Přizpůsobte si jak AI využívá Vaší znalostní bázi a jak odpovídá. Použijte {context} pro navrácené informace a {question} pro uživatelovu otázku. Poznámka: {question} je v promptu vyžadováno, jinak se AI nepředá položená otázka.",
+                "placeholder": "Zadejte vlastní systémový prompt...",
+                "prefillButton": "Používat výchozí prompt"
+            },
+            "followupPrompt": {
+                "label": "Nastavení promptu pro navazující otázku",
+                "help": "Přizpůsobte zpracování navazujících otázek. Tento prompt přefrázuje navazující otázky na samostatné otázky.",
+                "placeholder": "Zadejte vlastní prompt navazujících otázek...",
+                "prefillButton": "Používat výchozí prompt"
+            }
+        },
+        "tooltip": "Upravit nastavení znalosti"
+    }
+}

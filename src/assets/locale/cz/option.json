@@ -1,0 +1,32 @@
+{
+    "newChat": "Nový chat",
+    "selectAPrompt": "Vyberte prompt",
+    "githubRepository": "Repozitář na GitHubu",
+    "settings": "Nastavení",
+    "sidebarTitle": "Historie chatů",
+    "error": "Chyba",
+    "somethingWentWrong": "Něco se podělalo",
+    "validationSelectModel": "Pro pokračování, prosím, vyberte model",
+    "deleteHistoryConfirmation": "Jste si jisti, že chcete tuto část historie smazat?",
+    "editHistoryTitle": "Zadejte nový titulek",
+    "temporaryChat": "Dočasný chat",
+    "more": {
+        "copy": {
+            "group": "Kopírovat",
+            "asText": "Kopírovat jako text",
+            "asMarkdown": "Kopírovat jako Markdown",
+            "success": "Zkopírováno!"
+        },
+        "download": {
+            "group": "Stáhnout",
+            "text": "Textový soubor (.txt)",
+            "markdown": "Markdown (.md)",
+            "json": "Soubor JSON (.json)",
+            "image": "Obrázek (.png)"
+        },
+        "share": "Sdílet"
+    },
+    "chatSaved": "Chat uložen",
+    "temporaryChatSavedSuccessfully": "Váš dočasný chat byl úspěšně uložen.",
+    "failedToSaveTemporaryChat": "Uložení dočasného chatu se nezdařilo. Zkuste to prosím znovu."
+}
