@@ -44,7 +44,8 @@ export const normalChatMode = async (
     setActionInfo,
     temporaryChat,
     requireMcpApproval,
-    messageSource
+    messageSource,
+    webSearchAsTool
   }: {
     selectedModel: string
     useOCR: boolean
@@ -65,6 +66,7 @@ export const normalChatMode = async (
     temporaryChat?: boolean
     requireMcpApproval?: boolean
     messageSource?: "copilot" | "web-ui"
+    webSearchAsTool?: boolean
   }
 ) => {
   console.log("Using normalChatMode")
@@ -93,7 +95,8 @@ export const normalChatMode = async (
         images,
         temporaryChat,
         requireMcpApproval,
-        messageSource
+        messageSource,
+        webSearchAsTool
       }
     )
 

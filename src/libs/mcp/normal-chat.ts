@@ -40,6 +40,8 @@ import {
   mergeReasoningContent
 } from "@/libs/reasoning"
 import { createMemoryTool, isMemoryEnabled, isMemoryToolEnabled } from "./tools/memory-tool"
+import { createWebSearchTool } from "./tools/web-search-tool"
+import { createWebFetchTool } from "./tools/web-fetch-tool"
 
 type SetMessages = (messages: Message[] | ((prev: Message[]) => Message[])) => void
 type SetHistory = (history: ChatHistory) => void
@@ -61,6 +63,7 @@ type RunMcpNormalChatParams = {
   temporaryChat?: boolean
   requireMcpApproval?: boolean
   messageSource?: "copilot" | "web-ui"
+  webSearchAsTool?: boolean
 }
 
 const createAssistantMessage = ({
@@ -312,14 +315,15 @@ export const runMcpNormalChatMode = async (
     images: inputImages,
     temporaryChat = false,
     requireMcpApproval = false,
-    messageSource = "web-ui"
+    messageSource = "web-ui",
+    webSearchAsTool = false
   }: RunMcpNormalChatParams
 ) => {
   const configuredServers = await getConfiguredMcpServers()
   const memoryEnabled = await isMemoryEnabled()
   const memoryToolEnabled = await isMemoryToolEnabled()
 
-  if (configuredServers.length === 0 && !memoryEnabled) {
+  if (configuredServers.length === 0 && !memoryEnabled && !webSearchAsTool) {
     return false
   }
 
@@ -333,7 +337,7 @@ export const runMcpNormalChatMode = async (
     typeof ollama?.bindTools !== "function" ||
     ollama?._llmType?.() === "chrome-ai"
   ) {
-    if (configuredServers.length > 0) {
+    if (configuredServers.length > 0 || webSearchAsTool) {
       throw new McpBootstrapError(
         "The selected model does not support MCP tools. Choose an Ollama or OpenAI-compatible tool-calling model."
       )
@@ -507,6 +511,11 @@ export const runMcpNormalChatMode = async (
 
     if (memoryEnabled && memoryToolEnabled) {
       tools.push(createMemoryTool())
+    }
+
+    if (webSearchAsTool) {
+      tools.push(createWebSearchTool())
+      tools.push(createWebFetchTool())
     }
 
     if (tools.length === 0) {

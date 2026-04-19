@@ -136,6 +136,10 @@ export const GeneralSettings = () => {
     "showMcpServersInChat",
     true
   )
+  const [enableAgentWebSearch, setEnableAgentWebSearch] = useStorage(
+    "enableAgentWebSearch",
+    true
+  )
   const [showProviderNameInModelList, setShowProviderNameInModelList] =
     useStorage("showProviderNameInModelList", false)
   const [mcpHumanInLoop, setMcpHumanInLoop] = useStorage(
@@ -664,6 +668,21 @@ export const GeneralSettings = () => {
         <Switch
           checked={showMcpServersInChat}
           onChange={(checked) => setShowMcpServersInChat(checked)}
+        />
+      </div>
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t(
+              "generalSettings.settings.enableAgentWebSearch.label",
+              "Use Agent Web Search (model decides when to search and fetch)"
+            )}
+          </span>
+        </div>
+
+        <Switch
+          checked={enableAgentWebSearch}
+          onChange={(checked) => setEnableAgentWebSearch(checked)}
         />
       </div>
       <div className="flex flex-row justify-between">
