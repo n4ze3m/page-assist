@@ -123,6 +123,82 @@ const filterResultsByDomain = (
   return filteredResults
 }
 
+export interface AgentSearchResult {
+  url: string
+  content: string
+  hostname: string
+}
+
+export interface AgentSearchResponse {
+  answer: string | null
+  results: AgentSearchResult[]
+}
+
+export const searchWebForAgent = async (
+  query: string
+): Promise<AgentSearchResponse> => {
+  const websiteVisit = getWebsiteFromQuery(query)
+  const isVisitSpecificWebsite = await getIsVisitSpecificWebsite()
+  const domainFilterList = await getDomainFilterList()
+  const blockedDomainList = await getBlockedDomainList()
+
+  if (isVisitSpecificWebsite && websiteVisit.hasUrl) {
+    const rawSiteResults = await processSingleWebsite(
+      websiteVisit.url,
+      websiteVisit.queryWithouUrls
+    )
+    const filtered = filterResultsByDomain(
+      rawSiteResults,
+      domainFilterList,
+      blockedDomainList
+    )
+
+    return {
+      answer: null,
+      results: filtered.map((result) => ({
+        url: result.url,
+        content: result.content || "",
+        hostname: getHostName(result.url)
+      }))
+    }
+  }
+
+  const searchProvider = await getSearchProvider()
+  const providerResponse = await searchWeb(searchProvider, query)
+
+  if ("answer" in providerResponse && providerResponse.answer) {
+    const filtered = filterResultsByDomain(
+      providerResponse.results || [],
+      domainFilterList,
+      blockedDomainList
+    )
+
+    return {
+      answer: providerResponse.answer,
+      results: filtered.map((result) => ({
+        url: result.url,
+        content: result.content || "",
+        hostname: getHostName(result.url)
+      }))
+    }
+  }
+
+  const filtered = filterResultsByDomain(
+    providerResponse as ProviderResults[],
+    domainFilterList,
+    blockedDomainList
+  )
+
+  return {
+    answer: null,
+    results: filtered.map((result) => ({
+      url: result.url,
+      content: result.content || "",
+      hostname: getHostName(result.url)
+    }))
+  }
+}
+
 export const isQueryHaveWebsite = async (query: string) => {
   const websiteVisit = getWebsiteFromQuery(query)
 

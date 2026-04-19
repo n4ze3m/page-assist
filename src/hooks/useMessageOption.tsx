@@ -82,6 +82,7 @@ export const useMessageOption = () => {
   } = useStoreMessageOption()
   const [webuiTemporaryChat] = useStorage("webuiTemporaryChat", false)
   const [mcpHumanInLoop] = useStorage("mcpHumanInLoop", false)
+  const [enableAgentWebSearch] = useStorage("enableAgentWebSearch", true)
 
   const currentChatModelSettings = useStoreChatModelSettings()
   const [selectedModel, setSelectedModel] = useStorage("selectedModel")
@@ -317,7 +318,8 @@ export const useMessageOption = () => {
           chatModeParams
         )
       } else {
-        if (webSearch) {
+        const useAgentWebSearch = webSearch && enableAgentWebSearch
+        if (webSearch && !useAgentWebSearch) {
           // Include images array in search mode
           const enhancedSearchChatModeParams = {
             ...chatModeParams,
@@ -338,7 +340,8 @@ export const useMessageOption = () => {
           const enhancedChatModeParams = {
             ...chatModeParams,
             uploadedFiles: uploadedFiles,
-            images: images
+            images: images,
+            webSearchAsTool: useAgentWebSearch
           }
 
           await normalChatMode(

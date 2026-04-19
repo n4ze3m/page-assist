@@ -113,6 +113,7 @@ export const useMessage = () => {
   } = useStoreMessage()
   const [sidepanelTemporaryChat] = useStorage("sidepanelTemporaryChat", false)
   const [mcpHumanInLoop] = useStorage("mcpHumanInLoop", false)
+  const [enableAgentWebSearch] = useStorage("enableAgentWebSearch", true)
   const [speechToTextLanguage, setSpeechToTextLanguage] = useStorage(
     "speechToTextLanguage",
     "en-US"
@@ -1686,7 +1687,8 @@ export const useMessage = () => {
       )
     } else {
       if (chatMode === "normal") {
-        if (webSearch) {
+        const useAgentWebSearch = webSearch && enableAgentWebSearch
+        if (webSearch && !useAgentWebSearch) {
           await searchChatMode(
             message,
             image,
@@ -1722,7 +1724,8 @@ export const useMessage = () => {
               setActionInfo,
               temporaryChat,
               messageSource: "copilot",
-              requireMcpApproval: mcpHumanInLoop
+              requireMcpApproval: mcpHumanInLoop,
+              webSearchAsTool: useAgentWebSearch
             }
           )
         }

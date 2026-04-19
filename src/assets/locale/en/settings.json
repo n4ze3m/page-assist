@@ -121,6 +121,9 @@
       "showMcpServersInChat": {
         "label": "Show MCP Servers Toggle in Chat"
       },
+      "enableAgentWebSearch": {
+        "label": "Use Agent Web Search (model decides when to search and fetch)"
+      },
       "mcpHumanInLoop": {
         "label": "Require approval before running MCP tools"
       },

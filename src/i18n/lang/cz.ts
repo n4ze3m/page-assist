@@ -7,7 +7,7 @@ import knowledge from "@/assets/locale/cz/knowledge.json";
 import chrome from "@/assets/locale/cz/chrome.json";
 import openai from "@/assets/locale/cz/openai.json";
 
-export const en = {
+export const cz = {
     option,
     playground,
     common,
