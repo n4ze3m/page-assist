@@ -60,7 +60,11 @@ export const PlaygroundUserMessageBubble: React.FC<Props> = (props) => {
   return (
     <div
       className={`group gap-2 relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 md:px-4 lg:w-4/5 text-[#242424] dark:text-gray-100 ${checkWideMode ? "max-w-none" : ""}`}
-      style={messageRenderStyle}>
+      style={
+        props.isLastMessage || props.isStreaming || props.isProcessing
+          ? undefined
+          : messageRenderStyle
+      }>
       {!editMode && props?.message_type ? (
         <Tag color={props?.message_type?.startsWith("custom_copilot_custom_") ? "orange" : tagColors[props?.message_type] || "default"}>
           {props?.message_type?.startsWith("custom_copilot_custom_")
