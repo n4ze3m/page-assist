@@ -330,6 +330,10 @@ export default defineBackground({
       }
     })
 
+    const sidePanelClose = (chrome.sidePanel as any)?.close as
+      | ((options: { tabId?: number; windowId?: number }) => Promise<void>)
+      | undefined
+
     browser.commands.onCommand.addListener((command) => {
       switch (command) {
         case "execute_side_panel":
@@ -337,8 +341,32 @@ export default defineBackground({
             { active: true, currentWindow: true },
             async (tabs) => {
               const tab = tabs[0]
+              if (!tab?.id) return
+
+              if (isCopilotRunning && sidePanelClose) {
+                const closeAttempts: Array<{
+                  tabId?: number
+                  windowId?: number
+                }> = []
+                if (tab.windowId !== undefined) {
+                  closeAttempts.push({ windowId: tab.windowId })
+                }
+                closeAttempts.push({ tabId: tab.id })
+
+                for (const attempt of closeAttempts) {
+                  try {
+                    await sidePanelClose(attempt)
+                    return
+                  } catch (e) {
+                  }
+                }
+                console.warn(
+                  "Side panel reported open but close() rejected for both windowId and tabId"
+                )
+              }
+
               chrome.sidePanel.open({
-                tabId: tab.id!
+                tabId: tab.id
               })
             }
           )
