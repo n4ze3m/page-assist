@@ -431,7 +431,7 @@ export const getDataFromCurrentTab = async () => {
       }
     }
   }
-  const data = defaultExtractContent(content)
+  const data = defaultExtractContent(content, url)
   return { url, content: data, type, pdf: [], html: content }
 }
 

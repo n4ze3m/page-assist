@@ -287,7 +287,11 @@ const PlaygroundMessageComponent = (props: Props) => {
   return (
     <div
       className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 text-gray-800 dark:text-gray-100 md:px-4 lg:w-4/5 ${checkWideMode ? "max-w-none" : ""}`}
-      style={messageRenderStyle}>
+      style={
+        props.isLastMessage || props.isStreaming || props.isProcessing
+          ? undefined
+          : messageRenderStyle
+      }>
       <div className="m-auto my-2 flex w-full flex-row gap-4 md:gap-6">
         <div className="relative flex w-8 flex-col items-end">
           {props.isBot ? (

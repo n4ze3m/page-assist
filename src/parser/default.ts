@@ -1,47 +1,39 @@
-import * as cheerio from "cheerio"
-import TurndownService from "turndown"
-import { Readability, isProbablyReaderable } from "@mozilla/readability"
+import Defuddle, { createMarkdownContent } from "defuddle/full"
 
-export const defaultExtractContent = (html: string) => {
-  const doc = new DOMParser().parseFromString(html, "text/html")
-  if (isProbablyReaderable(doc)) {
-    const reader = new Readability(doc)
-    const article = reader.parse()
-    if (article && article.content) {
-      const $article = cheerio.load(article.content)
-      $article("script, style, link, svg, [src^='data:image/']").remove()
-      article.content = $article.html() || ""
+export const defaultExtractContent = (html: string, url: string = "") => {
+  if (!html) return ""
+
+  try {
+    const doc = new DOMParser().parseFromString(html, "text/html")
+
+    const result = new Defuddle(doc as unknown as Document, { url }).parse()
+
+    if (result?.content && result.content.trim().length > 0) {
+      return createMarkdownContent(result.content, url).trim()
     }
-    const turndownService = new TurndownService({
-      headingStyle: "atx",
-      codeBlockStyle: "fenced"
-    })
-    return turndownService.turndown(article?.content || "").trim()
+  } catch (error) {
+    console.warn(
+      "[defaultExtractContent] defuddle extraction failed, falling back:",
+      error
+    )
   }
 
-  const $ = cheerio.load(html)
-
-  $("script, style, link, svg, [src^='data:image/']").remove()
-
-  $("*").each((_, element) => {
-    if ("attribs" in element) {
-      const attributes = element.attribs
-      for (const attr in attributes) {
-        if (attr !== "href" && attr !== "src") {
-          $(element).removeAttr(attr)
-        }
-      }
-    }
-  })
-
-  const mainContent =
-    $('[role="main"]').html() || $("main").html() || $("body").html() || ""
-
-  const turndownService = new TurndownService({
-    headingStyle: "atx",
-    codeBlockStyle: "fenced"
-  })
-  const markdown = turndownService.turndown(mainContent)
-
-  return markdown.trim()
+  try {
+    const doc = new DOMParser().parseFromString(html, "text/html")
+    doc
+      .querySelectorAll("script, style, link, noscript, svg, [aria-hidden=\"true\"]")
+      .forEach((el) => el.remove())
+    const body =
+      doc.querySelector("[role=\"main\"]") ||
+      doc.querySelector("main") ||
+      doc.querySelector("article") ||
+      doc.body
+    return createMarkdownContent(body?.innerHTML || html, url).trim()
+  } catch (error) {
+    console.warn(
+      "[defaultExtractContent] fallback markdown conversion failed:",
+      error
+    )
+    return ""
+  }
 }
