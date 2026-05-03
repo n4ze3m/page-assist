@@ -32,6 +32,7 @@ By default, Page Assist supports the following OpenAI Compatible API endpoints:
 - CanopyWave
 - BigModel (Zhipu)
 - MiniMax
+- XiaomiMimo
 
 
 ## Adding OpenAI Compatible API

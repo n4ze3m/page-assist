@@ -143,5 +143,10 @@ export const OAI_API_PROVIDERS = [
     label: 'MiniMax',
     value: 'minimax',
     baseUrl: 'https://api.minimax.io/v1'
+  },
+  {
+    label: 'Xiaomi Mimo',
+    value: 'xiaomimimo',
+    baseUrl: 'https://token-plan-sgp.xiaomimimo.com/v1'
   }
 ]

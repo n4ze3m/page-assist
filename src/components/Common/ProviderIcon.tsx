@@ -27,6 +27,7 @@ import { AnthropicIcon } from "../Icons/AnthropicIcon"
 import { BigModelZhipuIcon } from "../Icons/BigModelZhipuIcon"
 import { CanopyWaveIcon } from "../Icons/CanopyWaveIcon"
 import { MiniMaxIcon } from "../Icons/MiniMaxIcon"
+import { XiaomiMimoIcon } from "../Icons/XiaomiMimo"
 
 export const ProviderIcons = ({
   provider,
@@ -94,6 +95,8 @@ export const ProviderIcons = ({
       return <BigModelZhipuIcon className={className} />
     case 'minimax':
       return <MiniMaxIcon className={className} />
+    case 'xiaomimimo':
+      return <XiaomiMimoIcon className={className} />
     default:
       return <OllamaIcon className={className} />
   }
