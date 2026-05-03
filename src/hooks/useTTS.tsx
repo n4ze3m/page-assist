@@ -16,6 +16,7 @@ import { splitMessageContent } from "@/utils/tts"
 import { removeReasoning } from "@/libs/reasoning"
 import { markdownToText } from "@/utils/markdown-to-text"
 import { generateOpenAITTS } from "@/services/openai-tts"
+import { generateMistralTTS } from "@/services/mistral-tts"
 
 export interface VoiceOptions {
   utterance: string
@@ -132,9 +133,11 @@ export const useTTS = () => {
 
         setIsSpeaking(false)
         setAudioElement(null)
-      } else if (provider === "openai") {
+      } else if (provider === "openai" || provider === "mistral") {
         const sentences = splitMessageContent(utterance)
-        
+        const generate =
+          provider === "openai" ? generateOpenAITTS : generateMistralTTS
+
         let nextAudioData: ArrayBuffer | null = null
         let nextAudioPromise: Promise<ArrayBuffer> | null = null
 
@@ -146,14 +149,14 @@ export const useTTS = () => {
             currentAudioData = nextAudioData
             nextAudioData = null
           } else {
-            currentAudioData = await generateOpenAITTS({
+            currentAudioData = await generate({
               text: sentences[i]
             })
           }
 
           // Start fetching next audio in parallel (if there's a next sentence)
           if (i < sentences.length - 1) {
-            nextAudioPromise = generateOpenAITTS({
+            nextAudioPromise = generate({
               text: sentences[i + 1]
             })
           }

@@ -1,5 +1,6 @@
 import { SaveButton } from "@/components/Common/SaveButton"
 import { getModels, getVoices } from "@/services/elevenlabs"
+import { getMistralVoices } from "@/services/mistral-tts"
 import { getTTSSettings, setTTSSettings } from "@/services/tts"
 import { useWebUI } from "@/store/webui"
 import { useForm } from "@mantine/form"
@@ -26,6 +27,10 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
       openAITTSApiKey: "",
       openAITTSModel: "",
       openAITTSVoice: "",
+      mistralTTSBaseUrl: "",
+      mistralTTSApiKey: "",
+      mistralTTSModel: "",
+      mistralTTSVoiceId: "",
       ttsAutoPlay: false,
       playbackSpeed: 1
     }
@@ -60,6 +65,30 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
     },
     enabled:
       form.values.ttsProvider === "elevenlabs" && !!form.values.elevenLabsApiKey
+  })
+
+  const { data: mistralVoices } = useQuery({
+    queryKey: [
+      "fetchMistralVoices",
+      form.values.mistralTTSApiKey,
+      form.values.mistralTTSBaseUrl
+    ],
+    queryFn: async () => {
+      try {
+        const voices = await getMistralVoices(
+          form.values.mistralTTSApiKey,
+          form.values.mistralTTSBaseUrl ||
+            "https://api.mistral.ai/v1"
+        )
+        return voices
+      } catch (e) {
+        console.error(e)
+        message.error("Error fetching Mistral voices")
+      }
+      return null
+    },
+    enabled:
+      form.values.ttsProvider === "mistral" && !!form.values.mistralTTSApiKey
   })
   if (status === "pending" || status === "error") {
     return <Skeleton active />
@@ -127,6 +156,10 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
                 {
                   label: "OpenAI TTS",
                   value: "openai"
+                },
+                {
+                  label: "Mistral TTS",
+                  value: "mistral"
                 }
               ]}
               {...form.getInputProps("ttsProvider")}
@@ -265,6 +298,65 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
                 className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
                 required
                 {...form.getInputProps("openAITTSModel")}
+              />
+            </div>
+          </>
+        )}
+        {form.values.ttsProvider === "mistral" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                Base URL
+              </span>
+              <Input
+                placeholder="https://api.mistral.ai/v1"
+                className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
+                required
+                {...form.getInputProps("mistralTTSBaseUrl")}
+              />
+            </div>
+
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                API Key
+              </span>
+              <Input.Password
+                placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
+                required
+                {...form.getInputProps("mistralTTSApiKey")}
+              />
+            </div>
+
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                TTS Voice
+              </span>
+              <Select
+                showSearch
+                optionFilterProp="label"
+                className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                placeholder="Select a voice"
+                disabled={!mistralVoices || mistralVoices.length === 0}
+                options={(mistralVoices ?? []).map((v) => ({
+                  label: v.languages?.length
+                    ? `${v.name} (${v.languages.join(", ")})`
+                    : v.name,
+                  value: v.voice_id
+                }))}
+                {...form.getInputProps("mistralTTSVoiceId")}
+              />
+            </div>
+
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                TTS Model
+              </span>
+              <Input
+                placeholder="voxtral-mini-tts-2603"
+                className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
+                required
+                {...form.getInputProps("mistralTTSModel")}
               />
             </div>
           </>
