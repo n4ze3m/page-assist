@@ -11,5 +11,17 @@
     },
     "errorDescription": "Per utilizzare Chrome AI, è necessaria la versione 138 o successiva di Chrome. Segui questi passaggi:\n\n1. Vai a `chrome://flags/#prompt-api-for-gemini-nano` e abilita \"Prompt API for Gemini Nano\".\n2. Riavvia Chrome per applicare la flag.\n3. Torna su questa pagina e clicca su \"Scarica Modello\" — questo scaricherà un modello da 4GB la prima volta.\n4. Una volta scaricato, Gemini Nano può essere abilitato tramite Page Assist.",
     "downloadModel": "Scarica Modello",
-    "modelDownloadWarning": "Questo scaricherà un modello con una dimensione approssimativa tra 1,5 GB e 2,4 GB. Assicurati di avere spazio sufficiente sul disco."
+    "modelDownloadWarning": "Questo scaricherà un modello con una dimensione approssimativa tra 1,5 GB e 2,4 GB. Assicurati di avere spazio sufficiente sul disco.",
+    "downloadModal": {
+        "title": "Scarica modello Gemini Nano",
+        "warning": "Download di grandi dimensioni richiesto",
+        "warningDescription": "Verranno scaricati circa 4 GB di dati. Assicurati di avere spazio sufficiente sul disco e una connessione internet stabile.",
+        "confirm": "Scarica ora",
+        "cancel": "Annulla",
+        "downloading": "Download del modello in corso",
+        "downloadingDescription": "Download del modello Gemini Nano in corso. L'operazione potrebbe richiedere alcuni minuti a seconda della connessione internet.",
+        "pleaseWait": "Non chiudere questa finestra durante il download..."
+    },
+    "downloadSuccess": "Modello scaricato con successo!",
+    "downloadError": "Download del modello non riuscito. Riprova."
 }

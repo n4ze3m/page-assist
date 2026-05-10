@@ -5,6 +5,7 @@
     "saved": "Salvato",
     "cancel": "Annulla",
     "retry": "Riprova",
+    "loadMore": "Carica altro...",
     "share": {
         "tooltip": {
             "share": "Condividi"
@@ -75,6 +76,16 @@
                 "label": "Token Massimi (num_predict)",
                 "placeholder": "Inserisci il valore dei Token Massimi (es. 2048, 4096)"
             },
+            "thinking": {
+                "label": "Modalità Pensiero (Ollama)",
+                "levels": {
+                    "off": "Disattivato",
+                    "on": "Attivato",
+                    "low": "Bassa intensità di ragionamento",
+                    "medium": "Media intensità di ragionamento",
+                    "high": "Alta intensità di ragionamento"
+                }
+            },
             "seed": {
                 "label": "Seed",
                 "placeholder": "Inserisci il Valore Seed (e.g. 1234)",
@@ -87,6 +98,40 @@
             "topP": {
                 "label": "Top P",
                 "placeholder": "Inserisci il Valore Top P (e.g. 0.9, 0.95)"
+            },
+            "useMMap": {
+                "label": "useMmap"
+            },
+            "tfsZ": {
+                "label": "TFS-Z",
+                "placeholder": "es. 1.0, 1.1"
+            },
+            "numKeep": {
+                "label": "Num Keep",
+                "placeholder": "es. 256, 512"
+            },
+            "numThread": {
+                "label": "Num Thread",
+                "placeholder": "es. 8, 16"
+            },
+            "useMlock": {
+                "label": "useMlock"
+            },
+            "reasoningEffort": {
+                "label": "Intensità di Ragionamento",
+                "placeholder": "low, medium, high"
+            },
+            "minP": {
+                "label": "Min P",
+                "placeholder": "es. 0.05"
+            },
+            "repeatPenalty": {
+                "label": "Repeat Penalty",
+                "placeholder": "es. 1.1, 1.2"
+            },
+            "repeatLastN": {
+                "label": "Repeat Last N",
+                "placeholder": "es. 64, 128"
             },
             "numGpu": {
                 "label": "Num GPU",
@@ -104,9 +149,14 @@
         "summary": "Riassumere",
         "explain": "Spiegare",
         "rephrase": "Riformulare",
-        "translate": "Tradurre"
+        "translate": "Tradurre",
+        "custom": "Personalizzato"
     },
     "citations": "Citazioni",
+    "segmented": {
+        "ollama": "Modelli Ollama",
+        "custom": "Modelli Personalizzati"
+    },
     "downloadCode": "Scarica Codice",
     "date": {
         "pinned": "Fissato",
@@ -131,19 +181,54 @@
             "older": "Elimina tutti i messaggi più vecchi"
         }
     },
+    "historiesDeleted": "{{count}} cronologie eliminate",
+    "deleteHistoriesError": "Errore durante l'eliminazione delle cronologie",
     "pin": "Fissa",
     "unpin": "Rimuovi",
     "generationInfo": "Informazioni sulla Generazione",
     "sidebarChat": "Chat Laterale",
     "reasoning": {
         "thinking": "Pensando....",
-        "thought": "Pensato per {{time}}"
+        "thought": "Pensato per {{time}}",
+        "title": "Processo di Ragionamento",
+        "expand": "Mostra ragionamento",
+        "collapse": "Nascondi ragionamento"
     },
     "mermaid": "Mermaid",
+    "search": "Cerca",
+    "searchResults": "Risultati della Ricerca",
     "embeddingGen": "Creazione di embeddings, questo può richiedere un po' di tempo",
     "semanticSearch": "Ricerca semantica in corso",
+    "newBranch": "Nuovo Ramo",
     "downloading": "Download in corso",
+    "mcp": {
+        "tool": "strumento",
+        "server": "server",
+        "toolRequestTitle": "Strumenti richiesti",
+        "toolResultTitle": "Risultato dello strumento",
+        "arguments": "Argomenti",
+        "output": "Output",
+        "approvalRequired": "Approvazione richiesta",
+        "approvalPrompt": "Approva questa chiamata dello strumento MCP prima che venga eseguita.",
+        "approve": "Approva",
+        "reject": "Rifiuta",
+        "rejectWithReason": "Rifiuta con nota",
+        "rejectionReasonPlaceholder": "Motivo del rifiuto (opzionale)",
+        "noOutput": "Nessun output restituito.",
+        "status": {
+            "success": "Successo",
+            "error": "Errore"
+        },
+        "action": {
+            "connecting": "Connessione ai server MCP",
+            "loading_tools": "Caricamento degli strumenti MCP",
+            "awaiting_approval": "In attesa di approvazione per eseguire {{tool}} su {{server}}",
+            "calling_tool": "Chiamata di {{tool}} su {{server}}",
+            "waiting_result": "In attesa di {{tool}} su {{server}}"
+        }
+    },
     "cancelPullingModel": {
         "confirm": "Sei sicuro di voler annullare il download? Questo interromperà il processo di download. Secondo la documentazione di Ollama, puoi riprendere da dove hai interrotto."
-    }
+    },
+    "saveChat": "Salva Chat"
 }

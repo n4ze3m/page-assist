@@ -21,8 +21,12 @@
             "group": "Scarica",
             "text": "File di Testo (.txt)",
             "markdown": "Markdown (.md)",
-            "json": "File JSON (.json)"
+            "json": "File JSON (.json)",
+            "image": "Immagine (.png)"
         },
         "share": "Condividi"
-    }
+    },
+    "chatSaved": "Chat Salvata",
+    "temporaryChatSavedSuccessfully": "La tua chat temporanea è stata salvata con successo",
+    "failedToSaveTemporaryChat": "Impossibile salvare la chat temporanea. Riprova."
 }

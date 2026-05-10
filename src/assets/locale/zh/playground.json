@@ -16,18 +16,35 @@
         "webSearch": {
             "on": "开",
             "off": "关"
+        },
+        "thinking": {
+            "on": "开",
+            "off": "关",
+            "level": "级别",
+            "levels": {
+                "low": "低",
+                "medium": "中",
+                "high": "高"
+            }
         }
     },
     "tooltip": {
         "searchInternet": "搜索互联网",
+        "thinking": "启用推理模式以查看模型的思考过程",
         "speechToText": "语音到文本",
         "uploadImage": "上传图片",
         "stopStreaming": "停止流式传输",
         "knowledge": "知识",
         "vision": "[实验性] 视觉聊天",
-        "clearContext": "清除上下文"
+        "clearContext": "清除上下文",
+        "uploadDocuments": "上传文档 (beta)",
+        "mcpServers": "MCP 服务器",
+        "mcpEmpty": "未配置 MCP 服务器",
+        "mcpEmptyDesc": "连接 MCP 服务器以在聊天中使用工具。",
+        "mcpAddServer": "添加 MCP 服务器"
     },
     "sendWhenEnter": "按Enter发送",
     "welcome": "你好！今天我能帮你什么？",
-    "useOCR": "从图片中提取文字（OCR）"
+    "useOCR": "从图片中提取文字（OCR）",
+    "fileRetrievalEnabled": "启用文档的 RAG"
 }

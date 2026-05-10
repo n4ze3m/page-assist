@@ -11,7 +11,8 @@
         "name": "名前"
     },
     "confirm": {
-        "delete": "この知識を削除してもよろしいですか?"
+        "delete": "この知識を削除してもよろしいですか?",
+        "deleteSource": "このソースを削除してもよろしいですか?"
     },
     "deleteSuccess": "知識が正常に削除されました",
     "status": {
@@ -23,19 +24,69 @@
     "addKnowledge": "知識を追加",
     "updateKnowledge": "ソースを追加",
     "form": {
+        "tabs": {
+            "upload": "ファイルをアップロード",
+            "text": "テキスト入力"
+        },
         "title": {
             "label": "知識タイトル",
             "placeholder": "知識のタイトルを入力してください",
+            "placeholderOptional": "任意のタイトル（デフォルトは最初の50文字）",
             "required": "知識のタイトルは必須です"
         },
         "uploadFile": {
             "label": "ファイルをアップロード",
             "uploadText": "ファイルをここにドラッグアンドドロップするか、クリックしてアップロード",
             "uploadHint": "サポートされているファイルタイプ: .pdf、.csv、.txt",
-            "required": "ファイルは必須です"
+            "required": "ファイルは必須です",
+            "uploadError": "サポートされていないファイル形式"
+        },
+        "textInput": {
+            "typeLabel": "種類",
+            "type": {
+                "plain": "プレーンテキスト",
+                "markdown": "Markdown",
+                "code": "コード"
+            },
+            "contentLabel": "コンテンツ",
+            "placeholder": "ここにテキストを貼り付けるか入力してください...",
+            "required": "テキストの内容は必須です",
+            "tooLarge": "コンテンツが大きすぎます。50万文字以下にしてください。",
+            "defaultTitle": "無題のテキスト"
         },
         "submit": "送信",
         "success": "知識が正常に追加されました"
     },
-    "noEmbeddingModel": "最初にRAGの設定ページから埋め込みモデルを追加してください"
+    "noEmbeddingModel": "最初にRAGの設定ページから埋め込みモデルを追加してください",
+    "newSource": "新しいソース",
+    "editSettings": {
+        "title": "知識設定の編集",
+        "success": "知識設定が正常に更新されました",
+        "variableInfo": {
+            "title": "利用可能な変数",
+            "description": "プロンプトで以下の変数を使用できます：",
+            "context": "知識ベースから取得されたコンテキスト",
+            "query": "ユーザーの質問またはクエリ"
+        },
+        "form": {
+            "title": {
+                "label": "知識タイトル",
+                "placeholder": "知識のタイトルを入力してください",
+                "required": "知識のタイトルは必須です"
+            },
+            "systemPrompt": {
+                "label": "システムプロンプト",
+                "help": "知識ベースを使用してAIがどのように応答するかをカスタマイズします。取得した情報には{context}、ユーザーの質問には{question}を使用します。注：{question}はプロンプトに必須です。そうしないと、キャラクターが質問のコンテキストを取得できません。",
+                "placeholder": "カスタムシステムプロンプトを入力してください...",
+                "prefillButton": "デフォルトのプロンプトを使用"
+            },
+            "followupPrompt": {
+                "label": "フォローアップ質問プロンプト",
+                "help": "フォローアップの質問の処理方法をカスタマイズします。このプロンプトは、フォローアップの質問を独立した質問に書き換えます。",
+                "placeholder": "カスタムフォローアッププロンプトを入力してください...",
+                "prefillButton": "デフォルトのプロンプトを使用"
+            }
+        },
+        "tooltip": "知識設定の編集"
+    }
 }

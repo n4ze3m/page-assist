@@ -71,6 +71,67 @@
       },
       "sidepanelTemporaryChat": {
         "label": "默认启用侧边栏临时聊天"
+      },
+      "defaultCopilotPrompt": {
+        "label": "侧边栏 (Copilot) 的默认提示词",
+        "placeholder": "选择一个提示词"
+      },
+      "defaultWebUIPrompt": {
+        "label": "Web UI 的默认提示词",
+        "placeholder": "选择一个提示词"
+      },
+      "defaultThinkingMode": {
+        "label": "在表单中显示思考模式状态"
+      },
+      "ocrLanguage": {
+        "label": "默认 OCR 语言",
+        "placeholder": "选择一种 OCR 语言"
+      },
+      "webuiTemporaryChat": {
+        "label": "默认启用 Web UI 临时聊天"
+      },
+      "removeReasoningTagFromCopy": {
+        "label": "从复制的文本中删除推理标签"
+      },
+      "youtubeAutoSummarize": {
+        "label": "在 YouTube 视频上显示「总结」按钮。"
+      },
+      "hideReasoningWidget": {
+        "label": "在 AI 消息中隐藏推理小部件"
+      },
+      "persistChatInput": {
+        "label": "保留聊天输入（保存未发送的消息）"
+      },
+      "enableMessageQueue": {
+        "label": "在流式传输时启用消息队列"
+      },
+      "optimizeQueueForSmallScreen": {
+        "label": "为小屏幕优化聊天界面"
+      },
+      "tableTextWrap": {
+        "label": "在 Markdown 表格中启用文本换行"
+      },
+      "showMoreForLargeMessage": {
+        "label": "为长用户消息显示「显示更多」"
+      },
+      "sidebarPosition": {
+        "label": "侧边栏位置",
+        "options": {
+          "left": "左",
+          "right": "右"
+        }
+      },
+      "showMcpServersInChat": {
+        "label": "在聊天中显示 MCP 服务器开关"
+      },
+      "enableAgentWebSearch": {
+        "label": "使用代理网络搜索（由模型决定何时搜索和获取）"
+      },
+      "mcpHumanInLoop": {
+        "label": "在运行 MCP 工具之前需要批准"
+      },
+      "showProviderNameInModelList": {
+        "label": "在模型列表中显示提供商名称"
       }
     },
     "sidepanelRag": {
@@ -110,6 +171,31 @@
       },
       "searchOnByDefault": {
         "label": "默认开启网络搜索"
+      },
+      "tavilyApi": {
+        "label": "Tavily API 密钥",
+        "placeholder": "输入您的 Tavily API 密钥"
+      },
+      "exa": {
+        "label": "Exa API 密钥",
+        "placeholder": "输入您的 Exa API 密钥"
+      },
+      "googleDomain": {
+        "label": "Google 域名"
+      },
+      "firecrawlAPIKey": {
+        "label": "Firecrawl API 密钥",
+        "placeholder": "输入您的 Firecrawl API 密钥"
+      },
+      "domainFilter": {
+        "label": "域名过滤列表",
+        "description": "仅显示来自这些域名的结果",
+        "placeholder": "例如：example.com"
+      },
+      "blockedDomains": {
+        "label": "屏蔽的域名",
+        "description": "排除来自这些域名的结果",
+        "placeholder": "例如：spam.com"
       }
     },
     "system": {
@@ -132,6 +218,21 @@
         "button": "导入数据",
         "success": "导入成功",
         "error": "导入错误"
+      },
+      "actionIcon": {
+        "label": "设置扩展图标点击的默认操作"
+      },
+      "contextMenu": {
+        "label": "设置上下文菜单的默认操作"
+      },
+      "fontSize": {
+        "label": "字体大小"
+      },
+      "webuiBtnSidePanel": {
+        "label": "在侧边栏中显示 Web UI 按钮"
+      },
+      "chatBackgroundImage": {
+        "label": "聊天背景图片"
       }
     },
     "tts": {
@@ -155,6 +256,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "从语音合成中移除推理标签"
+      },
+      "responseSplitting": {
+        "label": "回复分割"
       }
     },
     "stt": {
@@ -174,6 +278,7 @@
     "columns": {
       "name": "名称",
       "digest": "摘要",
+      "nickname": "昵称",
       "modifiedAt": "修改时间",
       "size": "大小",
       "actions": "操作"
@@ -187,7 +292,8 @@
     },
     "tooltip": {
       "delete": "删除模型",
-      "repull": "重新拉取模型"
+      "repull": "重新拉取模型",
+      "editNickname": "编辑昵称"
     },
     "confirm": {
       "delete": "您确定要删除此模型吗？",
@@ -201,6 +307,8 @@
     "notification": {
       "pullModel": "正在拉取模型",
       "pullModelDescription": "正在拉取 {{modelName}} ，请查看扩展图标。",
+      "cancellingDownload": "正在取消下载",
+      "cancellingDownloadDescription": "正在取消模型下载...",
       "success": "成功",
       "error": "错误",
       "successDescription": "成功拉取了模型",
@@ -351,6 +459,114 @@
     "heading": "配置网络搜索",
     "title": "管理网络搜索"
   },
+  "mcpSettings": {
+    "title": "MCP 服务器",
+    "heading": "管理 MCP 服务器",
+    "subheading": "为常规聊天添加 HTTP MCP 服务器，包括 Bearer 认证和自定义标头。",
+    "addBtn": "添加 MCP 服务器",
+    "humanInLoop": {
+      "label": "在运行 MCP 工具之前需要批准",
+      "description": "推荐用于具有写入权限或其他副作用的 MCP 服务器。您仍然可以在下方允许或禁用单独的工具。",
+      "enabledHint": "已启用人工干预。MCP 工具在运行之前会请求批准。",
+      "disabledHint": "默认情况下 MCP 工具运行无需批准。当 MCP 服务器可以写入文件、修改数据、发送消息或进行其他更改时，请打开此选项。"
+    },
+    "table": {
+      "name": "名称",
+      "url": "URL",
+      "tools": "已缓存的工具",
+      "status": "验证",
+      "notValidated": "尚未验证",
+      "toolsUnavailable": "无已缓存的工具",
+      "auth": "认证",
+      "enabled": "已启用",
+      "actions": "操作",
+      "toolName": "工具名称",
+      "toolDescription": "描述"
+    },
+    "actions": {
+      "refreshTools": "刷新工具",
+      "enable": "启用",
+      "disable": "禁用"
+    },
+    "status": {
+      "ready": "{{count}} 个工具可用",
+      "failed": "验证失败",
+      "notValidated": "未验证",
+      "lastChecked": "上次检查：{{value}}"
+    },
+    "auth": {
+      "none": "无认证",
+      "bearer": "Bearer 令牌"
+    },
+    "modal": {
+      "titleAdd": "添加 MCP 服务器",
+      "titleEdit": "编辑 MCP 服务器",
+      "deleteConfirm": "删除 {{name}}？",
+      "name": {
+        "label": "服务器名称",
+        "placeholder": "我的 MCP 服务器",
+        "required": "请输入服务器名称"
+      },
+      "url": {
+        "label": "服务器 URL",
+        "placeholder": "https://example.com/mcp",
+        "help": "目前仅支持通过 HTTP 或 HTTPS 的 Streamable HTTP MCP 端点。",
+        "required": "请输入服务器 URL",
+        "invalid": "请输入有效的 HTTP 或 HTTPS URL"
+      },
+      "transportNotice": {
+        "title": "传输支持",
+        "description": "Page Assist 仅支持 Streamable HTTP MCP 服务器。不支持 /sse 或 /messages?sessionId=... 等旧版 SSE 端点。"
+      },
+      "auth": {
+        "label": "认证"
+      },
+      "bearerToken": {
+        "label": "Bearer 令牌",
+        "placeholder": "输入 Bearer 令牌",
+        "required": "请输入 Bearer 令牌"
+      },
+      "enabled": {
+        "label": "全局启用"
+      },
+      "headers": {
+        "label": "自定义标头",
+        "add": "添加标头",
+        "key": {
+          "label": "标头键",
+          "placeholder": "X-Request-ID"
+        },
+        "value": {
+          "label": "标头值",
+          "placeholder": "value"
+        }
+      },
+      "validation": {
+        "title": "验证工具",
+        "help": "连接到 MCP 服务器，获取可用工具，并在保存前缓存它们。验证需要 Streamable HTTP MCP 端点。",
+        "button": "验证并加载工具",
+        "availableTools": "可用工具",
+        "idle": "验证此服务器以确认连接并加载其可用工具。",
+        "stale": "连接详情已更改。请重新验证以刷新缓存的工具。",
+        "failed": "无法验证此 MCP 服务器。",
+        "success": "验证成功。{{count}} 个工具可用。",
+        "syncedAt": "上次同步：{{value}}",
+        "saveHint": "如果缓存的工具列表已过期或缺失，保存时将验证当前配置。"
+      },
+      "submit": "保存 MCP 服务器",
+      "update": "更新 MCP 服务器"
+    },
+    "notification": {
+      "added": "已添加 MCP 服务器",
+      "updated": "已更新 MCP 服务器",
+      "deleted": "已删除 MCP 服务器",
+      "validated": "已加载 {{count}} 个 MCP 工具",
+      "toolsRefreshed": "已刷新 {{name}} 的工具",
+      "validationFailedTitle": "MCP 验证失败",
+      "storageBlockedTitle": "Page Assist 无法保存数据",
+      "storageBlockedDescription": "Firefox 隐私模式不支持将数据保存到 IndexedDB。请从普通窗口管理 MCP 服务器。"
+    }
+  },
   "about": {
     "title": "关于",
     "heading": "关于",
@@ -423,5 +639,11 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI 设置"
-  }
+  },
+  "memory": {
+    "enableMemoryTool": {
+      "label": "启用内存工具"
+    }
+  },
+  "mermaid": "Mermaid"
 }

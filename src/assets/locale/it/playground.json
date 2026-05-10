@@ -16,17 +16,35 @@
         "webSearch": {
             "on": "Attivo",
             "off": "Disattivato"
+        },
+        "thinking": {
+            "on": "Attivo",
+            "off": "Disattivato",
+            "level": "Livello",
+            "levels": {
+                "low": "Basso",
+                "medium": "Medio",
+                "high": "Alto"
+            }
         }
     },
     "tooltip": {
         "searchInternet": "Cerca su Internet",
+        "thinking": "Abilita la modalità ragionamento per vedere il processo di pensiero del modello",
         "speechToText": "Speech to Text",
         "uploadImage": "Carica immagine",
         "stopStreaming": "Ferma lo Streaming",
         "knowledge": "Conoscenza",
-        "clearContext": "Cancella Contesto"
+        "vision": "[Sperimentale] Chat con Visione",
+        "clearContext": "Cancella Contesto",
+        "uploadDocuments": "Carica Documenti (beta)",
+        "mcpServers": "Server MCP",
+        "mcpEmpty": "Nessun server MCP configurato",
+        "mcpEmptyDesc": "Connetti i server MCP per utilizzare gli strumenti in chat.",
+        "mcpAddServer": "Aggiungi Server MCP"
     },
     "sendWhenEnter": "Invia subito dopo Enter",
     "welcome": "Ciao! Come posso aiutarti oggi?",
-    "useOCR": "Estrai testo dall'immagine (OCR)"
+    "useOCR": "Estrai testo dall'immagine (OCR)",
+    "fileRetrievalEnabled": "Abilita RAG per i Documenti"
 }

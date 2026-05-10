@@ -11,7 +11,8 @@
         "name": "Nome"
     },
     "confirm": {
-        "delete": "Sei sicuro di voler eliminare questa Knowledge Base?"
+        "delete": "Sei sicuro di voler eliminare questa Knowledge Base?",
+        "deleteSource": "Sei sicuro di voler eliminare questa fonte?"
     },
     "deleteSuccess": "Knowledge Base eliminata correttamente",
     "status": {
@@ -23,19 +24,69 @@
     "addKnowledge": "Aggiungi Knowledge Base",
     "updateKnowledge": "Aggiungi Fonte",
     "form": {
+        "tabs": {
+            "upload": "Carica File",
+            "text": "Inserimento Testo"
+        },
         "title": {
             "label": "Titolo Knowledge Base",
             "placeholder": "Inserisci il titolo della Knowledge Base",
+            "placeholderOptional": "Titolo opzionale (predefinito: primi 50 caratteri)",
             "required": "Il Titolo è obbligatorio"
         },
         "uploadFile": {
             "label": "Carica File",
             "uploadText": "Trascina un file qui or scegli upload",
             "uploadHint": "Tipi di file supportati: .pdf, .csv, .txt, .md, .docx",
-            "required": "File è obbligatorio"
+            "required": "File è obbligatorio",
+            "uploadError": "Tipo di file non supportato"
+        },
+        "textInput": {
+            "typeLabel": "Tipo",
+            "type": {
+                "plain": "Testo Semplice",
+                "markdown": "Markdown",
+                "code": "Codice"
+            },
+            "contentLabel": "Contenuto",
+            "placeholder": "Incolla o digita il tuo testo qui...",
+            "required": "Il contenuto del testo è obbligatorio",
+            "tooLarge": "Il contenuto è troppo grande. Mantienilo sotto i 500k caratteri.",
+            "defaultTitle": "Testo Senza Titolo"
         },
         "submit": "Invia",
         "success": "Knowledge Base aggiunta correttamente"
     },
-    "noEmbeddingModel": "Aggiungi prima un modello dalla pagina di impostazione di RAG"
+    "noEmbeddingModel": "Aggiungi prima un modello dalla pagina di impostazione di RAG",
+    "newSource": "Nuova Fonte",
+    "editSettings": {
+        "title": "Modifica Impostazioni Knowledge Base",
+        "success": "Impostazioni della Knowledge Base aggiornate correttamente",
+        "variableInfo": {
+            "title": "Variabili Disponibili",
+            "description": "Puoi utilizzare le seguenti variabili nei tuoi prompt:",
+            "context": "Il contesto recuperato dalla tua knowledge base",
+            "query": "La domanda o query dell'utente"
+        },
+        "form": {
+            "title": {
+                "label": "Titolo Knowledge Base",
+                "placeholder": "Inserisci il titolo della Knowledge Base",
+                "required": "Il Titolo è obbligatorio"
+            },
+            "systemPrompt": {
+                "label": "Prompt di Sistema",
+                "help": "Personalizza come l'AI risponde utilizzando la tua knowledge base. Usa {context} per le informazioni recuperate e {question} per la domanda dell'utente. Nota: {question} è obbligatorio nel prompt, altrimenti il personaggio non otterrà il contesto della domanda.",
+                "placeholder": "Inserisci il tuo prompt di sistema personalizzato...",
+                "prefillButton": "Usa Prompt Predefinito"
+            },
+            "followupPrompt": {
+                "label": "Prompt per Domande di Follow-up",
+                "help": "Personalizza come vengono elaborate le domande di follow-up. Questo prompt riformula le domande di follow-up in domande autonome.",
+                "placeholder": "Inserisci il tuo prompt di follow-up personalizzato...",
+                "prefillButton": "Usa Prompt Predefinito"
+            }
+        },
+        "tooltip": "Modifica impostazioni Knowledge Base"
+    }
 }
