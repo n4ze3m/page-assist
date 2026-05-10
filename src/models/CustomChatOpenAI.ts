@@ -179,7 +179,17 @@ function _convertDeltaToMessageChunk(
         return new ChatMessageChunk({ content, role })
     }
 }
-function convertMessagesToOpenAIParams(messages: BaseMessage[]) {
+function isDeepSeekProvider(modelName?: string, baseURL?: string): boolean {
+    const model = (modelName || "").toLowerCase()
+    const url = (baseURL || "").toLowerCase()
+    return model.includes("deepseek") || url.includes("deepseek")
+}
+
+function convertMessagesToOpenAIParams(
+    messages: BaseMessage[],
+    options?: { includeReasoningContent?: boolean }
+) {
+    const includeReasoningContent = options?.includeReasoningContent === true
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return messages.map((message): any => {
         const role = messageToOpenAIRole(message)
@@ -200,8 +210,15 @@ function convertMessagesToOpenAIParams(messages: BaseMessage[]) {
         if (role === "assistant") {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const aiMsg = message as any
+            // DeepSeek V4 thinking mode rejects requests if reasoning_content from a
+            // prior assistant turn is dropped. Other providers may reject the unknown
+            // field, so gate forwarding behind a provider check.
+            const reasoningContent = includeReasoningContent
+                ? aiMsg.additional_kwargs?.reasoning_content ?? undefined
+                : undefined
             if (aiMsg.tool_calls?.length) {
-                return {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const result: any = {
                     role: "assistant",
                     content: typeof aiMsg.content === "string" ? aiMsg.content : null,
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -216,6 +233,24 @@ function convertMessagesToOpenAIParams(messages: BaseMessage[]) {
                         },
                     })),
                 }
+                if (reasoningContent) {
+                    result.reasoning_content = reasoningContent
+                }
+                return result
+            }
+            if (reasoningContent) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const completionParam: any = {
+                    role,
+                    content: message.content,
+                    reasoning_content: reasoningContent,
+                }
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                if ((message as any).name != null) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    completionParam.name = (message as any).name
+                }
+                return completionParam
             }
         }
 
@@ -575,7 +610,12 @@ export class CustomChatOpenAI<
         options: this["ParsedCallOptions"],
         runManager?: CallbackManagerForLLMRun
     ): AsyncGenerator<ChatGenerationChunk> {
-        const messagesMapped = convertMessagesToOpenAIParams(messages)
+        const messagesMapped = convertMessagesToOpenAIParams(messages, {
+            includeReasoningContent: isDeepSeekProvider(
+                this.modelName,
+                this.clientConfig?.baseURL
+            )
+        })
         const params = {
             ...this.invocationParams(options),
             messages: messagesMapped,
@@ -649,7 +689,12 @@ export class CustomChatOpenAI<
     ): Promise<ChatResult> {
         const tokenUsage: TokenUsage = {}
         const params = this.invocationParams(options)
-        const messagesMapped: any[] = convertMessagesToOpenAIParams(messages)
+        const messagesMapped: any[] = convertMessagesToOpenAIParams(messages, {
+            includeReasoningContent: isDeepSeekProvider(
+                this.modelName,
+                this.clientConfig?.baseURL
+            )
+        })
         if (params.stream) {
             const stream = this._streamResponseChunks(messages, options, runManager)
             const finalChunks: Record<number, ChatGenerationChunk> = {}
