@@ -25,5 +25,8 @@
             "image": "图片 (.png)"
         },
         "share": "分享"
-    }
+    },
+    "chatSaved": "聊天已保存",
+    "temporaryChatSavedSuccessfully": "您的临时聊天已成功保存",
+    "failedToSaveTemporaryChat": "保存临时聊天失败。请重试。"
 }

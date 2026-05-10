@@ -10,6 +10,7 @@
     },
     "modal": {
         "titleAdd": "新規プロバイダーを追加",
+        "titleEdit": "プロバイダーを編集",
         "name": {
             "label": "プロバイダー名",
             "required": "プロバイダー名は必須です。",
@@ -64,6 +65,7 @@
         },
         "modal": {
             "title": "カスタムモデルを追加",
+            "titleEdit": "カスタムモデルを編集",
             "form": {
                 "name": {
                     "label": "モデルID",

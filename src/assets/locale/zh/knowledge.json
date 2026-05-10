@@ -11,7 +11,8 @@
         "name": "名称"
     },
     "confirm": {
-        "delete": "您确定要删除此知识吗?"
+        "delete": "您确定要删除此知识吗?",
+        "deleteSource": "您确定要删除此来源吗?"
     },
     "deleteSuccess": "知识删除成功",
     "status": {
@@ -23,19 +24,69 @@
     "addKnowledge": "添加知识",
     "updateKnowledge": "更新知识",
     "form": {
+        "tabs": {
+            "upload": "上传文件",
+            "text": "文本输入"
+        },
         "title": {
             "label": "知识标题",
             "placeholder": "输入知识标题",
+            "placeholderOptional": "可选标题（默认使用前50个字符）",
             "required": "知识标题是必需的"
         },
         "uploadFile": {
             "label": "上传文件",
             "uploadText": "将文件拖放到此处或点击上传",
             "uploadHint": "支持的文件类型: .pdf, .csv, .txt, .md",
-            "required": "文件是必需的"
+            "required": "文件是必需的",
+            "uploadError": "不支持的文件类型"
+        },
+        "textInput": {
+            "typeLabel": "类型",
+            "type": {
+                "plain": "纯文本",
+                "markdown": "Markdown",
+                "code": "代码"
+            },
+            "contentLabel": "内容",
+            "placeholder": "在此粘贴或输入您的文本...",
+            "required": "文本内容是必需的",
+            "tooLarge": "内容过大。请保持在 500k 字符以内。",
+            "defaultTitle": "未命名文本"
         },
         "submit": "提交",
         "success": "知识添加成功"
     },
-    "noEmbeddingModel": "请先从RAG设置页面添加一个嵌入模型"
+    "noEmbeddingModel": "请先从RAG设置页面添加一个嵌入模型",
+    "newSource": "新来源",
+    "editSettings": {
+        "title": "编辑知识设置",
+        "success": "知识设置更新成功",
+        "variableInfo": {
+            "title": "可用变量",
+            "description": "您可以在提示中使用以下变量：",
+            "context": "从您的知识库中检索到的上下文",
+            "query": "用户的问题或查询"
+        },
+        "form": {
+            "title": {
+                "label": "知识标题",
+                "placeholder": "输入知识标题",
+                "required": "知识标题是必需的"
+            },
+            "systemPrompt": {
+                "label": "系统提示",
+                "help": "自定义 AI 如何使用您的知识库进行响应。使用 {context} 表示检索到的信息，{question} 表示用户的问题。注意：提示中必须包含 {question}，否则角色将无法获取问题上下文。",
+                "placeholder": "输入您的自定义系统提示...",
+                "prefillButton": "使用默认提示"
+            },
+            "followupPrompt": {
+                "label": "后续问题提示",
+                "help": "自定义后续问题的处理方式。此提示将后续问题改写为独立的问题。",
+                "placeholder": "输入您的自定义后续提示...",
+                "prefillButton": "使用默认提示"
+            }
+        },
+        "tooltip": "编辑知识设置"
+    }
 }

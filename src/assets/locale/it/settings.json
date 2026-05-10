@@ -117,6 +117,18 @@
       },
       "youtubeAutoSummarize": {
         "label": "Mostra il pulsante \"Riassumi\" sui video di YouTube."
+      },
+      "showMcpServersInChat": {
+        "label": "Mostra interruttore Server MCP in chat"
+      },
+      "enableAgentWebSearch": {
+        "label": "Usa Ricerca Web Agente (il modello decide quando cercare e recuperare)"
+      },
+      "mcpHumanInLoop": {
+        "label": "Richiedi approvazione prima di eseguire gli strumenti MCP"
+      },
+      "showProviderNameInModelList": {
+        "label": "Mostra Nome Provider nella Lista Modelli"
       }
     },
     "sidepanelRag": {
@@ -443,6 +455,114 @@
     "title": "Gestisci Ricerca Web",
     "heading": "Configura Ricerca Web"
   },
+  "mcpSettings": {
+    "title": "Server MCP",
+    "heading": "Gestisci Server MCP",
+    "subheading": "Aggiungi server MCP HTTP per la chat normale, inclusa l'autenticazione bearer e gli header personalizzati.",
+    "addBtn": "Aggiungi Server MCP",
+    "humanInLoop": {
+      "label": "Richiedi approvazione prima di eseguire gli strumenti MCP",
+      "description": "Consigliato per i server MCP con autorizzazioni di scrittura o altri effetti collaterali. Puoi comunque consentire o disabilitare singoli strumenti qui sotto.",
+      "enabledHint": "L'human-in-the-loop è abilitato. Gli strumenti MCP chiederanno l'approvazione prima di essere eseguiti.",
+      "disabledHint": "Per impostazione predefinita, gli strumenti MCP vengono eseguiti senza approvazione. Attiva questa opzione quando un server MCP può scrivere file, modificare dati, inviare messaggi o apportare altre modifiche."
+    },
+    "table": {
+      "name": "Nome",
+      "url": "URL",
+      "tools": "Strumenti memorizzati",
+      "status": "Validazione",
+      "notValidated": "Non ancora validato",
+      "toolsUnavailable": "Nessuno strumento memorizzato",
+      "auth": "Autenticazione",
+      "enabled": "Abilitato",
+      "actions": "Azioni",
+      "toolName": "Nome Strumento",
+      "toolDescription": "Descrizione"
+    },
+    "actions": {
+      "refreshTools": "Aggiorna strumenti",
+      "enable": "Abilita",
+      "disable": "Disabilita"
+    },
+    "status": {
+      "ready": "{{count}} strumenti disponibili",
+      "failed": "Validazione fallita",
+      "notValidated": "Non validato",
+      "lastChecked": "Ultimo controllo: {{value}}"
+    },
+    "auth": {
+      "none": "Nessuna autenticazione",
+      "bearer": "Token Bearer"
+    },
+    "modal": {
+      "titleAdd": "Aggiungi Server MCP",
+      "titleEdit": "Modifica Server MCP",
+      "deleteConfirm": "Eliminare {{name}}?",
+      "name": {
+        "label": "Nome Server",
+        "placeholder": "Il mio Server MCP",
+        "required": "Inserisci il nome del server"
+      },
+      "url": {
+        "label": "URL Server",
+        "placeholder": "https://example.com/mcp",
+        "help": "Al momento sono supportati solo gli endpoint Streamable HTTP MCP su HTTP o HTTPS.",
+        "required": "Inserisci l'URL del server",
+        "invalid": "Inserisci un URL HTTP o HTTPS valido"
+      },
+      "transportNotice": {
+        "title": "Supporto trasporto",
+        "description": "Page Assist supporta solo server MCP Streamable HTTP. Gli endpoint SSE legacy come /sse o /messages?sessionId=... non sono supportati."
+      },
+      "auth": {
+        "label": "Autenticazione"
+      },
+      "bearerToken": {
+        "label": "Token Bearer",
+        "placeholder": "Inserisci il token bearer",
+        "required": "Inserisci un token bearer"
+      },
+      "enabled": {
+        "label": "Abilitazione Globale"
+      },
+      "headers": {
+        "label": "Header Personalizzati",
+        "add": "Aggiungi Header",
+        "key": {
+          "label": "Chiave Header",
+          "placeholder": "X-Request-ID"
+        },
+        "value": {
+          "label": "Valore Header",
+          "placeholder": "value"
+        }
+      },
+      "validation": {
+        "title": "Valida Strumenti",
+        "help": "Connettiti al server MCP, recupera gli strumenti disponibili e memorizzali prima di salvare. La validazione richiede un endpoint Streamable HTTP MCP.",
+        "button": "Valida e Carica Strumenti",
+        "availableTools": "Strumenti disponibili",
+        "idle": "Valida questo server per confermare la connessione e caricare gli strumenti disponibili.",
+        "stale": "I dettagli della connessione sono cambiati. Valida di nuovo per aggiornare gli strumenti memorizzati.",
+        "failed": "Impossibile validare questo server MCP.",
+        "success": "Validazione riuscita. {{count}} strumenti sono disponibili.",
+        "syncedAt": "Ultima sincronizzazione: {{value}}",
+        "saveHint": "Il salvataggio convaliderà la configurazione corrente se l'elenco di strumenti memorizzato è obsoleto o mancante."
+      },
+      "submit": "Salva Server MCP",
+      "update": "Aggiorna Server MCP"
+    },
+    "notification": {
+      "added": "Server MCP aggiunto",
+      "updated": "Server MCP aggiornato",
+      "deleted": "Server MCP eliminato",
+      "validated": "Caricati {{count}} strumenti MCP",
+      "toolsRefreshed": "Strumenti aggiornati per {{name}}",
+      "validationFailedTitle": "Validazione MCP fallita",
+      "storageBlockedTitle": "Page Assist non può salvare i dati",
+      "storageBlockedDescription": "La modalità privata di Firefox non supporta il salvataggio dei dati su IndexedDB. Gestisci i server MCP da una finestra normale."
+    }
+  },
   "about": {
     "title": "Informazioni",
     "heading": "Informazioni",
@@ -515,6 +635,11 @@
   },
   "chromeAiSettings": {
     "title": "Impostazioni IA di Chrome"
+  },
+  "memory": {
+    "enableMemoryTool": {
+      "label": "Abilita Strumento Memoria"
+    }
   },
   "mermaid": "Mermaid"
 }

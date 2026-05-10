@@ -10,6 +10,7 @@
     },
     "modal": {
         "titleAdd": "Aggiungi Nuovo Provider",
+        "titleEdit": "Modifica Provider",
         "name": {
             "label": "Nome Provider",
             "required": "Il nome del provider è obbligatorio.",
@@ -64,6 +65,7 @@
         },
         "modal": {
             "title": "Aggiungi Modello Personalizzato",
+            "titleEdit": "Modifica Modello Personalizzato",
             "form": {
                 "name": {
                     "label": "ID Modello",

@@ -120,6 +120,18 @@
       },
       "youtubeAutoSummarize": {
         "label": "YouTube動画に「要約」ボタンを表示する。"
+      },
+      "showMcpServersInChat": {
+        "label": "チャットでMCPサーバーの切り替えを表示"
+      },
+      "enableAgentWebSearch": {
+        "label": "エージェントウェブ検索を使用 (モデルが検索と取得のタイミングを決定)"
+      },
+      "mcpHumanInLoop": {
+        "label": "MCPツールを実行する前に承認を必須にする"
+      },
+      "showProviderNameInModelList": {
+        "label": "モデル一覧にプロバイダー名を表示"
       }
     },
     "sidepanelRag": {
@@ -446,6 +458,114 @@
     "title": "Web検索の管理",
     "heading": "Web検索を設定する"
   },
+  "mcpSettings": {
+    "title": "MCPサーバー",
+    "heading": "MCPサーバーの管理",
+    "subheading": "通常のチャット用に、ベアラー認証やカスタムヘッダーを含むHTTP MCPサーバーを追加します。",
+    "addBtn": "MCPサーバーを追加",
+    "humanInLoop": {
+      "label": "MCPツールを実行する前に承認を必須にする",
+      "description": "書き込み権限やその他の副作用を持つMCPサーバーに推奨されます。下で個別のツールを許可または無効化することもできます。",
+      "enabledHint": "Human-in-the-loopが有効です。MCPツールは実行前に承認を求めます。",
+      "disabledHint": "MCPツールはデフォルトで承認なしに実行されます。MCPサーバーがファイルの書き込み、データの変更、メッセージの送信、その他の変更を行う可能性がある場合に有効にしてください。"
+    },
+    "table": {
+      "name": "名前",
+      "url": "URL",
+      "tools": "キャッシュされたツール",
+      "status": "検証",
+      "notValidated": "未検証",
+      "toolsUnavailable": "キャッシュされたツールがありません",
+      "auth": "認証",
+      "enabled": "有効",
+      "actions": "アクション",
+      "toolName": "ツール名",
+      "toolDescription": "説明"
+    },
+    "actions": {
+      "refreshTools": "ツールを更新",
+      "enable": "有効化",
+      "disable": "無効化"
+    },
+    "status": {
+      "ready": "{{count}}個のツールが利用可能",
+      "failed": "検証に失敗しました",
+      "notValidated": "未検証",
+      "lastChecked": "最終確認: {{value}}"
+    },
+    "auth": {
+      "none": "認証なし",
+      "bearer": "ベアラートークン"
+    },
+    "modal": {
+      "titleAdd": "MCPサーバーを追加",
+      "titleEdit": "MCPサーバーを編集",
+      "deleteConfirm": "{{name}}を削除しますか？",
+      "name": {
+        "label": "サーバー名",
+        "placeholder": "My MCP Server",
+        "required": "サーバー名を入力してください"
+      },
+      "url": {
+        "label": "サーバーURL",
+        "placeholder": "https://example.com/mcp",
+        "help": "現在、HTTPまたはHTTPS経由のStreamable HTTP MCPエンドポイントのみがサポートされています。",
+        "required": "サーバーURLを入力してください",
+        "invalid": "有効なHTTPまたはHTTPSのURLを入力してください"
+      },
+      "transportNotice": {
+        "title": "トランスポートサポート",
+        "description": "Page AssistはStreamable HTTP MCPサーバーのみをサポートします。/sseや/messages?sessionId=...などのレガシーSSEエンドポイントはサポートされていません。"
+      },
+      "auth": {
+        "label": "認証"
+      },
+      "bearerToken": {
+        "label": "ベアラートークン",
+        "placeholder": "ベアラートークンを入力",
+        "required": "ベアラートークンを入力してください"
+      },
+      "enabled": {
+        "label": "グローバル有効化"
+      },
+      "headers": {
+        "label": "カスタムヘッダー",
+        "add": "ヘッダーを追加",
+        "key": {
+          "label": "ヘッダーキー",
+          "placeholder": "X-Request-ID"
+        },
+        "value": {
+          "label": "ヘッダー値",
+          "placeholder": "value"
+        }
+      },
+      "validation": {
+        "title": "ツールを検証",
+        "help": "MCPサーバーに接続し、利用可能なツールを取得して、保存前にキャッシュします。検証にはStreamable HTTP MCPエンドポイントが必要です。",
+        "button": "検証してツールを読み込む",
+        "availableTools": "利用可能なツール",
+        "idle": "このサーバーを検証して接続を確認し、利用可能なツールを読み込んでください。",
+        "stale": "接続情報が変更されました。キャッシュされたツールを更新するために再検証してください。",
+        "failed": "このMCPサーバーを検証できませんでした。",
+        "success": "検証に成功しました。{{count}}個のツールが利用可能です。",
+        "syncedAt": "最終同期: {{value}}",
+        "saveHint": "キャッシュされたツールリストが古いか欠落している場合、保存時に現在の設定が検証されます。"
+      },
+      "submit": "MCPサーバーを保存",
+      "update": "MCPサーバーを更新"
+    },
+    "notification": {
+      "added": "MCPサーバーが追加されました",
+      "updated": "MCPサーバーが更新されました",
+      "deleted": "MCPサーバーが削除されました",
+      "validated": "{{count}}個のMCPツールを読み込みました",
+      "toolsRefreshed": "{{name}}のツールを更新しました",
+      "validationFailedTitle": "MCPの検証に失敗しました",
+      "storageBlockedTitle": "Page Assistはデータを保存できません",
+      "storageBlockedDescription": "FirefoxプライベートモードはIndexedDBへのデータ保存をサポートしていません。通常のウィンドウからMCPサーバーを管理してください。"
+    }
+  },
   "about": {
     "title": "About",
     "heading": "About",
@@ -518,6 +638,11 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI設定"
+  },
+  "memory": {
+    "enableMemoryTool": {
+      "label": "メモリツールを有効にする"
+    }
   },
   "mermaid": "Mermaid"
 }

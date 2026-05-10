@@ -5,6 +5,7 @@
     "saved": "已保存",
     "cancel": "取消",
     "retry": "重试",
+    "loadMore": "加载更多...",
     "share": {
         "tooltip": {
             "share": "分享"
@@ -75,6 +76,16 @@
                 "label": "最大令牌数 (num_predict)",
                 "placeholder": "输入最大令牌数（例如：2048、4096）"
             },
+            "thinking": {
+                "label": "思考模式 (Ollama)",
+                "levels": {
+                    "off": "关闭",
+                    "on": "开启",
+                    "low": "低推理强度",
+                    "medium": "中等推理强度",
+                    "high": "高推理强度"
+                }
+            },
             "seed": {
                 "label": "随机种子",
                 "placeholder": "输入随机种子值（例如：1234）",
@@ -105,6 +116,10 @@
             },
             "useMlock": {
                 "label": "使用 mlock"
+            },
+            "reasoningEffort": {
+                "label": "推理强度",
+                "placeholder": "low, medium, high"
             },
             "minP": {
                 "label": "Min P",
@@ -166,19 +181,54 @@
             "older": "删除所有更早的消息"
         }
     },
+    "historiesDeleted": "已删除 {{count}} 条历史记录",
+    "deleteHistoriesError": "删除历史记录时出错",
     "pin": "置顶",
     "unpin": "取消置顶",
     "generationInfo": "生成信息",
     "sidebarChat": "侧边栏聊天",
     "reasoning": {
         "thinking": "思考中....",
-        "thought": "思考了 {{time}}"
+        "thought": "思考了 {{time}}",
+        "title": "推理过程",
+        "expand": "显示推理",
+        "collapse": "隐藏推理"
     },
     "mermaid": "Mermaid",
+    "search": "搜索",
+    "searchResults": "搜索结果",
     "embeddingGen": "正在创建嵌入向量，这可能需要一些时间",
     "semanticSearch": "正在执行语义搜索",
+    "newBranch": "新分支",
     "downloading": "正在下载",
+    "mcp": {
+        "tool": "工具",
+        "server": "服务器",
+        "toolRequestTitle": "工具请求",
+        "toolResultTitle": "工具结果",
+        "arguments": "参数",
+        "output": "输出",
+        "approvalRequired": "需要批准",
+        "approvalPrompt": "在运行此 MCP 工具调用之前请先批准。",
+        "approve": "批准",
+        "reject": "拒绝",
+        "rejectWithReason": "附带原因拒绝",
+        "rejectionReasonPlaceholder": "可选的拒绝原因",
+        "noOutput": "没有返回输出。",
+        "status": {
+            "success": "成功",
+            "error": "错误"
+        },
+        "action": {
+            "connecting": "正在连接到 MCP 服务器",
+            "loading_tools": "正在加载 MCP 工具",
+            "awaiting_approval": "等待批准在 {{server}} 上运行 {{tool}}",
+            "calling_tool": "正在 {{server}} 上调用 {{tool}}",
+            "waiting_result": "正在等待 {{server}} 上的 {{tool}} 结果"
+        }
+    },
     "cancelPullingModel": {
         "confirm": "确定要取消下载吗？这将停止下载过程。根据 Ollama 文档，您可以从中断处重新开始下载。"
-    }
+    },
+    "saveChat": "保存聊天"
 }

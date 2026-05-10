@@ -5,6 +5,7 @@
   "saved": "保存済み",
   "cancel": "キャンセル",
   "retry": "再試行",
+  "loadMore": "もっと読み込む...",
   "share": {
     "tooltip": {
       "share": "共有"
@@ -75,6 +76,16 @@
         "label": "最大トークン数 (num_predict)",
         "placeholder": "最大トークン数を入力してください（例：2048、4096）"
       },
+      "thinking": {
+        "label": "思考モード (Ollama)",
+        "levels": {
+          "off": "オフ",
+          "on": "オン",
+          "low": "低い推論努力",
+          "medium": "中程度の推論努力",
+          "high": "高い推論努力"
+        }
+      },
       "seed": {
         "label": "シード",
         "placeholder": "シード値を入力してください（例：1234）",
@@ -87,6 +98,40 @@
       "topP": {
         "label": "Top P",
         "placeholder": "Top P値を入力してください（例：0.9、0.95）"
+      },
+      "useMMap": {
+        "label": "useMmap"
+      },
+      "tfsZ": {
+        "label": "TFS-Z",
+        "placeholder": "例：1.0、1.1"
+      },
+      "numKeep": {
+        "label": "Num Keep",
+        "placeholder": "例：256、512"
+      },
+      "numThread": {
+        "label": "Num Thread",
+        "placeholder": "例：8、16"
+      },
+      "useMlock": {
+        "label": "useMlock"
+      },
+      "reasoningEffort": {
+        "label": "推論努力",
+        "placeholder": "low、medium、high"
+      },
+      "minP": {
+        "label": "Min P",
+        "placeholder": "例：0.05"
+      },
+      "repeatPenalty": {
+        "label": "Repeat Penalty",
+        "placeholder": "例：1.1、1.2"
+      },
+      "repeatLastN": {
+        "label": "Repeat Last N",
+        "placeholder": "例：64、128"
       },
       "numGpu": {
         "label": "Num GPU",
@@ -104,9 +149,14 @@
     "summary": "要約",
     "explain": "説明",
     "rephrase": "言い換え",
-    "translate": "翻訳"
+    "translate": "翻訳",
+    "custom": "カスタム"
   },
   "citations": "引用",
+  "segmented": {
+    "ollama": "Ollamaモデル",
+    "custom": "カスタムモデル"
+  },
   "downloadCode": "コードをダウンロード",
   "date": {
     "pinned": "固定",
@@ -131,18 +181,54 @@
       "older": "それ以前のメッセージをすべて削除"
     }
   },
+  "historiesDeleted": "{{count}}件の履歴を削除しました",
+  "deleteHistoriesError": "履歴の削除中にエラーが発生しました",
   "pin": "固定",
   "unpin": "固定解除",
   "generationInfo": "生成情報",
   "sidebarChat": "サイドバーチャット",
   "reasoning": {
     "thinking": "考え中....",
-    "thought": "{{time}}の思考"
+    "thought": "{{time}}の思考",
+    "title": "推論プロセス",
+    "expand": "推論を表示",
+    "collapse": "推論を非表示"
   },
+  "mermaid": "Mermaid",
+  "search": "検索",
+  "searchResults": "検索結果",
   "embeddingGen": "埋め込みを作成中です。時間がかかる場合があります",
   "semanticSearch": "意味検索を実行中",
+  "newBranch": "新しいブランチ",
   "downloading": "ダウンロード中",
+  "mcp": {
+    "tool": "ツール",
+    "server": "サーバー",
+    "toolRequestTitle": "ツールがリクエストされました",
+    "toolResultTitle": "ツールの結果",
+    "arguments": "引数",
+    "output": "出力",
+    "approvalRequired": "承認が必要",
+    "approvalPrompt": "実行前にこのMCPツールの呼び出しを承認してください。",
+    "approve": "承認",
+    "reject": "拒否",
+    "rejectWithReason": "理由付きで拒否",
+    "rejectionReasonPlaceholder": "拒否理由（任意）",
+    "noOutput": "出力はありません。",
+    "status": {
+      "success": "成功",
+      "error": "エラー"
+    },
+    "action": {
+      "connecting": "MCPサーバーに接続中",
+      "loading_tools": "MCPツールを読み込み中",
+      "awaiting_approval": "{{server}}で{{tool}}を実行する承認を待っています",
+      "calling_tool": "{{server}}で{{tool}}を呼び出しています",
+      "waiting_result": "{{server}}の{{tool}}の結果を待っています"
+    }
+  },
   "cancelPullingModel": {
     "confirm": "ダウンロードをキャンセルしてもよろしいですか？これによりダウンロードプロセスが停止します。Ollamaのドキュメントによると、中断した場所から再開できます。"
-  }
+  },
+  "saveChat": "チャットを保存"
 }

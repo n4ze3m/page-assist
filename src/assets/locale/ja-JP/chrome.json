@@ -11,5 +11,17 @@
     },
     "errorDescription": "Chrome AIを使用するには、Chromeバージョン138以降が必要です。以下の手順に従ってください:\n\n1. `chrome://flags/#prompt-api-for-gemini-nano`にアクセスし、「Prompt API for Gemini Nano」を有効にします。\n2. フラグを適用するためにChromeを再起動します。\n3. このページに戻り、「モデルをダウンロード」をクリックします — 初回は4GBのモデルがダウンロードされます。\n4. ダウンロードが完了すると、Gemini NanoをPage Assistを通じて有効にできます。",
     "downloadModel": "モデルをダウンロード",
-    "modelDownloadWarning": "これは、約1.5GBから2.4GBの範囲のダウンロードサイズを持つモデルをダウンロードします。十分なディスクスペースがあることを確認してください。"
+    "modelDownloadWarning": "これは、約1.5GBから2.4GBの範囲のダウンロードサイズを持つモデルをダウンロードします。十分なディスクスペースがあることを確認してください。",
+    "downloadModal": {
+        "title": "Gemini Nanoモデルをダウンロード",
+        "warning": "大容量のダウンロードが必要",
+        "warningDescription": "約4GBのデータがダウンロードされます。十分なディスク容量と安定したインターネット接続を確保してください。",
+        "confirm": "今すぐダウンロード",
+        "cancel": "キャンセル",
+        "downloading": "モデルをダウンロード中",
+        "downloadingDescription": "Gemini Nanoモデルをダウンロードしています。インターネット接続によっては数分かかることがあります。",
+        "pleaseWait": "ダウンロード中はこのウィンドウを閉じないでください..."
+    },
+    "downloadSuccess": "モデルのダウンロードに成功しました!",
+    "downloadError": "モデルのダウンロードに失敗しました。もう一度お試しください。"
 }

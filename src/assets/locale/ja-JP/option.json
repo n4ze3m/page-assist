@@ -21,8 +21,12 @@
       "group": "ダウンロード",
       "text": "テキストファイル (.txt)",
       "markdown": "Markdownファイル (.md)",
-      "json": "JSONファイル (.json)"
+      "json": "JSONファイル (.json)",
+      "image": "画像 (.png)"
     },
     "share": "共有"
-  }
+  },
+  "chatSaved": "チャットを保存しました",
+  "temporaryChatSavedSuccessfully": "一時的なチャットが正常に保存されました",
+  "failedToSaveTemporaryChat": "一時的なチャットの保存に失敗しました。もう一度お試しください。"
 }
