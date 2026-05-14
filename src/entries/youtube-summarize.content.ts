@@ -1,3 +1,5 @@
+import { isRecord, readBoolean } from "@/utils/type-guards"
+
 export default defineContentScript({
   async main(ctx) {
     // Check if YouTube summarization is enabled
@@ -6,7 +8,7 @@ export default defineContentScript({
         const response = await browser.runtime.sendMessage({
           type: "check_youtube_summarize_enabled"
         })
-        return response?.enabled || false
+        return isRecord(response) ? (readBoolean(response, "enabled") ?? false) : false
       } catch (error) {
         console.error("Failed to check YouTube summarize setting:", error)
         return false

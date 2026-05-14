@@ -51,6 +51,7 @@ import {
 } from "@/libs/mcp/utils"
 import { getServerFaviconUrl } from "@/components/Common/McpServerToggle"
 import { ToolExecutionModeControl } from "@/components/MCP/ToolExecutionModeControl"
+import { isRecord, readString } from "@/utils/type-guards"
 
 type ValidationSnapshot = {
   fingerprint: string
@@ -84,6 +85,13 @@ const toValidationSnapshot = (
 
 const formatTimestamp = (value?: number) =>
   value ? new Date(value).toLocaleString() : ""
+
+const getRuntimeMessageError = (value: unknown): string | undefined => {
+  if (!isRecord(value)) {
+    return undefined
+  }
+  return readString(value, "error")
+}
 
 export const MCPSettingsApp = () => {
   const { t } = useTranslation(["settings", "common"])
@@ -122,10 +130,11 @@ export const MCPSettingsApp = () => {
           type: "mcp_oauth_start",
           serverId
         })
-        if (result?.error) {
+        const errorMessage = getRuntimeMessageError(result)
+        if (errorMessage) {
           notification.error({
             message: "OAuth Error",
-            description: result.error
+            description: errorMessage
           })
         }
       }
@@ -688,10 +697,11 @@ export const MCPSettingsApp = () => {
                               type: "mcp_oauth_start",
                               serverId: record.id
                             })
-                            if (result?.error) {
+                            const errorMessage = getRuntimeMessageError(result)
+                            if (errorMessage) {
                               notification.error({
                                 message: "OAuth Error",
-                                description: result.error
+                                description: errorMessage
                               })
                             } else {
                               message.info(
