@@ -301,6 +301,10 @@ export const OpenAIApp = () => {
             setEditingConfig(null)
             setProvider("custom")
           }}
+          centered
+          width={520}
+          style={{ maxWidth: "calc(100vw - 2rem)" }}
+          styles={{ body: { maxHeight: "70vh", overflowY: "auto" } }}
           footer={null}>
           {!editingConfig && (
             <Select
@@ -472,6 +476,10 @@ export const OpenAIApp = () => {
           open={openModelModal}
           title={t("modal.model.title")}
           footer={null}
+          centered
+          width={520}
+          style={{ maxWidth: "calc(100vw - 2rem)" }}
+          styles={{ body: { maxHeight: "70vh", overflowY: "auto" } }}
           onCancel={() => setOpenModelModal(false)}>
           {openaiId ? (
             <OpenAIFetchModel

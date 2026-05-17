@@ -10,6 +10,10 @@ import {
   importPageAssistDataFromObject,
   parseImportFile
 } from "@/libs/export-import"
+import {
+  convertOpenWebUIToPageAssist,
+  isOpenWebUIExport
+} from "@/libs/openwebui-import"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -147,7 +151,10 @@ export const SystemSettings = () => {
 
   const handleImportFileSelected = async (file: File) => {
     try {
-      const parsed = await parseImportFile(file)
+      const raw = await parseImportFile(file)
+      const parsed = isOpenWebUIExport(raw)
+        ? convertOpenWebUIToPageAssist(raw)
+        : raw
       const available = getAvailableImportSections(parsed)
       const availableKeys = Object.keys(available) as ExportSection[]
 

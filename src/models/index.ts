@@ -13,6 +13,20 @@ import {
 } from "@/services/model-settings"
 import { useStoreChatModelSettings, normalizeThinking } from "@/store/model"
 
+
+const parseCustomBody = (raw?: string): Record<string, any> => {
+  if (!raw || !raw.trim()) return {}
+  try {
+    const parsed = JSON.parse(raw)
+    return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+      ? parsed
+      : {}
+  } catch (e) {
+    console.error("Invalid custom body JSON for provider:", e)
+    return {}
+  }
+}
+
 export const pageAssistModel = async ({
   model,
   baseUrl
@@ -101,6 +115,8 @@ export const pageAssistModel = async ({
       await urlRewriteRuntime(providerInfo.baseUrl || "")
     }
 
+    const customBodyParams = parseCustomBody(modelSettings?.customBody)
+
     const modelConfig = {
       maxTokens: modelSettings?.numPredict || numPredict,
       temperature: modelSettings?.temperature || temperature,
@@ -150,6 +166,7 @@ export const pageAssistModel = async ({
         modelKwargs: {
           ...(modelConfig?.topK && { top_k: modelConfig.topK }),
           ...(modelConfig?.minP && { min_p: modelConfig.minP }),
+          ...customBodyParams
         },
         configuration: {
           apiKey: providerInfo.apiKey || "temp",
@@ -214,7 +231,8 @@ export const pageAssistModel = async ({
       maxTokens: modelConfig?.maxTokens,
       modelKwargs: {
         ...(modelConfig?.topK && { top_k: topK }),
-        ...(modelConfig?.minP && { min_p: minP }), 
+        ...(modelConfig?.minP && { min_p: minP }),
+        ...customBodyParams
       },
       configuration: {
         apiKey: providerInfo.apiKey || "temp",

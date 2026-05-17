@@ -437,7 +437,7 @@ export const CurrentChatModelSettings = ({
         placement="right"
         open={open}
         onClose={() => setOpen(false)}
-        width={500}
+        width="min(500px, 100vw)"
         title={t("currentChatModelSettings")}>
         {renderBody()}
       </Drawer>
@@ -450,6 +450,10 @@ export const CurrentChatModelSettings = ({
       open={open}
       onOk={() => setOpen(false)}
       onCancel={() => setOpen(false)}
+      centered
+      width={520}
+      style={{ maxWidth: "calc(100vw - 2rem)" }}
+      styles={{ body: { maxHeight: "70vh", overflowY: "auto" } }}
       footer={null}>
       {renderBody()}
     </Modal>
