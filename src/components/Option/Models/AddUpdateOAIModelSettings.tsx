@@ -8,11 +8,13 @@ import {
   InputNumber,
   Modal,
   Skeleton,
-  Switch
+  Switch,
+  Tabs
 } from "antd"
 import { Loader2 } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
+import { CustomBodyEditor } from "./CustomBodyEditor"
 
 type Props = {
   model_id: string
@@ -64,6 +66,10 @@ export const AddUpdateOAIModelSettings: React.FC<Props> = ({
         form.resetFields()
         setOpen(false)
       }}
+      centered
+      width={520}
+      style={{ maxWidth: "calc(100vw - 2rem)" }}
+      styles={{ body: { maxHeight: "70vh", overflowY: "auto" } }}
       footer={null}>
       {status === "pending" && <Skeleton active />}
       {status === "success" && (
@@ -76,58 +82,140 @@ export const AddUpdateOAIModelSettings: React.FC<Props> = ({
           }}
           form={form}
           layout="vertical">
-          <Form.Item
-            name="temperature"
-            label={t("modelSettings.form.temperature.label")}>
-            <InputNumber
-              size="large"
-              style={{ width: "100%" }}
-              placeholder={t("modelSettings.form.temperature.placeholder")}
-            />
-          </Form.Item>
-          <Form.Item
-            name="numPredict"
-            label={t("modelSettings.form.numPredict.label")}>
-            <InputNumber
-              style={{ width: "100%" }}
-              placeholder={t("modelSettings.form.numPredict.placeholder")}
-            />
-          </Form.Item>
-          <Form.Item name="topP" label={t("modelSettings.form.topP.label")}>
-            <InputNumber
-              style={{ width: "100%" }}
-              size="large"
-              placeholder={t("modelSettings.form.topP.placeholder")}
-            />
-          </Form.Item>
-          <Form.Item
-            name="reasoningEffort"
-            label={t("modelSettings.form.reasoningEffort.label")}>
-            <Input
-              style={{ width: "100%" }}
-              placeholder={t("modelSettings.form.reasoningEffort.placeholder")}
-            />
-          </Form.Item>
-          <Form.Item name="topK" label={t("modelSettings.form.topK.label")}>
-            <InputNumber
-              style={{ width: "100%" }}
-              placeholder={t("modelSettings.form.topK.placeholder")}
-            />
-          </Form.Item>
-          <Form.Item name="minP" label={t("modelSettings.form.minP.label")}>
-            <InputNumber
-              style={{ width: "100%" }}
-              placeholder={t("modelSettings.form.minP.placeholder")}
-            />
-          </Form.Item>
-          <Form.Item
-            name="numCtx"
-            label={`${t("modelSettings.form.numCtx.label")} (Ollama)`}>
-            <InputNumber
-              style={{ width: "100%" }}
-              placeholder={t("modelSettings.form.numCtx.placeholder")}
-            />
-          </Form.Item>
+          <Tabs
+            defaultActiveKey="parameters"
+            items={[
+              {
+                key: "parameters",
+                label: t("modelSettings.form.tabs.parameters", {
+                  defaultValue: "Parameters"
+                }),
+                children: (
+                  <>
+                    <Form.Item
+                      name="temperature"
+                      label={t("modelSettings.form.temperature.label")}>
+                      <InputNumber
+                        size="large"
+                        style={{ width: "100%" }}
+                        placeholder={t(
+                          "modelSettings.form.temperature.placeholder"
+                        )}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="numPredict"
+                      label={t("modelSettings.form.numPredict.label")}>
+                      <InputNumber
+                        style={{ width: "100%" }}
+                        placeholder={t(
+                          "modelSettings.form.numPredict.placeholder"
+                        )}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="topP"
+                      label={t("modelSettings.form.topP.label")}>
+                      <InputNumber
+                        style={{ width: "100%" }}
+                        size="large"
+                        placeholder={t("modelSettings.form.topP.placeholder")}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="reasoningEffort"
+                      label={t("modelSettings.form.reasoningEffort.label")}>
+                      <Input
+                        style={{ width: "100%" }}
+                        placeholder={t(
+                          "modelSettings.form.reasoningEffort.placeholder"
+                        )}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="topK"
+                      label={t("modelSettings.form.topK.label")}>
+                      <InputNumber
+                        style={{ width: "100%" }}
+                        placeholder={t("modelSettings.form.topK.placeholder")}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="minP"
+                      label={t("modelSettings.form.minP.label")}>
+                      <InputNumber
+                        style={{ width: "100%" }}
+                        placeholder={t("modelSettings.form.minP.placeholder")}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      name="numCtx"
+                      label={`${t("modelSettings.form.numCtx.label")} (Ollama)`}>
+                      <InputNumber
+                        style={{ width: "100%" }}
+                        placeholder={t("modelSettings.form.numCtx.placeholder")}
+                      />
+                    </Form.Item>
+                  </>
+                )
+              },
+              {
+                key: "customBody",
+                label: t("modelSettings.form.tabs.customBody", {
+                  defaultValue: "Custom Body"
+                }),
+                forceRender: true,
+                children: (
+                  <Form.Item
+                    name="customBody"
+                    label={t("modelSettings.form.customBody.label", {
+                      defaultValue: "Custom Body Parameters (JSON)"
+                    })}
+                    help={t("modelSettings.form.customBody.help", {
+                      defaultValue:
+                        'Merged into the request body for OpenAI-compatible models, e.g. {"thinking":{"type":"enabled"}} for DeepSeek.'
+                    })}
+                    rules={[
+                      {
+                        validator: (_, value) => {
+                          if (!value || !value.trim())
+                            return Promise.resolve()
+                          try {
+                            const parsed = JSON.parse(value)
+                            if (
+                              !parsed ||
+                              typeof parsed !== "object" ||
+                              Array.isArray(parsed)
+                            ) {
+                              return Promise.reject(
+                                new Error(
+                                  t("modelSettings.form.customBody.invalid", {
+                                    defaultValue:
+                                      'Must be a JSON object, e.g. {"key":"value"}'
+                                  })
+                                )
+                              )
+                            }
+                            return Promise.resolve()
+                          } catch {
+                            return Promise.reject(
+                              new Error(
+                                t("modelSettings.form.customBody.invalid", {
+                                  defaultValue:
+                                    'Must be a JSON object, e.g. {"key":"value"}'
+                                })
+                              )
+                            )
+                          }
+                        }
+                      }
+                    ]}>
+                    <CustomBodyEditor key={model_id} />
+                  </Form.Item>
+                )
+              }
+            ]}
+          />
 
           <button
             type="submit"
