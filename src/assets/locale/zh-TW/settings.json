@@ -102,6 +102,9 @@
       "enableMessageQueue": {
         "label": "在串流時啟用訊息佇列"
       },
+      "enableMemory": {
+        "label": "啟用記憶（實驗性功能）"
+      },
       "optimizeQueueForSmallScreen": {
         "label": "為小螢幕優化聊天介面"
       },
@@ -635,8 +638,45 @@
     "title": "Chrome AI 設定"
   },
   "memory": {
+    "title": "記憶",
+    "description": "您可以通過新增記憶，來客製化與大型語言模型的互動，使其更有幫助並更符合您的需求。",
+    "add": {
+      "button": "新增記憶",
+      "title": "新增記憶",
+      "ok": "新增",
+      "cancel": "取消",
+      "label": "記憶內容",
+      "required": "請輸入記憶內容",
+      "minLength": "記憶內容至少需要 3 個字元",
+      "placeholder": "例如：我偏好 TypeScript 的程式碼範例"
+    },
+    "edit": {
+      "title": "編輯記憶",
+      "ok": "儲存",
+      "cancel": "取消",
+      "label": "記憶內容",
+      "required": "請輸入記憶內容",
+      "minLength": "記憶內容至少需要 3 個字元"
+    },
+    "delete": {
+      "confirm": "刪除此記憶？",
+      "ok": "是",
+      "cancel": "否"
+    },
+    "clearAll": {
+      "confirm": "清除所有記憶？",
+      "ok": "是",
+      "cancel": "否",
+      "button": "全部清除"
+    },
+    "empty": "尚無記憶。新增第一筆記憶以開始使用。",
+    "table": {
+      "content": "內容",
+      "created": "建立時間",
+      "actions": "操作"
+    },
     "enableMemoryTool": {
-      "label": "啟用記憶工具"
+      "label": "啟用記憶工具調用"
     }
   }
 }
