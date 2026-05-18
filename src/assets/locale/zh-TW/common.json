@@ -198,6 +198,32 @@
   "semanticSearch": "正在執行語意搜尋",
   "newBranch": "新分支",
   "downloading": "正在下載",
+  "mcp": {
+    "tool": "工具",
+    "server": "伺服器",
+    "toolRequestTitle": "已請求工具",
+    "toolResultTitle": "工具結果",
+    "arguments": "參數",
+    "output": "輸出",
+    "approvalRequired": "需要核准",
+    "approvalPrompt": "在執行此 MCP 工具呼叫前請先核准。",
+    "approve": "核准",
+    "reject": "拒絕",
+    "rejectWithReason": "拒絕並說明原因",
+    "rejectionReasonPlaceholder": "選填拒絕原因",
+    "noOutput": "沒有傳回任何輸出。",
+    "status": {
+      "success": "成功",
+      "error": "錯誤"
+    },
+    "action": {
+      "connecting": "正在連接 MCP 伺服器",
+      "loading_tools": "正在載入 MCP 工具",
+      "awaiting_approval": "正在等待核准在 {{server}} 上執行 {{tool}}",
+      "calling_tool": "正在呼叫 {{server}} 上的 {{tool}}",
+      "waiting_result": "正在等待 {{server}} 上的 {{tool}} 結果"
+    }
+  },
   "cancelPullingModel": {
     "confirm": "確定要取消下載嗎？這將會停止下載過程。根據 Ollama 說明文件，您可以從中斷處重新開始下載。"
   },
