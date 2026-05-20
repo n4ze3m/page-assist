@@ -1,0 +1,50 @@
+{
+    "ollamaState": {
+        "searching": "מחפש את ה-Ollama שלך 🦙",
+        "running": "Ollama פועל 🦙",
+        "notRunning": "לא ניתן להתחבר ל-Ollama 🦙",
+        "connectionError": "נראה שיש לך שגיאת חיבור. אנא עיין בתיעוד <anchor>זה</anchor> לפתרון בעיות."
+    },
+    "formError": {
+        "noModel": "אנא בחר מודל",
+        "noEmbeddingModel": "אנא הגדר מודל הטמעה (Embedding) בדף הגדרות > RAG"
+    },
+    "form": {
+        "textarea": {
+            "placeholder": "הקלד הודעה..."
+        },
+        "webSearch": {
+            "on": "מופעל",
+            "off": "כבוי"
+        },
+        "thinking": {
+            "on": "מופעל",
+            "off": "כבוי",
+            "level": "רמה",
+            "levels": {
+                "low": "נמוכה",
+                "medium": "בינונית",
+                "high": "גבוהה"
+            }
+        }
+    },
+    "tooltip": {
+        "searchInternet": "חפש באינטרנט",
+        "thinking": "אפשר מצב חשיבה כדי לראות את תהליך החשיבה של המודל",
+        "speechToText": "דיבור לטקסט",
+        "uploadImage": "העלה תמונה",
+        "stopStreaming": "עצור הזרמה",
+        "knowledge": "ידע",
+        "vision": "[ניסיוני] צ'אט חזותי (Vision)",
+        "clearContext": "נקה הקשר (Context)",
+        "uploadDocuments": "העלה מסמכים (בטא)",
+        "mcpServers": "שרתי MCP",
+        "mcpEmpty": "לא הוגדרו שרתי MCP",
+        "mcpEmptyDesc": "חבר שרתי MCP כדי להשתמש בכלים בצ'אט.",
+        "mcpAddServer": "הוסף שרת MCP"
+    },
+    "sendWhenEnter": "שלח בלחיצה על Enter",
+    "welcome": "שלום! איך אני יכול לעזור לך היום?",
+    "useOCR": "חלץ טקסט מתמונה (OCR)",
+    "fileRetrievalEnabled": "אפשר RAG עבור מסמכים"
+}

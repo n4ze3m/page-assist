@@ -1,0 +1,32 @@
+{
+    "newChat": "צ'אט חדש",
+    "selectAPrompt": "בחר הנחיה (Prompt)",
+    "githubRepository": "מאגר GitHub",
+    "settings": "הגדרות",
+    "sidebarTitle": "היסטוריית צ'אט",
+    "error": "שגיאה",
+    "somethingWentWrong": "משהו השתבש",
+    "validationSelectModel": "אנא בחר מודל כדי להמשיך",
+    "deleteHistoryConfirmation": "האם אתה בטוח שברצונך למחוק היסטוריה זו?",
+    "editHistoryTitle": "הזן כותרת חדשה",
+    "temporaryChat": "צ'אט זמני",
+    "more": {
+        "copy": {
+            "group": "העתק",
+            "asText": "העתק כטקסט",
+            "asMarkdown": "העתק כ-Markdown",
+            "success": "הועתק ללוח!"
+        },
+        "download": {
+            "group": "הורדה",
+            "text": "קובץ טקסט (.txt)",
+            "markdown": "Markdown (.md)",
+            "json": "קובץ JSON (.json)",
+            "image": "תמונה (.png)"
+        },
+        "share": "שתף"
+    },
+    "chatSaved": "הצ'אט נשמר",
+    "temporaryChatSavedSuccessfully": "הצ'אט הזמני שלך נשמר בהצלחה",
+    "failedToSaveTemporaryChat": "שמירת הצ'אט הזמני נכשלה. אנא נסה שוב."
+}

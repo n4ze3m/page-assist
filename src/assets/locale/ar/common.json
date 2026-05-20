@@ -152,5 +152,19 @@
     "downloading": "جاري التنزيل",
     "cancelPullingModel": {
         "confirm": "هل أنت متأكد أنك تريد إلغاء التنزيل؟ سيؤدي ذلك إلى إيقاف عملية التنزيل. وفقًا لتوثيق Ollama، يمكنك المتابعة من حيث توقفت."
-    }
+    },
+    "saveChat": "حفظ الدردشة",
+    "goBack": "رجوع",
+    "generateTitle": "توليد عنوان باستخدام الذكاء الاصطناعي",
+    "generateTitleError": "خطأ في توليد العنوان",
+    "more": "المزيد",
+    "loading": "جاري التحميل...",
+    "projects": "المشاريع",
+    "projectName": "اسم المشروع",
+    "newProject": "مشروع جديد",
+    "rename": "إعادة تسمية",
+    "deleteProjectConfirmation": "هل أنت متأكد أنك تريد حذف هذا المشروع؟",
+    "yourChats": "دردشاتك",
+    "privateWindow": "نافذة خاصة",
+    "newFolder": "مجلد جديد"
 }
