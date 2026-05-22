@@ -278,6 +278,7 @@ export const normalChatMode = async (
     }
 
     let generationInfo: any | undefined = undefined
+    let streamStartTime = 0
 
     const chunks = await ollama.stream(
       [...applicationChatHistory, humanMessage],
@@ -339,6 +340,7 @@ export const normalChatMode = async (
 
       if (count === 0) {
         setIsProcessing(true)
+        streamStartTime = Date.now()
       }
       setMessages((prev) => {
         return prev.map((message) => {
@@ -353,6 +355,10 @@ export const normalChatMode = async (
         })
       })
       count++
+    }
+
+    if (streamStartTime) {
+      generationInfo = { ...generationInfo, total_duration: (Date.now() - streamStartTime) * 1e6 }
     }
 
     setMessages((prev) => {

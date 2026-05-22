@@ -213,6 +213,7 @@ export const ragMode = async (
     const applicationChatHistory = generateHistory(history, selectedModel)
 
     let generationInfo: any | undefined = undefined
+    let streamStartTime = 0
 
     const chunks = await ollama.stream(
       [...applicationChatHistory, humanMessage],
@@ -257,6 +258,7 @@ export const ragMode = async (
       fullText += chunk?.content
       if (count === 0) {
         setIsProcessing(true)
+        streamStartTime = Date.now()
       }
       if (isReasoningStarted(fullText) && !reasoningStartTime) {
         reasoningStartTime = new Date()
@@ -286,6 +288,11 @@ export const ragMode = async (
       })
       count++
     }
+
+    if (streamStartTime) {
+      generationInfo = { ...generationInfo, total_duration: (Date.now() - streamStartTime) * 1e6 }
+    }
+
     // update the message with the full text
     setMessages((prev) => {
       return prev.map((message) => {

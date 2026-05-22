@@ -107,6 +107,7 @@ export const continueChatMode = async (
     }
 
     let generationInfo: any | undefined = undefined
+    let streamStartTime = 0
 
     const chunks = await ollama.stream([...applicationChatHistory], {
       signal: signal,
@@ -164,6 +165,7 @@ export const continueChatMode = async (
 
       if (count === 0) {
         setIsProcessing(true)
+        streamStartTime = Date.now()
       }
 
       setMessages((prev) => {
@@ -179,6 +181,10 @@ export const continueChatMode = async (
         })
       })
       count++
+    }
+
+    if (streamStartTime) {
+      generationInfo = { ...generationInfo, total_duration: (Date.now() - streamStartTime) * 1e6 }
     }
 
     setMessages((prev) => {

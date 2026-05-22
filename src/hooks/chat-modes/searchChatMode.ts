@@ -213,6 +213,7 @@ export const searchChatMode = async (
     }
 
     let generationInfo: any | undefined = undefined
+    let streamStartTime = 0
 
     const chunks = await ollama.stream(
       [...applicationChatHistory, humanMessage],
@@ -256,6 +257,7 @@ export const searchChatMode = async (
       fullText += chunk?.content
       if (count === 0) {
         setIsProcessing(true)
+        streamStartTime = Date.now()
       }
       if (isReasoningStarted(fullText) && !reasoningStartTime) {
         reasoningStartTime = new Date()
@@ -285,6 +287,11 @@ export const searchChatMode = async (
       })
       count++
     }
+
+    if (streamStartTime) {
+      generationInfo = { ...generationInfo, total_duration: (Date.now() - streamStartTime) * 1e6 }
+    }
+
     // update the message with the full text
     setMessages((prev) => {
       return prev.map((message) => {
