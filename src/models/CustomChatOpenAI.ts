@@ -619,12 +619,29 @@ export class CustomChatOpenAI<
         const params = {
             ...this.invocationParams(options),
             messages: messagesMapped,
-            stream: true
+            stream: true,
+            stream_options: { include_usage: true }
         }
         let defaultRole
         //@ts-ignore
         const streamIterable = await this.completionWithRetry(params, options)
         for await (const data of streamIterable) {
+            if (data?.usage) {
+                yield new ChatGenerationChunk({
+                    text: "",
+                    message: new AIMessageChunk({ content: "" }),
+                    generationInfo: {
+                        usage: data.usage,
+                        prompt_tokens: data.usage.prompt_tokens,
+                        completion_tokens: data.usage.completion_tokens,
+                        total_tokens: data.usage.total_tokens
+                    }
+                })
+                if (options.signal?.aborted) {
+                    throw new Error("AbortError")
+                }
+                return
+            }
             const choice = data?.choices[0]
             if (!choice) {
                 continue
