@@ -5,6 +5,11 @@ export const OAI_API_PROVIDERS = [
     baseUrl: ""
   },
   {
+    label: "Atlas Cloud",
+    value: "atlascloud",
+    baseUrl: "https://api.atlascloud.ai/v1"
+  },
+  {
     label: "LLaMa.cpp",
     value: "llamacpp",
     baseUrl: "http://localhost:8080/v1"
