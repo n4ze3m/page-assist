@@ -17,14 +17,6 @@ type Props = {
 export const GenerationInfo = ({ generationInfo }: Props) => {
   if (!generationInfo) return null
 
-  const calculateTokensPerSecond = (
-    evalCount?: number,
-    evalDuration?: number
-  ) => {
-    if (!evalCount || !evalDuration) return 0
-    return (evalCount / evalDuration) * 1e9
-  }
-
   const formatDuration = (nanoseconds?: number) => {
     if (!nanoseconds) return "0ms"
     const ms = nanoseconds / 1e6
@@ -41,15 +33,24 @@ export const GenerationInfo = ({ generationInfo }: Props) => {
           eval_count: generationInfo.usage.completion_tokens,
           total_tokens: generationInfo.usage.total_tokens
         }
-      : {}),
-    ...(generationInfo?.eval_count && generationInfo?.eval_duration
-      ? {
-          tokens_per_second: calculateTokensPerSecond(
-            generationInfo.eval_count,
-            generationInfo.eval_duration
-          ).toFixed(2)
-        }
       : {})
+  }
+
+  const evalCount =
+    generationInfo.eval_count ?? generationInfo.usage?.completion_tokens
+
+  if (evalCount) {
+    if (generationInfo.eval_duration) {
+      metricsToDisplay.tokens_per_second = (
+        (evalCount / generationInfo.eval_duration) *
+        1e9
+      ).toFixed(2)
+    } else if (generationInfo.total_duration) {
+      metricsToDisplay.tokens_per_second = (
+        (evalCount / generationInfo.total_duration) *
+        1e9
+      ).toFixed(2)
+    }
   }
 
   return (
