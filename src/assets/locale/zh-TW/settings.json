@@ -102,6 +102,9 @@
       "enableMessageQueue": {
         "label": "在串流時啟用訊息佇列"
       },
+      "enableMemory": {
+        "label": "啟用記憶（實驗性功能）"
+      },
       "optimizeQueueForSmallScreen": {
         "label": "為小螢幕優化聊天介面"
       },
@@ -117,6 +120,18 @@
           "left": "左側",
           "right": "右側"
         }
+      },
+      "showMcpServersInChat": {
+        "label": "在聊天中顯示 MCP 伺服器切換開關"
+      },
+      "enableAgentWebSearch": {
+        "label": "使用 Agent 網路搜尋（由模型決定何時搜尋與擷取）"
+      },
+      "mcpHumanInLoop": {
+        "label": "執行 MCP 工具前需要核准"
+      },
+      "showProviderNameInModelList": {
+        "label": "在模型清單中顯示提供者名稱"
       }
     },
     "sidepanelRag": {
@@ -441,6 +456,114 @@
     "title": "網路搜尋管理",
     "heading": "網路搜尋設定"
   },
+  "mcpSettings": {
+    "title": "MCP 伺服器",
+    "heading": "管理 MCP 伺服器",
+    "subheading": "新增用於一般聊天的 HTTP MCP 伺服器，支援 Bearer 驗證與自訂標頭。",
+    "addBtn": "新增 MCP 伺服器",
+    "humanInLoop": {
+      "label": "執行 MCP 工具前需要核准",
+      "description": "建議用於具有寫入權限或其他副作用的 MCP 伺服器。您仍可在下方啟用或停用個別工具。",
+      "enabledHint": "已啟用人機協作 (Human-in-the-loop)。MCP 工具執行前會詢問是否核准。",
+      "disabledHint": "預設情況下，MCP 工具執行不需要核准。當 MCP 伺服器可以寫入檔案、修改資料、傳送訊息或進行其他變更時，請開啟此選項。"
+    },
+    "table": {
+      "name": "名稱",
+      "url": "網址",
+      "tools": "快取的工具",
+      "status": "驗證狀態",
+      "notValidated": "尚未驗證",
+      "toolsUnavailable": "沒有快取的工具",
+      "auth": "驗證",
+      "enabled": "已啟用",
+      "actions": "操作",
+      "toolName": "工具名稱",
+      "toolDescription": "描述"
+    },
+    "actions": {
+      "refreshTools": "重新整理工具",
+      "enable": "啟用",
+      "disable": "停用"
+    },
+    "status": {
+      "ready": "{{count}} 個工具可用",
+      "failed": "驗證失敗",
+      "notValidated": "尚未驗證",
+      "lastChecked": "最後檢查時間：{{value}}"
+    },
+    "auth": {
+      "none": "無驗證",
+      "bearer": "Bearer 權杖"
+    },
+    "modal": {
+      "titleAdd": "新增 MCP 伺服器",
+      "titleEdit": "編輯 MCP 伺服器",
+      "deleteConfirm": "刪除 {{name}}？",
+      "name": {
+        "label": "伺服器名稱",
+        "placeholder": "我的 MCP 伺服器",
+        "required": "請輸入伺服器名稱"
+      },
+      "url": {
+        "label": "伺服器網址",
+        "placeholder": "https://example.com/mcp",
+        "help": "目前僅支援基於 HTTP 或 HTTPS 的 Streamable HTTP MCP 端點。",
+        "required": "請輸入伺服器網址",
+        "invalid": "請輸入有效的 HTTP 或 HTTPS 網址"
+      },
+      "transportNotice": {
+        "title": "傳輸支援",
+        "description": "Page Assist 僅支援 Streamable HTTP MCP 伺服器。不支援舊版的 SSE 端點（如 /sse 或 /messages?sessionId=...）。"
+      },
+      "auth": {
+        "label": "驗證"
+      },
+      "bearerToken": {
+        "label": "Bearer 權杖",
+        "placeholder": "輸入 Bearer 權杖",
+        "required": "請輸入 Bearer 權杖"
+      },
+      "enabled": {
+        "label": "全域啟用"
+      },
+      "headers": {
+        "label": "自訂標頭",
+        "add": "新增標頭",
+        "key": {
+          "label": "標頭鍵",
+          "placeholder": "X-Request-ID"
+        },
+        "value": {
+          "label": "標頭值",
+          "placeholder": "value"
+        }
+      },
+      "validation": {
+        "title": "驗證工具",
+        "help": "在儲存前連線至 MCP 伺服器，獲取可用工具並將其快取。驗證需要 Streamable HTTP MCP 端點。",
+        "button": "驗證並載入工具",
+        "availableTools": "可用工具",
+        "idle": "驗證此伺服器以確認連線並載入其可用工具。",
+        "stale": "連線詳細資訊已變更。請重新驗證以更新快取的工具。",
+        "failed": "無法驗證此 MCP 伺服器。",
+        "success": "驗證成功。有 {{count}} 個工具可用。",
+        "syncedAt": "最後同步時間：{{value}}",
+        "saveHint": "如果快取的工具清單過期或缺失，儲存時將驗證目前的配置。"
+      },
+      "submit": "儲存 MCP 伺服器",
+      "update": "更新 MCP 伺服器"
+    },
+    "notification": {
+      "added": "已新增 MCP 伺服器",
+      "updated": "已更新 MCP 伺服器",
+      "deleted": "已刪除 MCP 伺服器",
+      "validated": "已載入 {{count}} 個 MCP 工具",
+      "toolsRefreshed": "已重新整理 {{name}} 的工具",
+      "validationFailedTitle": "MCP 驗證失敗",
+      "storageBlockedTitle": "Page Assist 無法儲存資料",
+      "storageBlockedDescription": "Firefox 無痕模式不支援將資料儲存到 IndexedDB。請從一般視窗管理 MCP 伺服器。"
+    }
+  },
   "about": {
     "title": "關於",
     "heading": "關於",
@@ -513,5 +636,47 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI 設定"
+  },
+  "memory": {
+    "title": "記憶",
+    "description": "您可以通過新增記憶，來客製化與大型語言模型的互動，使其更有幫助並更符合您的需求。",
+    "add": {
+      "button": "新增記憶",
+      "title": "新增記憶",
+      "ok": "新增",
+      "cancel": "取消",
+      "label": "記憶內容",
+      "required": "請輸入記憶內容",
+      "minLength": "記憶內容至少需要 3 個字元",
+      "placeholder": "例如：我偏好 TypeScript 的程式碼範例"
+    },
+    "edit": {
+      "title": "編輯記憶",
+      "ok": "儲存",
+      "cancel": "取消",
+      "label": "記憶內容",
+      "required": "請輸入記憶內容",
+      "minLength": "記憶內容至少需要 3 個字元"
+    },
+    "delete": {
+      "confirm": "刪除此記憶？",
+      "ok": "是",
+      "cancel": "否"
+    },
+    "clearAll": {
+      "confirm": "清除所有記憶？",
+      "ok": "是",
+      "cancel": "否",
+      "button": "全部清除"
+    },
+    "empty": "尚無記憶。新增第一筆記憶以開始使用。",
+    "table": {
+      "content": "內容",
+      "created": "建立時間",
+      "actions": "操作"
+    },
+    "enableMemoryTool": {
+      "label": "啟用記憶工具調用"
+    }
   }
 }

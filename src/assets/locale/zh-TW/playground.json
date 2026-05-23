@@ -37,7 +37,11 @@
     "knowledge": "知識",
     "vision": "[實驗]視覺聊天",
     "clearContext": "清除對話上下文",
-    "uploadDocuments": "上傳文件 (beta)"
+    "uploadDocuments": "上傳文件 (beta)",
+    "mcpServers": "MCP 伺服器",
+    "mcpEmpty": "尚未設定 MCP 伺服器",
+    "mcpEmptyDesc": "連接 MCP 伺服器以便在聊天中使用工具。",
+    "mcpAddServer": "新增 MCP 伺服器"
   },
   "sendWhenEnter": "按 Enter 送出",
   "welcome": "你好！今天我能幫你什麼？",
