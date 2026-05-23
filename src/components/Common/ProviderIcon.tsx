@@ -24,6 +24,7 @@ import { HuggingFaceIcon } from "../Icons/HuggingFaceIcon"
 import { VercelIcon } from "../Icons/VercelIcon"
 import { ChutesIcon } from "../Icons/ChutesIcon"
 import { AnthropicIcon } from "../Icons/AnthropicIcon"
+import { AtlasCloudIcon } from "../Icons/AtlasCloud"
 import { BigModelZhipuIcon } from "../Icons/BigModelZhipuIcon"
 import { CanopyWaveIcon } from "../Icons/CanopyWaveIcon"
 import { MiniMaxIcon } from "../Icons/MiniMaxIcon"
@@ -41,6 +42,8 @@ export const ProviderIcons = ({
       return <ChromeIcon className={className} />
     case "custom":
       return <CpuIcon className={className} />
+    case "atlascloud":
+      return <AtlasCloudIcon className={className} />
     case "fireworks":
       return <FireworksMonoIcon className={className} />
     case "groq":
