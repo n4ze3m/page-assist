@@ -1,0 +1,247 @@
+{
+    "pageAssist": "Page Assist",
+    "selectAModel": "בחר מודל",
+    "save": "שמור",
+    "saved": "נשמר",
+    "cancel": "ביטול",
+    "retry": "נסה שוב",
+    "loadMore": "טען עוד...",
+    "share": {
+        "tooltip": {
+            "share": "שתף"
+        },
+        "modal": {
+            "title": "שתף קישור לצ'אט"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "אנונימי",
+                "title": "צ'אט ללא שם"
+            },
+            "title": {
+                "label": "כותרת הצ'אט",
+                "placeholder": "הזן כותרת לצ'אט",
+                "required": "נדרשת כותרת לצ'אט"
+            },
+            "name": {
+                "label": "השם שלך",
+                "placeholder": "הזן את שמך",
+                "required": "נדרש שמך"
+            },
+            "btn": {
+                "save": "צור קישור",
+                "saving": "יוצר קישור..."
+            }
+        },
+        "notification": {
+            "successGenerate": "הקישור הועתק ללוח",
+            "failGenerate": "יצירת הקישור נכשלה"
+        }
+    },
+    "copyToClipboard": "העתק ללוח",
+    "webSearch": "מחפש ברשת",
+    "regenerate": "צור מחדש",
+    "edit": "ערוך",
+    "delete": "מחק",
+    "continue": "המשך תגובה",
+    "saveAndSubmit": "שמור ושלח",
+    "editMessage": {
+        "placeholder": "הקלד הודעה..."
+    },
+    "submit": "שלח",
+    "noData": "אין נתונים",
+    "noHistory": "אין היסטוריית צ'אט",
+    "chatWithCurrentPage": "שוחח עם הדף הנוכחי",
+    "beta": "בטא",
+    "tts": "קרא בקול",
+    "currentChatModelSettings": "הגדרות מודל צ'אט נוכחיות",
+    "modelSettings": {
+        "label": "הגדרות מודל",
+        "description": "הגדר את אפשרויות המודל באופן גלובלי לכל הצ'אטים",
+        "form": {
+            "keepAlive": {
+                "label": "שמור פעיל (Keep Alive)",
+                "help": "שולט למשך כמה זמן המודל יישאר נטען בזיכרון לאחר הבקשה (ברירת מחדל: 5m)",
+                "placeholder": "לדוגמה: 5m, 10m, 1h"
+            },
+            "temperature": {
+                "label": "טמפרטורה (Temperature)",
+                "placeholder": "לדוגמה: 0.7, 1.0"
+            },
+            "numCtx": {
+                "label": "גודל חלון הקשר (num_ctx)",
+                "placeholder": "הזן ערך של גודל חלון הקשר (ברירת מחדל: 2048)"
+            },
+            "numPredict": {
+                "label": "מקסימום אסימונים (num_predict)",
+                "placeholder": "לדוגמה: 2048, 4096"
+            },
+            "thinking": {
+                "label": "מצב חשיבה (Ollama)",
+                "levels": {
+                    "off": "כבוי",
+                    "on": "מופעל",
+                    "low": "מאמץ חשיבה נמוך",
+                    "medium": "מאמץ חשיבה בינוני",
+                    "high": "מאמץ חשיבה גבוה"
+                }
+            },
+            "seed": {
+                "label": "Seed",
+                "placeholder": "לדוגמה: 1234",
+                "help": "הדירות של פלט המודל"
+            },
+            "topK": {
+                "label": "Top K",
+                "placeholder": "לדוגמה: 40, 100"
+            },
+            "topP": {
+                "label": "Top P",
+                "placeholder": "לדוגמה: 0.9, 0.95"
+            },
+            "useMMap": {
+                "label": "useMmap"
+            },
+            "tfsZ": {
+                "label": "TFS-Z",
+                "placeholder": "לדוגמה: 1.0, 1.1"
+            },
+            "numKeep": {
+                "label": "Num Keep",
+                "placeholder": "לדוגמה: 256, 512"
+            },
+            "numThread": {
+                "label": "Num Thread",
+                "placeholder": "לדוגמה: 8, 16"
+            },
+            "useMlock": {
+                "label": "useMlock"
+            },
+            "reasoningEffort": {
+                "label": "מאמץ חשיבה",
+                "placeholder": "low, medium, high"
+            },
+            "minP": {
+                "label": "Min P",
+                "placeholder": "לדוגמה: 0.05"
+            },
+            "repeatPenalty": {
+                "label": "קנס על חזרה (Repeat Penalty)",
+                "placeholder": "לדוגמה: 1.1, 1.2"
+            },
+            "repeatLastN": {
+                "label": "חזרה על אחרונים N (Repeat Last N)",
+                "placeholder": "לדוגמה: 64, 128"
+            },
+            "numGpu": {
+                "label": "Num GPU",
+                "placeholder": "הזן מספר שכבות לשליחה ל-GPU"
+            },
+            "systemPrompt": {
+                "label": "הנחיית מערכת זמנית",
+                "placeholder": "הזן הנחיית מערכת",
+                "help": "זוהי דרך מהירה להגדיר את הנחיית המערכת בצ'אט הנוכחי, אשר תדרוס את הנחיית המערכת שנבחרה אם קיימת כזו."
+            }
+        },
+        "advanced": "הגדרות מודל נוספות"
+    },
+    "copilot": {
+        "summary": "סכם",
+        "explain": "הסבר",
+        "rephrase": "נסח מחדש",
+        "translate": "תרגם",
+        "custom": "מותאם אישית"
+    },
+    "citations": "ציטוטים",
+    "segmented": {
+        "ollama": "מודלי Ollama",
+        "custom": "מודלים מותאמים אישית"
+    },
+    "downloadCode": "הורד קוד",
+    "date": {
+        "pinned": "נעוץ",
+        "today": "היום",
+        "yesterday": "אתמול",
+        "last7Days": "7 ימים אחרונים",
+        "older": "ישן יותר"
+    },
+    "range": {
+        "deleteConfirm": {
+            "pinned": "האם אתה בטוח שברצונך למחוק את כל ההודעות הנעוצות?",
+            "today": "האם אתה בטוח שברצונך למחוק את כל ההודעות מהיום?",
+            "yesterday": "האם אתה בטוח שברצונך למחוק את כל ההודעות מאתמול?",
+            "last7Days": "האם אתה בטוח שברצונך למחוק את כל ההודעות מ-7 הימים האחרונים?",
+            "older": "האם אתה בטוח שברצונך למחוק את כל ההודעות הישנות יותר?"
+        },
+        "tooltip": {
+            "pinned": "מחק את כל ההודעות הנעוצות",
+            "today": "מחק את כל ההודעות מהיום",
+            "yesterday": "מחק את כל ההודעות מאתמול",
+            "last7Days": "מחק את כל ההודעות מ-7 הימים האחרונים",
+            "older": "מחק את כל ההודעות הישנות יותר"
+        }
+    },
+    "historiesDeleted": "{{count}} היסטוריות נמחקו",
+    "deleteHistoriesError": "שגיאה במחיקת היסטוריות",
+    "pin": "נעץ",
+    "unpin": "בטל נעיצה",
+    "generationInfo": "מידע על יצירה",
+    "sidebarChat": "צ'אט סרגל צד",
+    "reasoning": {
+        "thinking": "חושב....",
+        "thought": "חשב למשך {{time}}",
+        "title": "תהליך חשיבה",
+        "expand": "הצג חשיבה",
+        "collapse": "הסתר חשיבה"
+    },
+    "mermaid": "Mermaid",
+    "search": "חיפוש",
+    "searchResults": "תוצאות חיפוש",
+    "embeddingGen": "יוצר הטמעות (embeddings), זה עשוי לקחת זמן מה",
+    "semanticSearch": "מבצע חיפוש סמנטי",
+    "newBranch": "ענף חדש",
+    "downloading": "מוריד",
+    "mcp": {
+        "tool": "כלי",
+        "server": "שרת",
+        "toolRequestTitle": "כלים שנתבקשו",
+        "toolResultTitle": "תוצאת כלי",
+        "arguments": "ארגומנטים",
+        "output": "פלט",
+        "approvalRequired": "נדרש אישור",
+        "approvalPrompt": "אשר את קריאת כלי ה-MCP לפני הפעלתה.",
+        "approve": "אשר",
+        "reject": "דחה",
+        "rejectWithReason": "דחה עם הערה",
+        "rejectionReasonPlaceholder": "סיבת דחייה אופציונלית",
+        "noOutput": "לא הוחזר פלט.",
+        "status": {
+            "success": "הצלחה",
+            "error": "שגיאה"
+        },
+        "action": {
+            "connecting": "מתחבר לשרתי MCP",
+            "loading_tools": "טוען כלי MCP",
+            "awaiting_approval": "ממתין לאישור להפעיל את {{tool}} ב-{{server}}",
+            "calling_tool": "קורא ל-{{tool}} ב-{{server}}",
+            "waiting_result": "ממתין ל-{{tool}} ב-{{server}}"
+        }
+    },
+    "cancelPullingModel": {
+        "confirm": "האם אתה בטוח שברצונך לבטל את ההורדה? פעולה זו תפסיק את תהליך ההורדה. לפי תיעוד Ollama, תוכל להמשיך מאותה נקודה בה הפסקת."
+    },
+    "saveChat": "שמור צ'אט",
+    "goBack": "חזור",
+    "generateTitle": "צור כותרת עם בינה מלאכותית",
+    "generateTitleError": "שגיאה ביצירת כותרת",
+    "more": "עוד",
+    "loading": "טוען...",
+    "projects": "פרויקטים",
+    "projectName": "שם הפרויקט",
+    "newProject": "פרויקט חדש",
+    "rename": "שנה שם",
+    "deleteProjectConfirmation": "האם אתה בטוח שברצונך למחוק פרויקט זה?",
+    "yourChats": "הצ'אטים שלך",
+    "privateWindow": "חלון פרטי",
+    "newFolder": "תיקייה חדשה"
+}

@@ -1,0 +1,27 @@
+{
+    "heading": "הגדרת Chrome AI",
+    "status": {
+        "label": "הפעל או השבת תמיכה ב-Chrome AI ב-Page Assist"
+    },
+    "error": {
+        "browser_not_supported": "גרסה זו של Chrome אינה נתמכת על ידי מודל Gemini Nano. אנא עדכן לגרסה 138 ומעלה.",
+        "ai_not_supported": "ההגדרה chrome://flags/#prompt-api-for-gemini-nano אינה מופעלת. אנא הפעל אותה.",
+        "ai_not_ready": "Gemini Nano עדיין לא מוכן; עליך לבדוק שוב את הגדרות Chrome.",
+        "internal_error": "אירעה שגיאה פנימית. אנא נסה שוב מאוחר יותר."
+    },
+    "errorDescription": "כדי להשתמש ב-Chrome AI, דרושה גרסת Chrome 138 ומעלה. בצע את השלבים הבאים:\n\n1. עבור אל `chrome://flags/#prompt-api-for-gemini-nano` והפעל את \"Prompt API for Gemini Nano\".\n2. הפעל מחדש את Chrome כדי להחיל את הדגל.\n3. חזור לדף זה ולחץ על \"הורד מודל\" — פעולה זו תוריד מודל של 4GB בפעם הראשונה.\n4. לאחר ההורדה, ניתן להפעיל את Gemini Nano דרך Page Assist.",
+    "downloadModel": "הורד מודל",
+    "modelDownloadWarning": "פעולה זו תוריד מודל שגודל ההורדה המשוער שלו נע בין 1.5 GB ל-2.4 GB. ודא שיש לך מספיק שטח דיסק.",
+    "downloadModal": {
+        "title": "הורדת מודל Gemini Nano",
+        "warning": "נדרשת הורדה גדולה",
+        "warningDescription": "פעולה זו תוריד כ-4GB של נתונים. ודא שיש לך מספיק שטח דיסק וחיבור אינטרנט יציב.",
+        "confirm": "הורד כעת",
+        "cancel": "ביטול",
+        "downloading": "מוריד מודל",
+        "downloadingDescription": "מוריד את מודל Gemini Nano. פעולה זו עשויה להימשך מספר דקות, תלוי בחיבור האינטרנט שלך.",
+        "pleaseWait": "אנא אל תסגור חלון זה במהלך ההורדה..."
+    },
+    "downloadSuccess": "המודל הורד בהצלחה!",
+    "downloadError": "הורדת המודל נכשלה. אנא נסה שוב."
+}

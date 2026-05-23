@@ -1,0 +1,108 @@
+{
+    "settings": "OpenAI compatible API",
+    "heading": "OpenAI compatible API",
+    "subheading": "Manage and configure your OpenAI API Compatible providers here.",
+    "addBtn": "הוסף ספק",
+    "table": {
+        "name": "שם ספק",
+        "baseUrl": "כתובת URL בסיסית",
+        "actions": "פעולה"
+    },
+    "modal": {
+        "titleAdd": "הוסף ספק חדש",
+        "titleEdit": "ערוך ספק",
+        "name": {
+            "label": "שם ספק",
+            "required": "שם הספק הוא חובה.",
+            "placeholder": "הזן שם ספק"
+        },
+        "baseUrl": {
+            "label": "כתובת URL בסיסית",
+            "help": "כתובת ה-URL הבסיסית של ספק ה-API של OpenAI. לדוגמה (http://localhost:1234/v1)",
+            "required": "כתובת URL בסיסית היא חובה.",
+            "placeholder": "הזן כתובת URL בסיסית"
+        },
+        "apiKey": {
+            "label": "מפתח API",
+            "required": "מפתח API הוא חובה.",
+            "placeholder": "הזן מפתח API"
+        },
+        "submit": "שמור",
+        "update": "עדכן",
+        "deleteConfirm": "האם אתה בטוח שברצונך למחוק ספק זה?",
+        "model": {
+            "title": "רשימת מודלים",
+            "subheading": "אנא בחר את מודלי הצ'אט שברצונך להשתמש בהם עם ספק זה.",
+            "success": "המודלים החדשים נוספו בהצלחה."
+        },
+        "tipLMStudio": "Page Assist יביא באופן אוטומטי את המודלים שטענת ב-LM Studio. אין צורך להוסיף אותם ידנית."
+    },
+    "addSuccess": "הספק נוסף בהצלחה.",
+    "deleteSuccess": "הספק נמחק בהצלחה.",
+    "updateSuccess": "הספק עודכן בהצלחה.",
+    "delete": "מחק",
+    "edit": "ערוך",
+    "newModel": "הוסף מודלים לספק",
+    "noNewModel": "עבור LMStudio, Ollama, Llamafile, אנו מביאים את המודלים באופן דינמי. אין צורך בהוספה ידנית.",
+    "searchModel": "חפש מודל",
+    "selectAll": "בחר הכל",
+    "save": "שמור",
+    "saving": "שומר...",
+    "manageModels": {
+        "columns": {
+            "name": "שם מודל",
+            "model_type": "סוג מודל",
+            "model_id": "מזהה מודל",
+            "provider": "שם ספק",
+            "actions": "פעולה",
+            "nickname": "כינוי מודל"
+        },
+        "tooltip": {
+            "delete": "מחק"
+        },
+        "confirm": {
+            "delete": "האם אתה בטוח שברצונך למחוק מודל זה?"
+        },
+        "modal": {
+            "title": "הוסף מודל מותאם אישית",
+            "titleEdit": "ערוך מודל מותאם אישית",
+            "form": {
+                "name": {
+                    "label": "מזהה מודל",
+                    "placeholder": "deepseek-v3.1",
+                    "required": "מזהה מודל הוא חובה."
+                },
+                "provider": {
+                    "label": "ספק",
+                    "placeholder": "בחר ספק",
+                    "required": "ספק הוא חובה."
+                },
+                "type": {
+                    "label": "סוג מודל"
+                }
+            }
+        }
+    },
+    "noModelFound": "לא נמצא מודל. ודא שהוספת ספק נכון עם כתובת URL בסיסית ומפתח API.",
+    "radio": {
+        "chat": "מודל צ'אט",
+        "embedding": "מודל הטמעה (Embedding)",
+        "chatInfo": "משמש להשלמת צ'אט ויצירת שיחות",
+        "embeddingInfo": "משמש עבור RAG ומשימות אחרות הקשורות לחיפוש סמנטי."
+    },
+    "nicknameModal": {
+        "title": "הוסף / ערוך כינוי מודל",
+        "form": {
+            "modelName": {
+                "label": "שם מודל",
+                "placeholder": "הזן שם מודל",
+                "required": "שם המודל הוא חובה."
+            },
+            "modelAvatar": {
+                "label": "אוואטר מודל",
+                "placeholder": "הזן כתובת URL של אוואטר המודל",
+                "help": "אנא הזן את כתובת ה-URL של אוואטר המודל. תמונה זו תוצג בחלון הצ'אט."
+            }
+        }
+    }
+}

@@ -19,6 +19,7 @@ import { no } from "./lang/no";
 import { sv } from "./lang/sv";
 import { ko } from "./lang/ko";
 import { ar } from "./lang/ar"
+import { he } from "./lang/he"
 
 
 i18n
@@ -48,6 +49,7 @@ i18n
             sv: sv,
             ko: ko,
             ar: ar,
+            he: he,
             cz: cz,
             "cs-CZ": cz
         },

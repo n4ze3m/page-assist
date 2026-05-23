@@ -1,0 +1,92 @@
+{
+    "addBtn": "הוסף ידע חדש",
+    "columns": {
+        "title": "כותרת",
+        "status": "סטטוס",
+        "embeddings": "מודל הטמעה",
+        "createdAt": "נוצר ב",
+        "action": "פעולות"
+    },
+    "expandedColumns": {
+        "name": "שם"
+    },
+    "confirm": {
+        "delete": "האם אתה בטוח שברצונך למחוק ידע זה?",
+        "deleteSource": "האם אתה בטוח שברצונך למחוק מקור זה?"
+    },
+    "deleteSuccess": "הידע נמחק בהצלחה",
+    "status": {
+        "pending": "ממתין",
+        "finished": "הסתיים",
+        "processing": "מעבד",
+        "failed": "נכשל"
+    },
+    "addKnowledge": "הוסף ידע",
+    "updateKnowledge": "הוסף מקור",
+    "form": {
+        "tabs": {
+            "upload": "העלאת קובץ",
+            "text": "הזנת טקסט"
+        },
+        "title": {
+            "label": "כותרת הידע (אופציונלי)",
+            "placeholder": "הזן כותרת לידע",
+            "placeholderOptional": "כותרת אופציונלית (ברירת המחדל היא 50 התווים הראשונים)",
+            "required": "כותרת הידע היא חובה"
+        },
+        "uploadFile": {
+            "label": "העלאת קובץ",
+            "uploadText": "גרור ושחרר קובץ לכאן או לחץ להעלאה",
+            "uploadHint": "סוגי קבצים נתמכים: .pdf, .csv, .txt, .md, .docx",
+            "required": "נדרש קובץ",
+            "uploadError": "סוג קובץ לא נתמך"
+        },
+        "textInput": {
+            "typeLabel": "סוג",
+            "type": {
+                "plain": "טקסט פשוט",
+                "markdown": "Markdown",
+                "code": "קוד"
+            },
+            "contentLabel": "תוכן",
+            "placeholder": "הדבק או הקלד את הטקסט שלך כאן...",
+            "required": "תוכן טקסט הוא חובה",
+            "tooLarge": "התוכן גדול מדי. אנא שמור עליו מתחת ל-500 אלף תווים.",
+            "defaultTitle": "טקסט ללא כותרת"
+        },
+        "submit": "שלח",
+        "success": "הידע נוסף בהצלחה"
+    },
+    "noEmbeddingModel": "אנא הוסף תחילה מודל הטמעה (Embedding) מעמוד הגדרות ה-RAG",
+    "newSource": "מקור חדש",
+    "editSettings": {
+        "title": "ערוך הגדרות ידע",
+        "success": "הגדרות הידע עודכנו בהצלחה",
+        "variableInfo": {
+            "title": "משתנים זמינים",
+            "description": "באפשרותך להשתמש במשתנים הבאים בהנחיות שלך:",
+            "context": "ההקשר שנשלף ממאגר הידע שלך",
+            "query": "שאלת המשתמש או השאילתה"
+        },
+        "form": {
+            "title": {
+                "label": "כותרת הידע",
+                "placeholder": "הזן כותרת לידע",
+                "required": "כותרת הידע היא חובה"
+            },
+            "systemPrompt": {
+                "label": "הנחיית מערכת",
+                "help": "התאם אישית כיצד ה-AI מגיב באמצעות מאגר הידע שלך. השתמש ב-{context} למידע שנשלף וב-{question} לשאלת המשתמש. הערה: {question} נדרש בהנחיה, אחרת הדמות לא תקבל את הקשר השאלה.",
+                "placeholder": "הזן את הנחיית המערכת המותאמת אישית שלך...",
+                "prefillButton": "השתמש בהנחיית ברירת מחדל"
+            },
+            "followupPrompt": {
+                "label": "הנחיית שאלת המשך",
+                "help": "התאם אישית כיצד שאלות המשך מעובדות. הנחיה זו מנסחת מחדש שאלות המשך לשאלות עצמאיות.",
+                "placeholder": "הזן את הנחיית שאלת ההמשך המותאמת אישית שלך...",
+                "prefillButton": "השתמש בהנחיית ברירת מחדל"
+            }
+        },
+        "tooltip": "ערוך הגדרות ידע"
+    }
+}

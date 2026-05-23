@@ -75,5 +75,9 @@ export const supportLanguage = [
     {
         value: "ar",
         label: "العربية"
+    },
+    {
+        value: "he",
+        label: "עברית"
     }
 ]

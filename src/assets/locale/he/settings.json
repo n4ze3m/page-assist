@@ -1,0 +1,645 @@
+{
+  "generalSettings": {
+    "title": "הגדרות כלליות",
+    "settings": {
+      "heading": "הגדרות ממשק אינטרנט",
+      "speechRecognitionLang": {
+        "label": "שפת זיהוי דיבור",
+        "placeholder": "בחר שפה"
+      },
+      "language": {
+        "label": "שפה",
+        "placeholder": "בחר שפה"
+      },
+      "darkMode": {
+        "label": "שינוי ערכת נושא",
+        "options": {
+          "light": "בהיר",
+          "dark": "כהה"
+        }
+      },
+      "defaultCopilotPrompt": {
+        "label": "הנחיית ברירת מחדל עבור פאנל הצד (Copilot)",
+        "placeholder": "בחר הנחייה"
+      },
+      "defaultWebUIPrompt": {
+        "label": "הנחיית ברירת מחדל עבור ממשק האינטרנט",
+        "placeholder": "בחר הנחייה"
+      },
+      "copilotResumeLastChat": {
+        "label": "המשך את הצ'אט האחרון בעת פתיחת פאנל הצד (Copilot)"
+      },
+      "turnOnChatWithWebsite": {
+        "label": "הפעל 'צ'אט עם האתר' כברירת מחדל (Copilot)"
+      },
+      "webUIResumeLastChat": {
+        "label": "המשך את הצ'אט האחרון בעת פתיחת ממשק האינטרנט"
+      },
+      "hideCurrentChatModelSettings": {
+        "label": "הסתר את הגדרות מודל הצ'אט הנוכחי"
+      },
+      "restoreLastChatModel": {
+        "label": "שחזר את המודל האחרון ששימש לצ'אטים קודמים"
+      },
+      "sendNotificationAfterIndexing": {
+        "label": "שלח התראה לאחר סיום עיבוד מאגר הידע"
+      },
+      "generateTitle": {
+        "label": "צור כותרת באמצעות בינה מלאכותית"
+      },
+      "ollamaStatus": {
+        "label": "הפעל או השבת בדיקת סטטוס חיבור ל-Ollama"
+      },
+      "wideMode": {
+        "label": "הפעל מצב מסך רחב"
+      },
+      "openReasoning": {
+        "label": "פתח את קריסת הנימוק (Reasoning) כברירת מחדל"
+      },
+      "defaultThinkingMode": {
+        "label": "הצג את מצב 'חשיבה' בטפסים"
+      },
+      "userChatBubble": {
+        "label": "השתמש בבועת צ'אט עבור הודעות משתמש"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "העתק תגובה ללוח באופן אוטומטי"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "אפשר עיצוב Markdown עבור הודעות משתמש"
+      },
+      "copyAsFormattedText": {
+        "label": "העתק כטקסט מעוצב"
+      },
+      "tabMentionsEnabled": {
+        "label": "אפשר אזכורי לשוניות (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "הדבק טקסט ארוך כקובץ"
+      },
+      "ocrLanguage": {
+        "label": "שפת OCR כברירת מחדל",
+        "placeholder": "בחר שפת OCR"
+      },
+      "sidepanelTemporaryChat": {
+        "label": "הפעל צ'אט זמני בפאנל הצד כברירת מחדל"
+      },
+      "webuiTemporaryChat": {
+        "label": "הפעל צ'אט זמני בממשק האינטרנט כברירת מחדל"
+      },
+      "removeReasoningTagFromCopy": {
+        "label": "הסר תגי נימוק (Reasoning) מטקסט מועתק"
+      },
+      "youtubeAutoSummarize": {
+        "label": "הצג את כפתור ה-'סיכום' בסרטוני YouTube."
+      },
+      "hideReasoningWidget": {
+        "label": "הסתר את ווידג'ט הנימוק מהודעות בינה מלאכותית"
+      },
+      "persistChatInput": {
+        "label": "שמור קלט צ'אט (שמור הודעות שלא נשלחו)"
+      },
+      "enableMessageQueue": {
+        "label": "הפעל תור הודעות בזמן הזרמה"
+      },
+      "optimizeQueueForSmallScreen": {
+        "label": "בצע אופטימיזציה לממשק הצ'אט עבור מסכים קטנים"
+      },
+      "tableTextWrap": {
+        "label": "אפשר גלישת טקסט בטבלאות Markdown"
+      },
+      "showMoreForLargeMessage": {
+        "label": "הצג 'הצג עוד' עבור הודעות אנושיות ארוכות"
+      },
+      "sidebarPosition": {
+        "label": "מיקום סרגל הצד",
+        "options": {
+          "left": "שמאל",
+          "right": "ימין"
+        }
+      },
+      "showMcpServersInChat": {
+        "label": "הצג מתג שרתי MCP בצ'אט"
+      },
+      "enableAgentWebSearch": {
+        "label": "השתמש בחיפוש אינטרנט של סוכן (המודל מחליט מתי לחפש ולאחזר)"
+      },
+      "mcpHumanInLoop": {
+        "label": "דרוש אישור לפני הרצת כלי MCP"
+      },
+      "showProviderNameInModelList": {
+        "label": "הצג שם ספק ברשימת המודלים"
+      }
+    },
+    "sidepanelRag": {
+      "heading": "הגדרות אחזור (Retrieval)",
+      "ragEnabled": {
+        "label": "אפשר הטמעה (Embedding) ואחזור (Retrieval)"
+      },
+      "maxWebsiteContext": {
+        "label": "גודל תוכן מקסימלי למצב הקשר מלא",
+        "placeholder": "גודל תוכן (ברירת מחדל 4028)"
+      }
+    },
+    "webSearch": {
+      "heading": "ניהול חיפוש באינטרנט",
+      "searchMode": {
+        "label": "בצע חיפוש פשוט באינטרנט"
+      },
+      "provider": {
+        "label": "מנוע חיפוש",
+        "placeholder": "בחר מנוע חיפוש"
+      },
+      "totalSearchResults": {
+        "label": "סה\"כ תוצאות חיפוש",
+        "placeholder": "הזן סה\"כ תוצאות חיפוש"
+      },
+      "visitSpecificWebsite": {
+        "label": "בקר באתר המוזכר בהודעה"
+      },
+      "searxng": {
+        "url": {
+          "label": "כתובת אתר SearXNG"
+        }
+      },
+      "braveApi": {
+        "label": "מפתח API של Brave",
+        "placeholder": "הזן את מפתח ה-API של Brave"
+      },
+      "tavilyApi": {
+        "label": "מפתח API של Tavily",
+        "placeholder": "הזן את מפתח ה-API של Tavily"
+      },
+      "exa": {
+        "label": "מפתח API של Exa",
+        "placeholder": "הזן את מפתח ה-API של Exa"
+      },
+      "googleDomain": {
+        "label": "דומיין גוגל"
+      },
+      "searchOnByDefault": {
+        "label": "חיפוש באינטרנט פעיל כברירת מחדל"
+      },
+      "firecrawlAPIKey": {
+        "label": "מפתח API של Firecrawl",
+        "placeholder": "הזן את מפתח ה-API של Firecrawl"
+      },
+      "domainFilter": {
+        "label": "רשימת סינון דומיינים",
+        "description": "הצג תוצאות מדומיינים אלה בלבד",
+        "placeholder": "לדוגמה, example.com"
+      },
+      "blockedDomains": {
+        "label": "דומיינים חסומים",
+        "description": "אל תכלול תוצאות מדומיינים אלה",
+        "placeholder": "לדוגמה, spam.com"
+      }
+    },
+    "system": {
+      "heading": "הגדרות מערכת",
+      "deleteChatHistory": {
+        "label": "איפוס מערכת",
+        "button": "אפס הכל",
+        "confirm": "האם אתה בטוח שברצונך לבצע איפוס מערכת? פעולה זו תמחק את כל הנתונים ולא ניתן לבטלה."
+      },
+      "export": {
+        "label": "ייצא את כל הנתונים (היסטוריית צ'אט, מאגר ידע, הנחיות והגדרות)",
+        "button": "ייצוא נתונים",
+        "success": "הייצוא הצליח"
+      },
+      "import": {
+        "label": "ייבא את כל הנתונים (היסטוריית צ'אט, מאגר ידע, הנחיות והגדרות)",
+        "button": "ייבוא נתונים",
+        "success": "הייבוא הצליח",
+        "error": "שגיאה בייבוא"
+      },
+      "actionIcon": {
+        "label": "הגדר פעולת ברירת מחדל ללחיצה על אייקון התוסף"
+      },
+      "contextMenu": {
+        "label": "הגדר פעולת ברירת מחדל לתפריט ההקשר"
+      },
+      "fontSize": {
+        "label": "גודל גופן"
+      },
+      "webuiBtnSidePanel": {
+        "label": "הצג כפתור ממשק אינטרנט בפאנל הצד"
+      },
+      "chatBackgroundImage": {
+        "label": "תמונת רקע לצ'אט"
+      },
+      "storageSyncEnabled": {
+        "label": "אפשר סנכרון אחסון דפדפן (סנכרון הגדרות בין מכשירים)"
+      }
+    },
+    "tts": {
+      "heading": "הגדרות טקסט לדיבור (TTS)",
+      "ttsEnabled": {
+        "label": "אפשר טקסט לדיבור"
+      },
+      "ttsAutoPlay": {
+        "label": "השמע תגובה קולית באופן אוטומטי לאחר סיום"
+      },
+      "ttsProvider": {
+        "label": "ספק טקסט לדיבור",
+        "placeholder": "בחר ספק"
+      },
+      "ttsVoice": {
+        "label": "קול טקסט לדיבור",
+        "placeholder": "בחר קול"
+      },
+      "ssmlEnabled": {
+        "label": "אפשר SSML (Speech Synthesis Markup Language)"
+      },
+      "responseSplitting": {
+        "label": "פיצול תגובה"
+      },
+      "removeReasoningTagTTS": {
+        "label": "הסר תגי נימוק מ-TTS"
+      }
+    },
+    "stt": {
+      "heading": "הגדרות דיבור לטקסט (STT)",
+      "autoStopTimeout": {
+        "label": "זמן המתנה לעצירה אוטומטית (במילישניות)",
+        "placeholder": "הזן זמן המתנה לעצירה אוטומטית במילישניות"
+      },
+      "autoSubmitVoiceMessage": {
+        "label": "שלח הודעה קולית באופן אוטומטי"
+      }
+    }
+  },
+  "manageModels": {
+    "title": "ניהול מודלים",
+    "addBtn": "הוסף מודל חדש",
+    "columns": {
+      "name": "שם",
+      "digest": "Digest",
+      "nickname": "כינוי",
+      "modifiedAt": "שונה בתאריך",
+      "size": "גודל",
+      "actions": "פעולות"
+    },
+    "expandedColumns": {
+      "parentModel": "מודל אב",
+      "format": "פורמט",
+      "family": "משפחה",
+      "parameterSize": "גודל פרמטרים",
+      "quantizationLevel": "רמת קוונטיזציה"
+    },
+    "tooltip": {
+      "delete": "מחק מודל",
+      "repull": "משוך (Pull) מודל מחדש",
+      "editNickname": "ערוך כינוי"
+    },
+    "confirm": {
+      "delete": "האם אתה בטוח שברצונך למחוק מודל זה?",
+      "repull": "האם אתה בטוח שברצונך למשוך מודל זה מחדש?"
+    },
+    "modal": {
+      "title": "הוסף מודל חדש",
+      "placeholder": "הזן שם מודל",
+      "pull": "משוך (Pull) מודל"
+    },
+    "notification": {
+      "pullModel": "מושך מודל",
+      "pullModelDescription": "מושך את המודל {{modelName}}. לפרטים נוספים, בדוק את אייקון התוסף.",
+      "cancellingDownload": "מבטל הורדה",
+      "cancellingDownloadDescription": "הורדת המודל מבוטלת...",
+      "success": "הצליח",
+      "error": "שגיאה",
+      "successDescription": "המודל נמשך בהצלחה",
+      "successDeleteDescription": "המודל נמחק בהצלחה",
+      "someError": "משהו השתבש. אנא נסה שוב מאוחר יותר"
+    }
+  },
+  "managePrompts": {
+    "title": "ניהול הנחיות",
+    "addBtn": "הוסף הנחייה חדשה",
+    "option1": "רגיל",
+    "option2": "RAG",
+    "questionPrompt": "הנחיית שאלה",
+    "segmented": {
+      "custom": "הנחיות מותאמות אישית",
+      "copilot": "הנחיות Copilot"
+    },
+    "columns": {
+      "title": "כותרת",
+      "prompt": "הנחייה",
+      "type": "סוג הנחייה",
+      "actions": "פעולות"
+    },
+    "systemPrompt": "הנחיית מערכת",
+    "quickPrompt": "הנחייה מהירה",
+    "tooltip": {
+      "delete": "מחק הנחייה",
+      "edit": "ערוך הנחייה"
+    },
+    "confirm": {
+      "delete": "האם אתה בטוח שברצונך למחוק הנחייה זו? לא ניתן לבטל פעולה זו."
+    },
+    "modal": {
+      "addTitle": "הוסף הנחייה חדשה",
+      "editTitle": "ערוך הנחייה"
+    },
+    "form": {
+      "title": {
+        "label": "כותרת",
+        "placeholder": "ההנחייה המדהימה שלי",
+        "required": "אנא הזן כותרת"
+      },
+      "prompt": {
+        "label": "הנחייה",
+        "placeholder": "הזן הנחייה",
+        "required": "אנא הזן הנחייה",
+        "help": "ניתן להשתמש ב-{key} כמשתנה בהנחייה שלך.",
+        "missingTextPlaceholder": "המשתנה {text} חסר בהנחייה. אנא הוסף אותו."
+      },
+      "isSystem": {
+        "label": "זוהי הנחיית מערכת"
+      },
+      "btnSave": {
+        "saving": "מוסיף הנחייה...",
+        "save": "הוסף הנחייה"
+      },
+      "btnEdit": {
+        "saving": "מעדכן הנחייה...",
+        "save": "עדכן הנחייה"
+      }
+    },
+    "notification": {
+      "addSuccess": "ההנחייה נוספה",
+      "addSuccessDesc": "ההנחייה נוספה בהצלחה",
+      "error": "שגיאה",
+      "someError": "משהו השתבש. אנא נסה שוב מאוחר יותר",
+      "updatedSuccess": "ההנחייה עודכנה",
+      "updatedSuccessDesc": "ההנחייה עודכנה בהצלחה",
+      "deletedSuccess": "ההנחייה נמחקה",
+      "deletedSuccessDesc": "ההנחייה נמחקה בהצלחה"
+    }
+  },
+  "manageShare": {
+    "title": "ניהול שיתוף",
+    "heading": "הגדר כתובת שיתוף דף",
+    "form": {
+      "url": {
+        "label": "כתובת שיתוף דף",
+        "placeholder": "הזן כתובת שיתוף דף",
+        "required": "אנא הזן את כתובת שיתוף הדף שלך!",
+        "help": "מטעמי פרטיות, תוכל לארח בעצמך את שיתוף הדף ולספק את כתובת האתר כאן. <anchor>למידע נוסף</anchor>."
+      }
+    },
+    "webshare": {
+      "heading": "שיתוף אינטרנט",
+      "columns": {
+        "title": "כותרת",
+        "url": "כתובת אתר",
+        "actions": "פעולות"
+      },
+      "tooltip": {
+        "delete": "מחק שיתוף"
+      },
+      "confirm": {
+        "delete": "האם אתה בטוח שברצונך למחוק שיתוף זה? לא ניתן לבטל פעולה זו."
+      },
+      "label": "נהל שיתוף דף",
+      "description": "הפעל או השבת את תכונת שיתוף הדף"
+    },
+    "notification": {
+      "pageShareSuccess": "כתובת שיתוף הדף עודכנה בהצלחה",
+      "someError": "משהו השתבש. אנא נסה שוב מאוחר יותר",
+      "webShareDeleteSuccess": "שיתוף האינטרנט נמחק בהצלחה"
+    }
+  },
+  "ollamaSettings": {
+    "title": "הגדרות Ollama",
+    "heading": "הגדר את Ollama",
+    "settings": {
+      "ollamaUrl": {
+        "label": "כתובת Ollama",
+        "placeholder": "הזן כתובת Ollama"
+      },
+      "globalEnable": {
+        "label": "הפעל או השבת שילוב Ollama באופן גלובלי",
+        "warning": "על ידי השבתת שילוב Ollama באופן גלובלי, Page Assist לא ימשוך מודלים מ-Ollama. תוכל עדיין להוסיף מופע Ollama מקטע <anchor>OpenAI compatible API</anchor> וזה יעבוד כשורה."
+      },
+      "advanced": {
+        "label": "הגדרת כתובת Ollama מתקדמת",
+        "urlRewriteEnabled": {
+          "label": "הפעל או השבת כתובת Origin מותאמת אישית"
+        },
+        "rewriteUrl": {
+          "label": "כתובת Origin מותאמת אישית",
+          "placeholder": "הזן כתובת Origin מותאמת אישית"
+        },
+        "autoCORSFix": {
+          "label": "הפעל או השבת תיקון CORS אוטומטי של Ollama"
+        },
+        "headers": {
+          "label": "כותרות (Headers) מותאמות אישית",
+          "add": "הוסף כותרת",
+          "key": {
+            "label": "מפתח כותרת",
+            "placeholder": "Authorization"
+          },
+          "value": {
+            "label": "ערך כותרת",
+            "placeholder": "Bearer token"
+          }
+        },
+        "help": "אם יש לך בעיות חיבור עם Ollama ב-Page Assist, תוכל להגדיר כתובת Origin מותאמת אישית. למידע נוסף על ההגדרה, <anchor>לחץ כאן</anchor>."
+      }
+    }
+  },
+  "manageSearch": {
+    "title": "ניהול חיפוש באינטרנט",
+    "heading": "הגדר חיפוש באינטרנט"
+  },
+  "mcpSettings": {
+    "title": "שרתי MCP",
+    "heading": "ניהול שרתי MCP",
+    "subheading": "הוסף שרתי HTTP MCP לצ'אט רגיל, כולל אימות Bearer וכותרות מותאמות אישית.",
+    "addBtn": "הוסף שרת MCP",
+    "humanInLoop": {
+      "label": "דרוש אישור לפני הרצת כלי MCP",
+      "description": "מומלץ עבור שרתי MCP עם הרשאות כתיבה או תופעות לוואי אחרות. עדיין ניתן לאפשר או להשבית כלים בודדים למטה.",
+      "enabledHint": "אישור אנושי (Human-in-the-loop) מופעל. כלי MCP יבקשו אישור לפני שהם רצים.",
+      "disabledHint": "כלי MCP רצים ללא אישור כברירת מחדל. הפעל זאת כאשר שרת MCP יכול לכתוב קבצים, לשנות נתונים, לשלוח הודעות או לבצע שינויים אחרים."
+    },
+    "table": {
+      "name": "שם",
+      "url": "כתובת אתר",
+      "tools": "כלים במטמון",
+      "status": "אימות",
+      "notValidated": "טרם אומת",
+      "toolsUnavailable": "אין כלים במטמון",
+      "auth": "אימות",
+      "enabled": "מופעל",
+      "actions": "פעולות",
+      "toolName": "שם הכלי",
+      "toolDescription": "תיאור"
+    },
+    "actions": {
+      "refreshTools": "רענן כלים",
+      "enable": "הפעל",
+      "disable": "השבת"
+    },
+    "status": {
+      "ready": "{{count}} כלים זמינים",
+      "failed": "האימות נכשל",
+      "notValidated": "לא אומת",
+      "lastChecked": "נבדק לאחרונה: {{value}}"
+    },
+    "auth": {
+      "none": "ללא אימות",
+      "bearer": "Bearer token"
+    },
+    "modal": {
+      "titleAdd": "הוסף שרת MCP",
+      "titleEdit": "ערוך שרת MCP",
+      "deleteConfirm": "למחוק את {{name}}?",
+      "name": {
+        "label": "שם שרת",
+        "placeholder": "שרת ה-MCP שלי",
+        "required": "אנא הזן שם שרת"
+      },
+      "url": {
+        "label": "כתובת שרת",
+        "placeholder": "https://example.com/mcp",
+        "help": "כרגע נתמכים רק נקודות קצה של Streamable HTTP MCP מעל HTTP או HTTPS.",
+        "required": "אנא הזן כתובת שרת",
+        "invalid": "אנא הזן כתובת HTTP או HTTPS חוקית"
+      },
+      "transportNotice": {
+        "title": "תמיכה בתעבורה",
+        "description": "Page Assist תומך בשרתי Streamable HTTP MCP בלבד. נקודות קצה מסוג SSE ישנות כמו /sse או /messages?sessionId=... אינן נתמכות."
+      },
+      "auth": {
+        "label": "אימות"
+      },
+      "bearerToken": {
+        "label": "Bearer Token",
+        "placeholder": "הזן Bearer token",
+        "required": "אנא הזן Bearer token"
+      },
+      "enabled": {
+        "label": "הפעלה גלובלית"
+      },
+      "headers": {
+        "label": "כותרות מותאמות אישית",
+        "add": "הוסף כותרת",
+        "key": {
+          "label": "מפתח כותרת",
+          "placeholder": "X-Request-ID"
+        },
+        "value": {
+          "label": "ערך כותרת",
+          "placeholder": "ערך"
+        }
+      },
+      "validation": {
+        "title": "אימות כלים",
+        "help": "התחבר לשרת ה-MCP, אחזר כלים זמינים ושמור אותם במטמון לפני השמירה. האימות מצפה לנקודת קצה של Streamable HTTP MCP.",
+        "button": "אמת וטען כלים",
+        "availableTools": "כלים זמינים",
+        "idle": "אמת שרת זה כדי לאשר את החיבור ולטעון את הכלים הזמינים שלו.",
+        "stale": "פרטי החיבור השתנו. אמת שוב כדי לרענן את הכלים שבמטמון.",
+        "failed": "לא ניתן היה לאמת שרת MCP זה.",
+        "success": "אומת בהצלחה. {{count}} כלים זמינים.",
+        "syncedAt": "סונכרן לאחרונה: {{value}}",
+        "saveHint": "שמירה תאמת את התצורה הנוכחית אם רשימת הכלים שבמטמון אינה מעודכנת או חסרה."
+      },
+      "submit": "שמור שרת MCP",
+      "update": "עדכן שרת MCP"
+    },
+    "notification": {
+      "added": "שרת MCP נוסף",
+      "updated": "שרת MCP עודכן",
+      "deleted": "שרת MCP נמחק",
+      "validated": "נטענו {{count}} כלי MCP",
+      "toolsRefreshed": "רועננו כלים עבור {{name}}",
+      "validationFailedTitle": "אימות MCP נכשל",
+      "storageBlockedTitle": "Page Assist לא יכול לשמור נתונים",
+      "storageBlockedDescription": "מצב גלישה פרטית ב-Firefox אינו תומך בשמירת נתונים ב-IndexedDB. אנא נהל שרתי MCP מחלון רגיל."
+    }
+  },
+  "about": {
+    "title": "אודות",
+    "heading": "אודות",
+    "chromeVersion": "גרסת Page Assist",
+    "ollamaVersion": "גרסת Ollama",
+    "support": "אתה יכול לתמוך בפרויקט Page Assist על ידי תרומה או חסות דרך הפלטפורמות הבאות:",
+    "koFi": "תמיכה ב-Ko-fi",
+    "githubSponsor": "חסות ב-GitHub",
+    "githubRepo": "מאגר GitHub"
+  },
+  "manageKnowledge": {
+    "title": "ניהול ידע",
+    "heading": "הגדר מאגר ידע"
+  },
+  "rag": {
+    "title": "הגדרות Pipeline",
+    "ragSettings": {
+      "label": "הגדרות RAG",
+      "model": {
+        "label": "מודל הטמעה (Embedding)",
+        "required": "אנא בחר מודל",
+        "help": "מומלץ מאוד להשתמש במודלי הטמעה כמו `nomic-embed-text`.",
+        "placeholder": "בחר מודל"
+      },
+      "chunkSize": {
+        "label": "גודל מקטע (Chunk Size)",
+        "placeholder": "הזן גודל מקטע",
+        "required": "אנא הזן גודל מקטע"
+      },
+      "chunkOverlap": {
+        "label": "חפיפת מקטעים (Chunk Overlap)",
+        "placeholder": "הזן חפיפת מקטעים",
+        "required": "אנא הזן חפיפת מקטעים"
+      },
+      "totalFilePerKB": {
+        "label": "מגבלת העלאת קבצים כברירת מחדל למאגר ידע",
+        "placeholder": "הזן מגבלת העלאת קבצים (למשל, 10)",
+        "required": "אנא הזן את מגבלת העלאת הקבצים המוגדרת כברירת מחדל"
+      },
+      "noOfRetrievedDocs": {
+        "label": "מספר מסמכים מאוחזרים",
+        "placeholder": "הזן מספר מסמכים מאוחזרים",
+        "required": "אנא הזן את מספר המסמכים המאוחזרים"
+      },
+      "splittingSeparator": {
+        "label": "מפריד (Separator)",
+        "placeholder": "הזן מפריד (למשל, \\n\\n)",
+        "required": "אנא הזן מפריד"
+      },
+      "splittingStrategy": {
+        "label": "מפצל טקסט"
+      }
+    },
+    "prompt": {
+      "label": "הגדר הנחיית RAG",
+      "option1": "רגיל",
+      "option2": "אינטרנט",
+      "alert": "הגדרת הנחיית המערכת כאן מיושנת. אנא השתמש בקטע ניהול הנחיות כדי להוסיף או לערוך הנחיות. קטע זה יוסר בגרסה עתידית",
+      "systemPrompt": "הנחיית מערכת",
+      "systemPromptPlaceholder": "הזן הנחיית מערכת",
+      "webSearchPrompt": "הנחיית חיפוש באינטרנט",
+      "webSearchPromptHelp": "אל תסיר את `{search_results}` מההנחייה.",
+      "webSearchPromptError": "אנא הזן הנחיית חיפוש באינטרנט",
+      "webSearchPromptPlaceholder": "הזן הנחיית חיפוש באינטרנט",
+      "webSearchFollowUpPrompt": "הנחיית המשך לחיפוש באינטרנט",
+      "webSearchFollowUpPromptHelp": "אל תסיר את `{chat_history}` ואת `{question}` מההנחייה.",
+      "webSearchFollowUpPromptError": "אנא הזן את הנחיית ההמשך לחיפוש באינטרנט!",
+      "webSearchFollowUpPromptPlaceholder": "הנחיית ההמשך לחיפוש באינטרנט שלך"
+    }
+  },
+  "chromeAiSettings": {
+    "title": "הגדרות Chrome AI"
+  },
+  "memory": {
+    "enableMemoryTool": {
+      "label": "הפעל כלי זיכרון"
+    }
+  },
+  "mermaid": "Mermaid"
+}
