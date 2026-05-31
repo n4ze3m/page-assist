@@ -16,8 +16,8 @@ import { SelectedKnowledge } from "../Option/Knowledge/SelectedKnowledge"
 import { ModelSelect } from "../Common/ModelSelect"
 import { PromptSelect } from "../Common/PromptSelect"
 import { useQuery } from "@tanstack/react-query"
-import { fetchChatModels } from "~/services/ollama"
-import { useMessageOption } from "~/hooks/useMessageOption"
+import { fetchChatModels } from "@/services/ai/ollama"
+import { useMessageOption } from "@/hooks/useMessageOption"
 import { Avatar, Select, Tooltip } from "antd"
 import { getAllPrompts } from "@/db/dexie/helpers"
 import { ProviderIcons } from "../Common/ProviderIcon"
@@ -131,9 +131,8 @@ export const Header: React.FC<Props> = ({
               localStorage.setItem("selectedModel", e)
             }}
             filterOption={(input, option) => {
-              //@ts-ignore
               return (
-                option?.label?.props["data-title"]
+                String(option?.searchLabel ?? "")
                   ?.toLowerCase()
                   ?.indexOf(input.toLowerCase()) >= 0
               )
@@ -159,7 +158,8 @@ export const Header: React.FC<Props> = ({
                   </span>
                 </span>
               ),
-              value: model.model
+              value: model.model,
+              searchLabel: model.name
             }))}
             size="large"
             // onRefresh={() => {

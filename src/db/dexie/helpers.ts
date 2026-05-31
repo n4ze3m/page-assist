@@ -1,7 +1,7 @@
 import {
   type ChatHistory as ChatHistoryType,
   type Message as MessageType
-} from "~/store/option"
+} from "@/store/option"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { isConversationMessage } from "@/libs/mcp/utils"
 import {
@@ -202,6 +202,8 @@ export const formatToMessage = (messages: MessageHistory): MessageType[] => {
       modelImage: message?.modelImage,
       id: message.id,
       documents: message?.documents,
+      uiStreaming: { lastFlushedAt: undefined },
+      createdAt: message.createdAt,
       messageType: message?.messageType,
       messageKind: message?.messageKind,
       toolCalls: message?.toolCalls,
@@ -707,10 +709,7 @@ export const addProjectFolder = async (
   return folder
 }
 
-export const updateProjectFolder = async (
-  id: string,
-  title: string
-) => {
+export const updateProjectFolder = async (id: string, title: string) => {
   const db = new PageAssistDatabase()
   await db.updateProjectFolder(id, title)
 }

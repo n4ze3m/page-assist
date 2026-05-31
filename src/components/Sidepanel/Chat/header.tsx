@@ -1,7 +1,7 @@
-import logoImage from "~/assets/icon.png"
-import { useMessage } from "~/hooks/useMessage"
+import logoImage from "@/assets/icon.png"
+import { useMessage } from "@/hooks/useMessage"
 import { Link } from "react-router-dom"
-import { Tooltip, Drawer, notification } from "antd"
+import { Tooltip, Drawer, notification, Dropdown, Menu } from "antd"
 import {
   BoxesIcon,
   BrainCog,
@@ -21,6 +21,13 @@ import { PromptSelect } from "@/components/Common/PromptSelect"
 import { Sidebar } from "@/components/Option/Sidebar"
 import { BsIncognito } from "react-icons/bs"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
+import { Folder, FolderPlus } from "lucide-react"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import {
+  getProjectFolders,
+  addProjectFolder,
+  assignHistoryToFolder
+} from "@/db/dexie/helpers"
 
 type SidepanelHeaderProps = {
   sidebarOpen?: boolean
@@ -62,11 +69,78 @@ export const SidepanelHeader = ({
     "webuiBtnSidePanel",
     false
   )
+  const [sidepanelTemporaryChat, setSidepanelTemporaryChat] = useStorage(
+    "sidepanelTemporaryChat",
+    false
+  )
 
   // Use prop state if provided, otherwise use local state
   const sidebarOpen =
     propSidebarOpen !== undefined ? propSidebarOpen : localSidebarOpen
   const setSidebarOpen = propSetSidebarOpen || setLocalSidebarOpen
+
+  const queryClient = useQueryClient()
+  const { data: headerFolders = [] } = useQuery({
+    queryKey: ["fetchProjectFolders"],
+    queryFn: getProjectFolders
+  })
+  const { mutate: headerCreateFolder } = useMutation({
+    mutationKey: ["createProjectFolder:header"],
+    mutationFn: async (title: string) => addProjectFolder(title),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["fetchProjectFolders"] })
+  })
+  const { mutate: headerAssignFolder } = useMutation({
+    mutationKey: ["assignHistoryToFolder:header"],
+    mutationFn: async ({
+      historyId,
+      folderId
+    }: {
+      historyId: string
+      folderId?: string
+    }) => assignHistoryToFolder(historyId, folderId),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["fetchChatHistory"] })
+  })
+
+  const folderMenu = (
+    <Menu>
+      <Menu.Item
+        key="__none__"
+        onClick={() =>
+          historyId && headerAssignFolder({ historyId, folderId: undefined })
+        }>
+        <span className="flex items-center gap-2">
+          <Folder className="w-4 h-4" />
+          {"Your chats"}
+        </span>
+      </Menu.Item>
+      {headerFolders.map((f: any) => (
+        <Menu.Item
+          key={f.id}
+          onClick={() =>
+            historyId && headerAssignFolder({ historyId, folderId: f.id })
+          }>
+          <span className="flex items-center gap-2">
+            <Folder className="w-4 h-4" />
+            {f.title}
+          </span>
+        </Menu.Item>
+      ))}
+      <Menu.Divider />
+      <Menu.Item
+        key="__create__"
+        onClick={() => {
+          const title = prompt("New project folder name")
+          if (title && title.trim()) headerCreateFolder(title.trim())
+        }}>
+        <span className="flex items-center gap-2">
+          <FolderPlus className="w-4 h-4" />
+          {"New project"}
+        </span>
+      </Menu.Item>
+    </Menu>
+  )
 
   return (
     <div
@@ -100,6 +174,17 @@ export const SidepanelHeader = ({
           </Tooltip>
         ) : null}
 
+        <Dropdown
+          overlay={folderMenu}
+          trigger={["click"]}
+          placement="bottomRight">
+          <button
+            title={t("common:projects", { defaultValue: "Projects" })}
+            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+            <Folder className="size-4 text-gray-500 dark:text-gray-400" />
+          </button>
+        </Dropdown>
+
         {messages.length > 0 && !streaming && (
           <button
             title={t("option:newChat")}
@@ -123,7 +208,9 @@ export const SidepanelHeader = ({
               return
             }
 
-            setTemporaryChat(!temporaryChat)
+            const next = !temporaryChat
+            setTemporaryChat(next)
+            setSidepanelTemporaryChat(next)
             if (messages.length > 0) {
               clearChat()
             }
@@ -205,7 +292,7 @@ export const SidepanelHeader = ({
           clearChat={clearChat}
           historyId={historyId}
           setSystemPrompt={(e) => {}}
-          temporaryChat={false}
+          temporaryChat={temporaryChat}
           history={history}
           selectedModel={selectedModel}
         />

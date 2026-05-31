@@ -2,7 +2,7 @@ import React from "react"
 import { PlaygroundForm } from "./PlaygroundForm"
 import { PlaygroundChat } from "./PlaygroundChat"
 import { useMessageOption } from "@/hooks/useMessageOption"
-import { webUIResumeLastChat } from "@/services/app"
+import { webUIResumeLastChat } from "@/services/features/app"
 import {
   formatToChatHistory,
   formatToMessage,

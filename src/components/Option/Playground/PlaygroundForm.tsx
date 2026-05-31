@@ -1,20 +1,19 @@
 import { useForm } from "@mantine/form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import React from "react"
-import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
-import { toBase64 } from "~/libs/to-base64"
-import { useMessageOption } from "~/hooks/useMessageOption"
+import useDynamicTextareaSize from "@/hooks/useDynamicTextareaSize"
+import { toBase64 } from "@/libs/to-base64"
+import { useMessageOption } from "@/hooks/useMessageOption"
 import { Checkbox, Dropdown, Switch, Tooltip, Select, Popover } from "antd"
 import { Image } from "antd"
-import { useWebUI } from "~/store/webui"
-import { defaultEmbeddingModelForRag } from "~/services/ollama"
+import { useWebUI } from "@/store/webui"
+import { defaultEmbeddingModelForRag } from "@/services/ai/ollama"
 import {
   EraserIcon,
   ImageIcon,
   MicIcon,
   StopCircleIcon,
   X,
-  FileIcon,
   FileText,
   PaperclipIcon,
   Brain,
@@ -28,17 +27,17 @@ import { KnowledgeSelect } from "../Knowledge/KnowledgeSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
 import { PiGlobe } from "react-icons/pi"
 import { handleChatInputKeyDown } from "@/utils/key-down"
-import { getIsSimpleInternetSearch } from "@/services/search"
+import { getIsSimpleInternetSearch } from "@/services/features/search"
 import { useStorage } from "@plasmohq/storage/hook"
-import { useTabMentions } from "~/hooks/useTabMentions"
-import { useFocusShortcuts } from "~/hooks/keyboard"
+import { useTabMentions } from "@/hooks/useTabMentions"
+import { useFocusShortcuts } from "@/hooks/keyboard"
 import { MentionsDropdown } from "./MentionsDropdown"
 import { DocumentChip } from "./DocumentChip"
 import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
 import { PASTED_TEXT_CHAR_LIMIT } from "@/utils/constant"
 import { PlaygroundFile } from "./PlaygroundFile"
-import { isThinkingCapableModel, isGptOssModel } from "~/libs/model-utils"
-import { useStoreChatModelSettings } from "~/store/model"
+import { isThinkingCapableModel, isGptOssModel } from "@/libs/model-utils"
+import { useStoreChatModelSettings } from "@/store/model"
 import { useMessageQueue } from "@/hooks/useMessageQueue"
 import { QueuedMessagesList } from "@/components/Common/QueuedMessagesList"
 import { McpServerToggle } from "@/components/Common/McpServerToggle"

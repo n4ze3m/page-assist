@@ -24,6 +24,7 @@ import {
   deleteOpenAIConfig,
   updateOpenAIConfig
 } from "@/db/dexie/openai"
+import type { OpenAIModelConfig } from "@/db/dexie/types"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Pencil, Trash2, DownloadIcon, Trash2Icon } from "lucide-react"
 import { OpenAIFetchModel } from "./openai-fetch-model"
@@ -195,7 +196,7 @@ export const OpenAIApp = () => {
           <div className="border border-b border-gray-200 dark:border-gray-600 mt-4 mb-0"></div>
         </div>
 
-        <Table
+        <Table<OpenAIModelConfig>
           columns={[
             {
               title: t("table.name"),

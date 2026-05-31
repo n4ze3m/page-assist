@@ -1,67 +1,67 @@
-import React from "react";
-import { create } from "zustand";
+import React from "react"
+import { create } from "zustand"
+import { useStorage } from "@plasmohq/storage/hook"
 
 type DarkModeState = {
-  mode: "system" | "dark" | "light";
-  setMode: (mode: "system" | "dark" | "light") => void;
-};
+  mode: "dark" | "light"
+  setMode: (mode: "dark" | "light") => void
+}
+
+type ThemePreference = "system" | "dark" | "light"
 
 export const useDarkModeStore = create<DarkModeState>((set) => ({
-  mode: "system",
-  setMode: (mode) => set({ mode }),
-}));
+  mode:
+    typeof window !== "undefined" &&
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light",
+  setMode: (mode) => set({ mode })
+}))
 
+/**
+ * Theme handling with override
+ * - preference: system | light | dark (persisted via storage)
+ * - effective mode applied to <html> via `dark` class for Tailwind
+ * - AntD algorithm consumers use returned `mode`
+ */
 export const useDarkMode = () => {
-  const { mode, setMode } = useDarkModeStore();
-
-  const getSystemTheme = () => {
-    const darkModeMediaQuery = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    );
-    const isDarkMode = darkModeMediaQuery.matches;
-    return isDarkMode ? "dark" : "light";
-  };
-
-  const handleDarkModeChange = (e: MediaQueryListEvent) => {
-    document.documentElement.classList.remove("dark", "light");
-    const mode = e.matches ? "dark" : "light";
-    document.documentElement.classList.add(mode);
-    setMode(mode);
-  };
+  const { mode, setMode } = useDarkModeStore()
+  const [preference] = useStorage<ThemePreference>("themePreference", "system")
 
   React.useEffect(() => {
-    const theme = localStorage.getItem("theme") as "system" | "dark" | "light";
-    if (theme) {
-      if (theme !== "system") {
-        document.documentElement.classList.add(theme);
-        setMode(theme);
-      } else {
-        const systemTheme = getSystemTheme();
-        document.documentElement.classList.add(systemTheme);
-        setMode(systemTheme);
-      }
-    } else {
-      setMode(getSystemTheme());
-      localStorage.setItem("theme", getSystemTheme());
+    const mq = window.matchMedia("(prefers-color-scheme: dark)")
+
+    const computeEffective = (): "dark" | "light" => {
+      if (preference === "system") return mq.matches ? "dark" : "light"
+      return preference
     }
-  }, []);
 
-  React.useEffect(() => {
-    const darkModeMediaQuery = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    );
-    darkModeMediaQuery.addEventListener("change", handleDarkModeChange);
-    return () =>
-      darkModeMediaQuery.removeEventListener("change", handleDarkModeChange);
-  }, []);
+    const apply = () => {
+      const effective = computeEffective()
+      setMode(effective)
+      const root = document.documentElement
+      if (effective === "dark") {
+        root.classList.add("dark")
+      } else {
+        root.classList.remove("dark")
+      }
+    }
+
+    apply()
+
+    // Re-apply on system change only when following system
+    const onChange = () => {
+      if (preference === "system") apply()
+    }
+
+    mq.addEventListener("change", onChange)
+    return () => mq.removeEventListener("change", onChange)
+  }, [setMode, preference])
 
   const toggleDarkMode = () => {
-    const newMode = mode === "dark" ? "light" : "dark";
-    document.documentElement.classList.remove("dark", "light");
-    document.documentElement.classList.add(newMode);
-    setMode(newMode);
-    localStorage.setItem("theme", newMode);
-  };
+    // kept for backward compatibility; settings screen controls preference
+  }
 
-  return { mode, toggleDarkMode };
-};
+  return { mode, toggleDarkMode }
+}

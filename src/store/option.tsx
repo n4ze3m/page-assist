@@ -39,6 +39,12 @@ export type Message = {
   toolName?: string
   toolServerName?: string
   toolError?: boolean
+  // UI-only metadata (view-only)
+  uiStreaming?: {
+    lastFlushedAt?: number
+  }
+  // Optional UI-only timestamp for grouping in views
+  createdAt?: number
 }
 
 export type ChatHistory = {
@@ -117,7 +123,7 @@ type State = {
   setActionInfo: (actionInfo: ChatActionInfo | null) => void
 
   pendingMcpApproval: PendingMcpApproval | null
-  setPendingMcpApproval: (pendingMcpApproval: PendingMcpApproval | null) => void
+  setPendingMcpApproval: (request: PendingMcpApproval | null) => void
 
   fileRetrievalEnabled: boolean
   setFileRetrievalEnabled: (fileRetrievalEnabled: boolean) => void

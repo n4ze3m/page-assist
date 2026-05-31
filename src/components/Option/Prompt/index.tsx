@@ -20,6 +20,7 @@ import {
   savePrompt,
   updatePrompt
 } from "@/db/dexie/helpers"
+import type { Prompt } from "@/db/dexie/types"
 import {
   getAllCopilotPrompts,
   setAllCopilotPrompts,
@@ -30,9 +31,15 @@ import {
   toggleCustomCopilotPrompt,
   toggleCopilotPromptEnabled,
   type CustomCopilotPrompt
-} from "@/services/application"
+} from "@/services/browser/application"
 import { tagColors } from "@/utils/color"
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
+
+type BuiltinCopilotPrompt = {
+  key: string
+  prompt: string
+  enabled: boolean
+}
 
 export const PromptBody = () => {
   const queryClient = useQueryClient()
@@ -303,7 +310,7 @@ export const PromptBody = () => {
         {status === "pending" && <Skeleton paragraph={{ rows: 8 }} />}
 
         {status === "success" && (
-          <Table
+          <Table<Prompt>
             columns={[
               {
                 title: t("managePrompts.columns.title"),
@@ -396,7 +403,7 @@ export const PromptBody = () => {
         {copilotStatus === "pending" && <Skeleton paragraph={{ rows: 8 }} />}
 
         {copilotStatus === "success" && (
-          <Table
+          <Table<BuiltinCopilotPrompt>
             columns={[
               {
                 title: t("managePrompts.columns.title"),
@@ -476,7 +483,7 @@ export const PromptBody = () => {
         {customCopilotStatus === "pending" && <Skeleton paragraph={{ rows: 8 }} />}
 
         {customCopilotStatus === "success" && (
-          <Table
+          <Table<CustomCopilotPrompt>
             columns={[
               {
                 title: t("managePrompts.columns.title"),

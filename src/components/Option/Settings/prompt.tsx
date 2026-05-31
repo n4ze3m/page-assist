@@ -2,14 +2,14 @@ import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Skeleton, Radio, Form, Input } from "antd"
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { SaveButton } from "~/components/Common/SaveButton"
+import { SaveButton } from "@/components/Common/SaveButton"
 import {
   getWebSearchPrompt,
   geWebSearchFollowUpPrompt,
   setWebPrompts,
   promptForRag,
   setPromptForRag
-} from "~/services/ollama"
+} from "@/services/ai/ollama"
 
 export const SettingPrompt = () => {
   const { t } = useTranslation("settings")

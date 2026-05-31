@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
-import logoImage from "~/assets/icon.png"
+import logoImage from "@/assets/icon.png"
 
 export const SidepanelSettingsHeader = () => {
   const { t , i18n} = useTranslation("common")

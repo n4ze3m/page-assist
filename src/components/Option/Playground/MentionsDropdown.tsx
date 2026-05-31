@@ -1,5 +1,5 @@
 import React from "react"
-import { TabInfo, MentionPosition } from "~/hooks/useTabMentions"
+import { TabInfo, MentionPosition } from "@/hooks/useTabMentions"
 import { Globe, X, RefreshCw } from "lucide-react"
 
 interface MentionsDropdownProps {

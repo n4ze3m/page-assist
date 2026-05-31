@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Avatar, Form, Input, Select, Skeleton, Switch } from "antd"
-import { SaveButton } from "~/components/Common/SaveButton" 
+import { SaveButton } from "@/components/Common/SaveButton" 
 import {
   isTitleGenEnabled,
   setTitleGenEnabled,
@@ -9,10 +9,10 @@ import {
   titleGenerationModel,
   DEFAULT_TITLE_GEN_PROMPT,
   setTitleGenerationModel
-} from "~/services/title"
+} from "@/services/features/title"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
 import { useStorage } from "@plasmohq/storage/hook"
-import { fetchChatModels } from "@/services/ollama"
+import { fetchChatModels } from "@/services/ai/ollama"
 
 export const SettingTitle = () => {
   const [form] = Form.useForm()
@@ -108,7 +108,7 @@ export const SettingTitle = () => {
                 style={{ width: "100%" }}
                 className="mt-4"
                 filterOption={(input, option) =>
-                  option.label.key
+                  String(option?.value ?? "")
                     .toLowerCase()
                     .indexOf(input.toLowerCase()) >= 0
                 }
