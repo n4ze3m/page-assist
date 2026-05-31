@@ -117,6 +117,18 @@
       },
       "youtubeAutoSummarize": {
         "label": "Afficher le bouton « Résumer » sur les vidéos YouTube."
+      },
+      "showMcpServersInChat": {
+        "label": "Afficher le sélecteur de serveurs MCP dans la conversation"
+      },
+      "enableAgentWebSearch": {
+        "label": "Utiliser la recherche web par agent (le modèle décide quand rechercher et récupérer)"
+      },
+      "mcpHumanInLoop": {
+        "label": "Exiger une approbation avant d'exécuter les outils MCP"
+      },
+      "showProviderNameInModelList": {
+        "label": "Afficher le nom du fournisseur dans la liste des modèles"
       }
     },
     "sidepanelRag": {
@@ -516,5 +528,118 @@
   "chromeAiSettings": {
     "title": "Paramètres Chrome AI"
   },
-  "mermaid": "Mermaid"
+  "mermaid": "Mermaid",
+  "mcpSettings": {
+    "title": "Serveurs MCP",
+    "heading": "Gérer les serveurs MCP",
+    "subheading": "Ajoutez des serveurs MCP HTTP pour le chat normal, y compris l'authentification bearer et les en-têtes personnalisés.",
+    "addBtn": "Ajouter un serveur MCP",
+    "humanInLoop": {
+      "label": "Exiger une approbation avant d'exécuter les outils MCP",
+      "description": "Recommandé pour les serveurs MCP disposant d'autorisations d'écriture ou d'autres effets secondaires. Vous pouvez toujours autoriser ou désactiver des outils individuels ci-dessous.",
+      "enabledHint": "L'intervention humaine est activée. Les outils MCP demanderont une approbation avant de s'exécuter.",
+      "disabledHint": "Les outils MCP s'exécutent sans approbation par défaut. Activez cette option lorsqu'un serveur MCP peut écrire des fichiers, modifier des données, envoyer des messages ou effectuer d'autres modifications."
+    },
+    "table": {
+      "name": "Nom",
+      "url": "URL",
+      "tools": "Outils en cache",
+      "status": "Validation",
+      "notValidated": "Pas encore validé",
+      "toolsUnavailable": "Aucun outil en cache",
+      "auth": "Authentification",
+      "enabled": "Activé",
+      "actions": "Actions",
+      "toolName": "Nom de l'outil",
+      "toolDescription": "Description"
+    },
+    "actions": {
+      "refreshTools": "Actualiser les outils",
+      "enable": "Activer",
+      "disable": "Désactiver"
+    },
+    "status": {
+      "ready": "{{count}} outils disponibles",
+      "failed": "Échec de la validation",
+      "notValidated": "Non validé",
+      "lastChecked": "Dernière vérification : {{value}}"
+    },
+    "auth": {
+      "none": "Aucune authentification",
+      "bearer": "Jeton bearer"
+    },
+    "modal": {
+      "titleAdd": "Ajouter un serveur MCP",
+      "titleEdit": "Modifier le serveur MCP",
+      "deleteConfirm": "Supprimer {{name}} ?",
+      "name": {
+        "label": "Nom du serveur",
+        "placeholder": "Mon serveur MCP",
+        "required": "Veuillez saisir un nom de serveur"
+      },
+      "url": {
+        "label": "URL du serveur",
+        "placeholder": "https://example.com/mcp",
+        "help": "Seuls les points de terminaison MCP HTTP Streamable via HTTP ou HTTPS sont pris en charge pour le moment.",
+        "required": "Veuillez saisir une URL de serveur",
+        "invalid": "Veuillez saisir une URL HTTP ou HTTPS valide"
+      },
+      "transportNotice": {
+        "title": "Prise en charge du transport",
+        "description": "Page Assist prend en charge uniquement les serveurs MCP HTTP Streamable. Les anciens points de terminaison SSE tels que /sse ou /messages?sessionId=... ne sont pas pris en charge."
+      },
+      "auth": {
+        "label": "Authentification"
+      },
+      "bearerToken": {
+        "label": "Jeton bearer",
+        "placeholder": "Saisir le jeton bearer",
+        "required": "Veuillez saisir un jeton bearer"
+      },
+      "enabled": {
+        "label": "Activation globale"
+      },
+      "headers": {
+        "label": "En-têtes personnalisés",
+        "add": "Ajouter un en-tête",
+        "key": {
+          "label": "Clé de l'en-tête",
+          "placeholder": "X-Request-ID"
+        },
+        "value": {
+          "label": "Valeur de l'en-tête",
+          "placeholder": "valeur"
+        }
+      },
+      "validation": {
+        "title": "Valider les outils",
+        "help": "Connectez-vous au serveur MCP, récupérez les outils disponibles et mettez-les en cache avant d'enregistrer. La validation attend un point de terminaison MCP HTTP Streamable.",
+        "button": "Valider et charger les outils",
+        "availableTools": "Outils disponibles",
+        "idle": "Validez ce serveur pour confirmer la connexion et charger ses outils disponibles.",
+        "stale": "Les détails de connexion ont changé. Validez à nouveau pour actualiser les outils en cache.",
+        "failed": "Impossible de valider ce serveur MCP.",
+        "success": "Validé avec succès. {{count}} outils sont disponibles.",
+        "syncedAt": "Dernière synchronisation : {{value}}",
+        "saveHint": "L'enregistrement validera la configuration actuelle si la liste des outils en cache est obsolète ou manquante."
+      },
+      "submit": "Enregistrer le serveur MCP",
+      "update": "Mettre à jour le serveur MCP"
+    },
+    "notification": {
+      "added": "Serveur MCP ajouté",
+      "updated": "Serveur MCP mis à jour",
+      "deleted": "Serveur MCP supprimé",
+      "validated": "{{count}} outils MCP chargés",
+      "toolsRefreshed": "Outils actualisés pour {{name}}",
+      "validationFailedTitle": "Échec de la validation MCP",
+      "storageBlockedTitle": "Page Assist ne peut pas enregistrer les données",
+      "storageBlockedDescription": "Le mode privé de Firefox ne prend pas en charge l'enregistrement de données dans IndexedDB. Veuillez gérer les serveurs MCP depuis une fenêtre normale."
+    }
+  },
+  "memory": {
+    "enableMemoryTool": {
+      "label": "Activer l'outil de mémoire"
+    }
+  }
 }

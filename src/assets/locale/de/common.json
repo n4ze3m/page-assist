@@ -96,6 +96,50 @@
                 "label": "Temporärer System-Prompt",
                 "placeholder": "System-Prompt eingeben",
                 "help": "Dies ist eine schnelle Möglichkeit, den System-Prompt im aktuellen Chat festzulegen, der den ausgewählten System-Prompt überschreibt, falls vorhanden."
+            },
+            "thinking": {
+                "label": "Denkmodus (Ollama)",
+                "levels": {
+                    "off": "Aus",
+                    "on": "Ein",
+                    "low": "Geringer Denkaufwand",
+                    "medium": "Mittlerer Denkaufwand",
+                    "high": "Hoher Denkaufwand"
+                }
+            },
+            "useMMap": {
+                "label": "useMmap"
+            },
+            "tfsZ": {
+                "label": "TFS-Z",
+                "placeholder": "z. B. 1.0, 1.1"
+            },
+            "numKeep": {
+                "label": "Num Keep",
+                "placeholder": "z. B. 256, 512"
+            },
+            "numThread": {
+                "label": "Num Thread",
+                "placeholder": "z. B. 8, 16"
+            },
+            "useMlock": {
+                "label": "useMlock"
+            },
+            "reasoningEffort": {
+                "label": "Denkaufwand",
+                "placeholder": "low, medium, high"
+            },
+            "minP": {
+                "label": "Min P",
+                "placeholder": "z. B. 0.05"
+            },
+            "repeatPenalty": {
+                "label": "Wiederholungsstrafe",
+                "placeholder": "z. B. 1.1, 1.2"
+            },
+            "repeatLastN": {
+                "label": "Repeat Last N",
+                "placeholder": "z. B. 64, 128"
             }
         },
         "advanced": "Weitere Modell-Einstellungen"
@@ -138,12 +182,53 @@
     "sidebarChat": "Seitenleisten-Chat",
     "reasoning": {
         "thinking": "Denke nach....",
-        "thought": "Gedanke für {{time}}"
+        "thought": "Gedanke für {{time}}",
+        "title": "Denkprozess",
+        "expand": "Denkprozess anzeigen",
+        "collapse": "Denkprozess ausblenden"
     },
     "embeddingGen": "Erstelle Embeddings, dies kann eine Weile dauern",
     "semanticSearch": "Führe semantische Suche durch",
     "downloading": "Herunterladen",
     "cancelPullingModel": {
         "confirm": "Sind Sie sicher, dass Sie den Download abbrechen möchten? Dadurch wird der Downloadvorgang gestoppt. Laut der Ollama-Dokumentation können Sie dort weitermachen, wo Sie aufgehört haben."
-    }
+    },
+    "loadMore": "Mehr laden...",
+    "segmented": {
+        "ollama": "Ollama-Modelle",
+        "custom": "Benutzerdefinierte Modelle"
+    },
+    "historiesDeleted": "{{count}} Verläufe gelöscht",
+    "deleteHistoriesError": "Fehler beim Löschen der Verläufe",
+    "mermaid": "Mermaid",
+    "search": "Suchen",
+    "searchResults": "Suchergebnisse",
+    "newBranch": "Neuer Zweig",
+    "mcp": {
+        "tool": "Tool",
+        "server": "Server",
+        "toolRequestTitle": "Tools angefordert",
+        "toolResultTitle": "Tool-Ergebnis",
+        "arguments": "Argumente",
+        "output": "Ausgabe",
+        "approvalRequired": "Genehmigung erforderlich",
+        "approvalPrompt": "Genehmigen Sie diesen MCP-Tool-Aufruf, bevor er ausgeführt wird.",
+        "approve": "Genehmigen",
+        "reject": "Ablehnen",
+        "rejectWithReason": "Mit Notiz ablehnen",
+        "rejectionReasonPlaceholder": "Optionaler Ablehnungsgrund",
+        "noOutput": "Keine Ausgabe zurückgegeben.",
+        "status": {
+            "success": "Erfolg",
+            "error": "Fehler"
+        },
+        "action": {
+            "connecting": "Verbindung zu MCP-Servern wird hergestellt",
+            "loading_tools": "MCP-Tools werden geladen",
+            "awaiting_approval": "Warten auf Genehmigung zur Ausführung von {{tool}} auf {{server}}",
+            "calling_tool": "{{tool}} wird auf {{server}} aufgerufen",
+            "waiting_result": "Warten auf {{tool}} auf {{server}}"
+        }
+    },
+    "saveChat": "Chat speichern"
 }

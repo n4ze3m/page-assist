@@ -126,6 +126,20 @@
                 "label": "Prompt système temporaire",
                 "placeholder": "Entrer le prompt système",
                 "help": "C'est un moyen rapide de définir le prompt système dans le chat actuel, qui remplacera le prompt système sélectionné si il existe."
+            },
+            "thinking": {
+                "label": "Mode réflexion (Ollama)",
+                "levels": {
+                    "off": "Désactivé",
+                    "on": "Activé",
+                    "low": "Faible effort de raisonnement",
+                    "medium": "Effort de raisonnement moyen",
+                    "high": "Effort de raisonnement élevé"
+                }
+            },
+            "reasoningEffort": {
+                "label": "Effort de raisonnement",
+                "placeholder": "low, medium, high"
             }
         },
         "advanced": "Plus de paramètres du modèle"
@@ -172,7 +186,10 @@
     "sidebarChat": "Chat dans le panneau latérale",
     "reasoning": {
         "thinking": "Réflexion....",
-        "thought": "Réflexion pendant {{time}}"
+        "thought": "Réflexion pendant {{time}}",
+        "title": "Processus de raisonnement",
+        "expand": "Afficher le raisonnement",
+        "collapse": "Masquer le raisonnement"
     },
     "mermaid": "Mermaid",
     "embeddingGen": "Création d'embeddings, cela peut prendre un certain temps",
@@ -180,5 +197,38 @@
     "downloading": "Téléchargement en cours",
     "cancelPullingModel": {
         "confirm": "Êtes-vous sûr de vouloir annuler le téléchargement ? Cela arrêtera le processus de téléchargement. Selon la documentation Ollama, vous pouvez reprendre là où vous vous êtes arrêté."
-    }
+    },
+    "loadMore": "Charger plus...",
+    "historiesDeleted": "{{count}} historiques supprimés",
+    "deleteHistoriesError": "Erreur lors de la suppression des historiques",
+    "search": "Rechercher",
+    "searchResults": "Résultats de recherche",
+    "newBranch": "Nouvelle branche",
+    "mcp": {
+        "tool": "outil",
+        "server": "serveur",
+        "toolRequestTitle": "Outils demandés",
+        "toolResultTitle": "Résultat de l'outil",
+        "arguments": "Arguments",
+        "output": "Sortie",
+        "approvalRequired": "Approbation requise",
+        "approvalPrompt": "Approuvez cet appel d'outil MCP avant son exécution.",
+        "approve": "Approuver",
+        "reject": "Rejeter",
+        "rejectWithReason": "Rejeter avec une note",
+        "rejectionReasonPlaceholder": "Motif de rejet facultatif",
+        "noOutput": "Aucune sortie renvoyée.",
+        "status": {
+            "success": "Succès",
+            "error": "Erreur"
+        },
+        "action": {
+            "connecting": "Connexion aux serveurs MCP",
+            "loading_tools": "Chargement des outils MCP",
+            "awaiting_approval": "En attente d'approbation pour exécuter {{tool}} sur {{server}}",
+            "calling_tool": "Appel de {{tool}} sur {{server}}",
+            "waiting_result": "En attente de {{tool}} sur {{server}}"
+        }
+    },
+    "saveChat": "Enregistrer la conversation"
 }

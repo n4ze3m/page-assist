@@ -25,5 +25,8 @@
             "image": "Image (.png)"
         },
         "share": "Partager"
-    }
+    },
+    "chatSaved": "Conversation enregistrée",
+    "temporaryChatSavedSuccessfully": "Votre conversation temporaire a été enregistrée avec succès",
+    "failedToSaveTemporaryChat": "Échec de l'enregistrement de la conversation temporaire. Veuillez réessayer."
 }

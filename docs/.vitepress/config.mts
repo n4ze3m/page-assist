@@ -28,6 +28,10 @@ export default defineConfig({
             link: "/browser-support"
           },
           {
+            text: "Settings",
+            link: "/settings"
+          },
+          {
             text: "Keyboard Shortcuts",
             link: "/shortcuts"
           }

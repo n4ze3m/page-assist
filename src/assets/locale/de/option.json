@@ -21,8 +21,12 @@
             "group": "Herunterladen",
             "text": "Textdatei (.txt)",
             "markdown": "Markdown (.md)",
-            "json": "JSON-Datei (.json)"
+            "json": "JSON-Datei (.json)",
+            "image": "Bild (.png)"
         },
         "share": "Teilen"
-    }
+    },
+    "chatSaved": "Chat gespeichert",
+    "temporaryChatSavedSuccessfully": "Ihr temporärer Chat wurde erfolgreich gespeichert",
+    "failedToSaveTemporaryChat": "Temporärer Chat konnte nicht gespeichert werden. Bitte versuchen Sie es erneut."
 }

@@ -11,7 +11,8 @@
         "name": "Name"
     },
     "confirm": {
-        "delete": "Sind Sie sicher, dass Sie dieses Wissen löschen möchten?"
+        "delete": "Sind Sie sicher, dass Sie dieses Wissen löschen möchten?",
+        "deleteSource": "Möchten Sie diese Quelle wirklich löschen?"
     },
     "deleteSuccess": "Wissen erfolgreich gelöscht",
     "status": {
@@ -26,16 +27,66 @@
         "title": {
             "label": "Wissenstitel",
             "placeholder": "Wissenstitel eingeben",
-            "required": "Wissenstitel ist erforderlich"
+            "required": "Wissenstitel ist erforderlich",
+            "placeholderOptional": "Optionaler Titel (standardmäßig die ersten 50 Zeichen)"
         },
         "uploadFile": {
             "label": "Datei hochladen",
             "uploadText": "Ziehen Sie eine Datei hierher oder klicken Sie zum Hochladen",
             "uploadHint": "Unterstützte Dateitypen: .pdf, .csv, .txt, .md, .docx",
-            "required": "Datei ist erforderlich"
+            "required": "Datei ist erforderlich",
+            "uploadError": "Nicht unterstützter Dateityp"
         },
         "submit": "Absenden",
-        "success": "Wissen erfolgreich hinzugefügt"
+        "success": "Wissen erfolgreich hinzugefügt",
+        "tabs": {
+            "upload": "Datei hochladen",
+            "text": "Texteingabe"
+        },
+        "textInput": {
+            "typeLabel": "Typ",
+            "type": {
+                "plain": "Einfacher Text",
+                "markdown": "Markdown",
+                "code": "Code"
+            },
+            "contentLabel": "Inhalt",
+            "placeholder": "Fügen Sie hier Ihren Text ein oder geben Sie ihn ein...",
+            "required": "Textinhalt ist erforderlich",
+            "tooLarge": "Der Inhalt ist zu groß. Bitte halten Sie ihn unter 500.000 Zeichen.",
+            "defaultTitle": "Unbenannter Text"
+        }
     },
-    "noEmbeddingModel": "Bitte fügen Sie zuerst ein Einbettungsmodell von der RAG-Einstellungsseite hinzu"
+    "noEmbeddingModel": "Bitte fügen Sie zuerst ein Einbettungsmodell von der RAG-Einstellungsseite hinzu",
+    "newSource": "Neue Quelle",
+    "editSettings": {
+        "title": "Wissenseinstellungen bearbeiten",
+        "success": "Wissenseinstellungen erfolgreich aktualisiert",
+        "variableInfo": {
+            "title": "Verfügbare Variablen",
+            "description": "Sie können die folgenden Variablen in Ihren Prompts verwenden:",
+            "context": "Der abgerufene Kontext aus Ihrer Wissensdatenbank",
+            "query": "Die Frage oder Anfrage des Benutzers"
+        },
+        "form": {
+            "title": {
+                "label": "Wissenstitel",
+                "placeholder": "Wissenstitel eingeben",
+                "required": "Wissenstitel ist erforderlich"
+            },
+            "systemPrompt": {
+                "label": "System-Prompt",
+                "help": "Passen Sie an, wie die KI mithilfe Ihrer Wissensdatenbank antwortet. Verwenden Sie {context} für abgerufene Informationen und {question} für die Frage des Benutzers. Hinweis: {question} ist im Prompt erforderlich, andernfalls erhält der Charakter keinen Fragekontext.",
+                "placeholder": "Geben Sie Ihren benutzerdefinierten System-Prompt ein...",
+                "prefillButton": "Standard-Prompt verwenden"
+            },
+            "followupPrompt": {
+                "label": "Prompt für Folgefragen",
+                "help": "Passen Sie an, wie Folgefragen verarbeitet werden. Dieser Prompt formuliert Folgefragen in eigenständige Fragen um.",
+                "placeholder": "Geben Sie Ihren benutzerdefinierten Folgefragen-Prompt ein...",
+                "prefillButton": "Standard-Prompt verwenden"
+            }
+        },
+        "tooltip": "Wissenseinstellungen bearbeiten"
+    }
 }

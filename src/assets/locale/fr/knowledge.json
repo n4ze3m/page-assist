@@ -11,7 +11,8 @@
         "name": "Nom"
     },
     "confirm": {
-        "delete": "Êtes-vous sûr de vouloir supprimer cette connaissance ?"
+        "delete": "Êtes-vous sûr de vouloir supprimer cette connaissance ?",
+        "deleteSource": "Voulez-vous vraiment supprimer cette source ?"
     },
     "deleteSuccess": "Connaissance supprimée avec succès",
     "status": {
@@ -26,16 +27,66 @@
         "title": {
             "label": "Titre de la connaissance",
             "placeholder": "Entrer le titre de la connaissance",
-            "required": "Le titre de la connaissance est nécessaire"
+            "required": "Le titre de la connaissance est nécessaire",
+            "placeholderOptional": "Titre facultatif (par défaut les 50 premiers caractères)"
         },
         "uploadFile": {
             "label": "Charger un fichier",
             "uploadText": "Faites glisser et déposez un fichier ici ou cliquez pour charger",
             "uploadHint": "Types de fichiers pris en charge: .pdf, .csv, .txt, .md, .docx",
-            "required": "Un fichier est nécessaire"
+            "required": "Un fichier est nécessaire",
+            "uploadError": "Type de fichier non pris en charge"
         },
         "submit": "Soumettre",
-        "success": "Connaissance ajoutée avec succès"
+        "success": "Connaissance ajoutée avec succès",
+        "tabs": {
+            "upload": "Téléverser un fichier",
+            "text": "Saisie de texte"
+        },
+        "textInput": {
+            "typeLabel": "Type",
+            "type": {
+                "plain": "Texte brut",
+                "markdown": "Markdown",
+                "code": "Code"
+            },
+            "contentLabel": "Contenu",
+            "placeholder": "Collez ou saisissez votre texte ici...",
+            "required": "Le contenu textuel est requis",
+            "tooLarge": "Le contenu est trop volumineux. Veuillez le limiter à 500 000 caractères.",
+            "defaultTitle": "Texte sans titre"
+        }
     },
-    "noEmbeddingModel": "Veuillez d'abord ajouter un modèle d'embedding depuis la page des paramètres RAG"
+    "noEmbeddingModel": "Veuillez d'abord ajouter un modèle d'embedding depuis la page des paramètres RAG",
+    "newSource": "Nouvelle source",
+    "editSettings": {
+        "title": "Modifier les paramètres de connaissances",
+        "success": "Paramètres de connaissances mis à jour avec succès",
+        "variableInfo": {
+            "title": "Variables disponibles",
+            "description": "Vous pouvez utiliser les variables suivantes dans vos prompts :",
+            "context": "Le contexte récupéré depuis votre base de connaissances",
+            "query": "La question ou la requête de l'utilisateur"
+        },
+        "form": {
+            "title": {
+                "label": "Titre de la connaissance",
+                "placeholder": "Saisir le titre de la connaissance",
+                "required": "Le titre de la connaissance est requis"
+            },
+            "systemPrompt": {
+                "label": "Prompt système",
+                "help": "Personnalisez la façon dont l'IA répond à l'aide de votre base de connaissances. Utilisez {context} pour les informations récupérées et {question} pour la question de l'utilisateur. Remarque : {question} est requis dans le prompt, sinon le personnage n'obtiendra pas le contexte de la question.",
+                "placeholder": "Saisissez votre prompt système personnalisé...",
+                "prefillButton": "Utiliser le prompt par défaut"
+            },
+            "followupPrompt": {
+                "label": "Prompt de question de suivi",
+                "help": "Personnalisez la façon dont les questions de suivi sont traitées. Ce prompt reformule les questions de suivi en questions autonomes.",
+                "placeholder": "Saisissez votre prompt de suivi personnalisé...",
+                "prefillButton": "Utiliser le prompt par défaut"
+            }
+        },
+        "tooltip": "Modifier les paramètres de connaissances"
+    }
 }
