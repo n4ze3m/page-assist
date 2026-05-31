@@ -6,8 +6,7 @@ import { useEffect, useState } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import {
   getOllamaURL,
-  isOllamaRunning,
-  setOllamaURL as saveOllamaURL
+  isOllamaRunning
 } from "~/services/ollama"
 
 export const PlaygroundEmpty = () => {
@@ -26,10 +25,6 @@ export const PlaygroundEmpty = () => {
     queryFn: async () => {
       const ollamaURL = await getOllamaURL()
       const isOk = await isOllamaRunning()
-
-      if (ollamaURL) {
-        saveOllamaURL(ollamaURL)
-      }
 
       return {
         isOk,
@@ -96,8 +91,9 @@ export const PlaygroundEmpty = () => {
               />
 
               <button
-                onClick={() => {
-                  saveOllamaURL(ollamaURL)
+                onClick={async () => {
+                  const { setOllamaURL } = await import("~/services/ollama")
+                  await setOllamaURL(ollamaURL)
                   refetch()
                 }}
                 className="inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
