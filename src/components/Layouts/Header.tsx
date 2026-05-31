@@ -131,9 +131,8 @@ export const Header: React.FC<Props> = ({
               localStorage.setItem("selectedModel", e)
             }}
             filterOption={(input, option) => {
-              //@ts-ignore
               return (
-                option?.label?.props["data-title"]
+                String(option?.searchLabel ?? "")
                   ?.toLowerCase()
                   ?.indexOf(input.toLowerCase()) >= 0
               )
@@ -159,7 +158,8 @@ export const Header: React.FC<Props> = ({
                   </span>
                 </span>
               ),
-              value: model.model
+              value: model.model,
+              searchLabel: model.name
             }))}
             size="large"
             // onRefresh={() => {

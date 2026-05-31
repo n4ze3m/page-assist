@@ -53,7 +53,7 @@ import {
   deleteProjectFolder,
   assignHistoryToFolder
 } from "@/db/dexie/helpers"
-import { UploadedFile } from "@/db/dexie/types"
+import { ProjectFolder, UploadedFile } from "@/db/dexie/types"
 import { isDatabaseClosedError } from "@/utils/ff-error"
 import { updatePageTitle } from "@/utils/update-page-title"
 import { generateTitle } from "@/services/features/title"
@@ -443,7 +443,7 @@ export const Sidebar = ({
     enabled: isOpen
   })
 
-  const projectFolders = projectFoldersData || []
+  const projectFolders: ProjectFolder[] = projectFoldersData || []
 
   const { mutate: createProjectFolder, isPending: creatingProject } =
     useMutation({
@@ -536,7 +536,7 @@ export const Sidebar = ({
     setSearchQuery("")
   }
 
-  const folderMap = projectFolders.reduce<Record<string, any>>(
+  const folderMap = projectFolders.reduce<Record<string, ProjectFolder>>(
     (acc, folder) => {
       acc[folder.id] = folder
       return acc

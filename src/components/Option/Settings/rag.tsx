@@ -138,7 +138,7 @@ export const RagSettings = () => {
                   style={{ width: "100%" }}
                   className="mt-4"
                   filterOption={(input, option) =>
-                    option.label.key
+                    String(option?.value ?? "")
                       .toLowerCase()
                       .indexOf(input.toLowerCase()) >= 0
                   }

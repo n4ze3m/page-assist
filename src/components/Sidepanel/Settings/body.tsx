@@ -292,8 +292,12 @@ export const SettingsBody = () => {
             <Select
               size="large"
               filterOption={(input, option) =>
-                option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0 ||
-                option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                String(option?.label ?? "")
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0 ||
+                String(option?.value ?? "")
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
               }
               showSearch
               placeholder="Select a model"

@@ -4,6 +4,7 @@ import { Trash2 } from "lucide-react"
 import { Trans, useTranslation } from "react-i18next"
 import { SaveButton } from "@/components/Common/SaveButton"
 import { deleteWebshare, getAllWebshares, getUserId } from "@/db/dexie/helpers"
+import type { Webshare } from "@/db/dexie/types"
 import { getPageShareUrl, setPageShareUrl } from "@/services/ai/ollama"
 import { verifyPageShareURL } from "@/utils/verify-page-share"
 import { useStorage } from "@plasmohq/storage/hook"
@@ -165,7 +166,7 @@ export const OptionShareBody = () => {
               <div className="border border-b border-gray-200 dark:border-gray-600 mt-3 mb-6"></div>
             </div>
             <div>
-              <Table
+              <Table<Webshare>
                 dataSource={data.shares}
                 columns={[
                   {

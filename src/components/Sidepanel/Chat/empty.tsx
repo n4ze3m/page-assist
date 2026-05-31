@@ -61,9 +61,8 @@ export const EmptySidePanel = () => {
           value={selectedModel}
           size="large"
           filterOption={(input, option) => {
-            //@ts-ignore
             return (
-              option?.label?.props["data-title"]
+              String(option?.searchLabel ?? "")
                 ?.toLowerCase()
                 ?.indexOf(input.toLowerCase()) >= 0
             )
@@ -91,7 +90,8 @@ export const EmptySidePanel = () => {
                 </span>
               </span>
             ),
-            value: model.model
+            value: model.model,
+            searchLabel: model.name
           }))}
         />
 

@@ -150,9 +150,8 @@ export const AddCustomModelModal: React.FC<Props> = ({ open, setOpen }) => {
             loading={isPending}
             showSearch
             filterOption={(input, option) => {
-              //@ts-ignore
               return (
-                option?.label?.props["data-title"]
+                String(option?.searchLabel ?? "")
                   ?.toLowerCase()
                   ?.indexOf(input.toLowerCase()) >= 0
               )
@@ -167,7 +166,8 @@ export const AddCustomModelModal: React.FC<Props> = ({ open, setOpen }) => {
                   <ProviderIcons provider={e?.provider} className="size-4" />
                   <span className="line-clamp-2">{e.name}</span>
                 </span>
-              )
+              ),
+              searchLabel: e.name
             }))}
           />
           {/* {data?.map((provider: any) => (

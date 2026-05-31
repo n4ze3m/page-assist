@@ -498,7 +498,9 @@ export const GeneralSettings = () => {
           }
           value={defaultCopilotPrompt || undefined}
           filterOption={(input, option) =>
-            option!.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            String(option?.label ?? "")
+              .toLowerCase()
+              .indexOf(input.toLowerCase()) >= 0
           }
           onChange={(value) => {
             setDefaultCopilotPrompt(value || null)
@@ -529,7 +531,9 @@ export const GeneralSettings = () => {
           }
           value={defaultWebUIPrompt || undefined}
           filterOption={(input, option) =>
-            option!.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            String(option?.label ?? "")
+              .toLowerCase()
+              .indexOf(input.toLowerCase()) >= 0
           }
           onChange={(value) => {
             setDefaultWebUIPrompt(value || null)
