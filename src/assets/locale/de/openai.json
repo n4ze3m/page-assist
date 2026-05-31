@@ -34,7 +34,8 @@
             "subheading": "Bitte wählen Sie die Chat-Modelle aus, die Sie mit diesem Anbieter verwenden möchten.",
             "success": "Neue Modelle erfolgreich hinzugefügt."
         },
-        "tipLMStudio": "Page Assist wird automatisch die Modelle abrufen, die Sie in LM Studio geladen haben. Sie müssen sie nicht manuell hinzufügen."
+        "tipLMStudio": "Page Assist wird automatisch die Modelle abrufen, die Sie in LM Studio geladen haben. Sie müssen sie nicht manuell hinzufügen.",
+        "titleEdit": "Anbieter bearbeiten"
     },
     "addSuccess": "Anbieter erfolgreich hinzugefügt.",
     "deleteSuccess": "Anbieter erfolgreich gelöscht.",
@@ -78,7 +79,8 @@
                 "type": {
                     "label": "Modelltyp"
                 }
-            }
+            },
+            "titleEdit": "Benutzerdefiniertes Modell bearbeiten"
         }
     },
     "noModelFound": "Kein Modell gefunden. Stellen Sie sicher, dass Sie den korrekten Anbieter mit Basis-URL und API-Schlüssel hinzugefügt haben.",

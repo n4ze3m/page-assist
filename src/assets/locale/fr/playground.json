@@ -16,6 +16,16 @@
         "webSearch": {
             "on": "Activé",
             "off": "Désactivé"
+        },
+        "thinking": {
+            "on": "Activé",
+            "off": "Désactivé",
+            "level": "Niveau",
+            "levels": {
+                "low": "Faible",
+                "medium": "Moyen",
+                "high": "Élevé"
+            }
         }
     },
     "tooltip": {
@@ -25,9 +35,16 @@
         "stopStreaming": "Arrêter la diffusion",
         "knowledge": "Connaissances",
         "vision": "Discussion visuelle [Expérimental]",
-        "clearContext": "Effacer le contexte"
+        "clearContext": "Effacer le contexte",
+        "thinking": "Activez le mode raisonnement pour voir le processus de réflexion du modèle",
+        "uploadDocuments": "Téléverser des documents (bêta)",
+        "mcpServers": "Serveurs MCP",
+        "mcpEmpty": "Aucun serveur MCP configuré",
+        "mcpEmptyDesc": "Connectez des serveurs MCP pour utiliser des outils dans la conversation.",
+        "mcpAddServer": "Ajouter un serveur MCP"
     },
     "sendWhenEnter": "Envoyer en appuyant sur Entrée",
     "welcome": "Bonjour ! Comment puis-je vous aider aujourd'hui ?",
-    "useOCR": "Extraire le texte de l'image (OCR)"
+    "useOCR": "Extraire le texte de l'image (OCR)",
+    "fileRetrievalEnabled": "Activer le RAG pour les documents"
 }

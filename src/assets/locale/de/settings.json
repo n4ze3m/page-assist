@@ -58,6 +58,77 @@
       },
       "userChatBubble": {
         "label": "Chat-Blase für Benutzernachrichten verwenden"
+      },
+      "defaultThinkingMode": {
+        "label": "Denkmodus-Status in Formularen anzeigen"
+      },
+      "autoCopyResponseToClipboard": {
+        "label": "Antwort automatisch in die Zwischenablage kopieren"
+      },
+      "useMarkdownForUserMessage": {
+        "label": "Markdown-Formatierung für Benutzernachrichten aktivieren"
+      },
+      "copyAsFormattedText": {
+        "label": "Als formatierten Text kopieren"
+      },
+      "tabMentionsEnabled": {
+        "label": "Tab-Erwähnungen aktivieren (@tab)"
+      },
+      "pasteLargeTextAsFile": {
+        "label": "Großen Text als Datei einfügen"
+      },
+      "ocrLanguage": {
+        "label": "Standard-OCR-Sprache",
+        "placeholder": "OCR-Sprache auswählen"
+      },
+      "sidepanelTemporaryChat": {
+        "label": "Temporären Chat im Seitenpanel standardmäßig aktivieren"
+      },
+      "webuiTemporaryChat": {
+        "label": "Temporären Chat in der Web-UI standardmäßig aktivieren"
+      },
+      "removeReasoningTagFromCopy": {
+        "label": "Reasoning-Tag aus kopiertem Text entfernen"
+      },
+      "youtubeAutoSummarize": {
+        "label": "Schaltfläche 'Zusammenfassen' bei YouTube-Videos anzeigen."
+      },
+      "hideReasoningWidget": {
+        "label": "Reasoning-Widget aus KI-Nachrichten ausblenden"
+      },
+      "persistChatInput": {
+        "label": "Chat-Eingabe beibehalten (Ungesendete Nachrichten speichern)"
+      },
+      "enableMessageQueue": {
+        "label": "Nachrichtenwarteschlange während des Streamings aktivieren"
+      },
+      "optimizeQueueForSmallScreen": {
+        "label": "Chat-UI für kleine Bildschirme optimieren"
+      },
+      "tableTextWrap": {
+        "label": "Textumbruch in Markdown-Tabellen aktivieren"
+      },
+      "showMoreForLargeMessage": {
+        "label": "'Mehr anzeigen' für große Benutzernachrichten anzeigen"
+      },
+      "sidebarPosition": {
+        "label": "Position der Seitenleiste",
+        "options": {
+          "left": "Links",
+          "right": "Rechts"
+        }
+      },
+      "showMcpServersInChat": {
+        "label": "MCP-Server-Umschalter im Chat anzeigen"
+      },
+      "enableAgentWebSearch": {
+        "label": "Agenten-Websuche verwenden (Modell entscheidet, wann gesucht und abgerufen wird)"
+      },
+      "mcpHumanInLoop": {
+        "label": "Genehmigung erforderlich, bevor MCP-Tools ausgeführt werden"
+      },
+      "showProviderNameInModelList": {
+        "label": "Anbietername in der Modellliste anzeigen"
       }
     },
     "sidepanelRag": {
@@ -97,6 +168,31 @@
       },
       "searchOnByDefault": {
         "label": "Internetsuche standardmäßig aktiviert"
+      },
+      "tavilyApi": {
+        "label": "Tavily-API-Schlüssel ",
+        "placeholder": "Geben Sie Ihren Tavily-API-Schlüssel ein"
+      },
+      "exa": {
+        "label": "Exa-API-Schlüssel",
+        "placeholder": "Geben Sie Ihren Exa-API-Schlüssel ein"
+      },
+      "googleDomain": {
+        "label": "Google-Domain"
+      },
+      "firecrawlAPIKey": {
+        "label": "Firecrawl-API-Schlüssel",
+        "placeholder": "Geben Sie Ihren Firecrawl-API-Schlüssel ein"
+      },
+      "domainFilter": {
+        "label": "Domain-Filterliste",
+        "description": "Nur Ergebnisse von diesen Domains anzeigen",
+        "placeholder": "z. B. example.com"
+      },
+      "blockedDomains": {
+        "label": "Blockierte Domains",
+        "description": "Ergebnisse von diesen Domains ausschließen",
+        "placeholder": "z. B. spam.com"
       }
     },
     "system": {
@@ -119,6 +215,21 @@
         "button": "Daten importieren",
         "success": "Import erfolgreich",
         "error": "Importfehler"
+      },
+      "actionIcon": {
+        "label": "Standardaktion für Klicks auf das Erweiterungssymbol festlegen"
+      },
+      "contextMenu": {
+        "label": "Standardaktion für das Kontextmenü festlegen"
+      },
+      "fontSize": {
+        "label": "Schriftgröße"
+      },
+      "webuiBtnSidePanel": {
+        "label": "Web-UI-Schaltfläche im Seitenpanel anzeigen"
+      },
+      "chatBackgroundImage": {
+        "label": "Chat-Hintergrundbild"
       }
     },
     "tts": {
@@ -142,6 +253,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "Reasoning-Tag aus Text-zu-Sprache entfernen"
+      },
+      "responseSplitting": {
+        "label": "Antwortaufteilung"
       }
     },
     "stt": {
@@ -163,7 +277,8 @@
       "digest": "Digest",
       "modifiedAt": "Zuletzt geändert",
       "size": "Größe",
-      "actions": "Aktionen"
+      "actions": "Aktionen",
+      "nickname": "Spitzname"
     },
     "expandedColumns": {
       "parentModel": "Übergeordnetes Modell",
@@ -174,7 +289,8 @@
     },
     "tooltip": {
       "delete": "Modell löschen",
-      "repull": "Modell erneut herunterladen"
+      "repull": "Modell erneut herunterladen",
+      "editNickname": "Spitzname bearbeiten"
     },
     "confirm": {
       "delete": "Sind Sie sicher, dass Sie dieses Modell löschen möchten?",
@@ -192,7 +308,9 @@
       "error": "Fehler",
       "successDescription": "Das Modell wurde erfolgreich heruntergeladen",
       "successDeleteDescription": "Das Modell wurde erfolgreich gelöscht",
-      "someError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut"
+      "someError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es später erneut",
+      "cancellingDownload": "Download wird abgebrochen",
+      "cancellingDownloadDescription": "Modell-Download wird abgebrochen..."
     }
   },
   "managePrompts": {
@@ -409,5 +527,119 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI-Einstellungen"
-  }
+  },
+  "mcpSettings": {
+    "title": "MCP-Server",
+    "heading": "MCP-Server verwalten",
+    "subheading": "Fügen Sie HTTP-MCP-Server für den normalen Chat hinzu, einschließlich Bearer-Authentifizierung und benutzerdefinierter Header.",
+    "addBtn": "MCP-Server hinzufügen",
+    "humanInLoop": {
+      "label": "Genehmigung erforderlich, bevor MCP-Tools ausgeführt werden",
+      "description": "Empfohlen für MCP-Server mit Schreibberechtigungen oder anderen Nebenwirkungen. Sie können einzelne Tools unten weiterhin zulassen oder deaktivieren.",
+      "enabledHint": "Human-in-the-Loop ist aktiviert. MCP-Tools fragen vor der Ausführung nach Genehmigung.",
+      "disabledHint": "MCP-Tools werden standardmäßig ohne Genehmigung ausgeführt. Aktivieren Sie diese Option, wenn ein MCP-Server Dateien schreiben, Daten ändern, Nachrichten senden oder andere Änderungen vornehmen kann."
+    },
+    "table": {
+      "name": "Name",
+      "url": "URL",
+      "tools": "Zwischengespeicherte Tools",
+      "status": "Validierung",
+      "notValidated": "Noch nicht validiert",
+      "toolsUnavailable": "Keine zwischengespeicherten Tools",
+      "auth": "Authentifizierung",
+      "enabled": "Aktiviert",
+      "actions": "Aktionen",
+      "toolName": "Tool-Name",
+      "toolDescription": "Beschreibung"
+    },
+    "actions": {
+      "refreshTools": "Tools aktualisieren",
+      "enable": "Aktivieren",
+      "disable": "Deaktivieren"
+    },
+    "status": {
+      "ready": "{{count}} Tools verfügbar",
+      "failed": "Validierung fehlgeschlagen",
+      "notValidated": "Nicht validiert",
+      "lastChecked": "Zuletzt geprüft: {{value}}"
+    },
+    "auth": {
+      "none": "Keine Authentifizierung",
+      "bearer": "Bearer-Token"
+    },
+    "modal": {
+      "titleAdd": "MCP-Server hinzufügen",
+      "titleEdit": "MCP-Server bearbeiten",
+      "deleteConfirm": "{{name}} löschen?",
+      "name": {
+        "label": "Servername",
+        "placeholder": "Mein MCP-Server",
+        "required": "Bitte geben Sie einen Servernamen ein"
+      },
+      "url": {
+        "label": "Server-URL",
+        "placeholder": "https://example.com/mcp",
+        "help": "Derzeit werden nur Streamable-HTTP-MCP-Endpunkte über HTTP oder HTTPS unterstützt.",
+        "required": "Bitte geben Sie eine Server-URL ein",
+        "invalid": "Bitte geben Sie eine gültige HTTP- oder HTTPS-URL ein"
+      },
+      "transportNotice": {
+        "title": "Transport-Unterstützung",
+        "description": "Page Assist unterstützt nur Streamable-HTTP-MCP-Server. Veraltete SSE-Endpunkte wie /sse oder /messages?sessionId=... werden nicht unterstützt."
+      },
+      "auth": {
+        "label": "Authentifizierung"
+      },
+      "bearerToken": {
+        "label": "Bearer-Token",
+        "placeholder": "Bearer-Token eingeben",
+        "required": "Bitte geben Sie ein Bearer-Token ein"
+      },
+      "enabled": {
+        "label": "Global aktivieren"
+      },
+      "headers": {
+        "label": "Benutzerdefinierte Header",
+        "add": "Header hinzufügen",
+        "key": {
+          "label": "Header-Schlüssel",
+          "placeholder": "X-Request-ID"
+        },
+        "value": {
+          "label": "Header-Wert",
+          "placeholder": "Wert"
+        }
+      },
+      "validation": {
+        "title": "Tools validieren",
+        "help": "Verbinden Sie sich mit dem MCP-Server, rufen Sie verfügbare Tools ab und speichern Sie sie vor dem Speichern zwischen. Die Validierung erwartet einen Streamable-HTTP-MCP-Endpunkt.",
+        "button": "Validieren und Tools laden",
+        "availableTools": "Verfügbare Tools",
+        "idle": "Validieren Sie diesen Server, um die Verbindung zu bestätigen und seine verfügbaren Tools zu laden.",
+        "stale": "Verbindungsdetails geändert. Validieren Sie erneut, um die zwischengespeicherten Tools zu aktualisieren.",
+        "failed": "Dieser MCP-Server konnte nicht validiert werden.",
+        "success": "Erfolgreich validiert. {{count}} Tools sind verfügbar.",
+        "syncedAt": "Zuletzt synchronisiert: {{value}}",
+        "saveHint": "Beim Speichern wird die aktuelle Konfiguration validiert, wenn die zwischengespeicherte Tool-Liste veraltet ist oder fehlt."
+      },
+      "submit": "MCP-Server speichern",
+      "update": "MCP-Server aktualisieren"
+    },
+    "notification": {
+      "added": "MCP-Server hinzugefügt",
+      "updated": "MCP-Server aktualisiert",
+      "deleted": "MCP-Server gelöscht",
+      "validated": "{{count}} MCP-Tools geladen",
+      "toolsRefreshed": "Tools für {{name}} aktualisiert",
+      "validationFailedTitle": "MCP-Validierung fehlgeschlagen",
+      "storageBlockedTitle": "Page Assist kann keine Daten speichern",
+      "storageBlockedDescription": "Der private Modus von Firefox unterstützt das Speichern von Daten in IndexedDB nicht. Bitte verwalten Sie MCP-Server in einem normalen Fenster."
+    }
+  },
+  "memory": {
+    "enableMemoryTool": {
+      "label": "Speicher-Tool aktivieren"
+    }
+  },
+  "mermaid": "Mermaid"
 }
