@@ -153,5 +153,10 @@ export const OAI_API_PROVIDERS = [
     label: 'Xiaomi Mimo',
     value: 'xiaomimimo',
     baseUrl: 'https://token-plan-sgp.xiaomimimo.com/v1'
+  },
+  {
+    label: "Evolink",
+    value: "evolink",
+    baseUrl: "https://direct.evolink.ai/v1"
   }
 ]
