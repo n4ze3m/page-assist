@@ -52,6 +52,8 @@ import {
 import { updatePageTitle } from "@/utils/update-page-title"
 import { getNoOfRetrievedDocs } from "@/services/app"
 import { normalChatMode as sharedNormalChatMode } from "./chat-modes/normalChatMode"
+import { tabChatMode } from "./chat-modes/tabChatMode"
+import { ChatDocuments } from "@/models/ChatTypes"
 
 export const useMessage = () => {
   const {
@@ -74,7 +76,9 @@ export const useMessage = () => {
     setTemporaryChat,
     actionInfo,
     setActionInfo,
-    setPendingMcpApproval
+    setPendingMcpApproval,
+    documentContext,
+    setDocumentContext
   } = useStoreMessageOption()
   const [defaultInternetSearchOn] = useStorage("defaultInternetSearchOn", false)
 
@@ -145,6 +149,7 @@ export const useMessage = () => {
     }
     setActionInfo(null)
     setPendingMcpApproval(null)
+    setDocumentContext(null)
   }
 
   const saveMessageOnSuccess = createSaveMessageOnSuccess(
@@ -1635,7 +1640,8 @@ export const useMessage = () => {
     memory,
     messages: chatHistory,
     messageType,
-    chatType
+    chatType,
+    docs
   }: {
     message: string
     image: string
@@ -1646,6 +1652,7 @@ export const useMessage = () => {
     controller?: AbortController
     messageType?: string
     chatType?: string
+    docs?: ChatDocuments
   }) => {
     let signal: AbortSignal
     if (!controller) {
@@ -1686,6 +1693,49 @@ export const useMessage = () => {
         images
       )
     } else {
+      const tabDocs = docs?.length > 0 ? docs : documentContext || []
+      if (tabDocs.length > 0 && chatMode === "normal") {
+        if (docs?.length > 0) {
+          setDocumentContext(
+            Array.from(new Set([...(documentContext || []), ...docs]))
+          )
+        }
+        setStreaming(true)
+        try {
+          await tabChatMode(
+            message,
+            image,
+            tabDocs,
+            isRegenerate,
+            chatHistory || messages,
+            memory || history,
+            signal,
+            {
+              selectedModel,
+              useOCR,
+              selectedSystemPrompt,
+              currentChatModelSettings,
+              setMessages,
+              saveMessageOnSuccess,
+              saveMessageOnError,
+              setHistory,
+              setIsProcessing,
+              setStreaming,
+              setAbortController,
+              historyId,
+              setHistoryId
+            }
+          )
+        } catch (e: any) {
+          notification.error({
+            message: t("error"),
+            description: e?.message || t("somethingWentWrong")
+          })
+          setIsProcessing(false)
+          setStreaming(false)
+        }
+        return
+      }
       if (chatMode === "normal") {
         const useAgentWebSearch = webSearch && enableAgentWebSearch
         if (webSearch && !useAgentWebSearch) {

@@ -19,7 +19,8 @@ import {
   PlusIcon,
   MinusIcon,
   PaperclipIcon,
-  ArrowUp
+  ArrowUp,
+  Globe
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
@@ -35,6 +36,8 @@ import { getVariable } from "@/utils/select-variable"
 import { useMessageQueue } from "@/hooks/useMessageQueue"
 import { QueuedMessagesList } from "@/components/Common/QueuedMessagesList"
 import { McpServerToggle } from "@/components/Common/McpServerToggle"
+import { useTabMentions } from "~/hooks/useTabMentions"
+import { MentionsDropdown } from "@/components/Option/Playground/MentionsDropdown"
 
 type Props = {
   dropedFile: File | undefined
@@ -69,6 +72,22 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       images: [] as string[]
     }
   })
+
+  const {
+    tabMentionsEnabled,
+    showMentions,
+    mentionPosition,
+    filteredTabs,
+    selectedDocuments,
+    handleTextChange,
+    insertMention,
+    closeMentions,
+    removeDocument,
+    clearSelectedDocuments,
+    reloadTabs,
+    handleMentionsOpen
+  } = useTabMentions(textareaRef)
+
   const {
     transcript,
     isListening,
@@ -118,6 +137,17 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Process" || e.key === "229") return
+
+    if (
+      showMentions &&
+      (e.key === "ArrowDown" ||
+        e.key === "ArrowUp" ||
+        e.key === "Enter" ||
+        e.key === "Escape")
+    ) {
+      return
+    }
+
     if (
       handleChatInputKeyDown({
         e,
@@ -167,7 +197,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [dropedFile])
 
-  useDynamicTextareaSize(textareaRef, form.values.message, 120)
+  useDynamicTextareaSize(textareaRef, form.values.message, 100)
 
   React.useEffect(() => {
     if (isListening) {
@@ -287,7 +317,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   }) => {
     if (
       value.message.trim().length === 0 &&
-      (!value.images || value.images.length === 0)
+      (!value.images || value.images.length === 0) &&
+      selectedDocuments.length === 0
     ) {
       return
     }
@@ -298,6 +329,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
 
     form.reset()
+    clearSelectedDocuments()
     if (persistChatInput) {
       setPersistedMessage("")
     }
@@ -306,7 +338,14 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     await sendMessage({
       image: value.images && value.images.length > 0 ? value.images[0] : "",
       images: value.images,
-      message: value.message.trim()
+      message: value.message.trim(),
+      docs: selectedDocuments.map((doc) => ({
+        type: "tab",
+        tabId: doc.id,
+        title: doc.title,
+        url: doc.url,
+        favIconUrl: doc.favIconUrl
+      }))
     })
   }
 
@@ -328,6 +367,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         if (persistChatInput) {
           setPersistedMessage("")
         }
+        closeMentions()
       }
       return
     }
@@ -587,7 +627,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
               <div className="flex">
                 <form
                   onSubmit={form.onSubmit(handleFormSubmit)}
-                  className="shrink-0 flex-grow  flex flex-col items-center ">
+                  className="min-w-0 w-full flex-grow flex flex-col items-center">
                   <input
                     id="file-upload"
                     name="file-upload"
@@ -598,37 +638,115 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     multiple={true}
                     onChange={onInputChange}
                   />
-                  <div className="w-full  flex flex-col px-1">
-                    <textarea
-                      onKeyDown={(e) => handleKeyDown(e)}
-                      ref={textareaRef}
-                      className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
-                      onPaste={handlePaste}
-                      rows={1}
-                      style={{ minHeight: "60px" }}
-                      tabIndex={0}
-                      onCompositionStart={() => {
-                        if (import.meta.env.BROWSER !== "firefox") {
-                          setTyping(true)
+                  <div className="w-full min-w-0 flex flex-col px-1">
+                    {selectedDocuments.length > 0 && (
+                      <div className="w-full min-w-0 pb-2">
+                        <div className="max-h-24 w-full min-w-0 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-[#404040] scrollbar-track-transparent">
+                          <div className="flex w-full min-w-0 flex-wrap gap-1.5">
+                            {selectedDocuments.map((document) => (
+                              <div
+                                key={document.id}
+                                title={document.title}
+                                className="inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-lg border border-neutral-200 bg-neutral-50 px-2 py-1 dark:border-[#525252] dark:bg-[#404040]">
+                                <div className="flex-shrink-0">
+                                  {document.favIconUrl ? (
+                                    <img
+                                      src={document.favIconUrl}
+                                      alt=""
+                                      className="h-4 w-4 rounded"
+                                      onError={(e) => {
+                                        const target =
+                                          e.target as HTMLImageElement
+                                        target.style.display = "none"
+                                        target.nextElementSibling?.classList.remove(
+                                          "hidden"
+                                        )
+                                      }}
+                                    />
+                                  ) : null}
+                                  <Globe
+                                    className={`h-4 w-4 text-neutral-600 dark:text-neutral-400 ${
+                                      document.favIconUrl ? "hidden" : ""
+                                    }`}
+                                  />
+                                </div>
+                                <span className="min-w-0 max-w-[45vw] truncate text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                                  {document.title}
+                                </span>
+                                <button
+                                  onClick={() => removeDocument(document.id)}
+                                  className="flex-shrink-0 text-neutral-600 transition-colors hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
+                                  type="button">
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <div className="relative">
+                      <textarea
+                        onKeyDown={(e) => handleKeyDown(e)}
+                        ref={textareaRef}
+                        className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
+                        onPaste={handlePaste}
+                        rows={1}
+                        style={{ height: "40px", minHeight: "40px" }}
+                        tabIndex={0}
+                        onCompositionStart={() => {
+                          if (import.meta.env.BROWSER !== "firefox") {
+                            setTyping(true)
+                          }
+                        }}
+                        onCompositionEnd={() => {
+                          if (import.meta.env.BROWSER !== "firefox") {
+                            setTyping(false)
+                          }
+                        }}
+                        placeholder={t("form.textarea.placeholder")}
+                        {...form.getInputProps("message")}
+                        onChange={(e) => {
+                          form.getInputProps("message").onChange(e)
+                          // Persist message as user types
+                          if (persistChatInput) {
+                            setPersistedMessage(e.target.value)
+                          }
+                          if (tabMentionsEnabled && textareaRef.current) {
+                            handleTextChange(
+                              e.target.value,
+                              textareaRef.current.selectionStart || 0
+                            )
+                          }
+                        }}
+                        onSelect={() => {
+                          if (tabMentionsEnabled && textareaRef.current) {
+                            handleTextChange(
+                              textareaRef.current.value,
+                              textareaRef.current.selectionStart || 0
+                            )
+                          }
+                        }}
+                      />
+                      <MentionsDropdown
+                        show={showMentions}
+                        tabs={filteredTabs}
+                        mentionPosition={mentionPosition}
+                        onSelectTab={(tab) =>
+                          insertMention(tab, form.values.message, (value) =>
+                            form.setFieldValue("message", value)
+                          )
                         }
-                      }}
-                      onCompositionEnd={() => {
-                        if (import.meta.env.BROWSER !== "firefox") {
-                          setTyping(false)
-                        }
-                      }}
-                      placeholder={t("form.textarea.placeholder")}
-                      {...form.getInputProps("message")}
-                      onChange={(e) => {
-                        form.getInputProps("message").onChange(e)
-                        // Persist message as user types
-                        if (persistChatInput) {
-                          setPersistedMessage(e.target.value)
-                        }
-                      }}
-                    />
+                        onClose={closeMentions}
+                        textareaRef={textareaRef}
+                        refetchTabs={async () => {
+                          await reloadTabs()
+                        }}
+                        onMentionsOpen={handleMentionsOpen}
+                      />
+                    </div>
                     <div
-                      className={`flex mt-4 items-center gap-3 ${
+                      className={`flex mt-2 items-center gap-3 ${
                         useCompactActions
                           ? "w-full justify-between md:w-auto md:justify-end"
                           : "justify-end"
