@@ -197,7 +197,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [dropedFile])
 
-  useDynamicTextareaSize(textareaRef, form.values.message, 120)
+  useDynamicTextareaSize(textareaRef, form.values.message, 100)
 
   React.useEffect(() => {
     if (isListening) {
@@ -692,7 +692,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                         className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
                         onPaste={handlePaste}
                         rows={1}
-                        style={{ minHeight: "60px" }}
+                        style={{ height: "40px", minHeight: "40px" }}
                         tabIndex={0}
                         onCompositionStart={() => {
                           if (import.meta.env.BROWSER !== "firefox") {
@@ -746,7 +746,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                       />
                     </div>
                     <div
-                      className={`flex mt-4 items-center gap-3 ${
+                      className={`flex mt-2 items-center gap-3 ${
                         useCompactActions
                           ? "w-full justify-between md:w-auto md:justify-end"
                           : "justify-end"
