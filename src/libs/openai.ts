@@ -12,6 +12,23 @@ export const isAnthropicAPI = (baseUrl: string) => {
   return baseUrl === "https://api.anthropic.com/v1"
 }
 
+export const isOpenRouter = (baseUrl: string) => {
+  try {
+    return new URL(baseUrl).hostname.endsWith("openrouter.ai")
+  } catch {
+    return !!baseUrl && baseUrl.includes("openrouter.ai")
+  }
+}
+ 
+const buildOpenRouterModelsUrl = (
+  baseUrl: string,
+  modelType?: "chat" | "embedding"
+) => {
+  if (modelType === "chat") return `${baseUrl}/models`
+  const modalities = modelType === "embedding" ? "embeddings" : "all"
+  return `${baseUrl}/models?output_modalities=${modalities}`
+}
+
 
 export const getAllAnthropicModels = async ({
   apiKey,
@@ -62,11 +79,13 @@ export const getAllAnthropicModels = async ({
 export const getAllOpenAIModels = async ({
   baseUrl,
   apiKey,
-  customHeaders = []
+  customHeaders = [],
+  modelType
 }: {
   baseUrl: string
   apiKey?: string
   customHeaders?: { key: string; value: string }[]
+  modelType?: "chat" | "embedding"
 }) => {
   try {
 
@@ -74,7 +93,9 @@ export const getAllOpenAIModels = async ({
       return getAllAnthropicModels({ apiKey, customHeaders })
     }
 
-    const url = `${baseUrl}/models`
+    const url = isOpenRouter(baseUrl)
+      ? buildOpenRouterModelsUrl(baseUrl, modelType)
+      : `${baseUrl}/models`
     const headers = apiKey
       ? {
         Authorization: `Bearer ${apiKey}`,
