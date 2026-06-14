@@ -14,11 +14,23 @@ import {
   convertOpenWebUIToPageAssist,
   isOpenWebUIExport
 } from "@/libs/openwebui-import"
+import {
+  analyzeMapping,
+  convertWithMapping,
+  distinctRoleValues,
+  inferMapping,
+  sampleConversationFor,
+  sampleMessageFor,
+  suggestArrayPaths,
+  suggestFields,
+  type DynamicMapping
+} from "@/libs/dynamic-import"
+import { fetchChatModels } from "@/services/ollama"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Checkbox, Modal, Select, notification, Switch } from "antd"
-import { useState } from "react"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { AutoComplete, Checkbox, Modal, Select, notification, Switch } from "antd"
+import { useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Loader2, RotateCcw, Upload } from "lucide-react"
 import { toBase64 } from "@/libs/to-base64"
@@ -97,6 +109,115 @@ export const SystemSettings = () => {
   >({})
   const [importSelected, setImportSelected] = useState<ExportSection[]>([])
 
+  const [dynamicModalOpen, setDynamicModalOpen] = useState(false)
+  const [dynamicRawData, setDynamicRawData] = useState<any>(null)
+  const [dynamicMapping, setDynamicMapping] = useState<DynamicMapping>({
+    conversationsPath: "",
+    messageMode: "nested",
+    messagesPath: "",
+    roleField: "",
+    contentField: ""
+  })
+  const [dynamicDefaultModel, setDynamicDefaultModel] = useState<
+    string | undefined
+  >(undefined)
+
+  const dynamicPreview = useMemo(() => {
+    if (!dynamicRawData) return null
+    try {
+      return analyzeMapping(dynamicRawData, dynamicMapping)
+    } catch (e) {
+      console.error("Dynamic mapping preview error:", e)
+      return null
+    }
+  }, [dynamicRawData, dynamicMapping])
+
+  const dynamicRawJson = useMemo(() => {
+    if (!dynamicRawData) return ""
+    try {
+      const str = JSON.stringify(dynamicRawData, null, 2)
+      return str.length > 50000 ? str.slice(0, 50000) + "\n…(truncated)" : str
+    } catch {
+      return ""
+    }
+  }, [dynamicRawData])
+
+  const conversationPathOptions = useMemo(
+    () =>
+      dynamicRawData
+        ? suggestArrayPaths(dynamicRawData).map((p) => ({
+            value: p,
+            label: p === "" ? "(root)" : p
+          }))
+        : [],
+    [dynamicRawData]
+  )
+
+  const messagePathOptions = useMemo(() => {
+    if (!dynamicRawData) return []
+    if (dynamicMapping.messageMode === "joined") {
+      return suggestArrayPaths(dynamicRawData).map((p) => ({
+        value: p,
+        label: p === "" ? "(root)" : p
+      }))
+    }
+    const conv = sampleConversationFor(dynamicRawData, dynamicMapping)
+    const paths = suggestArrayPaths(conv)
+    if (conv && typeof conv === "object" && "mapping" in conv) {
+      paths.push("mapping")
+    }
+    if (conv?.history && typeof conv.history === "object") {
+      paths.push("history.messages")
+    }
+    return Array.from(new Set(paths)).map((p) => ({
+      value: p,
+      label: p === "" ? "(conversation itself)" : p
+    }))
+  }, [
+    dynamicRawData,
+    dynamicMapping.messageMode,
+    dynamicMapping.conversationsPath
+  ])
+
+  const messageFieldOptions = useMemo(() => {
+    if (!dynamicRawData) return []
+    const msg = sampleMessageFor(dynamicRawData, dynamicMapping)
+    return suggestFields(msg).map((f) => ({ value: f, label: f }))
+  }, [
+    dynamicRawData,
+    dynamicMapping.messageMode,
+    dynamicMapping.conversationsPath,
+    dynamicMapping.messagesPath
+  ])
+
+  const conversationFieldOptions = useMemo(() => {
+    if (!dynamicRawData) return []
+    const conv = sampleConversationFor(dynamicRawData, dynamicMapping)
+    return suggestFields(conv).map((f) => ({ value: f, label: f }))
+  }, [dynamicRawData, dynamicMapping.conversationsPath])
+
+  const roleValueOptions = useMemo(() => {
+    if (!dynamicRawData) return []
+    return distinctRoleValues(dynamicRawData, dynamicMapping).map((v) => ({
+      value: v,
+      label: v
+    }))
+  }, [
+    dynamicRawData,
+    dynamicMapping.conversationsPath,
+    dynamicMapping.messagesPath,
+    dynamicMapping.roleField
+  ])
+
+  const updateMapping = (patch: Partial<DynamicMapping>) =>
+    setDynamicMapping((prev) => ({ ...prev, ...patch }))
+
+  const { data: chatModels, isLoading: isChatModelsLoading } = useQuery({
+    queryKey: ["fetchChatModelsForImport"],
+    queryFn: () => fetchChatModels({ returnEmpty: true }),
+    enabled: dynamicModalOpen
+  })
+
   const exportDataMutation = useMutation({
     mutationFn: async (sections: ExportSection[]) => {
       await exportPageAssistData(sections)
@@ -148,6 +269,59 @@ export const SystemSettings = () => {
       })
     }
   })
+
+  const dynamicImportMutation = useMutation({
+    mutationFn: async ({
+      data,
+      mapping,
+      defaultModelId
+    }: {
+      data: any
+      mapping: DynamicMapping
+      defaultModelId?: string
+    }) => {
+      const converted = convertWithMapping(data, mapping, { defaultModelId })
+      await importPageAssistDataFromObject(converted, ["chat"])
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["fetchChatHistory"]
+      })
+
+      setDynamicModalOpen(false)
+      setDynamicRawData(null)
+      setDynamicDefaultModel(undefined)
+
+      notification.success({
+        message: "Imported data successfully"
+      })
+
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
+    },
+    onError: (error) => {
+      console.error("Dynamic import error:", error)
+      notification.error({
+        message: "Import error"
+      })
+    }
+  })
+
+  const handleDynamicImportFileSelected = async (file: File) => {
+    try {
+      const raw = await parseImportFile(file)
+      setDynamicRawData(raw)
+      setDynamicMapping(inferMapping(raw))
+      setDynamicDefaultModel(undefined)
+      setDynamicModalOpen(true)
+    } catch (e) {
+      console.error("Parse dynamic import file error:", e)
+      notification.error({
+        message: "Invalid file"
+      })
+    }
+  }
 
   const handleImportFileSelected = async (file: File) => {
     try {
@@ -420,6 +594,39 @@ export const SystemSettings = () => {
         />
       </div>
 
+      <div className="flex flex-col sm:flex-row mb-3 gap-3 sm:gap-0 sm:justify-between sm:items-center">
+        <span className="text-gray-700 dark:text-neutral-50">
+          <BetaTag />
+          {t("generalSettings.system.dynamicImport.label", {
+            defaultValue: "Import from another service"
+          })}
+        </span>
+        <label
+          htmlFor="dynamic-import"
+          className="bg-gray-800 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-md cursor-pointer flex items-center justify-center w-full sm:w-auto">
+          {dynamicImportMutation.isPending ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            t("generalSettings.system.dynamicImport.button", {
+              defaultValue: "Import"
+            })
+          )}
+        </label>
+        <input
+          type="file"
+          accept=".json"
+          id="dynamic-import"
+          className="hidden"
+          disabled={dynamicImportMutation.isPending}
+          onChange={(e) => {
+            if (e.target.files && e.target.files[0]) {
+              handleDynamicImportFileSelected(e.target.files[0])
+              e.target.value = ""
+            }
+          }}
+        />
+      </div>
+
       <Modal
         title="Export Page Assist Data"
         open={exportModalOpen}
@@ -526,6 +733,308 @@ export const SystemSettings = () => {
         <p className="text-xs text-amber-600 dark:text-amber-400 mt-3">
           Importing will merge with or overwrite existing data in the selected
           sections.
+        </p>
+      </Modal>
+
+      <Modal
+        title="Import from another service"
+        open={dynamicModalOpen}
+        width={900}
+        onCancel={() => {
+          if (dynamicImportMutation.isPending) return
+          setDynamicModalOpen(false)
+          setDynamicRawData(null)
+          setDynamicDefaultModel(undefined)
+        }}
+        footer={
+          <SaveButton
+            text="Import"
+            textOnSave="Imported"
+            disabled={
+              !dynamicPreview ||
+              dynamicPreview.conversationCount === 0 ||
+              (!dynamicPreview.hasModel && !dynamicDefaultModel) ||
+              dynamicImportMutation.isPending
+            }
+            onClick={() =>
+              dynamicImportMutation.mutate({
+                data: dynamicRawData,
+                mapping: dynamicMapping,
+                defaultModelId: dynamicDefaultModel
+              })
+            }
+            className="!mt-0 w-full justify-center"
+          />
+        }>
+        <p className="text-sm text-gray-600 dark:text-neutral-300 mb-3">
+          Map the fields in your file (left) to what Page Assist expects
+          (right). We pre-filled our best guess — adjust anything that looks
+          wrong.
+        </p>
+        <div className="flex flex-col md:flex-row gap-4">
+          {/* Left: raw imported data */}
+          <div className="md:w-1/2 flex flex-col">
+            <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-neutral-400 mb-1">
+              Imported file
+            </span>
+            <pre className="flex-1 max-h-[420px] overflow-auto text-xs bg-gray-50 dark:bg-neutral-900 border border-gray-300 dark:border-gray-600 rounded-md p-3 text-gray-800 dark:text-neutral-200 whitespace-pre">
+              {dynamicRawJson}
+            </pre>
+          </div>
+
+          {/* Right: mapping form */}
+          <div className="md:w-1/2 flex flex-col gap-3 max-h-[420px] overflow-auto pr-1">
+            <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-neutral-400">
+              Field mapping
+            </span>
+
+            <div>
+              <label className="block text-xs text-gray-600 dark:text-neutral-300 mb-1">
+                Conversations path
+              </label>
+              <AutoComplete
+                allowClear
+                className="w-full"
+                placeholder="(root)"
+                options={conversationPathOptions}
+                value={dynamicMapping.conversationsPath}
+                onChange={(value) =>
+                  updateMapping({ conversationsPath: value || "" })
+                }
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs text-gray-600 dark:text-neutral-300 mb-1">
+                Messages layout
+              </label>
+              <Select
+                className="w-full"
+                value={dynamicMapping.messageMode}
+                onChange={(value) =>
+                  updateMapping({
+                    messageMode: value as "nested" | "joined",
+                    messagesPath: ""
+                  })
+                }
+                options={[
+                  {
+                    label: "Inside each conversation",
+                    value: "nested"
+                  },
+                  {
+                    label: "Separate list, joined by ID",
+                    value: "joined"
+                  }
+                ]}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs text-gray-600 dark:text-neutral-300 mb-1">
+                {dynamicMapping.messageMode === "joined"
+                  ? "Messages path (from root)"
+                  : "Messages path (within a conversation)"}
+              </label>
+              <AutoComplete
+                allowClear
+                className="w-full"
+                placeholder={
+                  dynamicMapping.messageMode === "joined"
+                    ? "messages"
+                    : "(conversation itself)"
+                }
+                options={messagePathOptions}
+                value={dynamicMapping.messagesPath}
+                onChange={(value) =>
+                  updateMapping({ messagesPath: value || "" })
+                }
+              />
+            </div>
+
+            {dynamicMapping.messageMode === "joined" && (
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-xs text-gray-600 dark:text-neutral-300 mb-1">
+                    Conversation ID field
+                  </label>
+                  <AutoComplete
+                    allowClear
+                    className="w-full"
+                    placeholder="id"
+                    options={conversationFieldOptions}
+                    value={dynamicMapping.conversationIdField}
+                    onChange={(value) =>
+                      updateMapping({ conversationIdField: value })
+                    }
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-600 dark:text-neutral-300 mb-1">
+                    Message's conversation ID
+                  </label>
+                  <AutoComplete
+                    allowClear
+                    className="w-full"
+                    placeholder="threadId"
+                    options={messageFieldOptions}
+                    value={dynamicMapping.messageThreadField}
+                    onChange={(value) =>
+                      updateMapping({ messageThreadField: value })
+                    }
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs text-gray-600 dark:text-neutral-300 mb-1">
+                  Role field
+                </label>
+                <AutoComplete
+                  allowClear
+                  className="w-full"
+                  placeholder="role"
+                  options={messageFieldOptions}
+                  value={dynamicMapping.roleField}
+                  onChange={(value) =>
+                    updateMapping({ roleField: value || "" })
+                  }
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-600 dark:text-neutral-300 mb-1">
+                  Content field
+                </label>
+                <AutoComplete
+                  allowClear
+                  className="w-full"
+                  placeholder="content"
+                  options={messageFieldOptions}
+                  value={dynamicMapping.contentField}
+                  onChange={(value) =>
+                    updateMapping({ contentField: value || "" })
+                  }
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs text-gray-600 dark:text-neutral-300 mb-1">
+                  "User" role value
+                </label>
+                <AutoComplete
+                  allowClear
+                  className="w-full"
+                  placeholder="auto"
+                  options={roleValueOptions}
+                  value={dynamicMapping.userValue}
+                  onChange={(value) => updateMapping({ userValue: value })}
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-600 dark:text-neutral-300 mb-1">
+                  "Assistant" role value
+                </label>
+                <AutoComplete
+                  allowClear
+                  className="w-full"
+                  placeholder="auto"
+                  options={roleValueOptions}
+                  value={dynamicMapping.assistantValue}
+                  onChange={(value) => updateMapping({ assistantValue: value })}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs text-gray-600 dark:text-neutral-300 mb-1">
+                  Title field (optional)
+                </label>
+                <AutoComplete
+                  allowClear
+                  className="w-full"
+                  placeholder="auto"
+                  options={conversationFieldOptions}
+                  value={dynamicMapping.titleField}
+                  onChange={(value) => updateMapping({ titleField: value })}
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-600 dark:text-neutral-300 mb-1">
+                  Timestamp field (optional)
+                </label>
+                <AutoComplete
+                  allowClear
+                  className="w-full"
+                  placeholder="auto"
+                  options={messageFieldOptions}
+                  value={dynamicMapping.timeField}
+                  onChange={(value) => updateMapping({ timeField: value })}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs text-gray-600 dark:text-neutral-300 mb-1">
+                Model field (optional)
+              </label>
+              <AutoComplete
+                allowClear
+                className="w-full"
+                placeholder="auto"
+                options={messageFieldOptions}
+                value={dynamicMapping.modelField}
+                onChange={(value) => updateMapping({ modelField: value })}
+              />
+            </div>
+
+            {/* Live preview */}
+            <div className="flex items-center gap-4 px-3 py-2 rounded-md bg-gray-50 dark:bg-neutral-900 border border-gray-300 dark:border-gray-600">
+              <span className="text-xs text-gray-600 dark:text-neutral-300">
+                Detected{" "}
+                <span className="font-semibold tabular-nums">
+                  {dynamicPreview?.conversationCount ?? 0}
+                </span>{" "}
+                conversations,{" "}
+                <span className="font-semibold tabular-nums">
+                  {dynamicPreview?.messageCount ?? 0}
+                </span>{" "}
+                messages
+              </span>
+            </div>
+
+            {dynamicPreview && !dynamicPreview.hasModel && (
+              <div>
+                <label className="block text-xs text-gray-600 dark:text-neutral-300 mb-1">
+                  Default model
+                </label>
+                <p className="text-xs text-gray-500 dark:text-neutral-400 mb-1">
+                  No model found in the file. Pick one from your list to use for
+                  the imported chats.
+                </p>
+                <Select
+                  showSearch
+                  optionFilterProp="label"
+                  loading={isChatModelsLoading}
+                  placeholder="Select a model"
+                  className="w-full"
+                  value={dynamicDefaultModel}
+                  onChange={(value) => setDynamicDefaultModel(value)}
+                  options={chatModels?.map((model) => ({
+                    label: model?.nickname || model.name || model.model,
+                    value: model.model
+                  }))}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+        <p className="text-xs text-amber-600 dark:text-amber-400 mt-3">
+          Imported conversations will be added to your existing chat history.
         </p>
       </Modal>
 
