@@ -38,14 +38,14 @@ Checkout the Demo (v1.0.0):
 <table>
   <tr>
     <td align="center" width="200">
-      <a href="https://www.atlascloud.ai">
+      <a href="https://www.atlascloud.ai/?utm_source=github&utm_medium=link&utm_campaign=page-assist">
         <img src="https://www.atlascloud.ai/logo.svg" alt="Atlas Cloud" height="60" />
       </a>
     </td>
     <td>
-      <a href="https://www.atlascloud.ai"><b>Atlas Cloud</b></a> is a full-modal AI inference platform that gives developers a single AI API to access video generation, image generation, and LLM APIs. Instead of managing multiple vendor integrations, you connect once and get unified access to 300+ curated models across all modalities.
+      <a href="https://www.atlascloud.ai/?utm_source=github&utm_medium=link&utm_campaign=page-assist"><b>Atlas Cloud</b></a> is a full-modal AI inference platform that gives developers a single AI API to access video generation, image generation, and LLM APIs. Instead of managing multiple vendor integrations, you connect once and get unified access to 300+ curated models across all modalities.
       <br/><br/>
-      Check out <a href="https://www.atlascloud.ai/console/coding-plan">Atlas Cloud's coding plan</a> for more budget-friendly API access.
+      Check out <a href="https://www.atlascloud.ai/console/coding-plan?utm_source=github&utm_medium=link&utm_campaign=page-assist">Atlas Cloud's coding plan</a> for more budget-friendly API access.
     </td>
   </tr>
 </table>
