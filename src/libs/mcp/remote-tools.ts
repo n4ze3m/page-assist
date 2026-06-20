@@ -1,14 +1,16 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js"
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js"
+import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js"
 import { CfWorkerJsonSchemaValidator } from "@modelcontextprotocol/sdk/validation/cfworker"
 import { getMcpErrorMessage } from "./errors"
 import { McpAvailableTool, McpServerInput } from "./types"
 import { buildMcpHeaders, getMcpToolExecutionMode, isMcpToolEnabled } from "./utils"
+import { createExtensionTransport } from "./extension-transport"
 import { Implementation } from "@modelcontextprotocol/sdk/types.js"
 
 export type McpConnectableServer = Pick<
   McpServerInput,
-  "name" | "url" | "authType" | "bearerToken" | "headers" | "oauthTokens"
+  "name" | "url" | "authType" | "bearerToken" | "headers" | "oauthTokens" | "transport"
 >
 
 export type McpRemoteTool = {
@@ -19,7 +21,7 @@ export type McpRemoteTool = {
 
 export type McpServerConnection = {
   client: Client
-  transport: StreamableHTTPClientTransport
+  transport: Transport
 }
 
 export type McpToolValidationResult = {
@@ -43,9 +45,11 @@ const MCP_CLIENT_INFO: Implementation = {
   ]
 }
 
-export const openMcpServerConnection = async (
-  server: McpConnectableServer
-): Promise<McpServerConnection> => {
+const createTransport = (server: McpConnectableServer): Transport => {
+  if (server.transport === "extension") {
+    return createExtensionTransport(server.url)
+  }
+
   let url: URL
   try {
     url = new URL(server.url)
@@ -60,11 +64,17 @@ export const openMcpServerConnection = async (
     oauthTokens: server.oauthTokens
   })
 
-  const transport = new StreamableHTTPClientTransport(url, {
+  return new StreamableHTTPClientTransport(url, {
     ...(Object.keys(headers).length > 0
       ? { requestInit: { headers } }
       : {})
   })
+}
+
+export const openMcpServerConnection = async (
+  server: McpConnectableServer
+): Promise<McpServerConnection> => {
+  const transport = createTransport(server)
 
   const client = new Client(MCP_CLIENT_INFO, {
     jsonSchemaValidator: new CfWorkerJsonSchemaValidator()
@@ -88,7 +98,7 @@ export const closeMcpServerConnection = async (
   connection: McpServerConnection
 ) => {
   try {
-    await connection.transport.terminateSession?.()
+    await (connection.transport as StreamableHTTPClientTransport).terminateSession?.()
   } catch (error) {
     // Ignore session termination errors during cleanup.
   }

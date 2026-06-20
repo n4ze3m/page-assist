@@ -18,6 +18,8 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
+    "page-action:dev": "cd extensions/page-action && bun run dev",
+    "page-action:build": "cd extensions/page-action && bun run build",
     "postinstall": "wxt prepare"
   },
   "dependencies": {

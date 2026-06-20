@@ -1,0 +1,157 @@
+:root {
+  color-scheme: light dark;
+  --pa-bg: #ffffff;
+  --pa-fg: #1a1a1a;
+  --pa-border: rgba(0, 0, 0, 0.1);
+  --pa-muted: rgba(0, 0, 0, 0.55);
+  --pa-accent: #1677ff;
+  --pa-danger: #d9534f;
+  --pa-ok: #2f9e44;
+  --pa-card: rgba(0, 0, 0, 0.02);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --pa-bg: #1a1a1a;
+    --pa-fg: #e6e6e6;
+    --pa-border: rgba(255, 255, 255, 0.12);
+    --pa-muted: rgba(255, 255, 255, 0.5);
+    --pa-card: rgba(255, 255, 255, 0.04);
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--pa-bg);
+  color: var(--pa-fg);
+}
+
+.wrap {
+  width: 360px;
+  padding: 14px;
+  box-sizing: border-box;
+  font-family: Arimo, system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--pa-border);
+}
+
+.logo {
+  height: 24px;
+  width: auto;
+}
+
+.brand {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.status {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--pa-muted);
+}
+
+h2 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 8px;
+  color: var(--pa-muted);
+}
+
+.card {
+  border: 1px solid var(--pa-border);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: var(--pa-card);
+}
+
+.card.pending {
+  border-color: var(--pa-accent);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.row code {
+  font-size: 11px;
+  word-break: break-all;
+}
+
+.row.tool {
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.tool-name {
+  font-family: ui-monospace, monospace;
+}
+
+.badge {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--pa-muted);
+  border: 1px solid var(--pa-border);
+  border-radius: 6px;
+  padding: 2px 6px;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+button {
+  font: inherit;
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--pa-border);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+button.approve {
+  background: var(--pa-ok);
+  color: #fff;
+  border-color: var(--pa-ok);
+}
+
+button.deny {
+  color: var(--pa-danger);
+  border-color: var(--pa-danger);
+}
+
+.row.add {
+  margin-top: 10px;
+}
+
+.row.add input {
+  flex: 1;
+  font: inherit;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--pa-border);
+  background: transparent;
+  color: inherit;
+}
+
+.muted {
+  color: var(--pa-muted);
+  margin: 4px 0;
+}

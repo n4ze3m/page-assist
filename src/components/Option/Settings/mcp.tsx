@@ -98,6 +98,8 @@ export const MCPSettingsApp = () => {
   const [validationSnapshot, setValidationSnapshot] =
     useState<ValidationSnapshot | null>(null)
   const authType = Form.useWatch("authType", form)
+  const transport = Form.useWatch("transport", form)
+  const isExtensionTransport = transport === "extension"
   const watchedValues = Form.useWatch([], form)
   const currentFingerprint = getMcpServerConfigFingerprint(watchedValues || {})
 
@@ -779,6 +781,7 @@ export const MCPSettingsApp = () => {
             layout="vertical"
             onFinish={handleSubmit}
             initialValues={{
+              transport: "http",
               enabled: true,
               authType: "none",
               headers: []
@@ -798,17 +801,47 @@ export const MCPSettingsApp = () => {
               />
             </Form.Item>
 
+            <Form.Item name="transport" label="Transport">
+              <Select
+                size="large"
+                options={[
+                  {
+                    label: "Streamable HTTP",
+                    value: "http"
+                  },
+                  {
+                    label: "Browser extension",
+                    value: "extension"
+                  }
+                ]}
+              />
+            </Form.Item>
+
             <Form.Item
               name="url"
-              label={t("mcpSettings.modal.url.label")}
-              extra={t("mcpSettings.modal.transportNotice.description")}
+              label={
+                isExtensionTransport ? "Extension ID" : t("mcpSettings.modal.url.label")
+              }
+              extra={
+                isExtensionTransport
+                  ? "The id of the installed extension that exposes the MCP server."
+                  : t("mcpSettings.modal.transportNotice.description")
+              }
               rules={[
                 {
                   required: true,
-                  message: t("mcpSettings.modal.url.required")
+                  message: isExtensionTransport
+                    ? "Extension ID is required"
+                    : t("mcpSettings.modal.url.required")
                 },
                 {
                   validator: async (_, value) => {
+                    if (isExtensionTransport) {
+                      if (!value || !/^[a-p]{32}$/.test(value.trim())) {
+                        throw new Error("Enter a valid 32-character extension id")
+                      }
+                      return
+                    }
                     try {
                       const parsed = new URL(value)
                       if (!["http:", "https:"].includes(parsed.protocol)) {
@@ -822,33 +855,39 @@ export const MCPSettingsApp = () => {
               ]}>
               <Input
                 size="large"
-                placeholder={t("mcpSettings.modal.url.placeholder")}
+                placeholder={
+                  isExtensionTransport
+                    ? "kaoapbeelphlbjmknbpnpndakmpafnbd"
+                    : t("mcpSettings.modal.url.placeholder")
+                }
               />
             </Form.Item>
 
-            <Form.Item
-              name="authType"
-              label={t("mcpSettings.modal.auth.label")}>
-              <Select
-                size="large"
-                options={[
-                  {
-                    label: t("mcpSettings.auth.none"),
-                    value: "none"
-                  },
-                  {
-                    label: t("mcpSettings.auth.bearer"),
-                    value: "bearer"
-                  },
-                  {
-                    label: "OAuth 2.1",
-                    value: "oauth"
-                  }
-                ]}
-              />
-            </Form.Item>
+            {!isExtensionTransport ? (
+              <Form.Item
+                name="authType"
+                label={t("mcpSettings.modal.auth.label")}>
+                <Select
+                  size="large"
+                  options={[
+                    {
+                      label: t("mcpSettings.auth.none"),
+                      value: "none"
+                    },
+                    {
+                      label: t("mcpSettings.auth.bearer"),
+                      value: "bearer"
+                    },
+                    {
+                      label: "OAuth 2.1",
+                      value: "oauth"
+                    }
+                  ]}
+                />
+              </Form.Item>
+            ) : null}
 
-            {authType === "bearer" ? (
+            {!isExtensionTransport && authType === "bearer" ? (
               <Form.Item
                 name="bearerToken"
                 label={t("mcpSettings.modal.bearerToken.label")}
@@ -865,7 +904,7 @@ export const MCPSettingsApp = () => {
               </Form.Item>
             ) : null}
 
-            {authType === "oauth" ? (
+            {!isExtensionTransport && authType === "oauth" ? (
               <p className="mb-4 text-xs text-gray-400 dark:text-gray-500">
                 Uses your Page Share URL as the OAuth redirect. You can change it in Manage Share settings.
               </p>
@@ -878,6 +917,7 @@ export const MCPSettingsApp = () => {
               <Switch />
             </Form.Item>
 
+            {!isExtensionTransport ? (
             <Form.List name="headers">
               {(fields, { add, remove }) => (
                 <div className="flex flex-col">
@@ -929,6 +969,7 @@ export const MCPSettingsApp = () => {
                 </div>
               )}
             </Form.List>
+            ) : null}
 
             <button
               type="submit"
