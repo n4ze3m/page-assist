@@ -39,10 +39,12 @@ export type McpOAuthMetadata = {
   scopesSupported?: string[]
 }
 
+export type McpTransport = "http" | "extension"
+
 export type McpServer = {
   id: string
   name: string
-  transport: "http"
+  transport: McpTransport
   url: string
   enabled: boolean
   authType: "none" | "bearer" | "oauth"

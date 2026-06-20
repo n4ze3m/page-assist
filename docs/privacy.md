@@ -13,6 +13,20 @@ The extension requires the following permissions to function:
 - **Scripting**: For the chat-with-webpage functionality
 - **Web Requests**: To modify headers of the local server to avoid CORS issues
 
+## Page Action (Companion Extension)
+
+Page Action is a separate, optional companion extension that lets Page Assist perform actions on the page you are viewing (clicking, typing, scrolling, navigating, capturing screenshots, and similar). It only acts when an approved extension requests it, and like Page Assist it does not collect, store, or transmit any data to external servers — all activity stays on your device and within the active tab.
+
+It requires the following additional permissions:
+
+- **Debugger**: To read the active tab's content and perform trusted input (clicks, typing, navigation, screenshots) via the Chrome DevTools Protocol. While active, Chrome displays a "Page Action started debugging this browser" banner.
+- **Host Access**: To act on the active tab regardless of which site it is on.
+- **Tabs / Tab Groups**: To read tab information and open, switch, close, and group tabs.
+- **Scripting**: To inspect and interact with the page's DOM.
+- **Storage**: To store the list of approved extensions and tool settings locally.
+
+Page Action only accepts connections from extensions you approve. Page Assist is allowed by default; any other extension must be approved before it can connect.
+
 ## Page Share Feature
 When using the Page Share feature:
 

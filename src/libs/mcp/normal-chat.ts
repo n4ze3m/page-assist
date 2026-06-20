@@ -846,7 +846,37 @@ export const runMcpNormalChatMode = async (
 
       await Promise.all(pendingDbWrites)
 
-      lcConversation = [...lcConversation, aiMessage, ...toolMessages]
+      const toolImages = toolMessages.flatMap((toolMessage) => {
+        const images = (toolMessage as any)?.artifact?.images
+        return Array.isArray(images) ? images : []
+      })
+
+      let visionMessages: any[] = []
+      if (toolImages.length > 0) {
+        try {
+          const visionMessage = await humanMessageFormatter({
+            content: [
+              { type: "text", text: "Image(s) returned by the tool:" },
+              ...toolImages.map((image: any) => ({
+                type: "image_url",
+                image_url: `data:${image.mimeType || "image/png"};base64,${image.data}`
+              }))
+            ],
+            model: selectedModel,
+            useOCR
+          })
+          visionMessages = [visionMessage]
+        } catch (error) {
+          visionMessages = []
+        }
+      }
+
+      lcConversation = [
+        ...lcConversation,
+        aiMessage,
+        ...toolMessages,
+        ...visionMessages
+      ]
       appendAssistantPlaceholder()
     }
 

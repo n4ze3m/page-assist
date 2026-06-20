@@ -78,7 +78,7 @@ export const normalizeMcpServerInput = (
 
   return {
     name: server.name?.trim() ?? "",
-    transport: "http",
+    transport: server.transport ?? "http",
     url: server.url?.trim() ?? "",
     enabled: server.enabled ?? true,
     authType,
