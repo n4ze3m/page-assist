@@ -8,15 +8,7 @@ export default defineConfig({
     version: '0.0.1',
     description:
       'An extension for Page Assist that adds browser actions on the active tab.',
-    permissions: [
-      'debugger',
-      'activeTab',
-      'tabs',
-      'tabGroups',
-      'storage',
-      'scripting',
-    ],
-    host_permissions: ['<all_urls>'],
+    permissions: ['debugger', 'tabs', 'tabGroups', 'storage'],
     externally_connectable: {
       ids: [
         'jfgfiigpkhlkbnfnbobbkinehhfdhndo',
