@@ -14,6 +14,7 @@ export default defineConfig({
         'jfgfiigpkhlkbnfnbobbkinehhfdhndo',
         'ogkogooadflifpmmidmhjedogicnhooa',
         'ijokhblbfikokhbbfnndfajaaanmmjdg',
+        'mdegghmhjneppdkhefiedfeldioplioo'
       ],
     },
     action: {
