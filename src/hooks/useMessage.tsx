@@ -52,6 +52,7 @@ import {
 import { updatePageTitle } from "@/utils/update-page-title"
 import { getNoOfRetrievedDocs } from "@/services/app"
 import { normalChatMode as sharedNormalChatMode } from "./chat-modes/normalChatMode"
+import { pageActionChatMode } from "./chat-modes/pageActionChatMode"
 import { tabChatMode } from "./chat-modes/tabChatMode"
 import { ChatDocuments } from "@/models/ChatTypes"
 
@@ -71,6 +72,7 @@ export const useMessage = () => {
     setIsSearchingInternet,
     webSearch,
     setWebSearch,
+    pageAction,
     isSearchingInternet,
     temporaryChat,
     setTemporaryChat,
@@ -1738,7 +1740,36 @@ export const useMessage = () => {
       }
       if (chatMode === "normal") {
         const useAgentWebSearch = webSearch && enableAgentWebSearch
-        if (webSearch && !useAgentWebSearch) {
+        if (pageAction) {
+          await pageActionChatMode(
+            message,
+            image,
+            isRegenerate,
+            chatHistory || messages,
+            memory || history,
+            signal,
+            {
+              selectedModel,
+              useOCR,
+              selectedSystemPrompt,
+              currentChatModelSettings,
+              setMessages,
+              saveMessageOnSuccess,
+              saveMessageOnError,
+              setHistory,
+              setIsProcessing,
+              setStreaming,
+              setAbortController,
+              historyId,
+              setHistoryId,
+              images,
+              setActionInfo,
+              temporaryChat,
+              messageSource: "copilot",
+              requireMcpApproval: mcpHumanInLoop
+            }
+          )
+        } else if (webSearch && !useAgentWebSearch) {
           await searchChatMode(
             message,
             image,

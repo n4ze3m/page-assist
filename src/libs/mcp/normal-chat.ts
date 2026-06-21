@@ -17,6 +17,7 @@ import { useStoreMessageOption } from "@/store/option"
 import { AIMessage, ToolMessage } from "@langchain/core/messages"
 import { concat } from "@langchain/core/utils/stream"
 import { getConfiguredMcpServers, createMcpClient } from "./client"
+import { McpServer } from "./types"
 import {
   McpBootstrapError,
   getMcpErrorMessage,
@@ -64,6 +65,8 @@ type RunMcpNormalChatParams = {
   requireMcpApproval?: boolean
   messageSource?: "copilot" | "web-ui"
   webSearchAsTool?: boolean
+  extraMcpServers?: McpServer[]
+  extraSystemPrompt?: string
 }
 
 const createAssistantMessage = ({
@@ -316,10 +319,18 @@ export const runMcpNormalChatMode = async (
     temporaryChat = false,
     requireMcpApproval = false,
     messageSource = "web-ui",
-    webSearchAsTool = false
+    webSearchAsTool = false,
+    extraMcpServers = [],
+    extraSystemPrompt
   }: RunMcpNormalChatParams
 ) => {
-  const configuredServers = await getConfiguredMcpServers()
+  const baseServers = await getConfiguredMcpServers()
+  const configuredServers = [
+    ...baseServers,
+    ...extraMcpServers.filter(
+      (extra) => !baseServers.some((base) => base.id === extra.id)
+    )
+  ]
   const memoryEnabled = await isMemoryEnabled()
   const memoryToolEnabled = await isMemoryToolEnabled()
 
@@ -500,6 +511,14 @@ export const runMcpNormalChatMode = async (
         })
       )
   }
+  }
+
+  if (extraSystemPrompt && extraSystemPrompt.trim().length > 0) {
+    applicationChatHistory.unshift(
+      await systemPromptFormatter({
+        content: extraSystemPrompt
+      })
+    )
   }
 
   const hasMcpServers = configuredServers.length > 0

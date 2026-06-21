@@ -82,6 +82,10 @@ export default defineConfig({
             link: "/features/mcp"
           },
           {
+            text: "Page Action",
+            link: "/features/page-action"
+          },
+          {
             text: "Ollama",
             link: "/features/ollama"
           },
