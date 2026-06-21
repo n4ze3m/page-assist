@@ -4,8 +4,29 @@ import { defaultExtractContent } from "@/parser/default"
 import { isTwitterProfile, isTwitterTimeline, parseTweetProfile, parseTwitterTimeline } from "@/parser/twitter"
 import { isWikipedia, parseWikipedia } from "@/parser/wiki"
 import { getMaxContextSize } from "@/services/kb"
+import { isRecord, readBoolean, readString } from "@/utils/type-guards"
 import { YtTranscript } from "yt-transcript"
 import { processPDFFromURL } from "./pdf"
+
+type TabPageContent = {
+    html: string
+    title: string
+    url: string
+    isPDF: boolean
+}
+
+const toTabPageContent = (value: unknown): TabPageContent => {
+    if (!isRecord(value)) {
+        return { html: "", title: "", url: "", isPDF: false }
+    }
+
+    return {
+        html: readString(value, "html") ?? "",
+        title: readString(value, "title") ?? "",
+        url: readString(value, "url") ?? "",
+        isPDF: readBoolean(value, "isPDF") ?? false
+    }
+}
 
 const getTranscript = async (url: string) => {
     const ytTranscript = new YtTranscript({ url })
@@ -64,7 +85,7 @@ export const getTabContents = async (documents: ChatDocuments) => {
                     isPDF: document.contentType === 'application/pdf'
                 })
             })
-            const content = pageContent[0].result
+            const content = toTabPageContent(pageContent[0]?.result)
             const header = formatDocumentHeader(doc.title, doc.url)
             let extractedContent = ""
 
@@ -74,7 +95,7 @@ export const getTabContents = async (documents: ChatDocuments) => {
                     extractedContent = formatTranscriptText(transcript)
                 }
             } else if (isWikipedia(doc.url)) {
-                extractedContent = parseWikipedia(content)
+                extractedContent = parseWikipedia(content.html)
             } else if (isAmazonURL(doc.url)) {
                 extractedContent = parseAmazonWebsite(content.html)
             } else if (isTwitterProfile(doc.url)) {

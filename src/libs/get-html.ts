@@ -8,7 +8,14 @@ import {
 } from "@/parser/twitter"
 import { isGoogleDocs, parseGoogleDocs } from "@/parser/google-docs"
 import { cleanUnwantedUnicode } from "@/utils/clean"
+import { isRecord, readString } from "@/utils/type-guards"
 import { isYoutubeLink } from "@/utils/is-youtube"
+
+type CurrentTabData = {
+  url: string
+  content: string
+  type: string
+}
 
 const _getHtml = () => {
   const url = window.location.href
@@ -297,8 +304,11 @@ export const fetchTranscriptYT = async () => {
             func: _fetchTranscriptYT
           })
 
-          if (data.length > 0) {
-            resolve(data[0].result)
+          const transcript = data.length > 0 ? data[0].result : undefined
+          if (typeof transcript === "string") {
+            resolve(transcript)
+          } else {
+            resolve("")
           }
         } catch (e) {
           console.error("error", e)
@@ -309,7 +319,7 @@ export const fetchTranscriptYT = async () => {
 }
 
 export const getDataFromCurrentTab = async () => {
-  const result = new Promise((resolve) => {
+  const result = new Promise<CurrentTabData>((resolve) => {
     if (
       import.meta.env.BROWSER === "chrome" ||
       import.meta.env.BROWSER === "edge"
@@ -322,8 +332,13 @@ export const getDataFromCurrentTab = async () => {
           func: _getHtml
         })
 
-        if (data.length > 0) {
-          resolve(data[0].result)
+        const scriptResult = data.length > 0 ? data[0].result : undefined
+        if (isRecord(scriptResult)) {
+          resolve({
+            url: readString(scriptResult, "url") ?? tab.url ?? "",
+            content: readString(scriptResult, "content") ?? "",
+            type: readString(scriptResult, "type") ?? "html"
+          })
         }
       })
     } else {
@@ -337,8 +352,13 @@ export const getDataFromCurrentTab = async () => {
               func: _getHtml
             })
 
-            if (data.length > 0) {
-              resolve(data[0].result)
+            const scriptResult = data.length > 0 ? data[0].result : undefined
+            if (isRecord(scriptResult)) {
+              resolve({
+                url: readString(scriptResult, "url") ?? tab.url ?? "",
+                content: readString(scriptResult, "content") ?? "",
+                type: readString(scriptResult, "type") ?? "html"
+              })
             }
           } catch (e) {
             console.error("error", e)
@@ -358,11 +378,7 @@ export const getDataFromCurrentTab = async () => {
           }
         })
     }
-  }) as Promise<{
-    url: string
-    content: string
-    type: string
-  }>
+  })
 
   const { content, type, url } = await result
 
