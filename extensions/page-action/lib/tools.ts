@@ -436,7 +436,7 @@ export const TOOLS: ToolDef<any>[] = [
     handler: async () => {
       const tabs = await chrome.tabs.query({ currentWindow: true });
       return tabs
-        .map((tab) => `${tab.id}${tab.active ? '*' : ''}: ${tab.title ?? ''} — ${tab.url ?? ''}`)
+        .map((tab) => `${tab.id}${tab.active ? '*' : ''}: ${tab.title ?? ''} | ${tab.url ?? ''}`)
         .join('\n');
     },
   }),

@@ -9,6 +9,7 @@ import {
   ChromeIcon,
   CpuIcon,
   BrainIcon,
+  MousePointerClickIcon,
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
@@ -70,6 +71,15 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                     current={location.pathname}
                     beta
                   />
+                  {import.meta.env.BROWSER !== "firefox" && (
+                    <LinkComponent
+                      href="/settings/page-action"
+                      name={t("pageAction.title", "Page Action")}
+                      icon={MousePointerClickIcon}
+                      current={location.pathname}
+                      beta
+                    />
+                  )}
                   <LinkComponent
                     href="/settings/memory"
                     name={t("memory.title", "Memory")}

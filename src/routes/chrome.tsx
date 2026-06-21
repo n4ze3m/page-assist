@@ -11,6 +11,7 @@ import SidepanelChat from "./sidepanel-chat"
 import SidepanelSettings from "./sidepanel-settings"
 import OptionRagSettings from "./option-rag"
 import OptionChrome from "./option-settings-chrome"
+import OptionPageAction from "./option-settings-page-action"
 import OptionOpenAI from "./option-settings-openai"
 import OptionMCP from "./option-settings-mcp"
 import OptionMemory from "./option-settings-memory"
@@ -26,6 +27,7 @@ export const OptionRoutingChrome = () => {
       <Route path="/settings/prompt" element={<OptionPrompt />} />
       <Route path="/settings/ollama" element={<OptionOllamaSettings />} />
       <Route path="/settings/chrome" element={<OptionChrome />} />
+      <Route path="/settings/page-action" element={<OptionPageAction />} />
       <Route path="/settings/openai" element={<OptionOpenAI />} />
       <Route path="/settings/mcp" element={<OptionMCP />} />
       <Route path="/settings/memory" element={<OptionMemory />} />

@@ -83,6 +83,8 @@ type State = {
   setIsEmbedding: (isEmbedding: boolean) => void
   webSearch: boolean
   setWebSearch: (webSearch: boolean) => void
+  pageAction: boolean
+  setPageAction: (pageAction: boolean) => void
   isSearchingInternet: boolean
   setIsSearchingInternet: (isSearchingInternet: boolean) => void
 
@@ -149,6 +151,8 @@ export const useStoreMessageOption = create<State>((set) => ({
   setIsEmbedding: (isEmbedding) => set({ isEmbedding }),
   webSearch: false,
   setWebSearch: (webSearch) => set({ webSearch }),
+  pageAction: false,
+  setPageAction: (pageAction) => set({ pageAction }),
   isSearchingInternet: false,
   setIsSearchingInternet: (isSearchingInternet) => set({ isSearchingInternet }),
   selectedSystemPrompt: null,

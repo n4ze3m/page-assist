@@ -4,7 +4,7 @@ import React from "react"
 import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
 import { useMessage } from "~/hooks/useMessage"
 import { toBase64 } from "~/libs/to-base64"
-import { Checkbox, Dropdown, Image, Switch, Tooltip, Popover, Radio } from "antd"
+import { Checkbox, Dropdown, Image, Modal, Switch, Tooltip, Popover, Radio } from "antd"
 import { useWebUI } from "~/store/webui"
 import { defaultEmbeddingModelForRag } from "~/services/ollama"
 import {
@@ -25,7 +25,14 @@ import {
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
-import { PiGlobeX, PiGlobe } from "react-icons/pi"
+import { PiGlobeX, PiGlobe, PiCursorClick } from "react-icons/pi"
+import { useStoreMessageOption } from "@/store/option"
+import {
+  cachePageActionTools,
+  isPageActionInstalled,
+  isPageActionSupported,
+  PAGE_ACTION_EXTENSION_ID
+} from "@/services/page-action"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/search"
 import { useStorage } from "@plasmohq/storage/hook"
@@ -185,6 +192,43 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     defaultChatWithWebsite,
     temporaryChat
   } = useMessage()
+
+  const { pageAction, setPageAction } = useStoreMessageOption()
+  const [pageActionMasterEnabled] = useStorage("pageActionEnabled", true)
+
+  const handleFormPageAction = async (checked: boolean) => {
+    if (!checked) {
+      setPageAction(false)
+      return
+    }
+    const installed = await isPageActionInstalled()
+    if (!installed) {
+      const isDark = document.documentElement.classList.contains("dark")
+      Modal.info({
+        title: "Install Page Action",
+        content:
+          "Install the Page Action companion extension to let Page Assist act on the current tab.",
+        okText: "Open Chrome Web Store",
+        okButtonProps: {
+          className:
+            "!bg-black !text-white dark:!bg-white dark:!text-black !border-none hover:!opacity-90"
+        },
+        onOk: () =>
+          window.open(
+            `https://chromewebstore.google.com/detail/${PAGE_ACTION_EXTENSION_ID}`,
+            "_blank"
+          ),
+        ...(isDark && {
+          styles: { content: { backgroundColor: "#262626" } },
+          className:
+            "[&_.ant-modal-confirm-title]:!text-white [&_.ant-modal-confirm-content]:!text-gray-300"
+        })
+      })
+      return
+    }
+    setPageAction(true)
+    cachePageActionTools().catch(() => {})
+  }
 
   // Thinking mode state
   const [defaultThinkingMode] = useStorage("defaultThinkingMode", false)
@@ -791,6 +835,26 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             </button>
                           </Tooltip>
                         )}
+                        {chatMode !== "vision" &&
+                          isPageActionSupported() &&
+                          pageActionMasterEnabled && (
+                            <Tooltip title="Page Action">
+                              <button
+                                type="button"
+                                onClick={() => handleFormPageAction(!pageAction)}
+                                className={`inline-flex items-center gap-2 ${
+                                  chatMode === "rag" ? "hidden" : "block"
+                                }`}>
+                                <PiCursorClick
+                                  className={`h-4 w-4 ${
+                                    pageAction
+                                      ? "text-blue-600 dark:text-blue-400"
+                                      : "text-[#404040] dark:text-gray-400"
+                                  }`}
+                                />
+                              </button>
+                            </Tooltip>
+                          )}
                         {defaultThinkingMode &&
                           isThinkingCapableModel(selectedModel) &&
                           (isGptOssModel(selectedModel) ? (
