@@ -26,14 +26,15 @@ Chrome/Chromium only.
 
 ## Tools
 
-- Page: `get_page_state`, `click` (by index or x/y; left/right/middle, double), `input_text`,
+- Browser surface: `inspect_page`, `locate_element`, `set_field_value`, `browser_input`,
+  `run_browser_steps`, `navigate`, `extract_page_text`, `current_tabs`,
+  `attach_image`, `read_console_messages`, `read_network_requests`,
+  `set_window_size`, `javascript_tool`.
+- Legacy helpers kept for compatibility: `get_page_state`, `click`, `input_text`,
   `scroll`, `send_keys`, `extract_content`, `capture_screenshot`, `get_dropdown_options`,
-  `select_dropdown_option`.
-- Pointer (coordinate-based, for canvas / drag / drawing): `move_mouse`, `drag`, `draw_path`.
-- Navigation & tabs: `navigate`, `wait_for_load`, `go_back`, `open_tab`, `list_tabs`,
-  `switch_tab`, `close_tab`, `group_tabs`, `ungroup_tabs`.
-- Inspect & advanced: `javascript_tool`, `file_upload`, `read_console_messages`,
-  `read_network_requests`.
+  `select_dropdown_option`, `move_mouse`, `drag`, `draw_path`, `wait_for_load`, `go_back`,
+  `open_tab`, `list_tabs`, `switch_tab`, `close_tab`, `group_tabs`, `ungroup_tabs`,
+  `file_upload`.
 
 Notes:
 - `get_page_state` returns a numbered list of interactive elements plus the viewport size.
