@@ -50,7 +50,7 @@ export const setPageActionEnabled = async (enabled: boolean): Promise<void> => {
 
 export const isPageActionApprovalRequired = async (): Promise<boolean> => {
   const value = await storage.get<boolean>(APPROVAL_KEY)
-  return value !== false
+  return value === true
 }
 
 export const setPageActionApprovalRequired = async (

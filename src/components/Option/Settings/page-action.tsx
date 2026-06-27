@@ -18,7 +18,7 @@ export const PageActionSettings = () => {
   const [enabled, setEnabled] = useStorage("pageActionEnabled", true)
   const [requireApproval, setRequireApproval] = useStorage(
     "pageActionRequireApproval",
-    true
+    false
   )
   const queryClient = useQueryClient()
   const [refreshing, setRefreshing] = useState(false)
