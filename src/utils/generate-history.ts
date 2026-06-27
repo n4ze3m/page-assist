@@ -102,12 +102,24 @@ export const generateHistory = (
       }
 
       if (message.messageKind === "assistant_tool_calls") {
+        const toolCallExtraContent: Record<string, unknown> = {}
+        for (const toolCall of message.toolCalls || []) {
+          const extra = (toolCall as any).extraContent
+          if (extra != null && toolCall.id) {
+            toolCallExtraContent[toolCall.id] = extra
+          }
+        }
         history.push(
           new AIMessage({
             content: isDeepSeek
               ? removeReasoning(message.content || "")
               : message.content || "",
-            additional_kwargs: additionalKwargs,
+            additional_kwargs: {
+              ...additionalKwargs,
+              ...(Object.keys(toolCallExtraContent).length
+                ? { tool_call_extra_content: toolCallExtraContent }
+                : {})
+            },
             tool_calls: (message.toolCalls || []).map((toolCall) => ({
               id: toolCall.id,
               name: toolCall.name,

@@ -135,9 +135,14 @@ export const buildMcpHeaders = ({
   return defaultHeaders
 }
 
-export const toStoredToolCalls = (toolCalls: McpToolCall[] = []): McpToolCall[] =>
+export const toStoredToolCalls = (
+  toolCalls: McpToolCall[] = [],
+  extraContentMap: Record<string, any> = {}
+): McpToolCall[] =>
   toolCalls.map((toolCall) => {
     const parsed = parseMcpToolName(toolCall.name)
+    const extraContent =
+      (toolCall as any).extraContent ?? extraContentMap[toolCall.id]
 
     return {
       id: toolCall.id,
@@ -145,7 +150,8 @@ export const toStoredToolCalls = (toolCalls: McpToolCall[] = []): McpToolCall[] 
       args: toolCall.args ?? {},
       type: "tool_call",
       serverName: toolCall.serverName || parsed.serverName,
-      displayName: toolCall.displayName || parsed.displayName
+      displayName: toolCall.displayName || parsed.displayName,
+      ...(extraContent != null && { extraContent })
     }
   })
 

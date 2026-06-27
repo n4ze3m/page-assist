@@ -616,7 +616,10 @@ export const runMcpNormalChatMode = async (
       })
 
       finalAssistantText = fullText
-      const storedToolCalls = toStoredToolCalls((aiMessage as any).tool_calls || [])
+      const storedToolCalls = toStoredToolCalls(
+        (aiMessage as any).tool_calls || [],
+        (aiMessage as any).additional_kwargs?.tool_call_extra_content || {}
+      )
 
       if (storedToolCalls.length === 0) {
         const assistantHistoryEntry = {

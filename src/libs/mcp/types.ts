@@ -81,6 +81,7 @@ export type McpToolCall = {
   type?: "tool_call"
   serverName?: string
   displayName?: string
+  extraContent?: Record<string, any>
 }
 
 export type McpPendingApprovalRequest = {
