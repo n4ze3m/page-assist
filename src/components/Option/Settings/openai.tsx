@@ -131,7 +131,7 @@ export const OpenAIApp = () => {
         name: values.name,
         baseUrl: buildVertexBaseUrl(
           values.vertexProjectId || "",
-          values.vertexLocation || "us-central1"
+          values.vertexLocation || "global"
         ),
         apiKey: values.serviceAccount || "",
         headers: values.headers,
@@ -172,7 +172,7 @@ export const OpenAIApp = () => {
       ...(record?.provider === "vertex" && {
         serviceAccount: record?.apiKey,
         vertexProjectId: record?.vertexProjectId,
-        vertexLocation: record?.vertexLocation || "us-central1"
+        vertexLocation: record?.vertexLocation || "global"
       })
     })
     setOpen(true)
@@ -458,7 +458,7 @@ export const OpenAIApp = () => {
                   label={t("modal.vertex.location.label", {
                     defaultValue: "Location / Region"
                   })}
-                  initialValue="us-central1"
+                  initialValue="global"
                   rules={[
                     {
                       required: true,
@@ -470,7 +470,7 @@ export const OpenAIApp = () => {
                   <Select
                     size="large"
                     showSearch
-                    placeholder="us-central1"
+                    placeholder="global"
                     options={[
                       { value: "global", label: "global" },
                       { value: "us-central1", label: "us-central1" },

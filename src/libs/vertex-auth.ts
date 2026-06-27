@@ -79,7 +79,7 @@ export const buildVertexBaseUrl = (
   projectId: string,
   location: string
 ): string => {
-  const loc = (location || "us-central1").trim()
+  const loc = (location || "global").trim()
   const host =
     loc === "global"
       ? "aiplatform.googleapis.com"
