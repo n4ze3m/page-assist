@@ -35,7 +35,26 @@
             "subheading": "Please select the chat models you want to use with this provider.",
             "success": "Successfully added new models."
         },
-        "tipLMStudio": "Page Assist will automatically fetch the models you loaded on LM Studio. You don't need to add them manually."
+        "tipLMStudio": "Page Assist will automatically fetch the models you loaded on LM Studio. You don't need to add them manually.",
+        "vertex": {
+            "projectId": {
+                "label": "Google Cloud Project ID",
+                "required": "Please enter your Google Cloud project ID",
+                "placeholder": "my-gcp-project-123456"
+            },
+            "location": {
+                "label": "Location / Region",
+                "required": "Please select a location"
+            },
+            "serviceAccount": {
+                "label": "Service Account JSON",
+                "required": "Please paste your service account JSON or an access token",
+                "help": "Upload your service-account key file, or paste its JSON here. It is stored locally and used to mint short-lived access tokens in your browser. You can also paste a raw access token instead.",
+                "upload": "Upload JSON file",
+                "uploaded": "Service account loaded from file.",
+                "invalid": "That file is not valid JSON."
+            }
+        }
     },
     "addSuccess": "Provider added successfully.",
     "deleteSuccess": "Provider deleted successfully.",

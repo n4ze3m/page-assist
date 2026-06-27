@@ -75,6 +75,11 @@ export const OAI_API_PROVIDERS = [
     baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai"
   },
   {
+    label: "Gemini Enterprise Agent Platform (Vertex AI)",
+    value: "vertex",
+    baseUrl: ""
+  },
+  {
     label: "Mistral",
     value: "mistral",
     baseUrl: "https://api.mistral.ai/v1"

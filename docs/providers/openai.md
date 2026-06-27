@@ -17,6 +17,7 @@ By default, Page Assist supports the following OpenAI Compatible API endpoints:
 - Together
 - OpenRouter
 - Google AI
+- Gemini Enterprise Agent Platform (Vertex AI)
 - Mistral
 - Infinigence AI
 - SiliconFlow
