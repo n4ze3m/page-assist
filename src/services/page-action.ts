@@ -131,12 +131,20 @@ export const isPageActionInstalled = (): Promise<boolean> =>
     }
   })
 
+const TOOLS_CACHE_TTL_MS = 24 * 60 * 60 * 1000
+
+const isToolsCacheFresh = (server: McpServer): boolean => {
+  if (!server.cachedTools || server.cachedTools.length === 0) return false
+  if (!server.toolsLastSyncedAt) return false
+  return Date.now() - server.toolsLastSyncedAt < TOOLS_CACHE_TTL_MS
+}
+
 export const cachePageActionTools = async (
   force = false
 ): Promise<McpServer> => {
   const server = await ensurePageActionServer()
 
-  if (!force && server.cachedTools && server.cachedTools.length > 0) {
+  if (!force && isToolsCacheFresh(server)) {
     return server
   }
 
