@@ -1,5 +1,6 @@
 
 import { getCustomHeaders } from "@/utils/clean-headers"
+import { isVertexAI, getVertexModels } from "@/libs/vertex-auth"
 
 type Model = {
   id: string
@@ -91,6 +92,10 @@ export const getAllOpenAIModels = async ({
 
     if (isAnthropicAPI(baseUrl)) {
       return getAllAnthropicModels({ apiKey, customHeaders })
+    }
+
+    if (isVertexAI(baseUrl)) {
+      return getVertexModels(modelType) as Model[]
     }
 
     const url = isOpenRouter(baseUrl)

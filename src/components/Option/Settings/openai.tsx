@@ -13,7 +13,8 @@ import {
   Tooltip,
   Select,
   Switch,
-  notification
+  notification,
+  Upload
 } from "antd"
 import { useState } from "react"
 import { useWatch } from "antd/es/form/Form"
@@ -25,10 +26,11 @@ import {
   updateOpenAIConfig
 } from "@/db/dexie/openai"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { Pencil, Trash2, DownloadIcon, Trash2Icon } from "lucide-react"
+import { Pencil, Trash2, DownloadIcon, Trash2Icon, UploadIcon } from "lucide-react"
 import { OpenAIFetchModel } from "./openai-fetch-model"
 import { OAI_API_PROVIDERS } from "@/utils/oai-api-providers"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
+import { buildVertexBaseUrl } from "@/libs/vertex-auth"
 const noPopupProvider = ["lmstudio", "llamafile", "ollama2", "llamacpp", "vllm"]
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { setProviderState, getAllProviderStates } from "@/db/dexie/providerState"
@@ -118,7 +120,32 @@ export const OpenAIApp = () => {
     apiKey: string
     fix_cors?: boolean
     headers?: { key: string; value: string }[]
+    vertexProjectId?: string
+    vertexLocation?: string
+    serviceAccount?: string
   }) => {
+    const activeProvider = editingConfig ? editingConfig.provider : provider
+
+    if (activeProvider === "vertex") {
+      const payload = {
+        name: values.name,
+        baseUrl: buildVertexBaseUrl(
+          values.vertexProjectId || "",
+          values.vertexLocation || "global"
+        ),
+        apiKey: values.serviceAccount || "",
+        headers: values.headers,
+        vertexProjectId: values.vertexProjectId,
+        vertexLocation: values.vertexLocation
+      }
+      if (editingConfig) {
+        updateMutation.mutate({ id: editingConfig.id, ...payload })
+      } else {
+        addMutation.mutate({ ...payload, provider: "vertex" })
+      }
+      return
+    }
+
     if (editingConfig) {
       updateMutation.mutate({
         id: editingConfig.id,
@@ -137,16 +164,57 @@ export const OpenAIApp = () => {
       ...record,
       headers: record?.headers || []
     })
+    setProvider(record?.provider || "custom")
     form.setFieldsValue({
       ...record,
       headers: record?.headers || [],
-      fix_cors: record?.fix_cors || false
+      fix_cors: record?.fix_cors || false,
+      ...(record?.provider === "vertex" && {
+        serviceAccount: record?.apiKey,
+        vertexProjectId: record?.vertexProjectId,
+        vertexLocation: record?.vertexLocation || "global"
+      })
     })
     setOpen(true)
   }
 
   const handleDelete = (id: string) => {
     deleteMutation.mutate(id)
+  }
+
+  const handleServiceAccountUpload = (file: File) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const text = (e.target?.result as string) ?? ""
+      let parsed: any
+      try {
+        parsed = JSON.parse(text)
+      } catch {
+        message.error(
+          t("modal.vertex.serviceAccount.invalid", {
+            defaultValue: "That file is not valid JSON."
+          })
+        )
+        return
+      }
+      form.setFieldsValue({ serviceAccount: text })
+      // Auto-fill helpers from the key file so users don't have to retype.
+      const updates: Record<string, string> = {}
+      if (parsed?.project_id && !form.getFieldValue("vertexProjectId")) {
+        updates.vertexProjectId = parsed.project_id
+      }
+      if (Object.keys(updates).length) {
+        form.setFieldsValue(updates)
+      }
+      message.success(
+        t("modal.vertex.serviceAccount.uploaded", {
+          defaultValue: "Service account loaded from file."
+        })
+      )
+    }
+    reader.readAsText(file)
+    // Returning false stops antd from trying to upload the file anywhere.
+    return false
   }
 
   const baseUrl = useWatch("baseUrl", form)
@@ -362,37 +430,140 @@ export const OpenAIApp = () => {
               <Input size="large" placeholder={t("modal.name.placeholder")} />
             </Form.Item>
 
-            <Form.Item
-              name="baseUrl"
-              label={t("modal.baseUrl.label")}
-              help={t("modal.baseUrl.help")}
-              rules={[
-                {
-                  required: true,
-                  message: t("modal.baseUrl.required")
-                }
-              ]}>
-              <Input
-                size="large"
-                placeholder={t("modal.baseUrl.placeholder")}
-              />
-            </Form.Item>
+            {provider === "vertex" ? (
+              <>
+                <Form.Item
+                  name="vertexProjectId"
+                  label={t("modal.vertex.projectId.label", {
+                    defaultValue: "Google Cloud Project ID"
+                  })}
+                  rules={[
+                    {
+                      required: true,
+                      message: t("modal.vertex.projectId.required", {
+                        defaultValue: "Please enter your Google Cloud project ID"
+                      })
+                    }
+                  ]}>
+                  <Input
+                    size="large"
+                    placeholder={t("modal.vertex.projectId.placeholder", {
+                      defaultValue: "my-gcp-project-123456"
+                    })}
+                  />
+                </Form.Item>
 
-            <Form.Item name="apiKey" label={t("modal.apiKey.label")}>
-              <Input.Password
-                size="large"
-                placeholder={t("modal.apiKey.placeholder")}
-              />
-            </Form.Item>
+                <Form.Item
+                  name="vertexLocation"
+                  label={t("modal.vertex.location.label", {
+                    defaultValue: "Location / Region"
+                  })}
+                  initialValue="global"
+                  rules={[
+                    {
+                      required: true,
+                      message: t("modal.vertex.location.required", {
+                        defaultValue: "Please select a location"
+                      })
+                    }
+                  ]}>
+                  <Select
+                    size="large"
+                    showSearch
+                    placeholder="global"
+                    options={[
+                      { value: "global", label: "global" },
+                      { value: "us-central1", label: "us-central1" },
+                      { value: "us-east1", label: "us-east1" },
+                      { value: "us-east4", label: "us-east4" },
+                      { value: "us-west1", label: "us-west1" },
+                      { value: "us-west4", label: "us-west4" },
+                      { value: "europe-west1", label: "europe-west1" },
+                      { value: "europe-west4", label: "europe-west4" },
+                      { value: "europe-west9", label: "europe-west9" },
+                      { value: "asia-northeast1", label: "asia-northeast1" },
+                      { value: "asia-southeast1", label: "asia-southeast1" }
+                    ]}
+                  />
+                </Form.Item>
 
-            <Form.Item
-              name="fix_cors"
-              label={t("modal.fixCors.label", {
-                defaultValue: "Fix CORS issues"
-              })}
-              valuePropName="checked">
-              <Switch />
-            </Form.Item>
+                <Form.Item
+                  name="serviceAccount"
+                  label={
+                    <div className="flex w-full items-center justify-between gap-2">
+                      <span>
+                        {t("modal.vertex.serviceAccount.label", {
+                          defaultValue: "Service Account JSON"
+                        })}
+                      </span>
+                      <Upload
+                        accept=".json,application/json"
+                        showUploadList={false}
+                        maxCount={1}
+                        beforeUpload={handleServiceAccountUpload}>
+                        <span className="inline-flex cursor-pointer items-center gap-1 rounded-md border border-gray-300 dark:border-gray-600 px-2 py-1 text-xs font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
+                          <UploadIcon className="size-3" />
+                          {t("modal.vertex.serviceAccount.upload", {
+                            defaultValue: "Upload JSON file"
+                          })}
+                        </span>
+                      </Upload>
+                    </div>
+                  }
+                  help={t("modal.vertex.serviceAccount.help", {
+                    defaultValue:
+                      "Upload your service-account key file, or paste its JSON here. It is stored locally and used to mint short-lived access tokens in your browser. You can also paste a raw access token instead."
+                  })}
+                  rules={[
+                    {
+                      required: true,
+                      message: t("modal.vertex.serviceAccount.required", {
+                        defaultValue:
+                          "Please paste your service account JSON or an access token"
+                      })
+                    }
+                  ]}>
+                  <Input.TextArea
+                    rows={6}
+                    placeholder='{ "type": "service_account", "project_id": "...", "private_key": "...", "client_email": "..." }'
+                  />
+                </Form.Item>
+              </>
+            ) : (
+              <>
+                <Form.Item
+                  name="baseUrl"
+                  label={t("modal.baseUrl.label")}
+                  help={t("modal.baseUrl.help")}
+                  rules={[
+                    {
+                      required: true,
+                      message: t("modal.baseUrl.required")
+                    }
+                  ]}>
+                  <Input
+                    size="large"
+                    placeholder={t("modal.baseUrl.placeholder")}
+                  />
+                </Form.Item>
+
+                <Form.Item name="apiKey" label={t("modal.apiKey.label")}>
+                  <Input.Password
+                    size="large"
+                    placeholder={t("modal.apiKey.placeholder")}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  name="fix_cors"
+                  label={t("modal.fixCors.label", {
+                    defaultValue: "Fix CORS issues"
+                  })}
+                  valuePropName="checked">
+                  <Switch />
+                </Form.Item>
+              </>
+            )}
 
             <Form.List name="headers">
               {(fields, { add, remove }) => (

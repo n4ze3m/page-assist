@@ -7,6 +7,7 @@ import { ChatGoogleAI } from "./ChatGoogleAI"
 import { CustomChatOpenAI } from "./CustomChatOpenAI"
 import { ChatAnthropic } from "./CustomChatAnthropic"
 import { getCustomHeaders } from "@/utils/clean-headers"
+import { getGoogleCloudAccessToken } from "@/libs/vertex-auth"
 import {
   getAllDefaultModelSettings,
   getModelSettings
@@ -142,6 +143,30 @@ export const pageAssistModel = async ({
             headers: providerInfo?.headers || []
           })
         }
+      }) as any
+    }
+
+    if (providerInfo.provider === "vertex") {
+      const accessToken = await getGoogleCloudAccessToken(providerInfo.apiKey)
+      return new CustomChatOpenAI({
+        modelName: modelInfo.model_id,
+        openAIApiKey: accessToken || "temp",
+        temperature: modelConfig?.temperature,
+        topP: modelConfig?.topP,
+        maxTokens: modelConfig?.maxTokens,
+        modelKwargs: {
+          ...(modelConfig?.topK && { top_k: modelConfig.topK }),
+          ...(modelConfig?.minP && { min_p: modelConfig.minP }),
+          ...customBodyParams
+        },
+        configuration: {
+          apiKey: accessToken || "temp",
+          baseURL: providerInfo.baseUrl || "",
+          defaultHeaders: getCustomHeaders({
+            headers: providerInfo?.headers || []
+          })
+        },
+        reasoning_effort: modelConfig?.reasoningEffort as any
       }) as any
     }
 

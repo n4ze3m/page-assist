@@ -47,7 +47,8 @@ export const normalChatMode = async (
     messageSource,
     webSearchAsTool,
     extraMcpServers,
-    extraSystemPrompt
+    extraSystemPrompt,
+    normalizeMcpToolCallArgs
   }: {
     selectedModel: string
     useOCR: boolean
@@ -71,6 +72,7 @@ export const normalChatMode = async (
     webSearchAsTool?: boolean
     extraMcpServers?: any[]
     extraSystemPrompt?: string
+    normalizeMcpToolCallArgs?: (toolName: string, args: unknown) => unknown
   }
 ) => {
   console.log("Using normalChatMode")
@@ -102,7 +104,8 @@ export const normalChatMode = async (
         messageSource,
         webSearchAsTool,
         extraMcpServers,
-        extraSystemPrompt
+        extraSystemPrompt,
+        normalizeMcpToolCallArgs
       }
     )
 

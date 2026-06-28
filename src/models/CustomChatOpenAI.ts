@@ -91,8 +91,17 @@ function openAIResponseToChatMessage(
     switch (message.role) {
         case "assistant": {
             if (message.tool_calls?.length) {
+                const toolCallExtraContent: Record<string, any> = {}
+                for (const tc of message.tool_calls as any[]) {
+                    if (tc?.extra_content != null && tc?.id) {
+                        toolCallExtraContent[tc.id] = tc.extra_content
+                    }
+                }
                 return new AIMessage({
                     content: message.content || "",
+                    additional_kwargs: Object.keys(toolCallExtraContent).length
+                        ? { tool_call_extra_content: toolCallExtraContent }
+                        : undefined,
                     tool_calls: message.tool_calls.map((tc) => ({
                         id: tc.id,
                         name: tc.function.name,
@@ -141,6 +150,17 @@ function _convertDeltaToMessageChunk(
 
     // Streaming tool call deltas — use proper tool_call_chunks instead of additional_kwargs
     if (delta?.tool_calls) {
+        const toolCallExtraContent: Record<string, any> = {}
+        for (const tc of delta.tool_calls as any[]) {
+            const extra = tc?.extra_content ?? tc?.function?.extra_content
+            if (extra != null) {
+                const key = tc?.id ?? String(tc?.index ?? 0)
+                toolCallExtraContent[key] = extra
+            }
+        }
+        if (Object.keys(toolCallExtraContent).length > 0) {
+            additional_kwargs.tool_call_extra_content = toolCallExtraContent
+        }
         return new AIMessageChunk({
             content,
             additional_kwargs,
@@ -185,11 +205,22 @@ function isDeepSeekProvider(modelName?: string, baseURL?: string): boolean {
     return model.includes("deepseek") || url.includes("deepseek")
 }
 
+function isGeminiProvider(modelName?: string, baseURL?: string): boolean {
+    const model = (modelName || "").toLowerCase()
+    const url = (baseURL || "").toLowerCase()
+    return (
+        model.includes("gemini") ||
+        url.includes("aiplatform.googleapis.com") ||
+        url.includes("generativelanguage.googleapis.com")
+    )
+}
+
 function convertMessagesToOpenAIParams(
     messages: BaseMessage[],
-    options?: { includeReasoningContent?: boolean }
+    options?: { includeReasoningContent?: boolean; includeToolCallExtraContent?: boolean }
 ) {
     const includeReasoningContent = options?.includeReasoningContent === true
+    const includeToolCallExtraContent = options?.includeToolCallExtraContent === true
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return messages.map((message): any => {
         const role = messageToOpenAIRole(message)
@@ -217,21 +248,34 @@ function convertMessagesToOpenAIParams(
                 ? aiMsg.additional_kwargs?.reasoning_content ?? undefined
                 : undefined
             if (aiMsg.tool_calls?.length) {
+                // Re-attach provider extra_content (e.g. Gemini
+                // thought_signature). Gated to Gemini/Vertex so other providers
+                // never receive an unknown field (e.g. after switching models).
+                const extraContentMap: Record<string, any> = includeToolCallExtraContent
+                    ? aiMsg.additional_kwargs?.tool_call_extra_content ?? {}
+                    : {}
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const result: any = {
                     role: "assistant",
                     content: typeof aiMsg.content === "string" ? aiMsg.content : null,
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    tool_calls: aiMsg.tool_calls.map((tc: any) => ({
-                        id: tc.id || "",
-                        type: "function",
-                        function: {
-                            name: tc.name,
-                            arguments: typeof tc.args === "string"
-                                ? tc.args
-                                : JSON.stringify(tc.args ?? {}),
-                        },
-                    })),
+                    tool_calls: aiMsg.tool_calls.map((tc: any) => {
+                        const toolCall: any = {
+                            id: tc.id || "",
+                            type: "function",
+                            function: {
+                                name: tc.name,
+                                arguments: typeof tc.args === "string"
+                                    ? tc.args
+                                    : JSON.stringify(tc.args ?? {}),
+                            },
+                        }
+                        const extra = extraContentMap[tc.id] ?? tc.extra_content
+                        if (extra != null) {
+                            toolCall.extra_content = extra
+                        }
+                        return toolCall
+                    }),
                 }
                 if (reasoningContent) {
                     result.reasoning_content = reasoningContent
@@ -614,6 +658,10 @@ export class CustomChatOpenAI<
             includeReasoningContent: isDeepSeekProvider(
                 this.modelName,
                 this.clientConfig?.baseURL
+            ),
+            includeToolCallExtraContent: isGeminiProvider(
+                this.modelName,
+                this.clientConfig?.baseURL
             )
         })
         const params = {
@@ -691,6 +739,10 @@ export class CustomChatOpenAI<
         const params = this.invocationParams(options)
         const messagesMapped: any[] = convertMessagesToOpenAIParams(messages, {
             includeReasoningContent: isDeepSeekProvider(
+                this.modelName,
+                this.clientConfig?.baseURL
+            ),
+            includeToolCallExtraContent: isGeminiProvider(
                 this.modelName,
                 this.clientConfig?.baseURL
             )

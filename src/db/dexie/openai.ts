@@ -70,7 +70,9 @@ export const addOpenAICofig = async ({
   apiKey,
   provider,
   headers,
-  fix_cors
+  fix_cors,
+  vertexProjectId,
+  vertexLocation
 }: {
   name: string
   baseUrl: string
@@ -78,6 +80,8 @@ export const addOpenAICofig = async ({
   provider?: string
   headers?: { key: string; value: string }[]
   fix_cors?: boolean
+  vertexProjectId?: string
+  vertexLocation?: string
 }) => {
   const openaiDb = new OpenAIModelDb()
   const id = generateID()
@@ -90,7 +94,9 @@ export const addOpenAICofig = async ({
     db_type: "openai",
     provider,
     headers,
-    fix_cors
+    fix_cors,
+    vertexProjectId,
+    vertexLocation
   }
   await openaiDb.create(config)
   await addOpenAICofigFB(config)
@@ -116,7 +122,9 @@ export const updateOpenAIConfig = async ({
   baseUrl,
   apiKey,
   headers,
-  fix_cors
+  fix_cors,
+  vertexProjectId,
+  vertexLocation
 }: {
   id: string
   name: string
@@ -124,6 +132,8 @@ export const updateOpenAIConfig = async ({
   apiKey: string
   headers?: { key: string; value: string }[]
   fix_cors?: boolean
+  vertexProjectId?: string
+  vertexLocation?: string
 }) => {
   const openaiDb = new OpenAIModelDb()
   const oldData = await openaiDb.getById(id)
@@ -136,7 +146,9 @@ export const updateOpenAIConfig = async ({
     createdAt: Date.now(),
     db_type: "openai",
     headers: headers || [],
-    fix_cors: fix_cors
+    fix_cors: fix_cors,
+    ...(vertexProjectId !== undefined && { vertexProjectId }),
+    ...(vertexLocation !== undefined && { vertexLocation })
   }
 
   await openaiDb.update(config)

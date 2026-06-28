@@ -5,7 +5,7 @@ export default defineConfig({
   outDir: "output",
   manifest: {
     name: 'Page Action',
-    version: '0.0.3',
+    version: '0.0.4',
     description:
       'An extension for Page Assist that adds browser actions on the active tab.',
     permissions: ['debugger', 'tabs', 'tabGroups', 'storage'],

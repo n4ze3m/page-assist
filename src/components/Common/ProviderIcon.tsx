@@ -61,6 +61,8 @@ export const ProviderIcons = ({
       return <LLamaFile className={className} />
     case "gemini":
       return <GeminiIcon className={className} />
+    case "vertex":
+      return <GeminiIcon className={className} />
     case "mistral":
       return <MistarlIcon className={className} />
     case "deepseek":

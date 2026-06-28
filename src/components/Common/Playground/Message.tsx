@@ -337,7 +337,7 @@ const PlaygroundMessageComponent = (props: Props) => {
           ) : null}
 
           <div>
-            {props?.message_type && (
+            {props?.message_type && props?.message_type !== "normal" && (
               <Tag color={tagColors[props?.message_type] || "default"}>
                 {t(`copilot.${props?.message_type}`)}
               </Tag>

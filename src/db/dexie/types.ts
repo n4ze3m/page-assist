@@ -156,6 +156,9 @@ export type OpenAIModelConfig = {
   db_type: string
   fix_cors?: boolean
   headers?: { key: string; value: string }[]
+  // Vertex AI (Google Cloud) specific configuration
+  vertexProjectId?: string
+  vertexLocation?: string
 }
 
 export type McpServerConfig = McpServer

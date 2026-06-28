@@ -110,6 +110,10 @@ export default defineConfig({
           {
             text: "OpenAI Compatible API",
             link: "/providers/openai"
+          },
+          {
+            text: "Gemini Enterprise Agent Platform (Vertex AI)",
+            link: "/providers/vertex"
           }
         ]
       },
