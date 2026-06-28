@@ -370,7 +370,7 @@ export const TOOLS: ToolDef<any>[] = [
   defineTool({
     name: 'run_browser_steps',
     description:
-      'Execute a sequence of browser tool calls in one round trip. Actions execute sequentially and stop on the first error. run_browser_steps cannot be nested.',
+      'Execute browser tool calls sequentially in one round trip and stop on the first error. Each actions item must be a JSON object, not a string: {"name":"navigate","input":{"url":"https://example.com","tabId":123}}. run_browser_steps cannot be nested.',
     inputSchema: {
       actions: z.array(z.object({ name: z.string(), input: z.any() })).min(1),
     },

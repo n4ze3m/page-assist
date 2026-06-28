@@ -67,6 +67,7 @@ type RunMcpNormalChatParams = {
   webSearchAsTool?: boolean
   extraMcpServers?: McpServer[]
   extraSystemPrompt?: string
+  normalizeMcpToolCallArgs?: (toolName: string, args: unknown) => unknown
 }
 
 const createAssistantMessage = ({
@@ -321,7 +322,8 @@ export const runMcpNormalChatMode = async (
     messageSource = "web-ui",
     webSearchAsTool = false,
     extraMcpServers = [],
-    extraSystemPrompt
+    extraSystemPrompt,
+    normalizeMcpToolCallArgs
   }: RunMcpNormalChatParams
 ) => {
   const baseServers = await getConfiguredMcpServers()
@@ -619,7 +621,16 @@ export const runMcpNormalChatMode = async (
       const storedToolCalls = toStoredToolCalls(
         (aiMessage as any).tool_calls || [],
         (aiMessage as any).additional_kwargs?.tool_call_extra_content || {}
-      )
+      ).map((toolCall) => ({
+        ...toolCall,
+        args: normalizeMcpToolCallArgs
+          ? normalizeMcpToolCallArgs(
+              toolCall.displayName ||
+                parseMcpToolName(toolCall.name).displayName,
+              toolCall.args
+            )
+          : toolCall.args
+      }))
 
       if (storedToolCalls.length === 0) {
         const assistantHistoryEntry = {

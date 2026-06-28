@@ -1,5 +1,11 @@
+import { PA_PAGE_FUNCTION_DEPENDENCIES } from './page-scripts';
+
 const PROTOCOL_VERSION = '1.3';
 const IDLE_DETACH_MS = 60_000;
+
+const PAGE_FUNCTION_DEPENDENCIES_SOURCE = PA_PAGE_FUNCTION_DEPENDENCIES
+  .map((dependency) => dependency.toString())
+  .join('\n');
 
 const attached = new Set<number>();
 const attachInFlight = new Map<number, Promise<void>>();
@@ -103,7 +109,10 @@ export async function callPageFn<T = any>(
   fn: (...args: any[]) => any,
   args: unknown[] = [],
 ): Promise<T> {
-  const expression = `(${fn.toString()}).apply(null, ${JSON.stringify(args)})`;
+  const expression = `(() => {
+${PAGE_FUNCTION_DEPENDENCIES_SOURCE}
+return (${fn.toString()}).apply(null, ${JSON.stringify(args)});
+})()`;
   const res = await sendCommand<any>(tabId, 'Runtime.evaluate', {
     expression,
     returnByValue: true,

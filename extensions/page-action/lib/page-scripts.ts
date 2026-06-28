@@ -17,17 +17,6 @@ type RefResult =
   | { ok: true; x: number; y: number; tag: string; text: string }
   | { ok: false; error: string };
 
-const INTERACTIVE_TAGS: Record<string, number> = {
-  A: 1, BUTTON: 1, INPUT: 1, SELECT: 1, TEXTAREA: 1,
-  SUMMARY: 1, DETAILS: 1, LABEL: 1, OPTION: 1,
-};
-
-const INTERACTIVE_ROLES: Record<string, number> = {
-  button: 1, link: 1, checkbox: 1, radio: 1, menuitem: 1,
-  menuitemcheckbox: 1, menuitemradio: 1, tab: 1, switch: 1,
-  textbox: 1, combobox: 1, searchbox: 1, slider: 1, option: 1, treeitem: 1,
-};
-
 function paIsVisible(el: Element): boolean {
   var rect = el.getBoundingClientRect();
   var style = window.getComputedStyle(el);
@@ -39,9 +28,18 @@ function paIsVisible(el: Element): boolean {
 }
 
 function paIsInteractive(el: Element): boolean {
-  if (INTERACTIVE_TAGS[el.tagName]) return !(el as HTMLInputElement).disabled;
+  var interactiveTags: Record<string, number> = {
+    A: 1, BUTTON: 1, INPUT: 1, SELECT: 1, TEXTAREA: 1,
+    SUMMARY: 1, DETAILS: 1, LABEL: 1, OPTION: 1,
+  };
+  var interactiveRoles: Record<string, number> = {
+    button: 1, link: 1, checkbox: 1, radio: 1, menuitem: 1,
+    menuitemcheckbox: 1, menuitemradio: 1, tab: 1, switch: 1,
+    textbox: 1, combobox: 1, searchbox: 1, slider: 1, option: 1, treeitem: 1,
+  };
+  if (interactiveTags[el.tagName]) return !(el as HTMLInputElement).disabled;
   var role = el.getAttribute('role');
-  if (role && INTERACTIVE_ROLES[role.toLowerCase()]) return true;
+  if (role && interactiveRoles[role.toLowerCase()]) return true;
   if (el.hasAttribute('onclick')) return true;
   var tabindex = el.getAttribute('tabindex');
   if (tabindex !== null && parseInt(tabindex, 10) >= 0) return true;
@@ -117,6 +115,21 @@ function paResolveRefElement(ref: string): RefResult {
     text: paElementName(el).slice(0, 120),
   };
 }
+
+// callPageFn serializes page functions and evaluates them in the inspected tab.
+// Include every module-scoped dependency in that evaluated scope as well; a
+// serialized function cannot otherwise access helpers from this extension
+// module (and production minification makes the missing names opaque).
+export const PA_PAGE_FUNCTION_DEPENDENCIES = [
+  paIsVisible,
+  paIsInteractive,
+  paElementName,
+  paRole,
+  paRefMap,
+  paGetRef,
+  paSetRef,
+  paResolveRefElement,
+];
 
 export function paReadPage(
   filter?: 'interactive' | 'all' | null,

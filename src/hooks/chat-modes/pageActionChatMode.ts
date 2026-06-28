@@ -6,6 +6,7 @@ import {
   isPageActionApprovalRequired
 } from "@/services/page-action"
 import { McpBootstrapError } from "@/libs/mcp/errors"
+import { normalizePageActionToolCallArgs } from "@/libs/mcp/page-action-args"
 
 type PageActionChatModeOptions = {
   selectedModel: string
@@ -57,6 +58,7 @@ export const pageActionChatMode = async (
     ...options,
     requireMcpApproval: pageActionApproval || (options.requireMcpApproval ?? false),
     extraMcpServers: [server],
-    extraSystemPrompt
+    extraSystemPrompt,
+    normalizeMcpToolCallArgs: normalizePageActionToolCallArgs
   })
 }
