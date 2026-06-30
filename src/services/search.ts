@@ -136,6 +136,24 @@ export const setFirecrawlAPIKey = async (firecrawlAPIKey: string) => {
   await storage2.set("firecrawlAPIKey", firecrawlAPIKey)
 }
 
+export const getCrwAPIKey = async () => {
+  const crwAPIKey = await storage2.get("crwAPIKey")
+  return crwAPIKey || ""
+}
+
+export const setCrwAPIKey = async (crwAPIKey: string) => {
+  await storage2.set("crwAPIKey", crwAPIKey)
+}
+
+export const getCrwBaseURL = async () => {
+  const crwBaseURL = await storage2.get("crwBaseURL")
+  return crwBaseURL || ""
+}
+
+export const setCrwBaseURL = async (crwBaseURL: string) => {
+  await storage2.set("crwBaseURL", crwBaseURL)
+}
+
 export const getExaAPIKey = async () => {
   const exaAPIKey = await storage2.get("exaAPIKey")
   return exaAPIKey || ""
@@ -215,6 +233,8 @@ export const getSearchSettings = async () => {
     defaultInternetSearchOn,
     exaAPIKey,
     firecrawlAPIKey,
+    crwAPIKey,
+    crwBaseURL,
     ollamaSearchApiKey,
     kagiApiKey,
     perplexityApiKey,
@@ -233,6 +253,8 @@ export const getSearchSettings = async () => {
     getInternetSearchOn(),
     getExaAPIKey(),
     getFirecrawlAPIKey(),
+    getCrwAPIKey(),
+    getCrwBaseURL(),
     getOllamaSearchApiKey(),
     getKagiApiKey(),
     getPerplexityApiKey(),
@@ -253,6 +275,8 @@ export const getSearchSettings = async () => {
     defaultInternetSearchOn,
     exaAPIKey,
     firecrawlAPIKey,
+    crwAPIKey,
+    crwBaseURL,
     ollamaSearchApiKey,
     kagiApiKey,
     perplexityApiKey,
@@ -274,6 +298,8 @@ export const setSearchSettings = async ({
   defaultInternetSearchOn,
   exaAPIKey,
   firecrawlAPIKey,
+  crwAPIKey,
+  crwBaseURL,
   ollamaSearchApiKey,
   kagiApiKey,
   perplexityApiKey,
@@ -292,6 +318,8 @@ export const setSearchSettings = async ({
   defaultInternetSearchOn: boolean
   exaAPIKey: string
   firecrawlAPIKey: string
+  crwAPIKey: string
+  crwBaseURL: string
   ollamaSearchApiKey: string
   kagiApiKey: string
   perplexityApiKey: string
@@ -311,6 +339,8 @@ export const setSearchSettings = async ({
     setInternetSearchOn(defaultInternetSearchOn),
     setExaAPIKey(exaAPIKey),
     setFirecrawlAPIKey(firecrawlAPIKey),
+    setCrwAPIKey(crwAPIKey),
+    setCrwBaseURL(crwBaseURL),
     setOllamaSearchApiKey(ollamaSearchApiKey),
     setKagiApiKey(kagiApiKey),
     setPerplexityApiKey(perplexityApiKey),

@@ -14,6 +14,7 @@ import { stractSearch } from "./search-engines/stract"
 import { startpageSearch } from "./search-engines/startpage"
 import { exaAPISearch } from "./search-engines/exa"
 import { firecrawlAPISearch } from "./search-engines/firecrawl"
+import { crwAPISearch } from "./search-engines/crw"
 import { ollamaAPISearch } from "./search-engines/ollama"
 import { kagiAPISearch } from "./search-engines/kagi-api"
 import { perplexityAPISearch } from "./search-engines/perplexity-api"
@@ -65,6 +66,8 @@ const searchWeb = (provider: string, query: string) => {
       return exaAPISearch(query)
     case "firecrawl":
       return firecrawlAPISearch(query)
+    case "crw":
+      return crwAPISearch(query)
     case "ollama-search":
       return ollamaAPISearch(query)
     case "kagi-api":

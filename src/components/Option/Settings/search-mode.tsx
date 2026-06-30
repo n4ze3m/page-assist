@@ -24,6 +24,8 @@ export const SearchModeSettings = () => {
       defaultInternetSearchOn: false,
       exaAPIKey: "",
       firecrawlAPIKey: "",
+      crwAPIKey: "",
+      crwBaseURL: "",
       ollamaSearchApiKey: "",
       kagiApiKey: "",
       perplexityApiKey: "",
@@ -190,6 +192,48 @@ export const SearchModeSettings = () => {
                   required
                   className="w-full mt-4 sm:mt-0 sm:w-[200px]"
                   {...form.getInputProps("firecrawlAPIKey")}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {form.values.searchProvider === "crw" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                {t(
+                  "generalSettings.webSearch.crwBaseURL.label",
+                  "CRW Base URL"
+                )}
+              </span>
+              <div>
+                <Input
+                  placeholder={t(
+                    "generalSettings.webSearch.crwBaseURL.placeholder",
+                    "https://your-crw-instance.com"
+                  )}
+                  required
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  {...form.getInputProps("crwBaseURL")}
+                />
+              </div>
+            </div>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                {t(
+                  "generalSettings.webSearch.crwAPIKey.label",
+                  "CRW API Key"
+                )}
+              </span>
+              <div>
+                <Input.Password
+                  placeholder={t(
+                    "generalSettings.webSearch.crwAPIKey.placeholder",
+                    "Enter your CRW API key (optional)"
+                  )}
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  {...form.getInputProps("crwAPIKey")}
                 />
               </div>
             </div>
