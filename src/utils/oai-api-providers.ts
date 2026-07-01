@@ -150,7 +150,7 @@ export const OAI_API_PROVIDERS = [
     baseUrl: 'https://open.bigmodel.cn/api/paas/v4'
   },
   {
-    label: 'z.ai',
+    label: 'z.ai (Zhipu)',
     value: 'zai',
     baseUrl: 'https://api.z.ai/api/paas/v4'
   },
