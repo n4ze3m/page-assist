@@ -31,7 +31,7 @@ import { OpenAIFetchModel } from "./openai-fetch-model"
 import { OAI_API_PROVIDERS } from "@/utils/oai-api-providers"
 import { ProviderIcons } from "@/components/Common/ProviderIcon"
 import { buildVertexBaseUrl } from "@/libs/vertex-auth"
-const noPopupProvider = ["lmstudio", "llamafile", "ollama2", "llamacpp", "vllm"]
+const noPopupProvider = ["lmstudio", "llamafile", "ollama2", "llamacpp", "vllm", "llmman"]
 import { isFireFoxPrivateMode } from "@/utils/is-private-mode"
 import { setProviderState, getAllProviderStates } from "@/db/dexie/providerState"
 import { useState as useReactState, useEffect } from "react"
