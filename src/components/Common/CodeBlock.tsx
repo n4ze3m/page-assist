@@ -143,7 +143,7 @@ const CodeBlockComponent: FC<Props> = ({ language, value }) => {
 
   return (
     <>
-      <div className="not-prose">
+      <div className="not-prose" dir="ltr">
         <div className=" [&_div+div]:!mt-0 my-4 bg-zinc-950 rounded-xl">
           <div className="flex flex-row px-4 py-2 rounded-t-xl  gap-3 bg-[#2a2a2a]  ">
             {isPreviewable && (
@@ -205,7 +205,8 @@ const CodeBlockComponent: FC<Props> = ({ language, value }) => {
                 margin: 0,
                 width: "100%",
                 background: "transparent",
-                padding: "1.5rem 1rem"
+                padding: "1.5rem 1rem",
+                textAlign: "left"
               }}
               lineNumberStyle={{
                 userSelect: "none"

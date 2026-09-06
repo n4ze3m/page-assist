@@ -135,7 +135,8 @@
       },
       "enableAgentWebSearch": {
         "label": "Používat pro vyhledávání na webu agenty (model rozhodne kdy a co vyhledá)"
-      },
+      }
+    },
     "sidepanelRag": {
       "heading": "Nastavení znalostí (RAG)",
       "ragEnabled": {
