@@ -34,7 +34,7 @@ const markdownComponents: React.ComponentProps<
         value={String(children).replace(/\n$/, "")}
       />
     ) : (
-      <code className={`${className} font-semibold`} {...props}>
+      <code dir="ltr" className={`${className} font-semibold`} {...props}>
         {children}
       </code>
     )
