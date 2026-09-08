@@ -17,7 +17,10 @@ import {
   generateID,
   getPromptById,
   removeMessageUsingHistoryId,
-  updateMessageByIndex
+  updateMessageByIndex,
+  saveMessage,
+  saveHistory,
+  updateChatHistoryCreatedAt
 } from "@/db/dexie/helpers"
 import { notification } from "antd"
 import { useTranslation } from "react-i18next"
@@ -1681,6 +1684,54 @@ export const useMessage = () => {
     chatType?: string
     docs?: ChatDocuments
   }) => {
+    if (chatMode === "note") {
+      const noteMessage: Message = {
+        isBot: false,
+        name: "You",
+        message,
+        sources: [],
+        images: image ? [image] : images || [],
+        id: generateID(),
+        createdAt: Date.now(),
+        messageType: "note"
+      }
+      setMessages([...(chatHistory || messages), noteMessage])
+
+      // Note: intentionally not added to `history` (ChatHistory) — that
+      // array is what gets sent to the AI as conversation context, and
+      // notes must stay invisible to the AI per #746.
+      if (!temporaryChat) {
+        try {
+          let noteHistoryId = historyId
+          if (!noteHistoryId) {
+            const newHistory = await saveHistory(
+              message.slice(0, 50) || "Note",
+              false,
+              "web-ui"
+            )
+            noteHistoryId = newHistory.id
+            setHistoryId(noteHistoryId)
+          }
+          await saveMessage({
+            history_id: noteHistoryId,
+            name: "note",
+            role: "user",
+            content: message,
+            images: noteMessage.images,
+            time: 1,
+            message_type: "note"
+          })
+          await updateChatHistoryCreatedAt(noteHistoryId)
+        } catch (e) {
+          console.error("Failed to save note to history:", e)
+        }
+      } else {
+        setHistoryId("temp")
+      }
+
+      return
+    }
+
     let signal: AbortSignal
     if (!controller) {
       const newController = new AbortController()
