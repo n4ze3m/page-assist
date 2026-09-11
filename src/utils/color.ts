@@ -3,5 +3,6 @@ export const tagColors = {
   explain: "green",
   translate: "purple",
   custom: "orange",
-  rephrase: "yellow"
+  rephrase: "yellow",
+  note: "cyan"
 }

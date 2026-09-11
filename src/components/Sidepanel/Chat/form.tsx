@@ -279,6 +279,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   })
   const validateBeforeMessageSend = async () => {
+    if (chatMode === "note") return true
     if (!selectedModel || selectedModel.length === 0) {
       form.setFieldError("message", t("formError.noModel"))
       return false
