@@ -58,8 +58,10 @@ export type ChatHistory = {
 }[]
 
 type PendingMcpApproval = McpPendingApprovalRequest & {
-  approve: () => void
+  approve: (options?: { alwaysAllow?: boolean }) => void
   reject: (reason?: string) => void
+  /** Whether this tool's server can remember an "always allow" decision. */
+  canAlwaysAllow?: boolean
 }
 
 type State = {
@@ -87,6 +89,8 @@ type State = {
   setWebSearch: (webSearch: boolean) => void
   pageAction: boolean
   setPageAction: (pageAction: boolean) => void
+  webMcp: boolean
+  setWebMcp: (webMcp: boolean) => void
   isSearchingInternet: boolean
   setIsSearchingInternet: (isSearchingInternet: boolean) => void
 
@@ -155,6 +159,8 @@ export const useStoreMessageOption = create<State>((set) => ({
   setWebSearch: (webSearch) => set({ webSearch }),
   pageAction: false,
   setPageAction: (pageAction) => set({ pageAction }),
+  webMcp: false,
+  setWebMcp: (webMcp) => set({ webMcp }),
   isSearchingInternet: false,
   setIsSearchingInternet: (isSearchingInternet) => set({ isSearchingInternet }),
   selectedSystemPrompt: null,

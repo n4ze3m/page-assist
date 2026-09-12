@@ -39,7 +39,7 @@ export type McpOAuthMetadata = {
   scopesSupported?: string[]
 }
 
-export type McpTransport = "http" | "extension"
+export type McpTransport = "http" | "extension" | "webmcp"
 
 export type McpServer = {
   id: string

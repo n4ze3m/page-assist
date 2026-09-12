@@ -110,6 +110,11 @@ export const McpInvocationBlock = ({ invocation }: Props) => {
     pendingMcpApproval?.approve()
   }, [pendingMcpApproval])
 
+  const handleAlwaysAllow = React.useCallback(() => {
+    setIsOpen(false)
+    pendingMcpApproval?.approve({ alwaysAllow: true })
+  }, [pendingMcpApproval])
+
   const handleReject = React.useCallback((reason?: string) => {
     setIsOpen(false)
     pendingMcpApproval?.reject(reason)
@@ -202,6 +207,22 @@ export const McpInvocationBlock = ({ invocation }: Props) => {
                   className="inline-flex items-center justify-center rounded-md bg-black px-3 py-1.5 text-xs font-medium text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100">
                   {t("mcp.approve", "Approve")}
                 </button>
+                {pendingMcpApproval?.canAlwaysAllow &&
+                  feedback.trim().length === 0 && (
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        handleAlwaysAllow()
+                      }}
+                      title={t(
+                        "mcp.alwaysAllowHint",
+                        "Run this tool from now on without asking"
+                      )}
+                      className="inline-flex items-center justify-center rounded-md border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 dark:border-white/15 dark:text-gray-200 dark:hover:bg-white/5">
+                      {t("mcp.alwaysAllow", "Always allow")}
+                    </button>
+                  )}
                 <button
                   type="button"
                   onClick={(event) => {
