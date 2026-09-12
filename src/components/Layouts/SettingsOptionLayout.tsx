@@ -10,6 +10,7 @@ import {
   CpuIcon,
   BrainIcon,
   MousePointerClickIcon,
+  PlugZapIcon,
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
@@ -76,6 +77,15 @@ export const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
                       href="/settings/page-action"
                       name={t("pageAction.title", "Page Action")}
                       icon={MousePointerClickIcon}
+                      current={location.pathname}
+                      beta
+                    />
+                  )}
+                  {import.meta.env.BROWSER !== "firefox" && (
+                    <LinkComponent
+                      href="/settings/webmcp"
+                      name={t("webMcp.title", "WebMCP")}
+                      icon={PlugZapIcon}
                       current={location.pathname}
                       beta
                     />

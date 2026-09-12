@@ -6,6 +6,7 @@ import { getMcpErrorMessage } from "./errors"
 import { McpAvailableTool, McpServerInput } from "./types"
 import { buildMcpHeaders, getMcpToolExecutionMode, isMcpToolEnabled } from "./utils"
 import { createExtensionTransport } from "./extension-transport"
+import { createWebMcpTransport } from "./webmcp-transport"
 import { Implementation } from "@modelcontextprotocol/sdk/types.js"
 
 export type McpConnectableServer = Pick<
@@ -46,6 +47,10 @@ const MCP_CLIENT_INFO: Implementation = {
 }
 
 const createTransport = (server: McpConnectableServer): Transport => {
+  if (server.transport === "webmcp") {
+    return createWebMcpTransport()
+  }
+
   if (server.transport === "extension") {
     return createExtensionTransport(server.url)
   }

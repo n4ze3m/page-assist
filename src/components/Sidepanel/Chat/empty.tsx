@@ -3,7 +3,7 @@ import { cleanUrl } from "@/libs/clean-url"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Avatar, Modal, Select } from "antd"
-import { Loader2, MousePointerClick, RotateCcw } from "lucide-react"
+import { Loader2, MousePointerClick, PlugZap, RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import { useMessage } from "~/hooks/useMessage"
@@ -14,6 +14,10 @@ import {
   isPageActionSupported,
   PAGE_ACTION_EXTENSION_ID
 } from "@/services/page-action"
+import {
+  inspectCurrentPageWebMcpTools,
+  isWebMcpAvailable
+} from "@/services/webmcp"
 import {
   getOllamaURL,
   isOllamaRunning,
@@ -26,10 +30,52 @@ export const EmptySidePanel = () => {
   const { t } = useTranslation(["playground", "common"])
   const queryClient = useQueryClient()
   const [checkOllamaStatus] = useStorage("checkOllamaStatus", true)
-  const { pageAction, setPageAction } = useStoreMessageOption()
+  const { pageAction, setPageAction, webMcp, setWebMcp } =
+    useStoreMessageOption()
   const [pageActionMasterEnabled] = useStorage("pageActionEnabled", true)
   const [showInstallModal, setShowInstallModal] = useState(false)
   const [pageActionLoading, setPageActionLoading] = useState(false)
+  const [webMcpMasterEnabled] = useStorage("webMcpEnabled", true)
+  const [webMcpLoading, setWebMcpLoading] = useState(false)
+  const [webMcpNotice, setWebMcpNotice] = useState<string | null>(null)
+
+  const handleWebMcpToggle = async (checked: boolean) => {
+    if (!checked) {
+      setWebMcp(false)
+      return
+    }
+    setWebMcpLoading(true)
+    try {
+      let supported = false
+      let toolCount = 0
+      try {
+        const inspection = await inspectCurrentPageWebMcpTools()
+        supported = inspection.supported
+        toolCount = inspection.tools.length
+      } catch {
+        supported = false
+      }
+
+      if (!supported || toolCount === 0) {
+        setWebMcpNotice(
+          supported
+            ? t(
+                "common:webMcpEmpty.registering",
+                "This page supports WebMCP but has not registered any tools yet. Try again once it finishes loading."
+              )
+            : t(
+                "common:webMcpEmpty.unsupported",
+                "This page does not publish WebMCP tools. WebMCP needs Chrome 150 or later, and the site has to opt in."
+              )
+        )
+        return
+      }
+
+      setWebMcp(true)
+    } finally {
+      setWebMcpLoading(false)
+    }
+  }
 
   const handlePageActionToggle = async (checked: boolean) => {
     if (!checked) {
@@ -211,6 +257,63 @@ export const EmptySidePanel = () => {
             </div>
           </div>
         )}
+
+        {isWebMcpAvailable() && webMcpMasterEnabled && (
+          <div className="mt-1">
+            <div className="inline-flex items-center">
+              <label
+                className="relative flex items-center p-3 rounded-full cursor-pointer"
+                htmlFor="webmcp-check">
+                <input
+                  type="checkbox"
+                  checked={webMcp}
+                  disabled={chatMode === "rag" || webMcpLoading}
+                  onChange={(e) => handleWebMcpToggle(e.target.checked)}
+                  className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity disabled:opacity-50"
+                  id="webmcp-check"
+                />
+                <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100 ">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-3.5 w-3.5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    strokeWidth="1">
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"></path>
+                  </svg>
+                </span>
+              </label>
+              <label
+                className="mt-px font-light cursor-pointer select-none text-gray-900 dark:text-gray-400 inline-flex items-center gap-1"
+                htmlFor="webmcp-check">
+                <PlugZap className="h-4 w-4" />
+                {t("common:webMcp", "Page tools (WebMCP)")}
+              </label>
+            </div>
+          </div>
+        )}
+
+        <Modal
+          open={Boolean(webMcpNotice)}
+          onCancel={() => setWebMcpNotice(null)}
+          footer={null}
+          title={
+            <span className="text-gray-900 dark:text-white">
+              {t("common:webMcpEmpty.title", "No WebMCP tools on this page")}
+            </span>
+          }
+          classNames={{
+            content: "dark:!bg-[#262626]",
+            header: "dark:!bg-[#262626]"
+          }}>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            {webMcpNotice}
+          </p>
+        </Modal>
 
         <Modal
           open={showInstallModal}

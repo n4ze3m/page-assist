@@ -17,7 +17,9 @@ import { useStoreMessageOption } from "@/store/option"
 import { AIMessage, ToolMessage } from "@langchain/core/messages"
 import { concat } from "@langchain/core/utils/stream"
 import { getConfiguredMcpServers, createMcpClient } from "./client"
-import { McpServer } from "./types"
+import { McpServer, McpToolExecutionMode } from "./types"
+import { updateMcpServer } from "@/db/dexie/mcp"
+import { isWebMcpServer, setWebMcpToolMode } from "@/services/webmcp"
 import {
   McpBootstrapError,
   getMcpErrorMessage,
@@ -110,6 +112,38 @@ const createAbortError = () => {
 type McpApprovalDecision = {
   approved: boolean
   reason?: string
+  alwaysAllow?: boolean
+}
+
+/**
+ * Remembers an "always allow" decision so the same tool stops asking. WebMCP
+ * tools are stored per site; every other server keeps it on its own record.
+ */
+const rememberToolExecutionMode = async (
+  server: McpServer | undefined,
+  toolName: string,
+  executionMode: McpToolExecutionMode
+) => {
+  if (!server) return
+
+  try {
+    if (isWebMcpServer(server)) {
+      if (!server.url) return
+      await setWebMcpToolMode(server.url, toolName, executionMode)
+      return
+    }
+
+    const cachedTools = server.cachedTools ?? []
+    const nextTools = cachedTools.some((tool) => tool.name === toolName)
+      ? cachedTools.map((tool) =>
+          tool.name === toolName ? { ...tool, executionMode } : tool
+        )
+      : [...cachedTools, { name: toolName, executionMode }]
+
+    await updateMcpServer({ id: server.id, cachedTools: nextTools })
+  } catch (error) {
+    console.error("Could not save the tool permission", error)
+  }
 }
 
 const waitForMcpToolApproval = ({
@@ -117,13 +151,15 @@ const waitForMcpToolApproval = ({
   toolCallId,
   toolName,
   serverName,
-  args
+  args,
+  canAlwaysAllow
 }: {
   signal: AbortSignal
   toolCallId: string
   toolName: string
   serverName?: string
   args?: unknown
+  canAlwaysAllow?: boolean
 }) =>
   new Promise<McpApprovalDecision>((resolve, reject) => {
     let settled = false
@@ -140,14 +176,7 @@ const waitForMcpToolApproval = ({
       clearPendingApproval()
     }
 
-    const settle = (
-      result:
-        | {
-            approved: boolean
-            reason?: string
-          }
-        | "abort"
-    ) => {
+    const settle = (result: McpApprovalDecision | "abort") => {
       if (settled) {
         return
       }
@@ -175,7 +204,9 @@ const waitForMcpToolApproval = ({
       toolName,
       serverName,
       args,
-      approve: () => settle({ approved: true }),
+      canAlwaysAllow,
+      approve: (options?: { alwaysAllow?: boolean }) =>
+        settle({ approved: true, alwaysAllow: options?.alwaysAllow === true }),
       reject: (reason?: string) =>
         settle({
           approved: false,
@@ -742,13 +773,32 @@ export const runMcpNormalChatMode = async (
               (tool as any)?.metadata?.executionMode !== "allow"
 
             if (shouldRequireApproval) {
+              // Tool names carry the server name with spaces replaced, so match
+              // both spellings to find the server a tool belongs to.
+              const toolServerName =
+                toolCall.serverName || parsedTool.serverName
+              const toolServer = configuredServers.find(
+                (candidate) =>
+                  candidate.name === toolServerName ||
+                  candidate.name.replace(/\s+/g, "_") === toolServerName
+              )
+
               const approval = await waitForMcpToolApproval({
                 signal,
                 toolCallId: toolCall.id,
                 toolName: parsedTool.displayName,
                 serverName: toolCall.serverName || parsedTool.serverName,
-                args: toolCall.args
+                args: toolCall.args,
+                canAlwaysAllow: Boolean(toolServer)
               })
+
+              if (approval.approved && approval.alwaysAllow) {
+                await rememberToolExecutionMode(
+                  toolServer,
+                  parsedTool.displayName,
+                  "allow"
+                )
+              }
 
               if (!approval.approved) {
                 const rejectionReason = approval.reason?.trim()
