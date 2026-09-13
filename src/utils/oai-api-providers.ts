@@ -1,6 +1,6 @@
 export const OAI_API_PROVIDERS = [
   {
-    label: "API Route",
+    label: "API-Route",
     value: "api-route",
     baseUrl: "https://global.api-route.com/v1"
   },
