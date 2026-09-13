@@ -54,6 +54,11 @@ export const ProviderIcons = ({
       return <GroqMonoIcon className={className} />
     case "lmstudio":
       return <LMStudioIcon className={className} />
+    // No llmman mark available, so fall back to the same neutral icon as
+    // "custom" rather than the default branch, which would show another
+    // provider's logo.
+    case "llmman":
+      return <CpuIcon className={className} />
     case "openai":
       return <OpenAiIcon className={className} />
     case "together":
