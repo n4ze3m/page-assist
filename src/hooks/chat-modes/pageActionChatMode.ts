@@ -7,6 +7,11 @@ import {
 } from "@/services/page-action"
 import { McpBootstrapError } from "@/libs/mcp/errors"
 import { normalizePageActionToolCallArgs } from "@/libs/mcp/page-action-args"
+import {
+  getWebMcpServer,
+  getWebMcpSystemPrompt,
+  isWebMcpApprovalRequired
+} from "@/services/webmcp"
 
 type PageActionChatModeOptions = {
   selectedModel: string
@@ -28,6 +33,8 @@ type PageActionChatModeOptions = {
   temporaryChat?: boolean
   requireMcpApproval?: boolean
   messageSource?: "copilot" | "web-ui"
+  /** Also expose the WebMCP tools of the current page. */
+  includeWebMcp?: boolean
 }
 
 export const pageActionChatMode = async (
@@ -40,6 +47,8 @@ export const pageActionChatMode = async (
   options: PageActionChatModeOptions
 ) => {
   console.log("Using pageActionChatMode")
+
+  const { includeWebMcp = false, ...chatOptions } = options
 
   let server
   try {
@@ -54,11 +63,24 @@ export const pageActionChatMode = async (
   const pageActionApproval = await isPageActionApprovalRequired()
   const extraSystemPrompt = await getPageActionSystemPrompt()
 
+  const extraMcpServers = [server]
+  const systemPrompts = [extraSystemPrompt]
+  let webMcpApproval = false
+
+  if (includeWebMcp) {
+    webMcpApproval = await isWebMcpApprovalRequired()
+    extraMcpServers.push(await getWebMcpServer())
+    systemPrompts.push(await getWebMcpSystemPrompt())
+  }
+
   await normalChatMode(message, image, isRegenerate, messages, history, signal, {
-    ...options,
-    requireMcpApproval: pageActionApproval || (options.requireMcpApproval ?? false),
-    extraMcpServers: [server],
-    extraSystemPrompt,
+    ...chatOptions,
+    requireMcpApproval:
+      pageActionApproval ||
+      webMcpApproval ||
+      (options.requireMcpApproval ?? false),
+    extraMcpServers,
+    extraSystemPrompt: systemPrompts.join("\n\n"),
     normalizeMcpToolCallArgs: normalizePageActionToolCallArgs
   })
 }

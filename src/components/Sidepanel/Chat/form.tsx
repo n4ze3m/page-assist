@@ -25,8 +25,17 @@ import {
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
-import { PiGlobeX, PiGlobe, PiCursorClick } from "react-icons/pi"
+import {
+  PiGlobeX,
+  PiGlobe,
+  PiCursorClick,
+  PiPlugsConnected
+} from "react-icons/pi"
 import { useStoreMessageOption } from "@/store/option"
+import {
+  inspectCurrentPageWebMcpTools,
+  isWebMcpAvailable
+} from "@/services/webmcp"
 import {
   cachePageActionTools,
   isPageActionInstalled,
@@ -196,8 +205,50 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     temporaryChat
   } = useMessage()
 
-  const { pageAction, setPageAction } = useStoreMessageOption()
+  const { pageAction, setPageAction, webMcp, setWebMcp } =
+    useStoreMessageOption()
   const [pageActionMasterEnabled] = useStorage("pageActionEnabled", true)
+  const [webMcpMasterEnabled] = useStorage("webMcpEnabled", true)
+
+  const handleFormWebMcp = async (checked: boolean) => {
+    if (!checked) {
+      setWebMcp(false)
+      return
+    }
+
+    let toolCount = 0
+    let supported = false
+    try {
+      const inspection = await inspectCurrentPageWebMcpTools()
+      supported = inspection.supported
+      toolCount = inspection.tools.length
+    } catch {
+      supported = false
+    }
+
+    if (!supported || toolCount === 0) {
+      const isDark = document.documentElement.classList.contains("dark")
+      Modal.info({
+        title: "No WebMCP tools on this page",
+        content: supported
+          ? "This page supports WebMCP but has not registered any tools yet. Try again once the page finishes loading."
+          : "This page does not publish WebMCP tools. WebMCP needs Chrome 150 or later, and the site has to opt in.",
+        okText: "Got it",
+        okButtonProps: {
+          className:
+            "!bg-black !text-white dark:!bg-white dark:!text-black !border-none hover:!opacity-90"
+        },
+        ...(isDark && {
+          styles: { content: { backgroundColor: "#262626" } },
+          className:
+            "[&_.ant-modal-confirm-title]:!text-white [&_.ant-modal-confirm-content]:!text-gray-300"
+        })
+      })
+      return
+    }
+
+    setWebMcp(true)
+  }
 
   const handleFormPageAction = async (checked: boolean) => {
     if (!checked) {
@@ -867,6 +918,26 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                                 <PiCursorClick
                                   className={`h-4 w-4 ${
                                     pageAction
+                                      ? "text-blue-600 dark:text-blue-400"
+                                      : "text-[#404040] dark:text-gray-400"
+                                  }`}
+                                />
+                              </button>
+                            </Tooltip>
+                          )}
+                        {chatMode !== "vision" &&
+                          isWebMcpAvailable() &&
+                          webMcpMasterEnabled && (
+                            <Tooltip title="Page tools (WebMCP)">
+                              <button
+                                type="button"
+                                onClick={() => handleFormWebMcp(!webMcp)}
+                                className={`inline-flex items-center gap-2 ${
+                                  chatMode === "rag" ? "hidden" : "block"
+                                }`}>
+                                <PiPlugsConnected
+                                  className={`h-4 w-4 ${
+                                    webMcp
                                       ? "text-blue-600 dark:text-blue-400"
                                       : "text-[#404040] dark:text-gray-400"
                                   }`}
