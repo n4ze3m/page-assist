@@ -56,7 +56,7 @@ import {
 import { UploadedFile } from "@/db/dexie/types"
 import { isDatabaseClosedError } from "@/utils/ff-error"
 import { updatePageTitle } from "@/utils/update-page-title"
-import { generateTitle } from "@/services/title"
+import { generateTitle, HISTORY_TITLE_UPDATED_EVENT } from "@/services/title"
 
 type Props = {
   onClose: () => void
@@ -114,6 +114,23 @@ export const Sidebar = ({
     new Set()
   )
   const projectCreationCardRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleTitleUpdated = () => {
+      client.invalidateQueries({
+        queryKey: ["fetchChatHistory"]
+      })
+    }
+
+    window.addEventListener(HISTORY_TITLE_UPDATED_EVENT, handleTitleUpdated)
+
+    return () => {
+      window.removeEventListener(
+        HISTORY_TITLE_UPDATED_EVENT,
+        handleTitleUpdated
+      )
+    }
+  }, [client])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

@@ -6,7 +6,13 @@ import { HumanMessage } from "@langchain/core/messages"
 import { removeReasoning } from "@/libs/reasoning"
 import { ChatHistory } from "@/store/option"
 import { isConversationMessage } from "@/libs/mcp/utils"
+import { getTitleById, updateHistory } from "@/db/dexie/helpers"
+import { useStoreMessageOption } from "@/store/option"
+import { useStoreMessage } from "@/store"
+import { updatePageTitle } from "@/utils/update-page-title"
 const storage = new Storage()
+
+export const HISTORY_TITLE_UPDATED_EVENT = "page-assist:history-title-updated"
 
 export const DEFAULT_TITLE_GEN_PROMPT = `Here is the conversation:
 
@@ -111,4 +117,46 @@ export const generateTitle = async (model: string, history: ChatHistory, fallBac
         console.error(`Error generating title: ${error}`)
         return fallBackTitle
     }
+}
+
+// Generates the title without blocking the chat lifecycle. The history must
+// already be saved with `provisionalTitle`; it is replaced once the model responds.
+export const generateTitleInBackground = ({
+    historyId,
+    model,
+    history,
+    provisionalTitle
+}: {
+    historyId: string
+    model: string
+    history: ChatHistory
+    provisionalTitle: string
+}) => {
+    void (async () => {
+        if (!(await isTitleGenEnabled())) return
+
+        const title = (await generateTitle(model, history, provisionalTitle))?.trim()
+        if (!title || title === provisionalTitle) return
+
+        // chat was deleted or renamed by the user while the title was generating
+        const currentTitle = await getTitleById(historyId)
+        if (currentTitle !== provisionalTitle) return
+
+        await updateHistory(historyId, title)
+
+        const isActiveChat =
+            useStoreMessageOption.getState().historyId === historyId ||
+            useStoreMessage.getState().historyId === historyId
+        if (isActiveChat) {
+            updatePageTitle(title)
+        }
+
+        window.dispatchEvent(
+            new CustomEvent(HISTORY_TITLE_UPDATED_EVENT, {
+                detail: { historyId, title }
+            })
+        )
+    })().catch((error) => {
+        console.error(`Error generating title in background: ${error}`)
+    })
 }
