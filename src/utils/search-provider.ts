@@ -52,6 +52,10 @@ export const SUPPORTED_SEARCH_PROVIDERS = [
         value: "firecrawl"
     },
     {
+        label: "CRW",
+        value: "crw"
+    },
+    {
         label: "Ollama Web search",
         value: "ollama-search"
     },
