@@ -17,6 +17,7 @@ import { firecrawlAPISearch } from "./search-engines/firecrawl"
 import { ollamaAPISearch } from "./search-engines/ollama"
 import { kagiAPISearch } from "./search-engines/kagi-api"
 import { perplexityAPISearch } from "./search-engines/perplexity-api"
+import { serplyAPISearch } from "./search-engines/serply-api"
 
 interface ProviderResults {
   url: any
@@ -71,6 +72,8 @@ const searchWeb = (provider: string, query: string) => {
       return kagiAPISearch(query)
     case "perplexity-api":
       return perplexityAPISearch(query)
+    case "serply-api":
+      return serplyAPISearch(query)
     default:
       return webGoogleSearch(query)
   }
