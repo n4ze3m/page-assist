@@ -57,6 +57,7 @@ export const ProviderIcons = ({
     // No llmman mark available, so fall back to the same neutral icon as
     // "custom" rather than the default branch, which would show another
     // provider's logo.
+    case "api-route":
     case "llmman":
       return <CpuIcon className={className} />
     case "openai":
