@@ -7,7 +7,7 @@ import {
 import { pageAssistModel } from "@/models"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { getOllamaURL, systemPromptForNonRagOption } from "@/services/ollama"
-import { generateTitle } from "@/services/title"
+import { generateTitleInBackground } from "@/services/title"
 import { type ChatHistory, type Message } from "@/store/option"
 import { generateHistory } from "@/utils/generate-history"
 import { humanMessageFormatter } from "@/utils/human-message"
@@ -31,7 +31,6 @@ import {
   saveHistory,
   saveMessage,
   updateChatHistoryCreatedAt,
-  updateHistory,
   updateLastUsedModel,
   updateLastUsedPrompt
 } from "@/db/dexie/helpers"
@@ -440,6 +439,7 @@ export const runMcpNormalChatMode = async (
   let historyWithUser = [...history, userEntry]
   let nextTimeOffset = 0
   let activeHistoryId = historyId
+  let provisionalHistoryTitle: string | null = null
   let currentAssistantId = generateID()
   let finalAssistantText = ""
 
@@ -595,6 +595,7 @@ export const runMcpNormalChatMode = async (
           messageSource
         )
         activeHistoryId = createdHistory.id
+        provisionalHistoryTitle = createdHistory.title
         setHistoryId(createdHistory.id)
         updatePageTitle(provisionalTitle)
       }
@@ -698,14 +699,13 @@ export const runMcpNormalChatMode = async (
 
           await updateChatHistoryCreatedAt(activeHistoryId)
 
-          if (!historyId) {
-            const generatedTitle = await generateTitle(
-              selectedModel,
-              [...historyWithUser, assistantHistoryEntry],
-              message
-            )
-            await updateHistory(activeHistoryId, generatedTitle)
-            updatePageTitle(generatedTitle)
+          if (provisionalHistoryTitle) {
+            generateTitleInBackground({
+              historyId: activeHistoryId,
+              model: selectedModel,
+              history: [...historyWithUser, assistantHistoryEntry],
+              provisionalTitle: provisionalHistoryTitle
+            })
           }
         }
 
