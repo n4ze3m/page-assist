@@ -7,8 +7,8 @@ import {
   BrainCog,
   CogIcon,
   EraserIcon,
-  // EraserIcon,
   HistoryIcon,
+  List,
   PlusSquare,
   XIcon,
   MessageSquareShareIcon
@@ -143,18 +143,29 @@ export const SidepanelHeader = ({
             <EraserIcon className="size-4 text-gray-500 dark:text-gray-400" />
           </button>
         )}
-        <Tooltip title={t("tooltip.history")}>
-          <button
-            onClick={() => {
-              setSidebarOpen(true)
-            }}
-            className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
-            <HistoryIcon className="size-4 text-gray-500 dark:text-gray-400" />
-          </button>
-        </Tooltip>
-        <PromptSelect
-          selectedSystemPrompt={selectedSystemPrompt}
-          setSelectedSystemPrompt={setSelectedSystemPrompt}
+       <Tooltip title={t("tooltip.history")}>
+  <button
+    onClick={() => {
+      setSidebarOpen(true)
+    }}
+    className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+    <HistoryIcon className="size-4 text-gray-500 dark:text-gray-400" />
+  </button>
+</Tooltip>
+
+<Tooltip title="Message outline">
+  <button
+    onClick={() => {
+      window.dispatchEvent(new Event("toggle-message-outline"))
+    }}
+    className="flex items-center space-x-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-700">
+    <List className="size-4 text-gray-500 dark:text-gray-400" />
+  </button>
+</Tooltip>
+
+<PromptSelect
+  selectedSystemPrompt={selectedSystemPrompt}
+  setSelectedSystemPrompt={setSelectedSystemPrompt}
           setSelectedQuickPrompt={setSelectedQuickPrompt}
           iconClassName="size-4"
           className="text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
