@@ -86,7 +86,12 @@ export function removeReasoning(text: string): string {
     `<(${tags.join("|")})>.*?</(${tags.join("|")})>`,
     "gis"
   )
-  return text.replace(tagPattern, "").trim()
+
+  const orphanClosePattern = new RegExp(
+    `^[\\s\\S]*</(${tags.join("|")})>`,
+    "i"
+  )
+  return text.replace(tagPattern, "").replace(orphanClosePattern, "").trim()
 }
 export function mergeReasoningContent(
   originalText: string,
