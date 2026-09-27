@@ -109,7 +109,8 @@ const apiTavilySearch = async (tavilySearchApi: string, query: string): Promise<
             },
             body: JSON.stringify({
                 api_key: tavilySearchApi,
-                query,
+                // Tavily rejects queries longer than 1500 characters
+                query: query.slice(0, 1500),
                 max_results: MAX_SEARCH_RESULTS,
                 include_answer: isSimpleMode
             }),
