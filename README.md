@@ -38,6 +38,19 @@ Checkout the Demo (v1.0.0):
 <table>
   <tr>
     <td align="center" width="200">
+      <a href="https://aihubmix.com/?aff=N9Wa">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/aihubmix-dark.svg" />
+          <img src="assets/sponsors/aihubmix-light.svg" alt="AIHubMix" width="180" />
+        </picture>
+      </a>
+    </td>
+    <td>
+      <a href="https://aihubmix.com/?aff=N9Wa"><b>AIHubMix</b></a> is a compliant LLM API aggregation platform that has operated reliably for three years. It partners with model developers and cloud inference providers to offer more than 800 models through a single API, with real-time monitoring for production reliability.
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="200">
       <a href="https://www.atlascloud.ai/?utm_source=github&utm_medium=link&utm_campaign=page-assist">
         <img src="https://www.atlascloud.ai/logo.svg" alt="Atlas Cloud" height="60" />
       </a>
