@@ -2,7 +2,7 @@ import { useState } from "react"
 import { CheckIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
 type Props = {
-  onClick?: () => void
+  onClick?: () => void | Promise<void>
   disabled?: boolean
   className?: string
   text?: string
@@ -23,10 +23,10 @@ export const SaveButton = ({
   return (
     <button
       type={btnType}
-      onClick={() => {
+      onClick={async () => {
         setClickedSave(true)
         if (onClick) {
-          onClick()
+          await onClick()
         }
         setTimeout(() => {
           setClickedSave(false)
