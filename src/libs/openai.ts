@@ -20,7 +20,7 @@ export const isOpenRouter = (baseUrl: string) => {
     return !!baseUrl && baseUrl.includes("openrouter.ai")
   }
 }
- 
+
 const buildOpenRouterModelsUrl = (
   baseUrl: string,
   modelType?: "chat" | "embedding"

@@ -3,7 +3,7 @@ import { VectorStore } from "@langchain/core/vectorstores"
 import type { EmbeddingsInterface } from "@langchain/core/embeddings"
 import { Document } from "@langchain/core/documents"
 import { getVector, insertVector } from "@/db/dexie/vector"
-import { getMaxContextSize } from "@/services/kb"
+import { getMaxContextSize } from "@/services/features/kb"
 /**
  * Interface representing a vector in memory. It includes the content
  * (text), the corresponding embedding (vector), and any associated

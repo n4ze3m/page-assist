@@ -1,11 +1,11 @@
-import { cleanUrl } from "~/libs/clean-url"
+import { cleanUrl } from "@/libs/clean-url"
 import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   geWebSearchFollowUpPrompt,
   promptForRag
-} from "~/services/ollama"
-import { type ChatHistory, type Message } from "~/store/option"
+} from "@/services/ai/ollama"
+import { type ChatHistory, type Message } from "@/store/option"
 import { addFileToSession, generateID, getSessionFiles } from "@/db/dexie/helpers"
 import { generateHistory } from "@/utils/generate-history"
 import { pageAssistModel } from "@/models"
@@ -18,13 +18,13 @@ import {
 } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { formatDocs } from "@/chain/chat-with-x"
-import { getAllDefaultModelSettings } from "@/services/model-settings"
-import { getNoOfRetrievedDocs } from "@/services/app"
+import { getAllDefaultModelSettings } from "@/services/ai/model-settings"
+import { getNoOfRetrievedDocs } from "@/services/features/app"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import { UploadedFile } from "@/db/dexie/types"
 import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
 import { PAMemoryVectorStore } from "@/libs/PAMemoryVectorStore"
-import { getMaxContextSize } from "@/services/kb"
+import { getMaxContextSize } from "@/services/features/kb"
 
 export const documentChatMode = async (
   message: string,
@@ -99,7 +99,7 @@ export const documentChatMode = async (
       ...messages,
       {
         isBot: false,
-        createdAt: Date.now(),
+       createdAt: Date.now(),
         name: "You",
         message,
         sources: [],
@@ -112,7 +112,7 @@ export const documentChatMode = async (
       },
       {
         isBot: true,
-        createdAt: Date.now(),
+       createdAt: Date.now(),
         name: selectedModel,
         message: "▋",
         sources: [],
@@ -126,7 +126,7 @@ export const documentChatMode = async (
       ...messages,
       {
         isBot: true,
-        createdAt: Date.now(),
+       createdAt: Date.now(),
         name: selectedModel,
         message: "▋",
         sources: [],
@@ -433,13 +433,13 @@ export const documentChatMode = async (
       ...history,
       {
         role: "user",
-        createdAt: Date.now(),
+       createdAt: Date.now(),
         content: message,
         image
       },
       {
         role: "assistant",
-        createdAt: Date.now(),
+       createdAt: Date.now(),
         content: fullText
       }
     ])

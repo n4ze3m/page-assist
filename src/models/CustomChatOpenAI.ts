@@ -30,6 +30,7 @@ import {
 } from "@langchain/core/output_parsers"
 import { JsonOutputKeyToolsParser } from "@langchain/core/output_parsers/openai_tools"
 import { wrapOpenAIClientError } from "./utils/openai.js"
+import { CustomAIMessageChunk } from "./CustomAIMessageChunk"
 import {
     ChatOpenAICallOptions,
     getEndpoint,
@@ -82,7 +83,7 @@ export function messageToOpenAIRole(message: BaseMessage): OpenAIRoleEnum {
             return extractGenericMessageCustomRole(message) as OpenAIRoleEnum
         }
         default:
-            return type as OpenAIRoleEnum
+            return "user"
     }
 }
 function openAIResponseToChatMessage(
@@ -102,18 +103,22 @@ function openAIResponseToChatMessage(
                     additional_kwargs: Object.keys(toolCallExtraContent).length
                         ? { tool_call_extra_content: toolCallExtraContent }
                         : undefined,
-                    tool_calls: message.tool_calls.map((tc) => ({
+                    tool_calls: message.tool_calls.map((tc) => {
+                      const fn = (tc as any).function || {}
+
+                      return {
                         id: tc.id,
-                        name: tc.function.name,
+                        name: fn.name,
                         args: (() => {
                             try {
-                                return JSON.parse(tc.function.arguments)
+                                return JSON.parse(fn.arguments || "{}")
                             } catch {
                                 return {}
                             }
                         })(),
                         type: "tool_call" as const
-                    }))
+                      }
+                    })
                 })
             }
             return new AIMessage({ content: message.content || "" })
@@ -567,8 +572,8 @@ export class CustomChatOpenAI<
             writable: true,
             value: void 0
         })
-        this.openAIApiKey =
-            (fields?.openAIApiKey ?? getEnvironmentVariable("OPENAI_API_KEY")) as string | undefined
+        const providedKey = typeof fields?.openAIApiKey === "string" ? fields.openAIApiKey : undefined
+        this.openAIApiKey = providedKey ?? getEnvironmentVariable("OPENAI_API_KEY")
 
         this.modelName = fields?.modelName ?? this.modelName
         this.modelKwargs = fields?.modelKwargs ?? {}
@@ -1036,7 +1041,7 @@ export class CustomChatOpenAI<
         let llm
         let outputParser
         if (method === "jsonMode") {
-            llm = this
+            llm = (this as any)
             if (isZodSchema(schema)) {
                 outputParser = StructuredOutputParser.fromZodSchema(schema)
             } else {
@@ -1061,7 +1066,7 @@ export class CustomChatOpenAI<
                     parameters: schema
                 }
             }
-            llm = this
+            llm = (this as any)
             outputParser = new JsonOutputKeyToolsParser({
                 returnSingle: true,
                 keyName: functionName

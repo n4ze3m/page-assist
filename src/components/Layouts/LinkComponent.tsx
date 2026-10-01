@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom"
-import { BetaTag } from "../Common/Beta"
+import { BetaTag } from "../Common/BetaTag"
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ")

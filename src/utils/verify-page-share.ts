@@ -1,4 +1,4 @@
-import { cleanUrl } from "~/libs/clean-url"
+import { cleanUrl } from "@/libs/clean-url"
 import fetcher from "@/libs/fetcher"
 
 export const verifyPageShareURL = async (url: string) => {

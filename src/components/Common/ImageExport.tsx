@@ -45,7 +45,7 @@ export const ImageExportWrapper = ({ messages }: { messages: Message[] }) => {
                   : "You"}
               </span>
 
-              <div className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark">
+              <div className="prose dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark">
                 <Markdown message={msg.message} />
                 {msg.images &&
                   msg.images.filter((img) => img.length > 0).length > 0 && (

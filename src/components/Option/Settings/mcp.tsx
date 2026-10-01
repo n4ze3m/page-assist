@@ -121,7 +121,7 @@ export const MCPSettingsApp = () => {
 
       // Auto-start OAuth flow after adding an OAuth server
       if (variables.authType === "oauth") {
-        const result = await browser.runtime.sendMessage({
+        const result: any = await browser.runtime.sendMessage({
           type: "mcp_oauth_start",
           serverId
         })
@@ -687,7 +687,7 @@ export const MCPSettingsApp = () => {
                             })
                             message.success("OAuth disconnected")
                           } else {
-                            const result = await browser.runtime.sendMessage({
+                            const result: any = await browser.runtime.sendMessage({
                               type: "mcp_oauth_start",
                               serverId: record.id
                             })

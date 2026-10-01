@@ -1,12 +1,12 @@
 import { useForm } from "@mantine/form"
 import { useMutation } from "@tanstack/react-query"
 import React from "react"
-import useDynamicTextareaSize from "~/hooks/useDynamicTextareaSize"
-import { useMessage } from "~/hooks/useMessage"
-import { toBase64 } from "~/libs/to-base64"
+import useDynamicTextareaSize from "@/hooks/useDynamicTextareaSize"
+import { useMessage } from "@/hooks/useMessage"
+import { toBase64 } from "@/libs/to-base64"
 import { Checkbox, Dropdown, Image, Modal, Switch, Tooltip, Popover, Radio } from "antd"
-import { useWebUI } from "~/store/webui"
-import { defaultEmbeddingModelForRag } from "~/services/ollama"
+import { useWebUI } from "@/store/webui"
+import { defaultEmbeddingModelForRag } from "@/services/ai/ollama"
 import {
   ImageIcon,
   MicIcon,
@@ -43,11 +43,11 @@ import {
   PAGE_ACTION_EXTENSION_ID
 } from "@/services/page-action"
 import { handleChatInputKeyDown } from "@/utils/key-down"
-import { getIsSimpleInternetSearch } from "@/services/search"
+import { getIsSimpleInternetSearch } from "@/services/features/search"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useFocusShortcuts } from "@/hooks/keyboard"
 import { useThinkingCapability } from "@/hooks/useThinkingCapability"
-import { useStoreChatModelSettings } from "~/store/model"
+import { useStoreChatModelSettings } from "@/store/model"
 import { getVariable } from "@/utils/select-variable"
 import { useMessageQueue } from "@/hooks/useMessageQueue"
 import { QueuedMessagesList } from "@/components/Common/QueuedMessagesList"

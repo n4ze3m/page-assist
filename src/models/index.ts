@@ -11,7 +11,7 @@ import { getGoogleCloudAccessToken } from "@/libs/vertex-auth"
 import {
   getAllDefaultModelSettings,
   getModelSettings
-} from "@/services/model-settings"
+} from "@/services/ai/model-settings"
 import { useStoreChatModelSettings, normalizeThinking } from "@/store/model"
 
 
@@ -188,6 +188,7 @@ export const pageAssistModel = async ({
         temperature: modelConfig?.temperature,
         topP: modelConfig?.topP,
         maxTokens: modelConfig?.maxTokens,
+        streaming: true,
         modelKwargs: {
           ...(modelConfig?.topK && { top_k: modelConfig.topK }),
           ...(modelConfig?.minP && { min_p: modelConfig.minP }),
@@ -209,23 +210,53 @@ export const pageAssistModel = async ({
     }
 
     if (providerInfo.provider === "ollama2") {
-      const _keepAlive = currentChatModelSettings?.keepAlive || modelSettings?.keepAlive || keepAlive || ""
+      const _keepAlive =
+        currentChatModelSettings?.keepAlive ||
+        modelSettings?.keepAlive ||
+        keepAlive ||
+        ""
       const payload = {
         keepAlive: _keepAlive.length > 0 ? _keepAlive : undefined,
-        temperature: currentChatModelSettings?.temperature ?? modelSettings?.temperature ?? temperature,
+        temperature:
+          currentChatModelSettings?.temperature ??
+          modelSettings?.temperature ??
+          temperature,
         topK: currentChatModelSettings?.topK ?? modelSettings?.topK ?? topK,
         topP: currentChatModelSettings?.topP ?? modelSettings?.topP ?? topP,
-        numCtx: currentChatModelSettings?.numCtx ?? modelSettings?.numCtx ?? numCtx,
-        numGpu: currentChatModelSettings?.numGpu ?? modelSettings?.numGpu ?? numGpu,
-        numPredict: currentChatModelSettings?.numPredict ?? modelSettings?.numPredict ?? numPredict,
-        useMMap: currentChatModelSettings?.useMMap ?? modelSettings?.useMMap ?? useMMap,
+        numCtx:
+          currentChatModelSettings?.numCtx ?? modelSettings?.numCtx ?? numCtx,
+        numGpu:
+          currentChatModelSettings?.numGpu ?? modelSettings?.numGpu ?? numGpu,
+        numPredict:
+          currentChatModelSettings?.numPredict ??
+          modelSettings?.numPredict ??
+          numPredict,
+        useMMap:
+          currentChatModelSettings?.useMMap ??
+          modelSettings?.useMMap ??
+          useMMap,
         minP: currentChatModelSettings?.minP ?? modelSettings?.minP ?? minP,
-        repeatPenalty: currentChatModelSettings?.repeatPenalty ?? modelSettings?.repeatPenalty ?? repeatPenalty,
-        repeatLastN: currentChatModelSettings?.repeatLastN ?? modelSettings?.repeatLastN ?? repeatLastN,
+        repeatPenalty:
+          currentChatModelSettings?.repeatPenalty ??
+          modelSettings?.repeatPenalty ??
+          repeatPenalty,
+        repeatLastN:
+          currentChatModelSettings?.repeatLastN ??
+          modelSettings?.repeatLastN ??
+          repeatLastN,
         tfsZ: currentChatModelSettings?.tfsZ ?? modelSettings?.tfsZ ?? tfsZ,
-        numKeep: currentChatModelSettings?.numKeep ?? modelSettings?.numKeep ?? numKeep,
-        numThread: currentChatModelSettings?.numThread ?? modelSettings?.numThread ?? numThread,
-        useMlock: currentChatModelSettings?.useMlock ?? modelSettings?.useMLock ?? useMlock,
+        numKeep:
+          currentChatModelSettings?.numKeep ??
+          modelSettings?.numKeep ??
+          numKeep,
+        numThread:
+          currentChatModelSettings?.numThread ??
+          modelSettings?.numThread ??
+          numThread,
+        useMlock:
+          currentChatModelSettings?.useMlock ??
+          modelSettings?.useMLock ??
+          useMlock,
         thinking: normalizeThinking(
           currentChatModelSettings?.thinking ?? modelSettings?.thinking,
           model
@@ -254,6 +285,7 @@ export const pageAssistModel = async ({
       temperature: modelConfig?.temperature,
       topP: modelConfig?.topP,
       maxTokens: modelConfig?.maxTokens,
+      streaming: true,
       modelKwargs: {
         ...(modelConfig?.topK && { top_k: topK }),
         ...(modelConfig?.minP && { min_p: minP }),
@@ -270,23 +302,45 @@ export const pageAssistModel = async ({
     }) as any
   }
 
-  const _keepAlive = currentChatModelSettings?.keepAlive || modelSettings?.keepAlive || keepAlive || ""
+  const _keepAlive =
+    currentChatModelSettings?.keepAlive ||
+    modelSettings?.keepAlive ||
+    keepAlive ||
+    ""
   const payload = {
     keepAlive: _keepAlive.length > 0 ? _keepAlive : undefined,
-    temperature: currentChatModelSettings?.temperature ?? modelSettings?.temperature ?? temperature,
+    temperature:
+      currentChatModelSettings?.temperature ??
+      modelSettings?.temperature ??
+      temperature,
     topK: currentChatModelSettings?.topK ?? modelSettings?.topK ?? topK,
     topP: currentChatModelSettings?.topP ?? modelSettings?.topP ?? topP,
     numCtx: currentChatModelSettings?.numCtx ?? modelSettings?.numCtx ?? numCtx,
     numGpu: currentChatModelSettings?.numGpu ?? modelSettings?.numGpu ?? numGpu,
-    numPredict: currentChatModelSettings?.numPredict ?? modelSettings?.numPredict ?? numPredict,
-    useMMap: currentChatModelSettings?.useMMap ?? modelSettings?.useMMap ?? useMMap,
+    numPredict:
+      currentChatModelSettings?.numPredict ??
+      modelSettings?.numPredict ??
+      numPredict,
+    useMMap:
+      currentChatModelSettings?.useMMap ?? modelSettings?.useMMap ?? useMMap,
     minP: currentChatModelSettings?.minP ?? modelSettings?.minP ?? minP,
-    repeatPenalty: currentChatModelSettings?.repeatPenalty ?? modelSettings?.repeatPenalty ?? repeatPenalty,
-    repeatLastN: currentChatModelSettings?.repeatLastN ?? modelSettings?.repeatLastN ?? repeatLastN,
+    repeatPenalty:
+      currentChatModelSettings?.repeatPenalty ??
+      modelSettings?.repeatPenalty ??
+      repeatPenalty,
+    repeatLastN:
+      currentChatModelSettings?.repeatLastN ??
+      modelSettings?.repeatLastN ??
+      repeatLastN,
     tfsZ: currentChatModelSettings?.tfsZ ?? modelSettings?.tfsZ ?? tfsZ,
-    numKeep: currentChatModelSettings?.numKeep ?? modelSettings?.numKeep ?? numKeep,
-    numThread: currentChatModelSettings?.numThread ?? modelSettings?.numThread ?? numThread,
-    useMlock: currentChatModelSettings?.useMlock ?? modelSettings?.useMLock ?? useMlock,
+    numKeep:
+      currentChatModelSettings?.numKeep ?? modelSettings?.numKeep ?? numKeep,
+    numThread:
+      currentChatModelSettings?.numThread ??
+      modelSettings?.numThread ??
+      numThread,
+    useMlock:
+      currentChatModelSettings?.useMlock ?? modelSettings?.useMLock ?? useMlock,
     thinking: normalizeThinking(
       currentChatModelSettings?.thinking ?? modelSettings?.thinking,
       model

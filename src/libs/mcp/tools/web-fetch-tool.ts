@@ -1,7 +1,7 @@
 import { DynamicStructuredTool } from "@langchain/core/tools"
 import { z } from "zod"
 import { PageAssistHtmlLoader } from "@/loader/html"
-import { getMaxContextSize } from "@/services/kb"
+import { getMaxContextSize } from "@/services/features/kb"
 
 export const createWebFetchTool = () => {
   return new DynamicStructuredTool({

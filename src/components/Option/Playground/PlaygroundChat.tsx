@@ -1,7 +1,7 @@
 import React from "react"
-import { useMessageOption } from "~/hooks/useMessageOption"
+import { useMessageOption } from "@/hooks/useMessageOption"
 import { PlaygroundEmpty } from "./PlaygroundEmpty"
-import { PlaygroundMessage } from "~/components/Common/Playground/Message"
+import { PlaygroundMessage } from "@/components/Common/Playground/Message"
 import { MessageSourcePopup } from "@/components/Common/Playground/MessageSourcePopup"
 import { useStorage } from "@plasmohq/storage/hook"
 import { usePlaygroundMessageGroups } from "@/components/Common/Playground/message-groups"
@@ -87,6 +87,7 @@ const PlaygroundChatComponent = () => {
             modelName={message?.modelName}
             createdAt={message?.createdAt}
             temporaryChat={temporaryChat}
+            uiStreaming={message?.uiStreaming}
             messageKind={message?.messageKind}
             toolCalls={message?.toolCalls}
             toolCallId={message?.toolCallId}

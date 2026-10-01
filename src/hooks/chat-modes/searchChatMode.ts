@@ -1,22 +1,20 @@
-import { cleanUrl } from "~/libs/clean-url"
-import {
-  geWebSearchFollowUpPrompt,
-  getOllamaURL
-} from "~/services/ollama"
-import { type ChatHistory, type Message } from "~/store/option"
+import { cleanUrl } from "@/libs/clean-url"
+import { geWebSearchFollowUpPrompt, getOllamaURL } from "@/services/ai/ollama"
+import { type ChatHistory, type Message } from "@/store/option"
 import { generateID } from "@/db/dexie/helpers"
-import { getSystemPromptForWeb, isQueryHaveWebsite } from "~/web/web"
+import { getSystemPromptForWeb, isQueryHaveWebsite } from "@/web/web"
 import { generateHistory } from "@/utils/generate-history"
 import { pageAssistModel } from "@/models"
 import { humanMessageFormatter } from "@/utils/human-message"
-import {
-  isReasoningEnded,
-  isReasoningStarted,
-  mergeReasoningContent,
-  removeReasoning
-} from "@/libs/reasoning"
+import { removeReasoning } from "@/libs/reasoning"
 import { getModelNicknameByID } from "@/db/dexie/nickname"
 import { systemPromptFormatter } from "@/utils/system-message"
+import {
+  CURSOR,
+  streamChatResponse,
+  type StreamConfig
+} from "./sharedStreaming"
+import { STREAM_REVEAL } from "../streamingConfig"
 
 export const searchChatMode = async (
   message: string,
@@ -40,9 +38,12 @@ export const searchChatMode = async (
     setHistoryId,
     images
   }: {
+    images?: string[]
     selectedModel: string
     useOCR: boolean
-    setMessages: (messages: Message[] | ((prev: Message[]) => Message[])) => void
+    setMessages: (
+      messages: Message[] | ((prev: Message[]) => Message[])
+    ) => void
     setIsSearchingInternet: (value: boolean) => void
     saveMessageOnSuccess: (data: any) => Promise<string | null>
     saveMessageOnError: (data: any) => Promise<string | null>
@@ -52,24 +53,15 @@ export const searchChatMode = async (
     setAbortController: (controller: AbortController | null) => void
     historyId: string | null
     setHistoryId: (id: string) => void
-    images?: string[]
   }
 ) => {
   console.log("Using searchChatMode")
   const url = await getOllamaURL()
-
-  // Process images array for base64 formatting
-  const processedImages = (images || []).map((img) => {
-    if (img.length > 0 && !img.startsWith("data:image")) {
-      return `data:image/jpeg;base64,${img.split(",")[1]}`
-    }
-    return img
-  })
-
-  // Keep backward compatibility with single image
-  if (image.length > 0) {
+  if (image.length > 0 && !image.startsWith("data:")) {
     image = `data:image/jpeg;base64,${image.split(",")[1]}`
   }
+
+  const imagesToSave = images?.length > 0 ? images : image ? [image] : []
 
   const ollama = await pageAssistModel({
     model: selectedModel!,
@@ -81,9 +73,6 @@ export const searchChatMode = async (
 
   const modelInfo = await getModelNicknameByID(selectedModel)
   if (!isRegenerate) {
-    // Use images array if available, otherwise fall back to single image
-    const userImages = processedImages.length > 0 ? processedImages : (image ? [image] : [])
-
     newMessage = [
       ...messages,
       {
@@ -92,7 +81,7 @@ export const searchChatMode = async (
         name: "You",
         message,
         sources: [],
-        images: userImages
+        images: imagesToSave
       },
       {
         isBot: true,
@@ -121,9 +110,7 @@ export const searchChatMode = async (
     ]
   }
   setMessages(newMessage)
-  let fullText = ""
-  let contentToSave = ""
-  let timetaken = 0
+  let source: any[] = []
 
   try {
     setIsSearchingInternet(true)
@@ -146,29 +133,33 @@ export const searchChatMode = async (
       baseUrl: cleanUrl(url)
     })
 
-    // Build content array with text and images for question message
-    const questionContentArray: any[] = [
-      {
-        text: promptForQuestion,
-        type: "text"
-      }
-    ]
-
-    // Add all images to content array (use processedImages if available, otherwise single image)
-    const imagesToUse = processedImages.length > 0 ? processedImages : (image.length > 0 ? [image] : [])
-
-    imagesToUse.forEach((img) => {
-      questionContentArray.push({
-        image_url: img,
-        type: "image_url"
-      })
-    })
-
     let questionMessage = await humanMessageFormatter({
-      content: questionContentArray,
+      content: [
+        {
+          text: promptForQuestion,
+          type: "text"
+        }
+      ],
       model: selectedModel,
       useOCR: useOCR
     })
+
+    if (imagesToSave.length > 0) {
+      questionMessage = await humanMessageFormatter({
+        content: [
+          {
+            text: promptForQuestion,
+            type: "text"
+          },
+          ...imagesToSave.map((image_url) => ({
+            image_url,
+            type: "image_url" as const
+          }))
+        ],
+        model: selectedModel,
+        useOCR: useOCR
+      })
+    }
     try {
       const isWebQuery = await isQueryHaveWebsite(query)
       if (!isWebQuery) {
@@ -181,29 +172,36 @@ export const searchChatMode = async (
     }
     // }
 
-    const { prompt, source } = await getSystemPromptForWeb(query)
+    const { prompt, source: webSource } = await getSystemPromptForWeb(query)
+    source = webSource
     setIsSearchingInternet(false)
 
-    // Build content array with text and all images
-    const contentArray: any[] = [
-      {
-        text: message,
-        type: "text"
-      }
-    ]
-
-    imagesToUse.forEach((img) => {
-      contentArray.push({
-        image_url: img,
-        type: "image_url"
-      })
-    })
-
     let humanMessage = await humanMessageFormatter({
-      content: contentArray,
+      content: [
+        {
+          text: message,
+          type: "text"
+        }
+      ],
       model: selectedModel,
       useOCR: useOCR
     })
+    if (imagesToSave.length > 0) {
+      humanMessage = await humanMessageFormatter({
+        content: [
+          {
+            text: message,
+            type: "text"
+          },
+          ...imagesToSave.map((image_url) => ({
+            image_url,
+            type: "image_url" as const
+          }))
+        ],
+        model: selectedModel,
+        useOCR: useOCR
+      })
+    }
 
     const applicationChatHistory = await generateHistory(history, selectedModel)
 
@@ -215,151 +213,97 @@ export const searchChatMode = async (
       )
     }
 
-    let generationInfo: any | undefined = undefined
-
-    const chunks = await ollama.stream(
-      [...applicationChatHistory, humanMessage],
-      {
-        signal: signal,
-        callbacks: [
-          {
-            handleLLMEnd(output: any): any {
-              try {
-                generationInfo = output?.generations?.[0][0]?.generationInfo
-              } catch (e) {
-                console.error("handleLLMEnd error", e)
-              }
-            }
-          }
-        ]
-      }
-    )
-    let count = 0
-    let reasoningStartTime: Date | undefined = undefined
-    let reasoningEndTime: Date | undefined = undefined
-    let apiReasoning = false
-    for await (const chunk of chunks) {
-      if (chunk?.additional_kwargs?.reasoning_content) {
-        const reasoningContent = mergeReasoningContent(
-          fullText,
-          chunk?.additional_kwargs?.reasoning_content || ""
-        )
-        contentToSave = reasoningContent
-        fullText = reasoningContent
-        apiReasoning = true
-      }
-
-      if (apiReasoning && chunk?.content) {
-        fullText += "</think>"
-        contentToSave += "</think>"
-        apiReasoning = false
-      }
-
-      contentToSave += chunk?.content
-      fullText += chunk?.content
-      if (count === 0) {
-        setIsProcessing(true)
-      }
-      if (isReasoningStarted(fullText) && !reasoningStartTime) {
-        reasoningStartTime = new Date()
-      }
-
-      if (
-        reasoningStartTime &&
-        !reasoningEndTime &&
-        isReasoningEnded(fullText)
-      ) {
-        reasoningEndTime = new Date()
-        const reasoningTime =
-          reasoningEndTime.getTime() - reasoningStartTime.getTime()
-        timetaken = reasoningTime
-      }
-      setMessages((prev) => {
-        return prev.map((message) => {
-          if (message.id === generateMessageId) {
-            return {
-              ...message,
-              message: fullText + "▋",
-              reasoning_time_taken: timetaken
-            }
-          }
-          return message
-        })
-      })
-      count++
+    const config = {
+      cursor: CURSOR,
+      reveal: STREAM_REVEAL
     }
-    // update the message with the full text
-    setMessages((prev) => {
-      return prev.map((message) => {
-        if (message.id === generateMessageId) {
-          return {
-            ...message,
-            message: fullText,
-            sources: source,
-            generationInfo,
-            reasoning_time_taken: timetaken
-          }
+
+    const onComplete = async (
+      fullText: string,
+      generationInfo?: any,
+      timetaken?: number
+    ) => {
+      setHistory([
+        ...history,
+        {
+          role: "user",
+          createdAt: Date.now(),
+          content: message,
+          images: imagesToSave,
+          image
+        },
+        {
+          role: "assistant",
+          createdAt: Date.now(),
+          content: fullText
         }
-        return message
+      ])
+
+      await saveMessageOnSuccess({
+        historyId,
+        setHistoryId,
+        isRegenerate,
+        selectedModel: selectedModel,
+        message,
+        image,
+        images: imagesToSave,
+        fullText,
+        source,
+        generationInfo,
+        reasoning_time_taken: timetaken
       })
-    })
 
-    const imagesToSave = processedImages.length > 0 ? processedImages : (image ? [image] : [])
-
-    setHistory([
-      ...history,
-      {
-        role: "user",
-        createdAt: Date.now(),
-        content: message,
-        image: imagesToSave.length > 0 ? imagesToSave[0] : undefined,
-        images: imagesToSave.length > 0 ? imagesToSave : undefined
-      },
-      {
-        role: "assistant",
-        createdAt: Date.now(),
-        content: fullText
-      }
-    ])
-
-    await saveMessageOnSuccess({
-      historyId,
-      setHistoryId,
-      isRegenerate,
-      selectedModel: selectedModel,
-      message,
-      image: imagesToSave.length > 0 ? imagesToSave[0] : "",
-      images: imagesToSave,
-      fullText,
-      source,
-      generationInfo,
-      reasoning_time_taken: timetaken
-    })
-
-    setIsProcessing(false)
-    setStreaming(false)
-  } catch (e) {
-    const imagesToSave = processedImages.length > 0 ? processedImages : (image ? [image] : [])
-
-    const errorSave = await saveMessageOnError({
-      e,
-      botMessage: fullText,
-      history,
-      historyId,
-      image: imagesToSave.length > 0 ? imagesToSave[0] : "",
-      images: imagesToSave,
-      selectedModel,
-      setHistory,
-      setHistoryId,
-      userMessage: message,
-      isRegenerating: isRegenerate
-    })
-
-    if (!errorSave) {
-      throw e // Re-throw to be handled by the calling function
+      setIsProcessing(false)
+      setStreaming(false)
     }
+
+    const onError = async (e: any, fullText: string) => {
+      const errorSave = await saveMessageOnError({
+        e,
+        botMessage: fullText,
+        history,
+        historyId,
+        image,
+        images: imagesToSave,
+        selectedModel,
+        setHistory,
+        setHistoryId,
+        userMessage: message,
+        isRegenerating: isRegenerate
+      })
+
+      if (!errorSave) {
+        throw e // Re-throw to be handled by the calling function
+      }
+      setIsProcessing(false)
+      setStreaming(false)
+    }
+
+    setStreaming(true)
+    setIsProcessing(true)
+
+    await streamChatResponse({
+      ollama,
+      applicationChatHistory,
+      humanMessage,
+      userMessage: message,
+      selectedModel,
+      messages,
+      isRegenerate,
+      signal,
+      config,
+      setMessages,
+      onComplete,
+      onError,
+      image,
+      images: imagesToSave,
+      sources: source,
+      messageType: ""
+    })
+  } catch (e) {
     setIsProcessing(false)
     setStreaming(false)
+    throw e
   } finally {
     setAbortController(null)
   }

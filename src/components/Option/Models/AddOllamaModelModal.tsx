@@ -4,7 +4,7 @@ import { Input, Modal, notification, Button } from "antd"
 import { Download, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useState, useEffect } from "react"
-import { getDownloadState } from "~/utils/pull-ollama"
+import { getDownloadState } from "@/utils/pull-ollama"
 import { browser } from "wxt/browser"
 import { CancelPullingModel } from "./CancelPullingModel"
 

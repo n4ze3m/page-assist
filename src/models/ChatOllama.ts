@@ -512,4 +512,21 @@ export class ChatOllama
             .join("\n")
         return formattedMessages
     }
+
+    /** @ignore */
+    async _call(
+        messages: BaseMessage[],
+        options: this["ParsedCallOptions"],
+        runManager?: CallbackManagerForLLMRun
+    ): Promise<string> {
+        const chunks = []
+        for await (const chunk of this._streamResponseChunks(
+            messages,
+            options,
+            runManager
+        )) {
+            chunks.push(chunk.message.content)
+        }
+        return chunks.join("")
+    }
 }

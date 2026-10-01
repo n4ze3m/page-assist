@@ -1,4 +1,4 @@
-import { type ChatHistory, type Message } from "~/store/option"
+import { type ChatHistory, type Message } from "@/store/option"
 import {
   deleteChatForEdit,
   formatToChatHistory,
@@ -40,35 +40,32 @@ export const createRegenerateLastMessage = ({
     if (!isOk) {
       return
     }
-    if (currentHistory.length > 0) {
-      const lastUserIndex = currentHistory.findLastIndex(
-        (message) => message.role === "user"
-      )
 
-      if (lastUserIndex === -1) {
-        return
-      }
+    const lastUserIndex = currentHistory.findLastIndex(
+      (message) => message.role === "user"
+    )
 
-      const lastMessage = currentHistory[lastUserIndex]
-      const newHistory = currentHistory.slice(0, lastUserIndex)
-      const newMessages = currentMessages.slice(0, lastUserIndex + 1)
+    if (lastUserIndex === -1 || currentMessages.length === 0) {
+      return
+    }
 
-      setHistory(newHistory)
-      setMessages(newMessages)
-      await removeMessageUsingHistoryIdFn(currentHistoryId)
-
-      if (lastMessage.role === "user") {
-        const newController = new AbortController()
-        await onSubmit({
-          message: lastMessage.content,
-          image: lastMessage.image || "",
-          images: lastMessage.images || [],
-          isRegenerate: true,
-          messages: newMessages,
-          memory: newHistory,
-          controller: newController
-        })
-      }
+    const lastMessage = currentHistory[lastUserIndex]
+    const newHistory = currentHistory.slice(0, lastUserIndex)
+    const newMessages = currentMessages.slice(0, lastUserIndex + 1)
+    setHistory(newHistory)
+    setMessages(newMessages)
+    await removeMessageUsingHistoryIdFn(currentHistoryId)
+    if (lastMessage.role === "user") {
+      const newController = new AbortController()
+      await onSubmit({
+        message: lastMessage.content,
+        image: lastMessage.image ?? "",
+        images: lastMessage.images ?? [],
+        isRegenerate: true,
+        messages: newMessages,
+        memory: newHistory,
+        controller: newController
+      })
     }
   }
 }
@@ -96,28 +93,10 @@ export const createEditMessage = ({
     isHuman: boolean,
     isSend: boolean
   ) => {
-    const currentMessages =
-      typeof messages === "function" ? messages() : messages
-    const currentHistory =
-      typeof history === "function" ? history() : history
+    let newMessages = typeof messages === "function" ? messages() : messages
+    let newHistory = typeof history === "function" ? history() : history
     const currentHistoryId =
       typeof historyId === "function" ? historyId() : historyId
-    const newMessages = currentMessages.map((currentMessage, currentIndex) =>
-      currentIndex === index
-        ? {
-            ...currentMessage,
-            message
-          }
-        : currentMessage
-    )
-    const newHistory = currentHistory.map((currentMessage, currentIndex) =>
-      currentIndex === index
-        ? {
-            ...currentMessage,
-            content: message
-          }
-        : currentMessage
-    )
 
     // if human message and send then only trigger the submit
     if (isHuman && isSend) {
@@ -128,6 +107,7 @@ export const createEditMessage = ({
       }
 
       const currentHumanMessage = newMessages[index]
+      newMessages[index].message = message
       const previousMessages = newMessages.slice(0, index + 1)
       setMessages(previousMessages)
       const previousHistory = newHistory.slice(0, index)
@@ -137,7 +117,7 @@ export const createEditMessage = ({
       const abortController = new AbortController()
       await onSubmit({
         message: message,
-        image: currentHumanMessage.images[0] || "",
+        image: currentHumanMessage.images?.[0] || "",
         isRegenerate: true,
         messages: previousMessages,
         memory: previousHistory,
@@ -146,8 +126,9 @@ export const createEditMessage = ({
       })
       return
     }
-
+    newMessages[index].message = message
     setMessages(newMessages)
+    newHistory[index].content = message
     setHistory(newHistory)
     await updateMessageByIndex(currentHistoryId, index, message)
   }
@@ -174,8 +155,8 @@ export const createBranchMessage = ({
 }) => {
   return async (index: number) => {
     try {
-      const activeHistoryId = getHistoryId?.() ?? historyId
-      const newBranch = await generateBranchMessage(activeHistoryId, index)
+      const currentHistoryId = getHistoryId ? getHistoryId() : historyId
+      const newBranch = await generateBranchMessage(currentHistoryId, index)
       setHistory(formatToChatHistory(newBranch.messages))
       setMessages(formatToMessage(newBranch.messages))
       setHistoryId(newBranch.history.id)
@@ -189,10 +170,10 @@ export const createBranchMessage = ({
         if (lastUsedPrompt.prompt_id) {
           const prompt = await getPromptById(lastUsedPrompt.prompt_id)
           if (prompt) {
-            setSelectedSystemPrompt(lastUsedPrompt.prompt_id)
+            setSelectedSystemPrompt?.(lastUsedPrompt.prompt_id)
           }
         }
-        setSystemPrompt(lastUsedPrompt.prompt_content)
+        setSystemPrompt?.(lastUsedPrompt.prompt_content)
       }
     } catch (e) {
       console.log(`[branch] ${e}`)

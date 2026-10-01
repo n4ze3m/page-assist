@@ -12,17 +12,17 @@ import {
   useSidebarShortcuts,
   useChatModeShortcuts
 } from "@/hooks/keyboard/useKeyboardShortcuts"
-import { copilotResumeLastChat } from "@/services/app"
+import { copilotResumeLastChat } from "@/services/features/app"
 import { Storage } from "@plasmohq/storage"
 import { useStorage } from "@plasmohq/storage/hook"
 import { notification } from "antd"
 import { ChevronDown } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { SidePanelBody } from "~/components/Sidepanel/Chat/body"
-import { SidepanelForm } from "~/components/Sidepanel/Chat/form"
-import { SidepanelHeader } from "~/components/Sidepanel/Chat/header"
-import { useMessage } from "~/hooks/useMessage"
+import { SidePanelBody } from "@/components/Sidepanel/Chat/body"
+import { SidepanelForm } from "@/components/Sidepanel/Chat/form"
+import { SidepanelHeader } from "@/components/Sidepanel/Chat/header"
+import { useMessage } from "@/hooks/useMessage"
 import { useStoreChatModelSettings } from "@/store/model"
 
 const SidepanelChat = () => {
@@ -79,6 +79,7 @@ const SidepanelChat = () => {
     })
   })
   const bgMsg = useBackgroundMessage()
+  const lastBgMessageRef = React.useRef<typeof bgMsg>(null)
 
   const setRecentMessagesOnLoad = async () => {
     const isEnabled = await copilotResumeLastChat()
@@ -187,28 +188,38 @@ const SidepanelChat = () => {
   }, [defaultChatWithWebsite, sidepanelTemporaryChat])
 
   React.useEffect(() => {
-    if (bgMsg && !streaming) {
-      if (selectedModel) {
-        if (bgMsg.type === "yt_summarize") {
-          onSubmit({
-            message: bgMsg.text,
-            image: "",
-            chatType: "youtube"
-          })
-        } else {
-          onSubmit({
-            message: bgMsg.text,
-            messageType: bgMsg.type,
-            image: ""
-          })
-        }
+    if (!bgMsg) return
+
+    if (streaming) {
+      // Defer processing until current stream finishes
+      return
+    }
+
+    if (lastBgMessageRef.current === bgMsg) {
+      return
+    }
+    lastBgMessageRef.current = bgMsg
+
+    if (selectedModel) {
+      if (bgMsg.type === "yt_summarize") {
+        onSubmit({
+          message: bgMsg.text,
+          image: "",
+          chatType: "youtube"
+        })
       } else {
-        notification.error({
-          message: t("formError.noModel")
+        onSubmit({
+          message: bgMsg.text,
+          messageType: bgMsg.type,
+          image: ""
         })
       }
+    } else {
+      notification.error({
+        message: t("formError.noModel")
+      })
     }
-  }, [bgMsg])
+  }, [bgMsg, streaming, selectedModel])
 
   return (
     <div className="flex h-full w-full">

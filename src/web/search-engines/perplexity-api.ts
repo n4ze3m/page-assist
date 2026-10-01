@@ -1,4 +1,4 @@
-import { cleanUrl } from "~/libs/clean-url"
+import { cleanUrl } from "@/libs/clean-url"
 import {
   getIsSimpleInternetSearch,
   totalSearchResults,
@@ -12,7 +12,7 @@ import {
   defaultEmbeddingModelForRag,
   getOllamaURL,
   getSelectedModel
-} from "~/services/ollama"
+} from "@/services/ollama"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 
 interface PerplexitySearchResult {

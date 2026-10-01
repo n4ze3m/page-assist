@@ -6,7 +6,7 @@ import { Avatar, Modal, Select } from "antd"
 import { Loader2, MousePointerClick, PlugZap, RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Trans, useTranslation } from "react-i18next"
-import { useMessage } from "~/hooks/useMessage"
+import { useMessage } from "@/hooks/useMessage"
 import { useStoreMessageOption } from "@/store/option"
 import {
   cachePageActionTools,
@@ -23,7 +23,7 @@ import {
   isOllamaRunning,
   setOllamaURL as saveOllamaURL,
   fetchChatModels
-} from "~/services/ollama"
+} from "@/services/ai/ollama"
 
 export const EmptySidePanel = () => {
   const [ollamaURL, setOllamaURL] = useState<string>("")
@@ -150,9 +150,8 @@ export const EmptySidePanel = () => {
           value={selectedModel}
           size="large"
           filterOption={(input, option) => {
-            //@ts-ignore
             return (
-              option?.label?.props["data-title"]
+              String(option?.searchLabel ?? "")
                 ?.toLowerCase()
                 ?.indexOf(input.toLowerCase()) >= 0
             )
@@ -178,7 +177,8 @@ export const EmptySidePanel = () => {
                 <span>{model?.nickname || model.model}</span>
               </span>
             ),
-            value: model.model
+            value: model.model,
+            searchLabel: model.name
           }))}
         />
 
@@ -193,7 +193,7 @@ export const EmptySidePanel = () => {
                 onChange={(e) => {
                   setChatMode(e.target.checked ? "rag" : "normal")
                 }}
-                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity"
+                className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all checked:border-blue-600 checked:bg-blue-600 before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity"
                 id="check"
               />
               <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100 ">

@@ -1,6 +1,6 @@
 import { getKnowledgeById, updateKnowledgeStatus } from "@/db/dexie/knowledge"
 import { PageAssistPDFUrlLoader } from "@/loader/pdf-url"
-import { getOllamaURL } from "@/services/ollama"
+import { getOllamaURL } from "@/services/ai/ollama"
 import { PageAssistVectorStore } from "./PageAssistVectorStore"
 import { PageAssisCSVUrlLoader } from "@/loader/csv"
 import { PageAssisTXTUrlLoader } from "@/loader/txt"

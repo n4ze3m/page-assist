@@ -8,7 +8,7 @@ import {
   updateChatHistoryCreatedAt
 } from "@/db/dexie/helpers"
 import { ChatDocuments } from "@/models/ChatTypes"
-import { generateTitleInBackground } from "@/services/title"
+import { generateTitleInBackground } from "@/services/features/title"
 import { ChatHistory } from "@/store/option"
 import { updatePageTitle } from "@/utils/update-page-title"
 
