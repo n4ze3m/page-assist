@@ -20,6 +20,7 @@ Page Assist supports internet search which can be used with your LLM. It works s
 - Ollama Web search
 - Kagi Search API (Private Beta - requires API access)
 - Perplexity Search API
+- Sofya Search API
 
 ## How to use Internet Search
 

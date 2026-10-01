@@ -66,5 +66,9 @@ export const SUPPORTED_SEARCH_PROVIDERS = [
     {
         label: "Serply Search API",
         value: "serply-api"
+    },
+    {
+        label: "Sofya Search API",
+        value: "sofya-api"
     }
 ]
