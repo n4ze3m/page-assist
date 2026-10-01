@@ -19,6 +19,7 @@ export const AddCustomModelModal: React.FC<Props> = ({ open, setOpen }) => {
   const queryClient = useQueryClient()
   const selectedProviderId = Form.useWatch("provider_id", form)
   const searchValue = Form.useWatch("model_id", form)
+  const selectedModelType = Form.useWatch("model_type", form)
 
   const { data, isPending } = useQuery({
     queryKey: ["fetchProviders"],
@@ -33,13 +34,14 @@ export const AddCustomModelModal: React.FC<Props> = ({ open, setOpen }) => {
     isFetching: isFetchingModels,
     status: modelsStatus
   } = useQuery({
-    queryKey: ["providerModels", selectedProviderId],
+    queryKey: ["providerModels", selectedProviderId, selectedModelType],
     queryFn: async () => {
       const config = await getOpenAIConfigById(selectedProviderId as string)
       const models = await getAllOpenAIModels({
         baseUrl: config.baseUrl,
         apiKey: config.apiKey,
-        customHeaders: config.headers
+        customHeaders: config.headers,
+        modelType: (selectedModelType as "chat" | "embedding") ?? "chat"
       })
       return models
     },

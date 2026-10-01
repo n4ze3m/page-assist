@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Trans, useTranslation } from "react-i18next"
+import { Link } from "react-router-dom"
 import {
   getOllamaURL,
   isOllamaRunning,
@@ -120,6 +121,19 @@ export const PlaygroundEmpty = () => {
                     />
                   </p>
                 )}
+
+              <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                <Trans
+                  i18nKey="playground:ollamaState.noOllamaHint"
+                  components={{
+                    anchor: (
+                      <Link
+                        to="/settings/ollama"
+                        className="text-blue-600 dark:text-blue-400 underline"></Link>
+                    )
+                  }}
+                />
+              </p>
             </div>
           )
         ) : null}

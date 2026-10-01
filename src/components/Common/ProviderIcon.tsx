@@ -6,6 +6,7 @@ import { LMStudioIcon } from "../Icons/LMStudio"
 import { OpenAiIcon } from "../Icons/OpenAI"
 import { TogtherMonoIcon } from "../Icons/Togther"
 import { OpenRouterIcon } from "../Icons/OpenRouter"
+import { OrcaRouterIcon } from "../Icons/OrcaRouter"
 import { LLamaFile } from "../Icons/Llamafile"
 import { GeminiIcon } from "../Icons/GeminiIcon"
 import { MistarlIcon } from "../Icons/Mistral"
@@ -26,9 +27,12 @@ import { ChutesIcon } from "../Icons/ChutesIcon"
 import { AnthropicIcon } from "../Icons/AnthropicIcon"
 import { AtlasCloudIcon } from "../Icons/AtlasCloud"
 import { BigModelZhipuIcon } from "../Icons/BigModelZhipuIcon"
+import { ZAiIcon } from "../Icons/ZAiIcon"
+import { UnoRouterIcon } from "../Icons/UnoRouterIcon"
 import { CanopyWaveIcon } from "../Icons/CanopyWaveIcon"
 import { MiniMaxIcon } from "../Icons/MiniMaxIcon"
 import { XiaomiMimoIcon } from "../Icons/XiaomiMimo"
+import { EvolinkIcon } from "../Icons/EvolinkIcon"
 
 export const ProviderIcons = ({
   provider,
@@ -50,15 +54,25 @@ export const ProviderIcons = ({
       return <GroqMonoIcon className={className} />
     case "lmstudio":
       return <LMStudioIcon className={className} />
+    // No llmman mark available, so fall back to the same neutral icon as
+    // "custom" rather than the default branch, which would show another
+    // provider's logo.
+    case "api-route":
+    case "llmman":
+      return <CpuIcon className={className} />
     case "openai":
       return <OpenAiIcon className={className} />
     case "together":
       return <TogtherMonoIcon className={className} />
     case "openrouter":
       return <OpenRouterIcon className={className} />
+    case "orcarouter":
+      return <OrcaRouterIcon className={className} />
     case "llamafile":
       return <LLamaFile className={className} />
     case "gemini":
+      return <GeminiIcon className={className} />
+    case "vertex":
       return <GeminiIcon className={className} />
     case "mistral":
       return <MistarlIcon className={className} />
@@ -96,10 +110,16 @@ export const ProviderIcons = ({
       return <CanopyWaveIcon className={className} />
     case 'zhipu':
       return <BigModelZhipuIcon className={className} />
+    case 'zai':
+      return <ZAiIcon className={className} />
+    case 'unorouter':
+      return <UnoRouterIcon className={className} />
     case 'minimax':
       return <MiniMaxIcon className={className} />
     case 'xiaomimimo':
       return <XiaomiMimoIcon className={className} />
+    case "evolink":
+      return <EvolinkIcon className={className} />
     default:
       return <OllamaIcon className={className} />
   }

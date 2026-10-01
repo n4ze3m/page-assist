@@ -2,11 +2,22 @@ import { ProviderIcons } from "@/components/Common/ProviderIcon"
 import { cleanUrl } from "@/libs/clean-url"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Avatar, Select } from "antd"
-import { Loader2, RotateCcw } from "lucide-react"
+import { Avatar, Modal, Select } from "antd"
+import { Loader2, MousePointerClick, PlugZap, RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Trans, useTranslation } from "react-i18next"
 import { useMessage } from "@/hooks/useMessage"
+import { useStoreMessageOption } from "@/store/option"
+import {
+  cachePageActionTools,
+  isPageActionInstalled,
+  isPageActionSupported,
+  PAGE_ACTION_EXTENSION_ID
+} from "@/services/page-action"
+import {
+  inspectCurrentPageWebMcpTools,
+  isWebMcpAvailable
+} from "@/services/webmcp"
 import {
   getOllamaURL,
   isOllamaRunning,
@@ -19,6 +30,84 @@ export const EmptySidePanel = () => {
   const { t } = useTranslation(["playground", "common"])
   const queryClient = useQueryClient()
   const [checkOllamaStatus] = useStorage("checkOllamaStatus", true)
+  const { pageAction, setPageAction, webMcp, setWebMcp } =
+    useStoreMessageOption()
+  const [pageActionMasterEnabled] = useStorage("pageActionEnabled", true)
+  const [showInstallModal, setShowInstallModal] = useState(false)
+  const [pageActionLoading, setPageActionLoading] = useState(false)
+  const [webMcpMasterEnabled] = useStorage("webMcpEnabled", true)
+  const [webMcpLoading, setWebMcpLoading] = useState(false)
+  const [webMcpNotice, setWebMcpNotice] = useState<string | null>(null)
+
+  const handleWebMcpToggle = async (checked: boolean) => {
+    if (!checked) {
+      setWebMcp(false)
+      return
+    }
+    setWebMcpLoading(true)
+    try {
+      let supported = false
+      let toolCount = 0
+      try {
+        const inspection = await inspectCurrentPageWebMcpTools()
+        supported = inspection.supported
+        toolCount = inspection.tools.length
+      } catch {
+        supported = false
+      }
+
+      if (!supported || toolCount === 0) {
+        setWebMcpNotice(
+          supported
+            ? t(
+                "common:webMcpEmpty.registering",
+                "This page supports WebMCP but has not registered any tools yet. Try again once it finishes loading."
+              )
+            : t(
+                "common:webMcpEmpty.unsupported",
+                "This page does not publish WebMCP tools. WebMCP needs Chrome 150 or later, and the site has to opt in."
+              )
+        )
+        return
+      }
+
+      setWebMcp(true)
+    } finally {
+      setWebMcpLoading(false)
+    }
+  }
+
+  const handlePageActionToggle = async (checked: boolean) => {
+    if (!checked) {
+      setPageAction(false)
+      return
+    }
+    setPageActionLoading(true)
+    try {
+      const installed = await isPageActionInstalled()
+      if (!installed) {
+        setShowInstallModal(true)
+        return
+      }
+      setPageAction(true)
+      cachePageActionTools().catch(() => {})
+    } finally {
+      setPageActionLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (!showInstallModal) return
+    const interval = setInterval(async () => {
+      const installed = await isPageActionInstalled()
+      if (installed) {
+        setShowInstallModal(false)
+        setPageAction(true)
+        cachePageActionTools().catch(() => {})
+      }
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [showInstallModal])
 
   const {
     data: ollamaInfo,
@@ -69,25 +158,23 @@ export const EmptySidePanel = () => {
           }}
           showSearch
           placeholder={t("common:selectAModel")}
-          style={{ width: "100%" }}
+          style={{ width: "100%", height: "100%" }}
           className="mt-4 min-w-60 max-w-64"
           options={ollamaInfo?.models?.map((model) => ({
             label: (
               <span
                 key={model.model}
                 data-title={model.name}
-                className="flex flex-row gap-3 items-center ">
+                className="flex flex-row gap-3 items-center whitespace-normal overflow-visible leading-[1.5]">
                 {model?.avatar ? (
                   <Avatar src={model.avatar} alt={model.name} size="small" />
                 ) : (
                   <ProviderIcons
                     provider={model?.provider}
-                    className="w-5 h-5"
+                    className="min-w-5 min-h-5 w-5 h-5"
                   />
                 )}
-                <span className="line-clamp-2">
-                  {model?.nickname || model.model}
-                </span>
+                <span>{model?.nickname || model.model}</span>
               </span>
             ),
             value: model.model,
@@ -131,6 +218,135 @@ export const EmptySidePanel = () => {
             </label>
           </div>
         </div>
+
+        {isPageActionSupported() && pageActionMasterEnabled && (
+          <div className="mt-1">
+            <div className="inline-flex items-center">
+              <label
+                className="relative flex items-center p-3 rounded-full cursor-pointer"
+                htmlFor="page-action-check">
+                <input
+                  type="checkbox"
+                  checked={pageAction}
+                  disabled={chatMode === "rag" || pageActionLoading}
+                  onChange={(e) => handlePageActionToggle(e.target.checked)}
+                  className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity disabled:opacity-50"
+                  id="page-action-check"
+                />
+                <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100 ">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-3.5 w-3.5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    strokeWidth="1">
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"></path>
+                  </svg>
+                </span>
+              </label>
+              <label
+                className="mt-px font-light cursor-pointer select-none text-gray-900 dark:text-gray-400 inline-flex items-center gap-1"
+                htmlFor="page-action-check">
+                <MousePointerClick className="h-4 w-4" />
+                {t("common:pageAction", "Page Action")}
+              </label>
+            </div>
+          </div>
+        )}
+
+        {isWebMcpAvailable() && webMcpMasterEnabled && (
+          <div className="mt-1">
+            <div className="inline-flex items-center">
+              <label
+                className="relative flex items-center p-3 rounded-full cursor-pointer"
+                htmlFor="webmcp-check">
+                <input
+                  type="checkbox"
+                  checked={webMcp}
+                  disabled={chatMode === "rag" || webMcpLoading}
+                  onChange={(e) => handleWebMcpToggle(e.target.checked)}
+                  className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity disabled:opacity-50"
+                  id="webmcp-check"
+                />
+                <span className="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100 ">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-3.5 w-3.5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    strokeWidth="1">
+                    <path
+                      fillRule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clipRule="evenodd"></path>
+                  </svg>
+                </span>
+              </label>
+              <label
+                className="mt-px font-light cursor-pointer select-none text-gray-900 dark:text-gray-400 inline-flex items-center gap-1"
+                htmlFor="webmcp-check">
+                <PlugZap className="h-4 w-4" />
+                {t("common:webMcp", "Page tools (WebMCP)")}
+              </label>
+            </div>
+          </div>
+        )}
+
+        <Modal
+          open={Boolean(webMcpNotice)}
+          onCancel={() => setWebMcpNotice(null)}
+          footer={null}
+          title={
+            <span className="text-gray-900 dark:text-white">
+              {t("common:webMcpEmpty.title", "No WebMCP tools on this page")}
+            </span>
+          }
+          classNames={{
+            content: "dark:!bg-[#262626]",
+            header: "dark:!bg-[#262626]"
+          }}>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            {webMcpNotice}
+          </p>
+        </Modal>
+
+        <Modal
+          open={showInstallModal}
+          onCancel={() => setShowInstallModal(false)}
+          footer={null}
+          title={
+            <span className="text-gray-900 dark:text-white">
+              {t("common:pageActionInstall.title", "Install Page Action")}
+            </span>
+          }
+          classNames={{
+            content: "dark:!bg-[#262626]",
+            header: "dark:!bg-[#262626]"
+          }}>
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              {t(
+                "common:pageActionInstall.description",
+                "Page Action is a companion extension that lets Page Assist act on the current tab (clicking, typing, navigating, and more). Install it to enable this option."
+              )}
+            </p>
+            <a
+              href={`https://chromewebstore.google.com/detail/${PAGE_ACTION_EXTENSION_ID}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors duration-200 bg-black text-white dark:bg-white dark:text-black hover:opacity-90">
+              {t(
+                "common:pageActionInstall.button",
+                "Install from Chrome Web Store"
+              )}
+            </a>
+          </div>
+        </Modal>
       </div>
     )
   }
@@ -165,60 +381,78 @@ export const EmptySidePanel = () => {
             </p>
           </div>
         )}
-        {!isRefetching && ollamaStatus === "success" ? (
-          ollamaInfo.isOk ? (
-            <div className="inline-flex  items-center space-x-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <p className="dark:text-gray-400 text-gray-900">
-                {t("ollamaState.running")}
+        {!isRefetching && ollamaStatus === "success" && ollamaInfo.isOk && (
+          <div className="inline-flex  items-center space-x-2">
+            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+            <p className="dark:text-gray-400 text-gray-900">
+              {t("ollamaState.running")}
+            </p>
+          </div>
+        )}
+
+        {!isRefetching && ollamaStatus === "success" && renderSection()}
+
+        {!isRefetching && ollamaStatus === "success" && !ollamaInfo.isOk && (
+          <div className="mt-4 flex flex-col space-y-2 justify-center items-center w-full">
+            <div className="inline-flex items-center space-x-2">
+              <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+              <p className="text-xs text-red-500">
+                {t("ollamaState.notRunning")}
               </p>
-            </div>
-          ) : (
-            <div className="flex flex-col space-y-2 justify-center items-center">
-              <div className="inline-flex  space-x-2">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <p className="dark:text-gray-400 text-gray-900">
-                  {t("ollamaState.notRunning")}
-                </p>
-              </div>
-
-              <input
-                className="bg-gray-100 dark:bg-black dark:text-gray-100 rounded-md px-4 py-2 mt-2 w-full"
-                type="url"
-                value={ollamaURL}
-                onChange={(e) => setOllamaURL(e.target.value)}
-              />
-
               <button
                 onClick={() => {
                   saveOllamaURL(ollamaURL)
                   refetch()
                 }}
-                className="inline-flex mt-4 items-center rounded-md border border-transparent bg-black px-2 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-white dark:text-gray-800 dark:hover:bg-gray-100 dark:focus:ring-gray-500 dark:focus:ring-offset-gray-100 disabled:opacity-50 ">
-                <RotateCcw className="h-4 w-4 mr-3" />
+                className="inline-flex items-center text-xs text-blue-600 dark:text-blue-400 hover:underline">
+                <RotateCcw className="h-3 w-3 mr-1" />
                 {t("common:retry")}
               </button>
-              {ollamaURL &&
-                cleanUrl(ollamaURL) !== "http://127.0.0.1:11434" && (
-                  <p className="text-xs text-gray-700 dark:text-gray-400 mb-4 text-center">
-                    <Trans
-                      i18nKey="playground:ollamaState.connectionError"
-                      components={{
-                        anchor: (
-                          <a
-                            href="https://github.com/n4ze3m/page-assist/blob/main/docs/connection-issue.md"
-                            target="__blank"
-                            className="text-blue-600 dark:text-blue-400"></a>
-                        )
-                      }}
-                    />
-                  </p>
-                )}
             </div>
-          )
-        ) : null}
 
-        {ollamaStatus === "success" && ollamaInfo.isOk && renderSection()}
+            <input
+              className="bg-gray-100 dark:bg-black dark:text-gray-100 text-sm rounded-md px-3 py-1.5 w-full"
+              type="url"
+              value={ollamaURL}
+              onChange={(e) => setOllamaURL(e.target.value)}
+            />
+
+            {ollamaURL && cleanUrl(ollamaURL) !== "http://127.0.0.1:11434" && (
+              <p className="text-xs text-gray-700 dark:text-gray-400 text-center">
+                <Trans
+                  i18nKey="playground:ollamaState.connectionError"
+                  components={{
+                    anchor: (
+                      <a
+                        href="https://github.com/n4ze3m/page-assist/blob/main/docs/connection-issue.md"
+                        target="__blank"
+                        className="text-blue-600 dark:text-blue-400"></a>
+                    )
+                  }}
+                />
+              </p>
+            )}
+
+            <p className="text-xs text-gray-700 dark:text-gray-400 text-center">
+              <Trans
+                i18nKey="playground:ollamaState.noOllamaHint"
+                components={{
+                  anchor: (
+                    <button
+                      onClick={() => {
+                        browser.tabs.create({
+                          url: browser.runtime.getURL(
+                            "/options.html#/settings/ollama"
+                          )
+                        })
+                      }}
+                      className="text-blue-600 dark:text-blue-400 underline"></button>
+                  )
+                }}
+              />
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

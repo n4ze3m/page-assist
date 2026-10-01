@@ -1,6 +1,6 @@
 import { urlRewriteRuntime } from "@/libs/runtime"
 import { cleanUrl } from "@/libs/clean-url"
-import { getSearxngURL, isSearxngJSONMode, getIsSimpleInternetSearch, totalSearchResults } from "@/services/features/search"
+import { getSearxngURL, isSearxngJSONMode, getSearxngApiKey, getIsSimpleInternetSearch, totalSearchResults } from "@/services/features/search"
 import { pageAssistEmbeddingModel } from "@/models/embedding"
 import type { Document } from "@langchain/core/documents"
 import { PageAssistVectorStore } from "@/libs/PageAssistVectorStore"
@@ -29,9 +29,10 @@ export const searxngSearch = async (query: string) => {
   }
 
   const isJSONMode = await isSearxngJSONMode()
+  const apiKey = await getSearxngApiKey()
   const results = isJSONMode
-    ? await searxngJSONSearch(searxngURL, query)
-    : await searxngWebSearch(searxngURL, query)
+    ? await searxngJSONSearch(searxngURL, query, apiKey)
+    : await searxngWebSearch(searxngURL, query, apiKey)
 
   const TOTAL_SEARCH_RESULTS = await totalSearchResults()
   const searchResults = results.slice(0, TOTAL_SEARCH_RESULTS)
@@ -92,18 +93,23 @@ export const searxngSearch = async (query: string) => {
   return searchResult
 }
 
-const searxngJSONSearch = async (baseURL: string, query: string) => {
+const searxngJSONSearch = async (baseURL: string, query: string, apiKey?: string) => {
   const searchURL = `${cleanUrl(baseURL)}?q=${encodeURIComponent(query)}&format=json`
 
   const abortController = new AbortController()
   setTimeout(() => abortController.abort(), 20000)
 
   try {
+    const headers: Record<string, string> = {
+      'Accept': 'application/json'
+    }
+    if (apiKey) {
+      headers['Authorization'] = `Bearer ${apiKey}`
+    }
+
     const response = await fetch(searchURL, {
       signal: abortController.signal,
-      headers: {
-        'Accept': 'application/json'
-      }
+      headers
     })
 
     if (!response.ok) {
@@ -123,7 +129,7 @@ const searxngJSONSearch = async (baseURL: string, query: string) => {
   }
 }
 
-const searxngWebSearch = async (baseURL: string, query: string) => {
+const searxngWebSearch = async (baseURL: string, query: string, apiKey?: string) => {
   const searchURL = `${cleanUrl(baseURL)}?q=${encodeURIComponent(query)}`
 
   await urlRewriteRuntime(cleanUrl(searchURL), "searxng")
@@ -132,8 +138,14 @@ const searxngWebSearch = async (baseURL: string, query: string) => {
   setTimeout(() => abortController.abort(), 10000)
 
   try {
+    const headers: Record<string, string> = {}
+    if (apiKey) {
+      headers['Authorization'] = `Bearer ${apiKey}`
+    }
+
     const htmlString = await fetch(searchURL, {
-      signal: abortController.signal
+      signal: abortController.signal,
+      headers
     }).then(response => response.text())
 
     const parser = new DOMParser()

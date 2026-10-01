@@ -48,7 +48,7 @@ vi.mock("@/db/dexie/helpers", () => ({
 vi.mock("@/db/dexie/types", () => ({}))
 vi.mock("@/utils/ff-error", () => ({ isDatabaseClosedError: () => false }))
 vi.mock("@/utils/update-page-title", () => ({ updatePageTitle: vi.fn() }))
-vi.mock("@/services/features/title", () => ({ generateTitle: vi.fn() }))
+vi.mock("@/services/features/title", () => ({ generateTitle: vi.fn(), HISTORY_TITLE_UPDATED_EVENT: "page-assist:history-title-updated" }))
 
 // Mock tanstack react-query hooks used in component to a stable state
 vi.mock("@tanstack/react-query", async () => {

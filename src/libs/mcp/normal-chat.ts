@@ -7,7 +7,7 @@ import {
 import { pageAssistModel } from "@/models"
 import { ChatDocuments } from "@/models/ChatTypes"
 import { getOllamaURL, systemPromptForNonRagOption } from "@/services/ollama"
-import { generateTitle } from "@/services/title"
+import { generateTitleInBackground } from "@/services/title"
 import { type ChatHistory, type Message } from "@/store/option"
 import { generateHistory } from "@/utils/generate-history"
 import { humanMessageFormatter } from "@/utils/human-message"
@@ -17,6 +17,9 @@ import { useStoreMessageOption } from "@/store/option"
 import { AIMessage, ToolMessage } from "@langchain/core/messages"
 import { concat } from "@langchain/core/utils/stream"
 import { getConfiguredMcpServers, createMcpClient } from "./client"
+import { McpServer, McpToolExecutionMode } from "./types"
+import { updateMcpServer } from "@/db/dexie/mcp"
+import { isWebMcpServer, setWebMcpToolMode } from "@/services/webmcp"
 import {
   McpBootstrapError,
   getMcpErrorMessage,
@@ -28,7 +31,6 @@ import {
   saveHistory,
   saveMessage,
   updateChatHistoryCreatedAt,
-  updateHistory,
   updateLastUsedModel,
   updateLastUsedPrompt
 } from "@/db/dexie/helpers"
@@ -64,6 +66,9 @@ type RunMcpNormalChatParams = {
   requireMcpApproval?: boolean
   messageSource?: "copilot" | "web-ui"
   webSearchAsTool?: boolean
+  extraMcpServers?: McpServer[]
+  extraSystemPrompt?: string
+  normalizeMcpToolCallArgs?: (toolName: string, args: unknown) => unknown
 }
 
 const createAssistantMessage = ({
@@ -78,6 +83,7 @@ const createAssistantMessage = ({
   modelImage?: string
 }): Message => ({
   isBot: true,
+  createdAt: Date.now(),
   name: selectedModel,
   message: "▋",
   sources: [],
@@ -105,6 +111,38 @@ const createAbortError = () => {
 type McpApprovalDecision = {
   approved: boolean
   reason?: string
+  alwaysAllow?: boolean
+}
+
+/**
+ * Remembers an "always allow" decision so the same tool stops asking. WebMCP
+ * tools are stored per site; every other server keeps it on its own record.
+ */
+const rememberToolExecutionMode = async (
+  server: McpServer | undefined,
+  toolName: string,
+  executionMode: McpToolExecutionMode
+) => {
+  if (!server) return
+
+  try {
+    if (isWebMcpServer(server)) {
+      if (!server.url) return
+      await setWebMcpToolMode(server.url, toolName, executionMode)
+      return
+    }
+
+    const cachedTools = server.cachedTools ?? []
+    const nextTools = cachedTools.some((tool) => tool.name === toolName)
+      ? cachedTools.map((tool) =>
+          tool.name === toolName ? { ...tool, executionMode } : tool
+        )
+      : [...cachedTools, { name: toolName, executionMode }]
+
+    await updateMcpServer({ id: server.id, cachedTools: nextTools })
+  } catch (error) {
+    console.error("Could not save the tool permission", error)
+  }
 }
 
 const waitForMcpToolApproval = ({
@@ -112,13 +150,15 @@ const waitForMcpToolApproval = ({
   toolCallId,
   toolName,
   serverName,
-  args
+  args,
+  canAlwaysAllow
 }: {
   signal: AbortSignal
   toolCallId: string
   toolName: string
   serverName?: string
   args?: unknown
+  canAlwaysAllow?: boolean
 }) =>
   new Promise<McpApprovalDecision>((resolve, reject) => {
     let settled = false
@@ -135,14 +175,7 @@ const waitForMcpToolApproval = ({
       clearPendingApproval()
     }
 
-    const settle = (
-      result:
-        | {
-            approved: boolean
-            reason?: string
-          }
-        | "abort"
-    ) => {
+    const settle = (result: McpApprovalDecision | "abort") => {
       if (settled) {
         return
       }
@@ -170,7 +203,9 @@ const waitForMcpToolApproval = ({
       toolName,
       serverName,
       args,
-      approve: () => settle({ approved: true }),
+      canAlwaysAllow,
+      approve: (options?: { alwaysAllow?: boolean }) =>
+        settle({ approved: true, alwaysAllow: options?.alwaysAllow === true }),
       reject: (reason?: string) =>
         settle({
           approved: false,
@@ -316,10 +351,19 @@ export const runMcpNormalChatMode = async (
     temporaryChat = false,
     requireMcpApproval = false,
     messageSource = "web-ui",
-    webSearchAsTool = false
+    webSearchAsTool = false,
+    extraMcpServers = [],
+    extraSystemPrompt,
+    normalizeMcpToolCallArgs
   }: RunMcpNormalChatParams
 ) => {
-  const configuredServers = await getConfiguredMcpServers()
+  const baseServers = await getConfiguredMcpServers()
+  const configuredServers = [
+    ...baseServers,
+    ...extraMcpServers.filter(
+      (extra) => !baseServers.some((base) => base.id === extra.id)
+    )
+  ]
   const memoryEnabled = await isMemoryEnabled()
   const memoryToolEnabled = await isMemoryToolEnabled()
 
@@ -368,6 +412,7 @@ export const runMcpNormalChatMode = async (
   const modelInfo = await getModelNicknameByID(selectedModel)
   const userEntry = {
     role: "user" as const,
+    createdAt: Date.now(),
     content: message,
     image: userImages[0],
     images: userImages
@@ -380,6 +425,7 @@ export const runMcpNormalChatMode = async (
       ...messages,
       {
         isBot: false,
+        createdAt: Date.now(),
         name: "You",
         message,
         sources: [],
@@ -393,6 +439,7 @@ export const runMcpNormalChatMode = async (
   let historyWithUser = [...history, userEntry]
   let nextTimeOffset = 0
   let activeHistoryId = historyId
+  let provisionalHistoryTitle: string | null = null
   let currentAssistantId = generateID()
   let finalAssistantText = ""
 
@@ -449,7 +496,7 @@ export const runMcpNormalChatMode = async (
     useOCR
   })
 
-  const applicationChatHistory = generateHistory(history, selectedModel)
+  const applicationChatHistory = await generateHistory(history, selectedModel)
   let isMemoryContextAdded = false
   let memoryContext = ""
   if (memoryEnabled) {
@@ -502,6 +549,14 @@ export const runMcpNormalChatMode = async (
   }
   }
 
+  if (extraSystemPrompt && extraSystemPrompt.trim().length > 0) {
+    applicationChatHistory.unshift(
+      await systemPromptFormatter({
+        content: extraSystemPrompt
+      })
+    )
+  }
+
   const hasMcpServers = configuredServers.length > 0
   const client = hasMcpServers ? createMcpClient(configuredServers) : null
   let boundModel: any
@@ -540,6 +595,7 @@ export const runMcpNormalChatMode = async (
           messageSource
         )
         activeHistoryId = createdHistory.id
+        provisionalHistoryTitle = createdHistory.title
         setHistoryId(createdHistory.id)
         updatePageTitle(provisionalTitle)
       }
@@ -597,11 +653,24 @@ export const runMcpNormalChatMode = async (
       })
 
       finalAssistantText = fullText
-      const storedToolCalls = toStoredToolCalls((aiMessage as any).tool_calls || [])
+      const storedToolCalls = toStoredToolCalls(
+        (aiMessage as any).tool_calls || [],
+        (aiMessage as any).additional_kwargs?.tool_call_extra_content || {}
+      ).map((toolCall) => ({
+        ...toolCall,
+        args: normalizeMcpToolCallArgs
+          ? normalizeMcpToolCallArgs(
+              toolCall.displayName ||
+                parseMcpToolName(toolCall.name).displayName,
+              toolCall.args
+            )
+          : toolCall.args
+      }))
 
       if (storedToolCalls.length === 0) {
         const assistantHistoryEntry = {
           role: "assistant" as const,
+          createdAt: Date.now(),
           content: fullText
         }
 
@@ -630,14 +699,13 @@ export const runMcpNormalChatMode = async (
 
           await updateChatHistoryCreatedAt(activeHistoryId)
 
-          if (!historyId) {
-            const generatedTitle = await generateTitle(
-              selectedModel,
-              [...historyWithUser, assistantHistoryEntry],
-              message
-            )
-            await updateHistory(activeHistoryId, generatedTitle)
-            updatePageTitle(generatedTitle)
+          if (provisionalHistoryTitle) {
+            generateTitleInBackground({
+              historyId: activeHistoryId,
+              model: selectedModel,
+              history: [...historyWithUser, assistantHistoryEntry],
+              provisionalTitle: provisionalHistoryTitle
+            })
           }
         }
 
@@ -646,6 +714,7 @@ export const runMcpNormalChatMode = async (
 
       const assistantToolCallEntry = {
         role: "assistant" as const,
+        createdAt: Date.now(),
         content: fullText,
         messageKind: "assistant_tool_calls" as const,
         toolCalls: storedToolCalls
@@ -704,13 +773,32 @@ export const runMcpNormalChatMode = async (
               (tool as any)?.metadata?.executionMode !== "allow"
 
             if (shouldRequireApproval) {
+              // Tool names carry the server name with spaces replaced, so match
+              // both spellings to find the server a tool belongs to.
+              const toolServerName =
+                toolCall.serverName || parsedTool.serverName
+              const toolServer = configuredServers.find(
+                (candidate) =>
+                  candidate.name === toolServerName ||
+                  candidate.name.replace(/\s+/g, "_") === toolServerName
+              )
+
               const approval = await waitForMcpToolApproval({
                 signal,
                 toolCallId: toolCall.id,
                 toolName: parsedTool.displayName,
                 serverName: toolCall.serverName || parsedTool.serverName,
-                args: toolCall.args
+                args: toolCall.args,
+                canAlwaysAllow: Boolean(toolServer)
               })
+
+              if (approval.approved && approval.alwaysAllow) {
+                await rememberToolExecutionMode(
+                  toolServer,
+                  parsedTool.displayName,
+                  "allow"
+                )
+              }
 
               if (!approval.approved) {
                 const rejectionReason = approval.reason?.trim()
@@ -751,6 +839,7 @@ export const runMcpNormalChatMode = async (
             ...uiMessages,
             {
               isBot: true,
+              createdAt: Date.now(),
               name: selectedModel,
               message: toolResultEntry.content,
               sources: [],
@@ -808,6 +897,7 @@ export const runMcpNormalChatMode = async (
             ...uiMessages,
             {
               isBot: true,
+              createdAt: Date.now(),
               name: selectedModel,
               message: toolErrorMessage,
               sources: [],
@@ -846,7 +936,37 @@ export const runMcpNormalChatMode = async (
 
       await Promise.all(pendingDbWrites)
 
-      lcConversation = [...lcConversation, aiMessage, ...toolMessages]
+      const toolImages = toolMessages.flatMap((toolMessage) => {
+        const images = (toolMessage as any)?.artifact?.images
+        return Array.isArray(images) ? images : []
+      })
+
+      let visionMessages: any[] = []
+      if (toolImages.length > 0) {
+        try {
+          const visionMessage = await humanMessageFormatter({
+            content: [
+              { type: "text", text: "Image(s) returned by the tool:" },
+              ...toolImages.map((image: any) => ({
+                type: "image_url",
+                image_url: `data:${image.mimeType || "image/png"};base64,${image.data}`
+              }))
+            ],
+            model: selectedModel,
+            useOCR
+          })
+          visionMessages = [visionMessage]
+        } catch (error) {
+          visionMessages = []
+        }
+      }
+
+      lcConversation = [
+        ...lcConversation,
+        aiMessage,
+        ...toolMessages,
+        ...visionMessages
+      ]
       appendAssistantPlaceholder()
     }
 

@@ -22,7 +22,7 @@ import { SaveButton } from "../SaveButton"
 import { getOCRLanguage } from "@/services/features/ocr"
 import { ocrLanguages } from "@/data/ocr-language"
 import { useMessage } from "@/hooks/useMessage"
-import { isThinkingCapableModel, isGptOssModel } from "@/libs/model-utils"
+import { useThinkingCapability } from "@/hooks/useThinkingCapability"
 
 type Props = {
   open: boolean
@@ -41,6 +41,7 @@ export const CurrentChatModelSettings = ({
   const [form] = Form.useForm()
   const cUserSettings = useStoreChatModelSettings()
   const { selectedModel } = useMessage()
+  const { supportsThinking, isGptOss } = useThinkingCapability(selectedModel)
   const {
     selectedSystemPrompt,
     uploadedFiles,
@@ -225,8 +226,7 @@ export const CurrentChatModelSettings = ({
               />
             </Form.Item>
 
-            {isThinkingCapableModel(selectedModel) &&
-              !isGptOssModel(selectedModel) && (
+            {supportsThinking && !isGptOss && (
                 <Form.Item
                   name="thinking"
                   valuePropName="checked"

@@ -21,8 +21,12 @@
             "group": "다운로드",
             "text": "텍스트 파일 (.txt)",
             "markdown": "마크다운 (.md)",
-            "json": "JSON 파일 (.json)"
+            "json": "JSON 파일 (.json)",
+            "image": "이미지 (.png)"
         },
         "share": "공유"
-    }
+    },
+    "chatSaved": "채팅이 저장되었습니다",
+    "temporaryChatSavedSuccessfully": "임시 채팅이 성공적으로 저장되었습니다",
+    "failedToSaveTemporaryChat": "임시 채팅 저장에 실패했습니다. 다시 시도해 주세요."
 }

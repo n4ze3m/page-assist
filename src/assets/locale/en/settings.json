@@ -11,6 +11,9 @@
         "label": "Language",
         "placeholder": "Select a language"
       },
+      "forceRTL": {
+        "label": "Always Use RTL Layout"
+      },
       "darkMode": {
         "label": "Change Theme",
         "options": {
@@ -63,6 +66,12 @@
       "userChatBubble": {
         "label": "Use Chat Bubble for User Messages"
       },
+      "hideChatScrollbar": {
+        "label": "Hide Chat Scrollbar"
+      },
+      "enableQuoteReply": {
+        "label": "Reply to Selected Text in Assistant Messages"
+      },
       "autoCopyResponseToClipboard": {
         "label": "Automatically Copy Response to Clipboard"
       },
@@ -111,6 +120,9 @@
       },
       "showMoreForLargeMessage": {
         "label": "Show 'Show more' for large human messages"
+      },
+      "showMessageTimestamp": {
+        "label": "Show Message Timestamp"
       },
       "sidebarPosition": {
         "label": "Sidebar Position",
@@ -161,6 +173,10 @@
       "searxng": {
         "url": {
           "label": "SearXNG URL"
+        },
+        "apiKey": {
+          "label": "SearXNG API Key (Optional)",
+          "placeholder": "Enter your SearXNG API key"
         }
       },
       "braveApi": {

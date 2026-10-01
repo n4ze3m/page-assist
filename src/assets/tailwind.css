@@ -179,22 +179,16 @@
 }
 
 /* Custom scrollbar styles for dark theme */
-@media (prefers-color-scheme: dark) {
-  .custom-scrollbar:hover::-webkit-scrollbar-track {
-    background-color: #262626;
-  }
+.dark .custom-scrollbar:hover::-webkit-scrollbar-track {
+  background-color: #262626;
 }
 
-@media (prefers-color-scheme: dark) {
-  .custom-scrollbar:hover::-webkit-scrollbar-thumb {
-    background-color: #404040;
-  }
+.dark .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: #404040;
 }
 
-@media (prefers-color-scheme: dark) {
-  .custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
-    background-color: #525252;
-  }
+.dark .custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
+  background-color: #525252;
 }
 
 /* For Firefox */
@@ -203,10 +197,8 @@
   scrollbar-width: thin;
 }
 
-@media (prefers-color-scheme: dark) {
-  .custom-scrollbar {
-    scrollbar-color: #404040 #262626;
-  }
+.dark .custom-scrollbar {
+  scrollbar-color: #404040 #262626;
 }
 
 @keyframes shimmer-text {
@@ -228,16 +220,14 @@
   color: #9ea0a4;
 }
 
-@media (prefers-color-scheme: dark) {
-  .shimmer-text {
-    background: linear-gradient(90deg, #a0a2a6 25%, #f5f5f5 50%, #a0a2a6 75%);
-    background-size: 200% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shimmer-text 4s linear infinite;
-    color: #bbbdc1;
-  }
+.dark .shimmer-text {
+  background: linear-gradient(90deg, #a0a2a6 25%, #f5f5f5 50%, #a0a2a6 75%);
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-text 4s linear infinite;
+  color: #bbbdc1;
 }
 /* =====================================
    Design tokens — change once, theme everywhere
@@ -283,11 +273,9 @@
   scrollbar-width: thin; /* Firefox */
 }
 
-@media (prefers-color-scheme: dark) {
-  .table-wrapper {
-    background-color: var(--tbl-bg-dark);
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2);
-  }
+.dark .table-wrapper {
+  background-color: var(--tbl-bg-dark);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2);
 }
 
 /* WebKit scrollbar */
@@ -304,10 +292,8 @@
   border-radius: 4px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .table-wrapper::-webkit-scrollbar-thumb {
-    background: rgb(255 255 255 / 0.15);
-  }
+.dark .table-wrapper::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.15);
 }
 
 /* =====================================
@@ -338,12 +324,10 @@
   backdrop-filter: blur(4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  .table-wrapper th {
-    background-color: var(--tbl-header-bg-dark);
-    color: var(--tbl-header-text-dark);
-    border-bottom-color: var(--tbl-row-border-dark);
-  }
+.dark .table-wrapper th {
+  background-color: var(--tbl-header-bg-dark);
+  color: var(--tbl-header-text-dark);
+  border-bottom-color: var(--tbl-row-border-dark);
 }
 
 /* =====================================
@@ -358,11 +342,9 @@
   min-width: 150px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .table-wrapper td {
-    border-bottom-color: var(--tbl-row-border-dark);
-    color: var(--tbl-cell-text-dark);
-  }
+.dark .table-wrapper td {
+  border-bottom-color: var(--tbl-row-border-dark);
+  color: var(--tbl-cell-text-dark);
 }
 
 /* =====================================
@@ -372,20 +354,16 @@
   background-color: var(--tbl-stripe-bg-light);
 }
 
-@media (prefers-color-scheme: dark) {
-  .table-wrapper tbody tr:nth-child(even) td {
-    background-color: var(--tbl-stripe-bg-dark);
-  }
+.dark .table-wrapper tbody tr:nth-child(even) td {
+  background-color: var(--tbl-stripe-bg-dark);
 }
 
 .table-wrapper tr:hover td {
   background-color: var(--tbl-row-hover-light);
 }
 
-@media (prefers-color-scheme: dark) {
-  .table-wrapper tr:hover td {
-    background-color: var(--tbl-row-hover-dark);
-  }
+.dark .table-wrapper tr:hover td {
+  background-color: var(--tbl-row-hover-dark);
 }
 
 /* Remove border from last row */
@@ -408,11 +386,9 @@
   word-break: break-word;
 }
 
-@media (prefers-color-scheme: dark) {
-  .table-wrapper pre,
-  .table-wrapper code {
-    background-color: rgb(255 255 255 / 0.08);
-  }
+.dark .table-wrapper pre,
+.dark .table-wrapper code {
+  background-color: rgb(255 255 255 / 0.08);
 }
 
 /* =====================================

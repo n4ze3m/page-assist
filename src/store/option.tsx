@@ -28,6 +28,7 @@ export type Message = {
   search?: WebSearch
   reasoning_time_taken?: number
   id?: string
+  createdAt?: number
   messageType?: string
   modelName?: string
   modelImage?: string
@@ -43,8 +44,6 @@ export type Message = {
   uiStreaming?: {
     lastFlushedAt?: number
   }
-  // Optional UI-only timestamp for grouping in views
-  createdAt?: number
 }
 
 export type ChatHistory = {
@@ -52,6 +51,7 @@ export type ChatHistory = {
   content: string
   image?: string
   images?: string[]
+  createdAt?: number
   messageType?: string
   messageKind?: ChatMessageKind
   toolCalls?: McpToolCall[]
@@ -62,8 +62,10 @@ export type ChatHistory = {
 }[]
 
 type PendingMcpApproval = McpPendingApprovalRequest & {
-  approve: () => void
+  approve: (options?: { alwaysAllow?: boolean }) => void
   reject: (reason?: string) => void
+  /** Whether this tool's server can remember an "always allow" decision. */
+  canAlwaysAllow?: boolean
 }
 
 type State = {
@@ -89,6 +91,10 @@ type State = {
   setIsEmbedding: (isEmbedding: boolean) => void
   webSearch: boolean
   setWebSearch: (webSearch: boolean) => void
+  pageAction: boolean
+  setPageAction: (pageAction: boolean) => void
+  webMcp: boolean
+  setWebMcp: (webMcp: boolean) => void
   isSearchingInternet: boolean
   setIsSearchingInternet: (isSearchingInternet: boolean) => void
 
@@ -155,6 +161,10 @@ export const useStoreMessageOption = create<State>((set) => ({
   setIsEmbedding: (isEmbedding) => set({ isEmbedding }),
   webSearch: false,
   setWebSearch: (webSearch) => set({ webSearch }),
+  pageAction: false,
+  setPageAction: (pageAction) => set({ pageAction }),
+  webMcp: false,
+  setWebMcp: (webMcp) => set({ webMcp }),
   isSearchingInternet: false,
   setIsSearchingInternet: (isSearchingInternet) => set({ isSearchingInternet }),
   selectedSystemPrompt: null,

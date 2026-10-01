@@ -16,6 +16,16 @@ import { getAllPrompts, getAllPromptsSystem } from "@/db/dexie/helpers"
 export const GeneralSettings = () => {
   const [userChatBubble, setUserChatBubble] = useStorage("userChatBubble", true)
 
+  const [hideChatScrollbar, setHideChatScrollbar] = useStorage(
+    "hideChatScrollbar",
+    false
+  )
+
+  const [enableQuoteReply, setEnableQuoteReply] = useStorage(
+    "enableQuoteReply",
+    true
+  )
+
   const [defaultCopilotPrompt, setDefaultCopilotPrompt] = useStorage(
     "defaultCopilotPrompt",
     undefined
@@ -72,7 +82,7 @@ export const GeneralSettings = () => {
 
   const [defaultThinkingMode, setDefaultThinkingMode] = useStorage(
     "defaultThinkingMode",
-    false
+    true
   )
 
   const [useMarkdownForUserMessage, setUseMarkdownForUserMessage] = useStorage(
@@ -155,10 +165,17 @@ export const GeneralSettings = () => {
     false
   )
 
+  const [showMessageTimestamp, setShowMessageTimestamp] = useStorage(
+    "showMessageTimestamp",
+    false
+  )
+
   const [sidebarPosition, setSidebarPosition] = useStorage(
     "sidebarPosition",
     "left"
   )
+
+  const [forceRTL, setForceRTL] = useStorage("forceRTL", false)
 
   const { mode } = useDarkMode()
   const { t } = useTranslation("settings")
@@ -607,6 +624,22 @@ export const GeneralSettings = () => {
       </div>
 
       <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t(
+              "generalSettings.settings.showMessageTimestamp.label",
+              "Show Message Timestamp"
+            )}
+          </span>
+        </div>
+
+        <Switch
+          checked={showMessageTimestamp}
+          onChange={(checked) => setShowMessageTimestamp(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">
           {t("generalSettings.settings.sidebarPosition.label")}
         </span>
@@ -722,6 +755,52 @@ export const GeneralSettings = () => {
           onChange={(checked) => setMcpHumanInLoop(checked)}
         />
       </div>
+
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t(
+              "generalSettings.settings.hideChatScrollbar.label",
+              "Hide Chat Scrollbar"
+            )}
+          </span>
+        </div>
+
+        <Switch
+          checked={hideChatScrollbar}
+          onChange={(checked) => setHideChatScrollbar(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t(
+              "generalSettings.settings.enableQuoteReply.label",
+              "Reply to Selected Text in Assistant Messages"
+            )}
+          </span>
+        </div>
+
+        <Switch
+          checked={enableQuoteReply}
+          onChange={(checked) => setEnableQuoteReply(checked)}
+        />
+      </div>
+
+        <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t(
+              "generalSettings.settings.forceRTL.label",
+              "Always Use RTL Layout (Right-to-Left in Any Language)"
+            )}
+          </span>
+        </div>
+        <Switch checked={forceRTL} onChange={(checked) => setForceRTL(checked)} />
+      </div>
+
 
       <div className="flex flex-row justify-between">
         <span className="text-gray-700 dark:text-neutral-50 ">

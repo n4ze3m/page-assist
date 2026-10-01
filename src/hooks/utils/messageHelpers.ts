@@ -57,12 +57,14 @@ export const createSaveMessageOnError = (
         ...history,
         {
           role: "user",
+          createdAt: Date.now(),
           content: e.userMessage,
           image: e.image,
           images: e.images
         },
         {
           role: "assistant",
+          createdAt: Date.now(),
           content: e.botMessage
         }
       ])

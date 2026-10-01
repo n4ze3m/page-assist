@@ -3,7 +3,8 @@
         "searching": "Searching for Your Ollama 🦙",
         "running": "Ollama is running 🦙",
         "notRunning": "Unable to connect to Ollama 🦙",
-        "connectionError": "It seems like you are having a connection error. Please refer to this <anchor>documentation</anchor> for troubleshooting."
+        "connectionError": "It seems like you are having a connection error. Please refer to this <anchor>documentation</anchor> for troubleshooting.",
+        "noOllamaHint": "Don't have Ollama installed? You can disable the Ollama integration from <anchor>Ollama Settings</anchor>."
     },
     "formError": {
         "noModel": "Please select a model",

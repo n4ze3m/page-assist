@@ -4,15 +4,7 @@ import React from "react"
 import useDynamicTextareaSize from "@/hooks/useDynamicTextareaSize"
 import { useMessage } from "@/hooks/useMessage"
 import { toBase64 } from "@/libs/to-base64"
-import {
-  Checkbox,
-  Dropdown,
-  Image,
-  Switch,
-  Tooltip,
-  Popover,
-  Radio
-} from "antd"
+import { Checkbox, Dropdown, Image, Modal, Switch, Tooltip, Popover, Radio } from "antd"
 import { useWebUI } from "@/store/webui"
 import { defaultEmbeddingModelForRag } from "@/services/ai/ollama"
 import {
@@ -27,22 +19,44 @@ import {
   PlusIcon,
   MinusIcon,
   PaperclipIcon,
-  ArrowUp
+  ArrowUp,
+  Globe
 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { ModelSelect } from "@/components/Common/ModelSelect"
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition"
-import { PiGlobeX, PiGlobe } from "react-icons/pi"
+import {
+  PiGlobeX,
+  PiGlobe,
+  PiCursorClick,
+  PiPlugsConnected
+} from "react-icons/pi"
+import { useStoreMessageOption } from "@/store/option"
+import {
+  inspectCurrentPageWebMcpTools,
+  isWebMcpAvailable
+} from "@/services/webmcp"
+import {
+  cachePageActionTools,
+  isPageActionInstalled,
+  isPageActionSupported,
+  PAGE_ACTION_EXTENSION_ID
+} from "@/services/page-action"
 import { handleChatInputKeyDown } from "@/utils/key-down"
 import { getIsSimpleInternetSearch } from "@/services/features/search"
 import { useStorage } from "@plasmohq/storage/hook"
 import { useFocusShortcuts } from "@/hooks/keyboard"
-import { isThinkingCapableModel, isGptOssModel } from "@/libs/model-utils"
+import { useThinkingCapability } from "@/hooks/useThinkingCapability"
 import { useStoreChatModelSettings } from "@/store/model"
 import { getVariable } from "@/utils/select-variable"
 import { useMessageQueue } from "@/hooks/useMessageQueue"
 import { QueuedMessagesList } from "@/components/Common/QueuedMessagesList"
+import { QuotedReplyChip } from "@/components/Common/Playground/QuotedReplyChip"
+import { useQuoteReply } from "@/store/quote"
+import { formatQuotedReply } from "@/utils/quote-reply"
 import { McpServerToggle } from "@/components/Common/McpServerToggle"
+import { useTabMentions } from "~/hooks/useTabMentions"
+import { MentionsDropdown } from "@/components/Option/Playground/MentionsDropdown"
 
 type Props = {
   dropedFile: File | undefined
@@ -77,6 +91,22 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       images: [] as string[]
     }
   })
+
+  const {
+    tabMentionsEnabled,
+    showMentions,
+    mentionPosition,
+    filteredTabs,
+    selectedDocuments,
+    handleTextChange,
+    insertMention,
+    closeMentions,
+    removeDocument,
+    clearSelectedDocuments,
+    reloadTabs,
+    handleMentionsOpen
+  } = useTabMentions(textareaRef)
+
   const {
     transcript,
     isListening,
@@ -126,6 +156,17 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Process" || e.key === "229") return
+
+    if (
+      showMentions &&
+      (e.key === "ArrowDown" ||
+        e.key === "ArrowUp" ||
+        e.key === "Enter" ||
+        e.key === "Escape")
+    ) {
+      return
+    }
+
     if (
       handleChatInputKeyDown({
         e,
@@ -164,10 +205,90 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     temporaryChat
   } = useMessage()
 
+  const { pageAction, setPageAction, webMcp, setWebMcp } =
+    useStoreMessageOption()
+  const [pageActionMasterEnabled] = useStorage("pageActionEnabled", true)
+  const [webMcpMasterEnabled] = useStorage("webMcpEnabled", true)
+
+  const handleFormWebMcp = async (checked: boolean) => {
+    if (!checked) {
+      setWebMcp(false)
+      return
+    }
+
+    let toolCount = 0
+    let supported = false
+    try {
+      const inspection = await inspectCurrentPageWebMcpTools()
+      supported = inspection.supported
+      toolCount = inspection.tools.length
+    } catch {
+      supported = false
+    }
+
+    if (!supported || toolCount === 0) {
+      const isDark = document.documentElement.classList.contains("dark")
+      Modal.info({
+        title: "No WebMCP tools on this page",
+        content: supported
+          ? "This page supports WebMCP but has not registered any tools yet. Try again once the page finishes loading."
+          : "This page does not publish WebMCP tools. WebMCP needs Chrome 150 or later, and the site has to opt in.",
+        okText: "Got it",
+        okButtonProps: {
+          className:
+            "!bg-black !text-white dark:!bg-white dark:!text-black !border-none hover:!opacity-90"
+        },
+        ...(isDark && {
+          styles: { content: { backgroundColor: "#262626" } },
+          className:
+            "[&_.ant-modal-confirm-title]:!text-white [&_.ant-modal-confirm-content]:!text-gray-300"
+        })
+      })
+      return
+    }
+
+    setWebMcp(true)
+  }
+
+  const handleFormPageAction = async (checked: boolean) => {
+    if (!checked) {
+      setPageAction(false)
+      return
+    }
+    const installed = await isPageActionInstalled()
+    if (!installed) {
+      const isDark = document.documentElement.classList.contains("dark")
+      Modal.info({
+        title: "Install Page Action",
+        content:
+          "Install the Page Action companion extension to let Page Assist act on the current tab.",
+        okText: "Open Chrome Web Store",
+        okButtonProps: {
+          className:
+            "!bg-black !text-white dark:!bg-white dark:!text-black !border-none hover:!opacity-90"
+        },
+        onOk: () =>
+          window.open(
+            `https://chromewebstore.google.com/detail/${PAGE_ACTION_EXTENSION_ID}`,
+            "_blank"
+          ),
+        ...(isDark && {
+          styles: { content: { backgroundColor: "#262626" } },
+          className:
+            "[&_.ant-modal-confirm-title]:!text-white [&_.ant-modal-confirm-content]:!text-gray-300"
+        })
+      })
+      return
+    }
+    setPageAction(true)
+    cachePageActionTools().catch(() => {})
+  }
+
   // Thinking mode state
-  const [defaultThinkingMode] = useStorage("defaultThinkingMode", false)
+  const [defaultThinkingMode] = useStorage("defaultThinkingMode", true)
   const thinking = useStoreChatModelSettings((state) => state.thinking)
   const setThinking = useStoreChatModelSettings((state) => state.setThinking)
+  const { supportsThinking, isGptOss } = useThinkingCapability(selectedModel)
 
   React.useEffect(() => {
     if (dropedFile) {
@@ -175,7 +296,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [dropedFile])
 
-  useDynamicTextareaSize(textareaRef, form.values.message, 120)
+  useDynamicTextareaSize(textareaRef, form.values.message, 100)
 
   React.useEffect(() => {
     if (isListening) {
@@ -288,6 +409,15 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     }
   }, [useCompactActions])
 
+  const quotedText = useQuoteReply((state) => state.quotedText)
+  const clearQuotedText = useQuoteReply((state) => state.clearQuotedText)
+
+  React.useEffect(() => {
+    if (quotedText) {
+      textAreaFocus()
+    }
+  }, [quotedText])
+
   const sendFormValue = async (value: {
     message: string
     image: string
@@ -295,7 +425,9 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
   }) => {
     if (
       value.message.trim().length === 0 &&
-      (!value.images || value.images.length === 0)
+      !quotedText &&
+      (!value.images || value.images.length === 0) &&
+      selectedDocuments.length === 0
     ) {
       return
     }
@@ -305,7 +437,11 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
       return
     }
 
+    const outgoingMessage = formatQuotedReply(quotedText, value.message)
+
     form.reset()
+    clearSelectedDocuments()
+    clearQuotedText()
     if (persistChatInput) {
       setPersistedMessage("")
     }
@@ -314,7 +450,14 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
     await sendMessage({
       image: value.images && value.images.length > 0 ? value.images[0] : "",
       images: value.images,
-      message: value.message.trim()
+      message: outgoingMessage,
+      docs: selectedDocuments.map((doc) => ({
+        type: "tab",
+        tabId: doc.id,
+        title: doc.title,
+        url: doc.url,
+        favIconUrl: doc.favIconUrl
+      }))
     })
   }
 
@@ -327,15 +470,17 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
 
     if (enableMessageQueue && streaming) {
       const enqueued = enqueueMessage({
-        message: value.message,
+        message: formatQuotedReply(quotedText, value.message),
         images: value.images || []
       })
       if (enqueued) {
+        clearQuotedText()
         form.setFieldValue("message", "")
         form.setFieldValue("images", [])
         if (persistChatInput) {
           setPersistedMessage("")
         }
+        closeMentions()
       }
       return
     }
@@ -410,8 +555,8 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
           />
         </div>
       )}
-      {defaultThinkingMode && isThinkingCapableModel(selectedModel) && (
-        isGptOssModel(selectedModel) ? (
+      {defaultThinkingMode && supportsThinking && (
+        isGptOss ? (
           <div className="flex items-center justify-between rounded-lg border border-gray-200 px-2 py-1.5 dark:border-[#404040]">
             <span className="text-xs text-gray-600 dark:text-gray-300">
               {t("tooltip.thinking")}
@@ -514,7 +659,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
         <div className="relative flex w-full flex-row justify-center gap-2 lg:w-4/5">
           <div
             data-istemporary-chat={temporaryChat}
-            className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-[#404040] data-[istemporary-chat='true']:bg-gray-200 data-[istemporary-chat='true']:dark:bg-black`}>
+            className={` bg-neutral-50  dark:bg-[#262626] relative w-full max-w-[48rem] p-1 backdrop-blur-lg duration-100 border border-gray-300 rounded-t-xl  dark:border-[#404040] data-[istemporary-chat='true']:bg-violet-100 data-[istemporary-chat='true']:border-violet-300 data-[istemporary-chat='true']:dark:bg-black data-[istemporary-chat='true']:dark:border-[#404040]`}>
             {enableMessageQueue &&
               optimizeQueueForSmallScreen &&
               hasQueuedMessages && (
@@ -569,6 +714,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                 />
               </div>
             )}
+            <QuotedReplyChip />
             {form.values.images && form.values.images.length > 0 && (
               <div className="p-2 border-b border-gray-200 dark:border-[#404040]">
                 <div className="flex flex-wrap gap-2">
@@ -595,7 +741,7 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
               <div className="flex">
                 <form
                   onSubmit={form.onSubmit(handleFormSubmit)}
-                  className="shrink-0 flex-grow  flex flex-col items-center ">
+                  className="min-w-0 w-full flex-grow flex flex-col items-center">
                   <input
                     id="file-upload"
                     name="file-upload"
@@ -606,37 +752,115 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                     multiple={true}
                     onChange={onInputChange}
                   />
-                  <div className="w-full  flex flex-col px-1">
-                    <textarea
-                      onKeyDown={(e) => handleKeyDown(e)}
-                      ref={textareaRef}
-                      className="pa-textarea px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
-                      onPaste={handlePaste}
-                      rows={1}
-                      style={{ minHeight: "60px" }}
-                      tabIndex={0}
-                      onCompositionStart={() => {
-                        if (import.meta.env.BROWSER !== "firefox") {
-                          setTyping(true)
+                  <div className="w-full min-w-0 flex flex-col px-1">
+                    {selectedDocuments.length > 0 && (
+                      <div className="w-full min-w-0 pb-2">
+                        <div className="max-h-24 w-full min-w-0 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-[#404040] scrollbar-track-transparent">
+                          <div className="flex w-full min-w-0 flex-wrap gap-1.5">
+                            {selectedDocuments.map((document) => (
+                              <div
+                                key={document.id}
+                                title={document.title}
+                                className="inline-flex min-w-0 max-w-full items-center gap-1.5 rounded-lg border border-neutral-200 bg-neutral-50 px-2 py-1 dark:border-[#525252] dark:bg-[#404040]">
+                                <div className="flex-shrink-0">
+                                  {document.favIconUrl ? (
+                                    <img
+                                      src={document.favIconUrl}
+                                      alt=""
+                                      className="h-4 w-4 rounded"
+                                      onError={(e) => {
+                                        const target =
+                                          e.target as HTMLImageElement
+                                        target.style.display = "none"
+                                        target.nextElementSibling?.classList.remove(
+                                          "hidden"
+                                        )
+                                      }}
+                                    />
+                                  ) : null}
+                                  <Globe
+                                    className={`h-4 w-4 text-neutral-600 dark:text-neutral-400 ${
+                                      document.favIconUrl ? "hidden" : ""
+                                    }`}
+                                  />
+                                </div>
+                                <span className="min-w-0 max-w-[45vw] truncate text-sm font-medium text-neutral-800 dark:text-neutral-200">
+                                  {document.title}
+                                </span>
+                                <button
+                                  onClick={() => removeDocument(document.id)}
+                                  className="flex-shrink-0 text-neutral-600 transition-colors hover:text-neutral-800 dark:text-neutral-400 dark:hover:text-neutral-200"
+                                  type="button">
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <div className="relative">
+                      <textarea
+                        onKeyDown={(e) => handleKeyDown(e)}
+                        ref={textareaRef}
+                        className="px-2 py-2 w-full resize-none bg-transparent focus-within:outline-none focus:ring-0 focus-visible:ring-0 ring-0 dark:ring-0 border-0 dark:text-gray-100"
+                        onPaste={handlePaste}
+                        rows={1}
+                        style={{ height: "40px", minHeight: "40px" }}
+                        tabIndex={0}
+                        onCompositionStart={() => {
+                          if (import.meta.env.BROWSER !== "firefox") {
+                            setTyping(true)
+                          }
+                        }}
+                        onCompositionEnd={() => {
+                          if (import.meta.env.BROWSER !== "firefox") {
+                            setTyping(false)
+                          }
+                        }}
+                        placeholder={t("form.textarea.placeholder")}
+                        {...form.getInputProps("message")}
+                        onChange={(e) => {
+                          form.getInputProps("message").onChange(e)
+                          // Persist message as user types
+                          if (persistChatInput) {
+                            setPersistedMessage(e.target.value)
+                          }
+                          if (tabMentionsEnabled && textareaRef.current) {
+                            handleTextChange(
+                              e.target.value,
+                              textareaRef.current.selectionStart || 0
+                            )
+                          }
+                        }}
+                        onSelect={() => {
+                          if (tabMentionsEnabled && textareaRef.current) {
+                            handleTextChange(
+                              textareaRef.current.value,
+                              textareaRef.current.selectionStart || 0
+                            )
+                          }
+                        }}
+                      />
+                      <MentionsDropdown
+                        show={showMentions}
+                        tabs={filteredTabs}
+                        mentionPosition={mentionPosition}
+                        onSelectTab={(tab) =>
+                          insertMention(tab, form.values.message, (value) =>
+                            form.setFieldValue("message", value)
+                          )
                         }
-                      }}
-                      onCompositionEnd={() => {
-                        if (import.meta.env.BROWSER !== "firefox") {
-                          setTyping(false)
-                        }
-                      }}
-                      placeholder={t("form.textarea.placeholder")}
-                      {...form.getInputProps("message")}
-                      onChange={(e) => {
-                        form.getInputProps("message").onChange(e)
-                        // Persist message as user types
-                        if (persistChatInput) {
-                          setPersistedMessage(e.target.value)
-                        }
-                      }}
-                    />
+                        onClose={closeMentions}
+                        textareaRef={textareaRef}
+                        refetchTabs={async () => {
+                          await reloadTabs()
+                        }}
+                        onMentionsOpen={handleMentionsOpen}
+                      />
+                    </div>
                     <div
-                      className={`flex mt-4 items-center gap-3 ${
+                      className={`flex mt-2 items-center gap-3 ${
                         useCompactActions
                           ? "w-full justify-between md:w-auto md:justify-end"
                           : "justify-end"
@@ -681,9 +905,49 @@ export const SidepanelForm = ({ dropedFile }: Props) => {
                             </button>
                           </Tooltip>
                         )}
+                        {chatMode !== "vision" &&
+                          isPageActionSupported() &&
+                          pageActionMasterEnabled && (
+                            <Tooltip title="Page Action">
+                              <button
+                                type="button"
+                                onClick={() => handleFormPageAction(!pageAction)}
+                                className={`inline-flex items-center gap-2 ${
+                                  chatMode === "rag" ? "hidden" : "block"
+                                }`}>
+                                <PiCursorClick
+                                  className={`h-4 w-4 ${
+                                    pageAction
+                                      ? "text-blue-600 dark:text-blue-400"
+                                      : "text-[#404040] dark:text-gray-400"
+                                  }`}
+                                />
+                              </button>
+                            </Tooltip>
+                          )}
+                        {chatMode !== "vision" &&
+                          isWebMcpAvailable() &&
+                          webMcpMasterEnabled && (
+                            <Tooltip title="Page tools (WebMCP)">
+                              <button
+                                type="button"
+                                onClick={() => handleFormWebMcp(!webMcp)}
+                                className={`inline-flex items-center gap-2 ${
+                                  chatMode === "rag" ? "hidden" : "block"
+                                }`}>
+                                <PiPlugsConnected
+                                  className={`h-4 w-4 ${
+                                    webMcp
+                                      ? "text-blue-600 dark:text-blue-400"
+                                      : "text-[#404040] dark:text-gray-400"
+                                  }`}
+                                />
+                              </button>
+                            </Tooltip>
+                          )}
                         {defaultThinkingMode &&
-                          isThinkingCapableModel(selectedModel) &&
-                          (isGptOssModel(selectedModel) ? (
+                          supportsThinking &&
+                          (isGptOss ? (
                             <Popover
                               content={
                                 <div>

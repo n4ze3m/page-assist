@@ -11,6 +11,19 @@
  */
 import { getAdvancedOllamaSettings } from "@/services/features/app"
 
+let firefoxRewriteListener: ((details: any) => any) | null = null
+
+const removeFirefoxRewriteListener = () => {
+  if (firefoxRewriteListener) {
+    try {
+      browser.webRequest.onBeforeSendHeaders.removeListener(
+        firefoxRewriteListener
+      )
+    } catch (e) {}
+    firefoxRewriteListener = null
+  }
+}
+
 export const urlRewriteRuntime = async function (
   domain: string,
   type = "ollama"
@@ -33,9 +46,7 @@ export const urlRewriteRuntime = async function (
       }
 
       if (import.meta.env.BROWSER === "firefox") {
-        try {
-          browser.webRequest.onBeforeSendHeaders.removeListener(() => {})
-        } catch (e) {}
+        removeFirefoxRewriteListener()
       }
 
       return
@@ -46,8 +57,7 @@ export const urlRewriteRuntime = async function (
       import.meta.env.BROWSER === "edge"
     ) {
       const url = new URL(domain)
-      const domains = [url.hostname]
-      let origin = `${url.protocol}//${url.hostname}`
+      let origin = url.origin
       if (isEnableRewriteUrl && rewriteUrl && type === "ollama") {
         origin = rewriteUrl
       }
@@ -56,7 +66,11 @@ export const urlRewriteRuntime = async function (
           id: 1,
           priority: 1,
           condition: {
-            requestDomains: domains
+            // anchor to the exact scheme://host:port — requestDomains would
+            // match every port on the hostname and break unrelated local apps
+            urlFilter: `|${url.origin}/`,
+            // only rewrite requests made by this extension, never by web pages
+            initiatorDomains: [browser.runtime.id]
           },
           action: {
             type: "modifyHeaders",
@@ -79,21 +93,32 @@ export const urlRewriteRuntime = async function (
 
     if (import.meta.env.BROWSER === "firefox") {
       const url = new URL(domain)
-      const domains = [`*://${url.hostname}/*`]
-      browser.webRequest.onBeforeSendHeaders.addListener(
-        (details) => {
-          let origin = `${url.protocol}//${url.hostname}`
-          if (isEnableRewriteUrl && rewriteUrl && type === "ollama") {
-            origin = rewriteUrl
-          }
-          for (let i = 0; i < details.requestHeaders.length; i++) {
-            if (details.requestHeaders[i].name === "Origin") {
-              details.requestHeaders[i].value = origin
-            }
-          }
+      let origin = url.origin
+      if (isEnableRewriteUrl && rewriteUrl && type === "ollama") {
+        origin = rewriteUrl
+      }
+      const extensionBaseUrl =
+        new URL(browser.runtime.getURL("/options.html")).origin + "/"
+      removeFirefoxRewriteListener()
+      firefoxRewriteListener = (details) => {
+        // match patterns ignore ports, so scope to the exact origin here,
+        // and only touch requests made by this extension
+        if (
+          !details.url.startsWith(`${url.origin}/`) ||
+          !details.originUrl?.startsWith(extensionBaseUrl)
+        ) {
           return { requestHeaders: details.requestHeaders }
-        },
-        { urls: domains },
+        }
+        for (let i = 0; i < details.requestHeaders.length; i++) {
+          if (details.requestHeaders[i].name === "Origin") {
+            details.requestHeaders[i].value = origin
+          }
+        }
+        return { requestHeaders: details.requestHeaders }
+      }
+      browser.webRequest.onBeforeSendHeaders.addListener(
+        firefoxRewriteListener,
+        { urls: [`*://${url.hostname}/*`] },
         ["blocking", "requestHeaders"]
       )
     }

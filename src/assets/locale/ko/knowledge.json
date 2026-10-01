@@ -11,7 +11,8 @@
         "name": "이름"
     },
     "confirm": {
-        "delete": "이 지식을 삭제하시겠습니까?"
+        "delete": "이 지식을 삭제하시겠습니까?",
+        "deleteSource": "이 소스를 삭제하시겠습니까?"
     },
     "deleteSuccess": "지식이 정상적으로 삭제되었습니다",
     "status": {
@@ -23,19 +24,69 @@
     "addKnowledge": "지식 추가",
     "updateKnowledge": "소스 추가",
     "form": {
+        "tabs": {
+            "upload": "파일 업로드",
+            "text": "텍스트 입력"
+        },
         "title": {
-            "label": "지식 제목",
+            "label": "지식 제목 (선택)",
             "placeholder": "지식 제목을 입력하세요",
+            "placeholderOptional": "선택 항목 (미입력 시 처음 50자로 자동 설정)",
             "required": "지식 제목은 필수 항목입니다"
         },
         "uploadFile": {
             "label": "파일 업로드",
             "uploadText": "파일을 여기에 드래그 앤 드롭하거나 클릭하여 업로드하세요",
-            "uploadHint": "지원되는 파일 형식: .pdf, .csv, .txt",
-            "required": "파일은 필수 항목입니다"
+            "uploadHint": "지원되는 파일 형식: .pdf, .csv, .txt, .md, .docx",
+            "required": "파일은 필수 항목입니다",
+            "uploadError": "지원하지 않는 파일 형식입니다"
+        },
+        "textInput": {
+            "typeLabel": "유형",
+            "type": {
+                "plain": "일반 텍스트",
+                "markdown": "마크다운",
+                "code": "코드"
+            },
+            "contentLabel": "내용",
+            "placeholder": "텍스트를 붙여넣거나 입력하세요...",
+            "required": "텍스트 내용은 필수 항목입니다",
+            "tooLarge": "내용이 너무 큽니다. 50만 자 이하로 입력해 주세요.",
+            "defaultTitle": "제목 없는 텍스트"
         },
         "submit": "제출",
         "success": "지식이 정상적으로 추가되었습니다"
     },
-    "noEmbeddingModel": "먼저 RAG 설정 페이지에서 임베딩 모델을 추가해 주세요"
+    "noEmbeddingModel": "먼저 RAG 설정 페이지에서 임베딩 모델을 추가해 주세요",
+    "newSource": "새 소스",
+    "editSettings": {
+        "title": "지식 설정 편집",
+        "success": "지식 설정이 정상적으로 업데이트되었습니다",
+        "variableInfo": {
+            "title": "사용 가능한 변수",
+            "description": "프롬프트에서 다음 변수를 사용할 수 있습니다:",
+            "context": "지식 베이스에서 검색된 컨텍스트",
+            "query": "사용자의 질문 또는 검색어"
+        },
+        "form": {
+            "title": {
+                "label": "지식 제목",
+                "placeholder": "지식 제목을 입력하세요",
+                "required": "지식 제목은 필수 항목입니다"
+            },
+            "systemPrompt": {
+                "label": "시스템 프롬프트",
+                "help": "지식 베이스를 활용해 AI가 응답하는 방식을 사용자 지정하세요. 검색된 정보에는 {context}를, 사용자의 질문에는 {question}을 사용하세요. 참고: 프롬프트에 {question}이 반드시 포함되어야 캐릭터가 질문 컨텍스트를 받을 수 있습니다.",
+                "placeholder": "사용자 지정 시스템 프롬프트를 입력하세요...",
+                "prefillButton": "기본 프롬프트 사용"
+            },
+            "followupPrompt": {
+                "label": "후속 질문 프롬프트",
+                "help": "후속 질문이 처리되는 방식을 사용자 지정하세요. 이 프롬프트는 후속 질문을 독립적인 질문으로 다시 작성합니다.",
+                "placeholder": "사용자 지정 후속 질문 프롬프트를 입력하세요...",
+                "prefillButton": "기본 프롬프트 사용"
+            }
+        },
+        "tooltip": "지식 설정 편집"
+    }
 }

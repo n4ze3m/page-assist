@@ -1,25 +1,25 @@
-import { test, expect } from "@playwright/test"
+import { test, expect, chromium } from "@playwright/test"
+import path from "node:path"
 
-test.describe("Page Assist Extension - Smoke Tests", () => {
-  test.beforeEach(async ({ context }) => {
-    // Load extension in context
-    await context.addInitScript(() => {
-      // Mock extension background if needed
-    })
+test("loads the built extension options page", async () => {
+  const extensionPath = path.join(process.cwd(), "build", "chrome-mv3")
+  const context = await chromium.launchPersistentContext("", {
+    headless: true,
+    channel: "chromium",
+    args: [
+      `--disable-extensions-except=${extensionPath}`,
+      `--load-extension=${extensionPath}`
+    ]
   })
-
-  test("loads sidepanel and renders chat UI", async ({ page }) => {
-    // For extension, navigate to chrome-extension://<id>/sidepanel/index.html
-    // But for simplicity, assume we have the URL
-    // In real setup, derive ID from manifest
-
-    // Placeholder: Navigate to a test page
-    await page.goto("https://example.com")
-
-    // Check if extension is loaded (simplified)
-    // In real test, open sidepanel via Chrome UI or direct URL
-
-    // For now, basic test
-    await expect(page.locator("body")).toBeVisible()
-  })
+  try {
+    const background =
+      context.serviceWorkers()[0] ??
+      (await context.waitForEvent("serviceworker"))
+    const extensionId = background.url().split("/")[2]
+    const page = await context.newPage()
+    await page.goto(`chrome-extension://${extensionId}/options.html`)
+    await expect(page.locator("textarea")).toBeVisible()
+  } finally {
+    await context.close()
+  }
 })

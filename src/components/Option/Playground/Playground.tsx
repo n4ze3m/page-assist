@@ -19,6 +19,7 @@ const PlaygroundComponent = () => {
   const drop = React.useRef<HTMLDivElement>(null)
   const [dropedFile, setDropedFile] = React.useState<File | undefined>()
   const [defaultWebUIPrompt] = useStorage("defaultWebUIPrompt", undefined)
+  const [hideChatScrollbar] = useStorage("hideChatScrollbar", false)
 
   const [chatBackgroundImage] = useStorage({
     key: "chatBackgroundImage",
@@ -37,6 +38,7 @@ const PlaygroundComponent = () => {
     setSelectedSystemPrompt,
     streaming,
     webuiTemporaryChat,
+    temporaryChat,
     setTemporaryChat,
     setSelectedQuickPrompt
   } = useMessageOption()
@@ -194,10 +196,9 @@ const PlaygroundComponent = () => {
           style={{ opacity: 0.9, pointerEvents: "none" }}
         />
       )}
-
       <div
         ref={containerRef}
-        className="custom-scrollbar flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5 relative z-10">
+        className={`${hideChatScrollbar ? "no-scrollbar" : "custom-scrollbar"} flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5 relative z-10`}>
         <PlaygroundChat />
       </div>
       <div className="absolute bottom-0 w-full z-10">

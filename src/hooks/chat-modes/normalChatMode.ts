@@ -42,7 +42,10 @@ export const normalChatMode = async (
     temporaryChat,
     requireMcpApproval,
     messageSource,
-    webSearchAsTool
+    webSearchAsTool,
+    extraMcpServers,
+    extraSystemPrompt,
+    normalizeMcpToolCallArgs
   }: {
     selectedModel: string
     useOCR: boolean
@@ -65,6 +68,9 @@ export const normalChatMode = async (
     temporaryChat?: boolean
     requireMcpApproval?: boolean
     messageSource?: "copilot" | "web-ui"
+    extraMcpServers?: any[]
+    extraSystemPrompt?: string
+    normalizeMcpToolCallArgs?: (toolName: string, args: unknown) => unknown
     webSearchAsTool?: boolean
   }
 ) => {
@@ -95,7 +101,10 @@ export const normalChatMode = async (
         temporaryChat,
         requireMcpApproval,
         messageSource,
-        webSearchAsTool
+        webSearchAsTool,
+        extraMcpServers,
+        extraSystemPrompt,
+        normalizeMcpToolCallArgs
       }
     )
 
@@ -144,9 +153,11 @@ export const normalChatMode = async (
   let promptId: string | undefined = selectedSystemPrompt
   let promptContent: string | undefined = undefined
 
-  if (image.length > 0) {
+  if (image.length > 0 && !image.startsWith("data:")) {
     image = `data:image/jpeg;base64,${image.split(",")[1]}`
   }
+
+  const imagesToSave = images?.length > 0 ? images : image ? [image] : []
 
   const ollama = await pageAssistModel({
     model: selectedModel!,
@@ -166,24 +177,24 @@ export const normalChatMode = async (
     model: selectedModel,
     useOCR: useOCR
   })
-  if (image.length > 0) {
+  if (imagesToSave.length > 0) {
     humanMessage = await humanMessageFormatter({
       content: [
         {
           text: message,
           type: "text"
         },
-        {
-          image_url: image,
-          type: "image_url"
-        }
+        ...imagesToSave.map((image_url) => ({
+          image_url,
+          type: "image_url" as const
+        }))
       ],
       model: selectedModel,
       useOCR: useOCR
     })
   }
 
-  const applicationChatHistory = generateHistory(history, selectedModel)
+  const applicationChatHistory = await generateHistory(history, selectedModel)
 
   if (prompt && !selectedPrompt) {
     applicationChatHistory.unshift(
@@ -229,11 +240,14 @@ export const normalChatMode = async (
       ...history,
       {
         role: "user",
+        createdAt: Date.now(),
         content: message,
+        images: imagesToSave,
         image
       },
       {
         role: "assistant",
+        createdAt: Date.now(),
         content: fullText
       }
     ])
@@ -245,6 +259,7 @@ export const normalChatMode = async (
       selectedModel: selectedModel,
       message,
       image,
+      images: imagesToSave,
       fullText,
       source: [],
       generationInfo,
@@ -266,6 +281,7 @@ export const normalChatMode = async (
       history,
       historyId,
       image,
+      images: imagesToSave,
       selectedModel,
       setHistory,
       setHistoryId,
@@ -296,6 +312,7 @@ export const normalChatMode = async (
     onComplete,
     onError,
     image,
+    images: imagesToSave,
     sources: [],
     documents:
       uploadedFiles?.map((f) => ({

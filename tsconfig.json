@@ -11,7 +11,12 @@
     "paths": { "@/*": ["src/*"], "~/*": ["src/*"] },
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "types": ["vite/client", "chrome", "vitest/globals", "@testing-library/jest-dom"],
+    "types": [
+      "vite/client",
+      "chrome",
+      "vitest/globals",
+      "@testing-library/jest-dom"
+    ],
     "moduleResolution": "bundler"
   },
   "exclude": [
@@ -20,6 +25,7 @@
     "vitest.config.ts",
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
-    "src/**/__tests__/**"
+    "src/**/__tests__/**",
+    "extensions"
   ]
 }

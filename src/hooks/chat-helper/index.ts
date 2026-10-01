@@ -8,7 +8,7 @@ import {
   updateChatHistoryCreatedAt
 } from "@/db/dexie/helpers"
 import { ChatDocuments } from "@/models/ChatTypes"
-import { generateTitle } from "@/services/features/title"
+import { generateTitleInBackground } from "@/services/features/title"
 import { ChatHistory } from "@/store/option"
 import { updatePageTitle } from "@/utils/update-page-title"
 
@@ -62,12 +62,14 @@ export const saveMessageOnError = async ({
       ...history,
       {
         role: "user",
+        createdAt: Date.now(),
         content: userMessage,
         image,
         images
       },
       {
         role: "assistant",
+        createdAt: Date.now(),
         content: botMessage
       }
     ])
@@ -112,21 +114,8 @@ export const saveMessageOnError = async ({
 
       return historyId
     } else {
-      const title = await generateTitle(selectedModel, [
-        ...history,
-        {
-          role: "user",
-          content: userMessage,
-          image,
-          images
-        },
-        {
-          role: "assistant",
-          content: botMessage
-        }
-      ], userMessage)
-      const newHistoryId = await saveHistory(title, false, message_source)
-      updatePageTitle(title)
+      const newHistoryId = await saveHistory(userMessage, false, message_source)
+      updatePageTitle(newHistoryId.title)
       if (!isRegenerating) {
         await saveMessage({
           history_id: newHistoryId.id,
@@ -158,6 +147,25 @@ export const saveMessageOnError = async ({
           prompt_id
         })
       }
+
+      generateTitleInBackground({
+        historyId: newHistoryId.id,
+        model: selectedModel,
+        history: [
+          ...history,
+          {
+            role: "user",
+            content: userMessage,
+            image,
+            images
+          },
+          {
+            role: "assistant",
+            content: botMessage
+          }
+        ],
+        provisionalTitle: newHistoryId.title
+      })
 
       return newHistoryId.id
     }
@@ -265,20 +273,8 @@ export const saveMessageOnSuccess = async ({
 
     return historyId
   } else {
-    const title = await generateTitle(selectedModel, [
-      {
-        role: "user",
-        content: message,
-        image,
-        images
-      },
-      {
-        role: "assistant",
-        content: fullText
-      }
-    ], message)
-    updatePageTitle(title)
-    const newHistoryId = await saveHistory(title, false, message_source)
+    const newHistoryId = await saveHistory(message, false, message_source)
+    updatePageTitle(newHistoryId.title)
 
     await saveMessage(
       {
@@ -337,6 +333,24 @@ export const saveMessageOnSuccess = async ({
         prompt_id
       })
     }
+
+    generateTitleInBackground({
+      historyId: newHistoryId.id,
+      model: selectedModel!,
+      history: [
+        {
+          role: "user",
+          content: message,
+          image,
+          images
+        },
+        {
+          role: "assistant",
+          content: fullText
+        }
+      ],
+      provisionalTitle: newHistoryId.title
+    })
 
     return newHistoryId.id
   }

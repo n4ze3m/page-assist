@@ -10,17 +10,19 @@ import "@/i18n"
 import { useTranslation } from "react-i18next"
 import { PageAssistProvider } from "@/components/Common/PageAssistProvider"
 import { FontSizeProvider } from "@/context/FontSizeProvider"
+import { useUiDirection } from "~/hooks/useUiDirection"
 
 function IndexSidepanel() {
   const { mode } = useDarkMode()
   const { t, i18n } = useTranslation()
+  const { direction } = useUiDirection()
 
   useEffect(() => {
     if (i18n.resolvedLanguage) {
       document.documentElement.lang = i18n.resolvedLanguage
-      document.documentElement.dir = i18n.dir(i18n.resolvedLanguage)
     }
-  }, [i18n, i18n.resolvedLanguage])
+    document.documentElement.dir = direction
+  }, [i18n, i18n.resolvedLanguage, direction])
 
   return (
     <MemoryRouter>
@@ -39,7 +41,8 @@ function IndexSidepanel() {
             }}
             description={t("common:noData")}
           />
-        )}>
+        )}
+        direction={direction}>
         <StyleProvider hashPriority="high">
           <QueryClientProvider client={queryClient}>
             <PageAssistProvider>

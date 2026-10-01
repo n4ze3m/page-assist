@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { MemoryRouter } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 const queryClient = new QueryClient()
 import { ConfigProvider, Empty, theme } from "antd"
 import { StyleProvider } from "@ant-design/cssinjs"
@@ -11,22 +11,23 @@ import { useTranslation } from "react-i18next"
 import { PageAssistProvider } from "@/components/Common/PageAssistProvider"
 import { FontSizeProvider } from "@/context/FontSizeProvider"
 import { runAllMigrations } from "@/db/dexie/migration"
+import { useUiDirection } from "~/hooks/useUiDirection"
 
 function IndexOption() {
   const { mode } = useDarkMode()
   const { t, i18n } = useTranslation()
-  const [direction, setDirection] = useState<"ltr" | "rtl">("ltr")
+  const { direction } = useUiDirection()
 
   useEffect(() => {
     if (i18n.resolvedLanguage) {
       document.documentElement.lang = i18n.resolvedLanguage
-      document.documentElement.dir = i18n.dir(i18n.resolvedLanguage)
-      setDirection(i18n.dir(i18n.resolvedLanguage))
     }
-  }, [i18n, i18n.resolvedLanguage])
+    document.documentElement.dir = direction
+  }, [i18n, i18n.resolvedLanguage, direction])
 
   return (
-    <MemoryRouter>
+    <MemoryRouter
+      initialEntries={[window.location.hash.replace("#", "") || "/"]}>
       <ConfigProvider
         theme={{
           algorithm:

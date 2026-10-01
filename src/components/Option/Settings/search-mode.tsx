@@ -18,6 +18,7 @@ export const SearchModeSettings = () => {
       visitSpecificWebsite: false,
       searxngURL: "",
       searxngJSONMode: false,
+      searxngApiKey: "",
       braveApiKey: "",
       tavilyApiKey: "",
       googleDomain: "",
@@ -27,6 +28,7 @@ export const SearchModeSettings = () => {
       ollamaSearchApiKey: "",
       kagiApiKey: "",
       perplexityApiKey: "",
+      serplyApiKey: "",
       domainFilterList: [] as string[],
       blockedDomainList: [] as string[]
     }
@@ -88,6 +90,24 @@ export const SearchModeSettings = () => {
                   className="w-full mt-4 sm:mt-0 sm:w-[200px]"
                   required
                   {...form.getInputProps("searxngURL")}
+                />
+              </div>
+            </div>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                {t(
+                  "generalSettings.webSearch.searxng.apiKey.label",
+                  "SearXNG API Key (Optional)"
+                )}
+              </span>
+              <div>
+                <Input.Password
+                  placeholder={t(
+                    "generalSettings.webSearch.searxng.apiKey.placeholder",
+                    "Enter your SearXNG API key"
+                  )}
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  {...form.getInputProps("searxngApiKey")}
                 />
               </div>
             </div>
@@ -262,6 +282,30 @@ export const SearchModeSettings = () => {
                   required
                   className="w-full mt-4 sm:mt-0 sm:w-[200px]"
                   {...form.getInputProps("perplexityApiKey")}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {form.values.searchProvider === "serply-api" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                {t(
+                  "generalSettings.webSearch.serplyApi.label",
+                  "Serply API Key"
+                )}
+              </span>
+              <div>
+                <Input.Password
+                  placeholder={t(
+                    "generalSettings.webSearch.serplyApi.placeholder",
+                    "Serply API Key"
+                  )}
+                  required
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  {...form.getInputProps("serplyApiKey")}
                 />
               </div>
             </div>

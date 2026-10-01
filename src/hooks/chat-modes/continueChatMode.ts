@@ -62,7 +62,7 @@ export const continueChatMode = async (
   const prompt = await systemPromptForNonRagOption()
   const selectedPrompt = await getPromptById(selectedSystemPrompt)
 
-  const applicationChatHistory = generateHistory(history, selectedModel)
+  const applicationChatHistory = await generateHistory(history, selectedModel)
 
   if (prompt && !selectedPrompt) {
     applicationChatHistory.unshift(

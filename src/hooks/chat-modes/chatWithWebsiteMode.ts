@@ -100,6 +100,7 @@ export const chatWithWebsiteMode = async (
       ...messages,
       {
         isBot: false,
+        createdAt: Date.now(),
         name: "You",
         message,
         sources: [],
@@ -107,6 +108,7 @@ export const chatWithWebsiteMode = async (
       },
       {
         isBot: true,
+        createdAt: Date.now(),
         name: selectedModel,
         message: "",
         sources: [],
@@ -120,6 +122,7 @@ export const chatWithWebsiteMode = async (
       ...messages,
       {
         isBot: true,
+        createdAt: Date.now(),
         name: selectedModel,
         message: "",
         sources: [],
@@ -267,7 +270,7 @@ export const chatWithWebsiteMode = async (
       useOCR
     })
 
-    const applicationChatHistory = generateHistory(history, selectedModel)
+    const applicationChatHistory = await generateHistory(history, selectedModel)
 
     const config: StreamConfig = {
       cursor: CURSOR,
@@ -283,11 +286,13 @@ export const chatWithWebsiteMode = async (
         ...history,
         {
           role: "user",
+          createdAt: Date.now(),
           content: message,
           image
         },
         {
           role: "assistant",
+          createdAt: Date.now(),
           content: fullText
         }
       ])

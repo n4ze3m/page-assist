@@ -33,6 +33,38 @@ Checkout the Demo (v1.0.0):
 
 </div>
 
+## Sponsors
+
+<table>
+  <tr>
+    <td align="center" width="200">
+      <a href="https://aihubmix.com/?aff=N9Wa">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/aihubmix-dark.svg" />
+          <img src="assets/sponsors/aihubmix-light.svg" alt="AIHubMix" width="180" />
+        </picture>
+      </a>
+    </td>
+    <td>
+      <a href="https://aihubmix.com/?aff=N9Wa"><b>AIHubMix</b></a> is a compliant LLM API aggregation platform that has operated reliably for three years. It partners with model developers and cloud inference providers to offer more than 800 models through a single API, with real-time monitoring for production reliability.
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="200">
+      <a href="https://www.atlascloud.ai/?utm_source=github&utm_medium=link&utm_campaign=page-assist">
+        <img src="https://www.atlascloud.ai/logo.svg" alt="Atlas Cloud" height="60" />
+      </a>
+    </td>
+    <td>
+      <a href="https://www.atlascloud.ai/?utm_source=github&utm_medium=link&utm_campaign=page-assist"><b>Atlas Cloud</b></a> is a full-modal AI inference platform that gives developers a single AI API to access video generation, image generation, and LLM APIs. Instead of managing multiple vendor integrations, you connect once and get unified access to 300+ curated models across all modalities.
+      <br/><br/>
+      Check out <a href="https://www.atlascloud.ai/console/coding-plan?utm_source=github&utm_medium=link&utm_campaign=page-assist">Atlas Cloud's coding plan</a> for more budget-friendly API access.
+    </td>
+  </tr>
+</table>
+
+Interested in sponsoring Page Assist? Reach out at [me@n4ze3m.com](mailto:me@n4ze3m.com).
+
 ## Features
 
 - **Sidebar**: A sidebar that can be opened on any webpage. It allows you to interact with your model and see the results.
@@ -185,6 +217,8 @@ If you like the project and want to support it, you can buy me a coffee. It will
 <a href='https://ko-fi.com/M4M3EMCLL' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 or you can sponsor me on GitHub.
+
+A huge thank you to everyone who has supported Page Assist through [Ko-fi](https://ko-fi.com/M4M3EMCLL) and [GitHub Sponsors](https://github.com/sponsors/n4ze3m) — your generosity keeps this project going. 💛
 
 ## Blogs and Videos About Page Assist
 

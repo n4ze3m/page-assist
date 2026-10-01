@@ -10,9 +10,8 @@ class SimpleEvent<T extends (...args: any[]) => void> {
   emit = (...args: Parameters<T>) => this.listeners.forEach((l) => l(...args))
 }
 
-const createStorageArea = () => {
+const createStorageArea = (areaName: string, onChanged: SimpleEvent<(changes: any, areaName: string) => void>) => {
   let store: Record<string, any> = {}
-  const onChanged = new SimpleEvent<(changes: any, areaName: string) => void>()
   return {
     get: (keys?: any) => {
       if (!keys) return Promise.resolve({ ...store })
@@ -35,7 +34,7 @@ const createStorageArea = () => {
         changes[k] = { oldValue: store[k], newValue: v }
         store[k] = v
       }
-      onChanged.emit(changes, 'local')
+      onChanged.emit(changes, areaName)
       return
     },
     remove: async (keys: string | string[]) => {
@@ -45,22 +44,24 @@ const createStorageArea = () => {
         changes[k] = { oldValue: store[k], newValue: undefined }
         delete store[k]
       }
-      onChanged.emit(changes, 'local')
+      onChanged.emit(changes, areaName)
       return
     },
     clear: async () => {
       store = {}
-      onChanged.emit({}, 'local')
+      onChanged.emit({}, areaName)
     },
     onChanged
   }
 }
 
 export function installWebExtensionMocks(globalObj: any) {
+  const onChanged = new SimpleEvent<(changes: any, areaName: string) => void>()
   const storage = {
-    local: createStorageArea(),
-    sync: createStorageArea(),
-    session: createStorageArea()
+    onChanged,
+    local: createStorageArea("local", onChanged),
+    sync: createStorageArea("sync", onChanged),
+    session: createStorageArea("session", onChanged)
   }
 
   const runtime = {
@@ -161,6 +162,7 @@ export function installWebExtensionMocks(globalObj: any) {
   })
 
   chromeLike.storage = {
+    onChanged,
     local: storageCbArea(storage.local),
     sync: storageCbArea(storage.sync),
     session: storageCbArea(storage.session)

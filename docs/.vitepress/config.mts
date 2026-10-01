@@ -82,6 +82,10 @@ export default defineConfig({
             link: "/features/mcp"
           },
           {
+            text: "Page Action",
+            link: "/features/page-action"
+          },
+          {
             text: "Ollama",
             link: "/features/ollama"
           },
@@ -106,6 +110,10 @@ export default defineConfig({
           {
             text: "OpenAI Compatible API",
             link: "/providers/openai"
+          },
+          {
+            text: "Gemini Enterprise Agent Platform (Vertex AI)",
+            link: "/providers/vertex"
           }
         ]
       },

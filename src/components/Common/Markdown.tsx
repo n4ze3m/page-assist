@@ -77,6 +77,75 @@ const StreamingMaskParagraph = ({
   )
 }
 
+const StreamingTailContext = React.createContext({
+  showStreamingTail: false,
+  lastParagraphOffset: 0,
+  streamingTailShiftCh: 0,
+  streamingTailTick: 0
+})
+
+const StreamingParagraph = ({ node, children }) => {
+  const {
+    showStreamingTail,
+    lastParagraphOffset,
+    streamingTailShiftCh,
+    streamingTailTick
+  } = React.useContext(StreamingTailContext)
+  const paragraphEnd = node?.position?.end?.offset ?? 0
+  return (
+    <StreamingMaskParagraph
+      showMask={showStreamingTail && paragraphEnd >= lastParagraphOffset - 1}
+      shiftCh={streamingTailShiftCh}
+      tick={streamingTailTick}>
+      {children}
+    </StreamingMaskParagraph>
+  )
+}
+
+// These must be defined once at module scope. react-markdown uses each
+// renderer as the React element *type*, so recreating them on every render
+// (e.g. inline in JSX) makes React unmount/remount every <p>, <code>, <a>
+// and <table> on each streamed chunk — which destroys text selection while
+// a response is streaming and re-highlights every code block per token.
+const remarkPlugins = [remarkGfm, remarkMath]
+const rehypePlugins = [rehypeKatex]
+
+const markdownComponents: React.ComponentProps<
+  typeof ReactMarkdown
+>["components"] = {
+  pre({ children }) {
+    return children
+  },
+  code({ node, inline, className, children, ...props }) {
+    const match = /language-(\w+)/.exec(className || "")
+    return !inline ? (
+      <CodeBlock
+        language={match ? match[1] : ""}
+        value={String(children).replace(/\n$/, "")}
+      />
+    ) : (
+      <code dir="ltr" className={`${className} font-semibold`} {...props}>
+        {children}
+      </code>
+    )
+  },
+  a({ node, ...props }) {
+    return (
+      <a
+        target="_blank"
+        rel="noreferrer"
+        className="text-blue-500 text-sm hover:underline"
+        {...props}>
+        {props.children}
+      </a>
+    )
+  },
+  table({ children }) {
+    return <TableBlock>{children}</TableBlock>
+  },
+  p: StreamingParagraph
+}
+
 function Markdown({
   message,
   className = "prose dark:prose-invert prose-p:leading-relaxed prose-pre:p-0 dark:prose-dark",
@@ -98,59 +167,21 @@ function Markdown({
   const trimmedMessage = message.trimEnd()
   const lastParagraphOffset = trimmedMessage.length
   return (
-    <React.Fragment>
+    <StreamingTailContext.Provider
+      value={{
+        showStreamingTail,
+        lastParagraphOffset,
+        streamingTailShiftCh,
+        streamingTailTick
+      }}>
       <ReactMarkdown
         className={className}
-        remarkPlugins={[remarkGfm, remarkMath]}
-        rehypePlugins={[rehypeKatex]}
-        components={{
-          pre({ children }) {
-            return children
-          },
-          code({ node, inline, className, children, ...props }) {
-            const match = /language-(\w+)/.exec(className || "")
-            return !inline ? (
-              <CodeBlock
-                language={match ? match[1] : ""}
-                value={String(children).replace(/\n$/, "")}
-              />
-            ) : (
-              <code className={`${className} font-semibold`} {...props}>
-                {children}
-              </code>
-            )
-          },
-          a({ node, ...props }) {
-            return (
-              <a
-                target="_blank"
-                rel="noreferrer"
-                className="text-blue-500 text-sm hover:underline"
-                {...props}>
-                {props.children}
-              </a>
-            )
-          },
-          table({ children }) {
-            return <TableBlock>{children}</TableBlock>
-          },
-          p({ node, children }) {
-            const paragraphEnd = node?.position?.end?.offset ?? 0
-            const isLastParagraph =
-              showStreamingTail && paragraphEnd >= lastParagraphOffset - 1
-            return (
-              <StreamingMaskParagraph
-                showMask={isLastParagraph}
-                shiftCh={streamingTailShiftCh}
-                tick={streamingTailTick}>
-                {children}
-              </StreamingMaskParagraph>
-            )
-          }
-        }}>
+        remarkPlugins={remarkPlugins}
+        rehypePlugins={rehypePlugins}
+        components={markdownComponents}>
         {message}
       </ReactMarkdown>
-    </React.Fragment>
+    </StreamingTailContext.Provider>
   )
 }
 

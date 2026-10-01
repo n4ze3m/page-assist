@@ -32,8 +32,10 @@ export const presetChatMode = async (
     setStreaming,
     setAbortController,
     historyId,
-    setHistoryId
+    setHistoryId,
+    images
   }: {
+    images?: string[]
     selectedModel: string
     useOCR: boolean
     setMessages: (
@@ -52,9 +54,11 @@ export const presetChatMode = async (
   console.log("Using presetChatMode")
   const url = await getOllamaURL()
 
-  if (image.length > 0) {
+  if (image.length > 0 && !image.startsWith("data:")) {
     image = `data:image/jpeg;base64,${image.split(",")[1]}`
   }
+
+  const imagesToSave = images?.length > 0 ? images : image ? [image] : []
 
   const ollama = await pageAssistModel({
     model: selectedModel!,
@@ -73,17 +77,17 @@ export const presetChatMode = async (
     model: selectedModel,
     useOCR
   })
-  if (image.length > 0) {
+  if (imagesToSave.length > 0) {
     humanMessage = await humanMessageFormatter({
       content: [
         {
           text: prompt.replace("{text}", message),
           type: "text"
         },
-        {
-          image_url: image,
-          type: "image_url"
-        }
+        ...imagesToSave.map((image_url) => ({
+          image_url,
+          type: "image_url" as const
+        }))
       ],
       model: selectedModel,
       useOCR
@@ -104,12 +108,15 @@ export const presetChatMode = async (
       ...history,
       {
         role: "user",
+        createdAt: Date.now(),
         content: message,
         image,
+        images: imagesToSave,
         messageType
       },
       {
         role: "assistant",
+        createdAt: Date.now(),
         content: fullText
       }
     ])
@@ -121,6 +128,7 @@ export const presetChatMode = async (
       selectedModel: selectedModel,
       message,
       image,
+      images: imagesToSave,
       fullText,
       source: [],
       message_source: "copilot",
@@ -140,6 +148,7 @@ export const presetChatMode = async (
       history,
       historyId,
       image,
+      images: imagesToSave,
       selectedModel,
       setHistory,
       setHistoryId,
@@ -170,6 +179,7 @@ export const presetChatMode = async (
     onComplete,
     onError,
     image,
+    images: imagesToSave,
     sources: [],
     documents: [],
     messageType

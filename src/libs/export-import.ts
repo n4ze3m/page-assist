@@ -6,6 +6,7 @@ import {
   exportNicknames,
   exportOAIConfigs,
   exportPrompts,
+  generateID,
   importChatHistoryV2,
   importMcpServersV2,
   importModelsV2,
@@ -13,6 +14,7 @@ import {
   importOAIConfigsV2,
   importPromptsV2
 } from "@/db/dexie/helpers"
+import type { HistoryInfo, Message } from "@/db/dexie/types"
 import { exportKnowledge, importKnowledgeV2 } from "@/db/dexie/knowledge"
 import { db } from "@/db/dexie/schema"
 import { exportVectors, importVectorsV2 } from "@/db/dexie/vector"
@@ -108,6 +110,75 @@ export const exportPageAssistData = async (
   a.download = `page-assist-${new Date().toISOString()}.json`
   a.click()
   URL.revokeObjectURL(url)
+}
+
+/**
+ * Detect a single-chat JSON download from the chat "More options" menu
+ * (a top-level array of UI messages carrying `isBot` and `message`).
+ */
+export const isChatMessagesExport = (data: any): boolean => {
+  if (!Array.isArray(data) || data.length === 0) return false
+  return data.every(
+    (entry) =>
+      entry &&
+      typeof entry === "object" &&
+      typeof entry.isBot === "boolean" &&
+      typeof entry.message === "string"
+  )
+}
+
+/**
+ * Convert a single-chat JSON download into the Page Assist import shape
+ * (`{ chat: [{ history, messages }] }`) so it flows through the existing
+ * import pipeline. Fresh ids are generated to avoid colliding with chats
+ * already in the database.
+ */
+export const convertChatMessagesToPageAssist = (
+  data: any[]
+): { chat: { history: HistoryInfo; messages: Message[] }[] } => {
+  const historyId = generateID()
+  const createdAt = Date.now()
+
+  const title =
+    data
+      .find((m) => !m.isBot && m.message?.trim())
+      ?.message?.trim()
+      ?.slice(0, 50) || "Imported Chat"
+
+  const history: HistoryInfo = {
+    id: historyId,
+    title,
+    is_rag: false,
+    message_source: "web-ui",
+    createdAt
+  }
+
+  const messages: Message[] = data.map((m, index) => ({
+    id: generateID(),
+    history_id: historyId,
+    name: m.name || m.modelName || "",
+    role:
+      m.messageKind === "tool_result" ? "tool" : m.isBot ? "assistant" : "user",
+    content: m.message ?? "",
+    images: Array.isArray(m.images) ? m.images : [],
+    sources: Array.isArray(m.sources) ? m.sources : [],
+    search: m.search,
+    createdAt: createdAt + index,
+    messageType: m.messageType,
+    messageKind: m.messageKind,
+    toolCalls: m.toolCalls,
+    toolCallId: m.toolCallId,
+    toolName: m.toolName,
+    toolServerName: m.toolServerName,
+    toolError: m.toolError,
+    generationInfo: m.generationInfo,
+    reasoning_time_taken: m.reasoning_time_taken,
+    modelName: m.modelName,
+    modelImage: m.modelImage,
+    documents: m.documents
+  }))
+
+  return { chat: [{ history, messages }] }
 }
 
 export const parseImportFile = (file: File): Promise<any> => {

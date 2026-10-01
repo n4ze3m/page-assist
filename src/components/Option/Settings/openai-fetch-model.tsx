@@ -21,13 +21,14 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
   const queryClient = useQueryClient()
 
   const { data, status } = useQuery({
-    queryKey: ["openAIConfigs", openaiId],
+    queryKey: ["openAIConfigs", openaiId, modelType],
     queryFn: async () => {
       const config = await getOpenAIConfigById(openaiId)
       const models = await getAllOpenAIModels({
         baseUrl: config.baseUrl,
         apiKey: config.apiKey,
-        customHeaders: config.headers
+        customHeaders: config.headers,
+        modelType: modelType as "chat" | "embedding"
       })
       return models
     },
@@ -164,7 +165,10 @@ export const OpenAIFetchModel = ({ openaiId, setOpenModelModal }: Props) => {
 
       <div className="flex items-center">
         <Radio.Group
-          onChange={(e) => setModelType(e.target.value)}
+          onChange={(e) => {
+            setModelType(e.target.value)
+            setSelectedModels([])
+          }}
           value={modelType}>
           <Radio value="chat">{t("radio.chat")}</Radio>
           <Radio value="embedding">{t("radio.embedding")}</Radio>

@@ -71,6 +71,7 @@ const SidePanelBodyComponent = () => {
             reasoningTimeTaken={message?.reasoning_time_taken}
             modelImage={message?.modelImage}
             modelName={message?.modelName}
+            createdAt={message?.createdAt}
             temporaryChat={temporaryChat}
             uiStreaming={message?.uiStreaming}
             actionInfo={index === lastGroupIndex ? actionInfo : null}

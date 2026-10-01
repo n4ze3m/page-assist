@@ -60,3 +60,8 @@ bun.lock
 .agents
 .claude
 skills-lock.json
+
+# Test output
+coverage/
+playwright-report/
+test-results/

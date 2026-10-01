@@ -73,7 +73,7 @@ export const visionChatMode = async (
     useOCR
   })
 
-  const applicationChatHistory = generateHistory(history, selectedModel)
+  const applicationChatHistory = await generateHistory(history, selectedModel)
 
   if (prompt) {
     applicationChatHistory.unshift(
@@ -97,11 +97,13 @@ export const visionChatMode = async (
       ...history,
       {
         role: "user",
+        createdAt: Date.now(),
         content: message,
         image: ""
       },
       {
         role: "assistant",
+        createdAt: Date.now(),
         content: fullText
       }
     ])

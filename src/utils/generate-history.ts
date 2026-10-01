@@ -1,12 +1,16 @@
 import { isCustomModel } from "@/db/dexie/models"
 import { isTextMessageKind } from "@/libs/mcp/utils"
 import { parseReasoning, removeReasoning } from "@/libs/reasoning"
+import { formatContextTimestamp } from "@/utils/format-timestamp"
+import { Storage } from "@plasmohq/storage"
 import {
   HumanMessage,
   AIMessage,
   ToolMessage,
   type MessageContent
 } from "@langchain/core/messages"
+
+const storage = new Storage()
 
 const extractReasoningContent = (text: string | undefined): string => {
   if (!text) return ""
@@ -20,12 +24,13 @@ const extractReasoningContent = (text: string | undefined): string => {
 const isDeepSeekModel = (model: string): boolean =>
   (model || "").toLowerCase().includes("deepseek")
 
-export const generateHistory = (
+export const generateHistory = async (
   messages: {
     role: "user" | "assistant" | "system" | "tool"
     content: string
     image?: string
     images?: string[]
+    createdAt?: number
     messageKind?: "text" | "assistant_tool_calls" | "tool_result"
     toolCalls?: {
       id: string
@@ -45,7 +50,26 @@ export const generateHistory = (
   let history = []
   const isCustom = isCustomModel(model)
   const isDeepSeek = isDeepSeekModel(model)
-  for (const message of messages) {
+  const showMessageTimestamp = await storage.get<boolean>(
+    "showMessageTimestamp"
+  )
+  for (let message of messages) {
+    if (
+      showMessageTimestamp &&
+      message.createdAt &&
+      message.content?.trim()?.length > 0 &&
+      (message.role === "user" ||
+        (message.role === "assistant" &&
+          message.messageKind !== "assistant_tool_calls"))
+    ) {
+      const timestamp = formatContextTimestamp(message.createdAt)
+      if (timestamp) {
+        message = {
+          ...message,
+          content: `${message.content} [${timestamp}]`
+        }
+      }
+    }
     if (message.role === "user") {
       let content: MessageContent = isCustom
         ? message.content
@@ -102,12 +126,24 @@ export const generateHistory = (
       }
 
       if (message.messageKind === "assistant_tool_calls") {
+        const toolCallExtraContent: Record<string, unknown> = {}
+        for (const toolCall of message.toolCalls || []) {
+          const extra = (toolCall as any).extraContent
+          if (extra != null && toolCall.id) {
+            toolCallExtraContent[toolCall.id] = extra
+          }
+        }
         history.push(
           new AIMessage({
             content: isDeepSeek
               ? removeReasoning(message.content || "")
               : message.content || "",
-            additional_kwargs: additionalKwargs,
+            additional_kwargs: {
+              ...additionalKwargs,
+              ...(Object.keys(toolCallExtraContent).length
+                ? { tool_call_extra_content: toolCallExtraContent }
+                : {})
+            },
             tool_calls: (message.toolCalls || []).map((toolCall) => ({
               id: toolCall.id,
               name: toolCall.name,

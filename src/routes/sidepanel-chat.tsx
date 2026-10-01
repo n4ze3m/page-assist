@@ -35,6 +35,7 @@ const SidepanelChat = () => {
   >("idle")
 
   const [defaultCopilotPrompt] = useStorage("defaultCopilotPrompt", undefined)
+  const [hideChatScrollbar] = useStorage("hideChatScrollbar", false)
 
   useMigration()
   const {
@@ -49,6 +50,7 @@ const SidepanelChat = () => {
     defaultChatWithWebsite,
     chatMode,
     setChatMode,
+    temporaryChat,
     setTemporaryChat,
     sidepanelTemporaryChat,
     clearChat,
@@ -77,7 +79,7 @@ const SidepanelChat = () => {
     })
   })
   const bgMsg = useBackgroundMessage()
-  const lastBgKeyRef = React.useRef<string | null>(null)
+  const lastBgMessageRef = React.useRef<typeof bgMsg>(null)
 
   const setRecentMessagesOnLoad = async () => {
     const isEnabled = await copilotResumeLastChat()
@@ -188,17 +190,15 @@ const SidepanelChat = () => {
   React.useEffect(() => {
     if (!bgMsg) return
 
-    const key = `${bgMsg.type}:${bgMsg.text}`
-
     if (streaming) {
       // Defer processing until current stream finishes
       return
     }
 
-    if (lastBgKeyRef.current === key) {
+    if (lastBgMessageRef.current === bgMsg) {
       return
     }
-    lastBgKeyRef.current = key
+    lastBgMessageRef.current = bgMsg
 
     if (selectedModel) {
       if (bgMsg.type === "yt_summarize") {
@@ -255,7 +255,7 @@ const SidepanelChat = () => {
 
           <div
             ref={containerRef}
-            className="custom-scrollbar flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5 relative z-10">
+            className={`${hideChatScrollbar ? "no-scrollbar" : "custom-scrollbar"} flex h-full w-full flex-col items-center overflow-x-hidden overflow-y-auto px-5 relative z-10`}>
             <SidePanelBody />
           </div>
 

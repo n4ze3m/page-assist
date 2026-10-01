@@ -79,13 +79,27 @@ const formatToolResponse = (result: any) => {
     textParts.push(serializeResultValue(result.structuredContent))
   }
 
+  const images = Array.isArray(result?.content)
+    ? result.content
+        .filter(
+          (item: any) => item?.type === "image" && typeof item.data === "string"
+        )
+        .map((item: any) => ({
+          data: item.data,
+          mimeType: item.mimeType || "image/png"
+        }))
+    : []
+
   const content = textParts.join("\n\n").trim() || "Tool executed successfully."
 
   const artifact =
-    result?.structuredContent != null || result?._meta != null
+    result?.structuredContent != null ||
+    result?._meta != null ||
+    images.length > 0
       ? {
           structuredContent: result?.structuredContent,
-          meta: result?._meta
+          meta: result?._meta,
+          images: images.length > 0 ? images : undefined
         }
       : undefined
 

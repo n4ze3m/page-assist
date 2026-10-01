@@ -5,6 +5,7 @@
   "saved": "저장됨",
   "cancel": "취소",
   "retry": "재시도",
+  "loadMore": "더 보기...",
   "share": {
     "tooltip": {
       "share": "공유"
@@ -75,6 +76,16 @@
         "label": "최대 토큰 수 (num_predict)",
         "placeholder": "최대 토큰 수를 입력하세요 (예: 2048, 4096)"
       },
+      "thinking": {
+        "label": "사고 모드 (Ollama)",
+        "levels": {
+          "off": "꺼짐",
+          "on": "켜짐",
+          "low": "낮은 추론 강도",
+          "medium": "보통 추론 강도",
+          "high": "높은 추론 강도"
+        }
+      },
       "seed": {
         "label": "시드",
         "placeholder": "시드 값을 입력하세요 (예: 1234)",
@@ -87,6 +98,40 @@
       "topP": {
         "label": "Top P",
         "placeholder": "Top P 값을 입력하세요 (예: 0.9, 0.95)"
+      },
+      "useMMap": {
+        "label": "useMmap"
+      },
+      "tfsZ": {
+        "label": "TFS-Z",
+        "placeholder": "예: 1.0, 1.1"
+      },
+      "numKeep": {
+        "label": "Num Keep",
+        "placeholder": "예: 256, 512"
+      },
+      "numThread": {
+        "label": "Num Thread",
+        "placeholder": "예: 8, 16"
+      },
+      "useMlock": {
+        "label": "useMlock"
+      },
+      "reasoningEffort": {
+        "label": "추론 강도",
+        "placeholder": "낮음, 보통, 높음"
+      },
+      "minP": {
+        "label": "Min P",
+        "placeholder": "예: 0.05"
+      },
+      "repeatPenalty": {
+        "label": "반복 패널티",
+        "placeholder": "예: 1.1, 1.2"
+      },
+      "repeatLastN": {
+        "label": "Repeat Last N",
+        "placeholder": "예: 64, 128"
       },
       "numGpu": {
         "label": "GPU 수",
@@ -104,9 +149,14 @@
     "summary": "요약",
     "explain": "설명",
     "rephrase": "다르게 표현",
-    "translate": "번역"
+    "translate": "번역",
+    "custom": "사용자 지정"
   },
   "citations": "인용",
+  "segmented": {
+    "ollama": "Ollama 모델",
+    "custom": "사용자 지정 모델"
+  },
   "downloadCode": "코드 다운로드",
   "date": {
     "pinned": "고정됨",
@@ -131,18 +181,54 @@
       "older": "이전의 모든 메시지 삭제"
     }
   },
+  "historiesDeleted": "{{count}}개의 기록이 삭제되었습니다",
+  "deleteHistoriesError": "기록 삭제 중 오류가 발생했습니다",
   "pin": "고정",
   "unpin": "고정 해제",
   "generationInfo": "생성 정보",
   "sidebarChat": "사이드바 채팅",
   "reasoning": {
     "thinking": "생각 중....",
-    "thought": "{{time}} 동안 생각함"
+    "thought": "{{time}} 동안 생각함",
+    "title": "추론 과정",
+    "expand": "추론 과정 보기",
+    "collapse": "추론 과정 숨기기"
   },
+  "mermaid": "Mermaid",
+  "search": "검색",
+  "searchResults": "검색 결과",
   "embeddingGen": "임베딩을 생성하는 중입니다. 시간이 걸릴 수 있습니다",
   "semanticSearch": "의미론적 검색을 수행하는 중",
+  "newBranch": "새 브랜치",
   "downloading": "다운로드 중",
+  "mcp": {
+    "tool": "도구",
+    "server": "서버",
+    "toolRequestTitle": "요청된 도구",
+    "toolResultTitle": "도구 결과",
+    "arguments": "인자",
+    "output": "출력",
+    "approvalRequired": "승인 필요",
+    "approvalPrompt": "이 MCP 도구 호출을 실행하기 전에 승인하세요.",
+    "approve": "승인",
+    "reject": "거부",
+    "rejectWithReason": "사유와 함께 거부",
+    "rejectionReasonPlaceholder": "거부 사유 (선택 사항)",
+    "noOutput": "반환된 출력이 없습니다.",
+    "status": {
+      "success": "성공",
+      "error": "오류"
+    },
+    "action": {
+      "connecting": "MCP 서버에 연결하는 중",
+      "loading_tools": "MCP 도구를 불러오는 중",
+      "awaiting_approval": "{{server}}에서 {{tool}} 실행 승인 대기 중",
+      "calling_tool": "{{server}}에서 {{tool}} 호출 중",
+      "waiting_result": "{{server}}의 {{tool}} 결과 대기 중"
+    }
+  },
   "cancelPullingModel": {
     "confirm": "다운로드를 취소하시겠습니까? 이 작업은 다운로드 과정을 중단합니다. Ollama 문서에 따르면, 중단된 위치에서 다시 시작할 수 있습니다."
-  }
+  },
+  "saveChat": "채팅 저장"
 }

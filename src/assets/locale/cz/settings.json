@@ -45,7 +45,7 @@
         "label": "Odeslat oznámení po dokončení zpracování báze znalostí"
       },
       "generateTitle": {
-        "label": "Vygenerovat titulek pomocí AI"
+        "label": "Generovat názvy chatů pomocí AI"
       },
       "ollamaStatus": {
         "label": "Povolit nebo zakázat kontrolu stavu spojení s Ollamou"
@@ -57,7 +57,7 @@
         "label": "Ve výchozím nastavení automaticky rozevírat obsah přemýšlení"
       },
       "defaultThinkingMode": {
-        "label": "Zobrazit stav přemýšlení ve formulářích"
+        "label": "Zobrazovat ve formulářích stav a fáze přemýšlení"
       },
       "userChatBubble": {
         "label": "Použít pro uživatelské zprávy chatovou bublinu"
@@ -69,13 +69,13 @@
         "label": "Povolit formátování markdown pro zprávy od uživatelů"
       },
       "copyAsFormattedText": {
-        "label": "Zkopírovat jako formátovaný text"
+        "label": "Kopírovat výstupy rovnou jako formátovaný text"
       },
       "tabMentionsEnabled": {
         "label": "Povolit zmiňování kartiček (@tab)"
       },
       "pasteLargeTextAsFile": {
-        "label": "Vložit velké množství textu jako soubor"
+        "label": "Vkládat velké množství textů jako soubory"
       },
       "ocrLanguage": {
         "label": "Výchozí jazyk OCR",
@@ -94,7 +94,7 @@
         "label": "Zobrazit tlačítko 'Shrnout' na YouTube videích"
       },
       "hideReasoningWidget": {
-        "label": "Skrýt ve zprávách od AI widget uvažování"
+        "label": "Skrývat ve zprávách od AI sekci uvažování"
       },
       "persistChatInput": {
         "label": "Zachovávej vstup chatu (Ukládej neodeslané zprávy)"
@@ -103,7 +103,7 @@
         "label": "Povolit frontu zpráv během streamování"
       },
       "optimizeQueueForSmallScreen": {
-        "label": "Optimalizace rozhraní chatu pro malé obrazovky"
+        "label": "Optimalizovat rozhraní chatu pro malé obrazovky"
       },
       "tableTextWrap": {
         "label": "Povolit v tabulkách Markdown zalamování textu"
@@ -126,6 +126,15 @@
       },
       "showProviderNameInModelList": {
         "label": "Zobrazit v seznamu modelů jména jejich poskytovatelů"
+      },
+      "showMessageTimestamp": {
+        "label": "Zobrazovat u zpráv časová razítka"
+      },
+      "hideChatScrollbar": {
+        "label": "Skrývat v chatu posuvník"
+      },
+      "enableAgentWebSearch": {
+        "label": "Používat pro vyhledávání na webu agenty (model rozhodne kdy a co vyhledá)"
       }
     },
     "sidepanelRag": {

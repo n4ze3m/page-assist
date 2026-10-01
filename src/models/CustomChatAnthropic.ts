@@ -226,7 +226,7 @@ export class ChatAnthropic extends BaseChatModel<
   temperature = 1
   topP = 1
   topK?: number
-  maxTokens = 1024
+  maxTokens = 8192
   modelName = "claude-sonnet-4-5-20250929"
   stopSequences?: string[]
   budgetTokens?: number

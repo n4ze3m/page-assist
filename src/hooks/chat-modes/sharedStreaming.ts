@@ -41,6 +41,7 @@ interface StreamChatResponseParams {
     timetaken?: number
   ) => Promise<void>
   onError?: (error: any, fullText: string) => Promise<void>
+  images?: string[]
   image?: string
   sources?: any[]
   documents?: any[]
@@ -71,6 +72,7 @@ export const streamChatResponse = async (params: StreamChatResponseParams) => {
     onComplete,
     onError,
     image = "",
+    images,
     sources = [],
     documents = [],
     messageType = ""
@@ -126,14 +128,16 @@ export const streamChatResponse = async (params: StreamChatResponseParams) => {
         ...newMessage,
         {
           isBot: false,
+          createdAt: Date.now(),
           name: "You",
           message: resolvedUserMessage,
           sources: [],
-          images: image ? [image] : [],
+          images: images?.length > 0 ? images : image ? [image] : [],
           documents
         },
         {
           isBot: true,
+          createdAt: Date.now(),
           name: selectedModel,
           message: cursor,
           sources: [],
@@ -148,6 +152,7 @@ export const streamChatResponse = async (params: StreamChatResponseParams) => {
         ...newMessage,
         {
           isBot: true,
+          createdAt: Date.now(),
           name: selectedModel,
           message: cursor,
           sources: [],

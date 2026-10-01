@@ -92,8 +92,17 @@ function openAIResponseToChatMessage(
     switch (message.role) {
         case "assistant": {
             if (message.tool_calls?.length) {
+                const toolCallExtraContent: Record<string, any> = {}
+                for (const tc of message.tool_calls as any[]) {
+                    if (tc?.extra_content != null && tc?.id) {
+                        toolCallExtraContent[tc.id] = tc.extra_content
+                    }
+                }
                 return new AIMessage({
                     content: message.content || "",
+                    additional_kwargs: Object.keys(toolCallExtraContent).length
+                        ? { tool_call_extra_content: toolCallExtraContent }
+                        : undefined,
                     tool_calls: message.tool_calls.map((tc) => {
                       const fn = (tc as any).function || {}
 
@@ -146,6 +155,17 @@ function _convertDeltaToMessageChunk(
 
     // Streaming tool call deltas — use proper tool_call_chunks instead of additional_kwargs
     if (delta?.tool_calls) {
+        const toolCallExtraContent: Record<string, any> = {}
+        for (const tc of delta.tool_calls as any[]) {
+            const extra = tc?.extra_content ?? tc?.function?.extra_content
+            if (extra != null) {
+                const key = tc?.id ?? String(tc?.index ?? 0)
+                toolCallExtraContent[key] = extra
+            }
+        }
+        if (Object.keys(toolCallExtraContent).length > 0) {
+            additional_kwargs.tool_call_extra_content = toolCallExtraContent
+        }
         return new AIMessageChunk({
             content,
             additional_kwargs,
@@ -190,11 +210,22 @@ function isDeepSeekProvider(modelName?: string, baseURL?: string): boolean {
     return model.includes("deepseek") || url.includes("deepseek")
 }
 
+function isGeminiProvider(modelName?: string, baseURL?: string): boolean {
+    const model = (modelName || "").toLowerCase()
+    const url = (baseURL || "").toLowerCase()
+    return (
+        model.includes("gemini") ||
+        url.includes("aiplatform.googleapis.com") ||
+        url.includes("generativelanguage.googleapis.com")
+    )
+}
+
 function convertMessagesToOpenAIParams(
     messages: BaseMessage[],
-    options?: { includeReasoningContent?: boolean }
+    options?: { includeReasoningContent?: boolean; includeToolCallExtraContent?: boolean }
 ) {
     const includeReasoningContent = options?.includeReasoningContent === true
+    const includeToolCallExtraContent = options?.includeToolCallExtraContent === true
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return messages.map((message): any => {
         const role = messageToOpenAIRole(message)
@@ -222,21 +253,34 @@ function convertMessagesToOpenAIParams(
                 ? aiMsg.additional_kwargs?.reasoning_content ?? undefined
                 : undefined
             if (aiMsg.tool_calls?.length) {
+                // Re-attach provider extra_content (e.g. Gemini
+                // thought_signature). Gated to Gemini/Vertex so other providers
+                // never receive an unknown field (e.g. after switching models).
+                const extraContentMap: Record<string, any> = includeToolCallExtraContent
+                    ? aiMsg.additional_kwargs?.tool_call_extra_content ?? {}
+                    : {}
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const result: any = {
                     role: "assistant",
                     content: typeof aiMsg.content === "string" ? aiMsg.content : null,
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    tool_calls: aiMsg.tool_calls.map((tc: any) => ({
-                        id: tc.id || "",
-                        type: "function",
-                        function: {
-                            name: tc.name,
-                            arguments: typeof tc.args === "string"
-                                ? tc.args
-                                : JSON.stringify(tc.args ?? {}),
-                        },
-                    })),
+                    tool_calls: aiMsg.tool_calls.map((tc: any) => {
+                        const toolCall: any = {
+                            id: tc.id || "",
+                            type: "function",
+                            function: {
+                                name: tc.name,
+                                arguments: typeof tc.args === "string"
+                                    ? tc.args
+                                    : JSON.stringify(tc.args ?? {}),
+                            },
+                        }
+                        const extra = extraContentMap[tc.id] ?? tc.extra_content
+                        if (extra != null) {
+                            toolCall.extra_content = extra
+                        }
+                        return toolCall
+                    }),
                 }
                 if (reasoningContent) {
                     result.reasoning_content = reasoningContent
@@ -615,13 +659,12 @@ export class CustomChatOpenAI<
         options: this["ParsedCallOptions"],
         runManager?: CallbackManagerForLLMRun
     ): AsyncGenerator<ChatGenerationChunk> {
-        // Prefer OpenAI v6 Responses API when available; fallback to Chat Completions otherwise
-        if (this.shouldUseResponsesApi()) {
-            yield* this._streamResponseChunksResponses(messages, options, runManager)
-            return
-        }
         const messagesMapped = convertMessagesToOpenAIParams(messages, {
             includeReasoningContent: isDeepSeekProvider(
+                this.modelName,
+                this.clientConfig?.baseURL
+            ),
+            includeToolCallExtraContent: isGeminiProvider(
                 this.modelName,
                 this.clientConfig?.baseURL
             )
@@ -701,6 +744,10 @@ export class CustomChatOpenAI<
         const params = this.invocationParams(options)
         const messagesMapped: any[] = convertMessagesToOpenAIParams(messages, {
             includeReasoningContent: isDeepSeekProvider(
+                this.modelName,
+                this.clientConfig?.baseURL
+            ),
+            includeToolCallExtraContent: isGeminiProvider(
                 this.modelName,
                 this.clientConfig?.baseURL
             )
@@ -904,99 +951,6 @@ export class CustomChatOpenAI<
             }
         })
     }
-    // v6 Responses API helpers (feature-gated; safe no-ops if unavailable)
-    private shouldUseResponsesApi(): boolean {
-        try {
-            const isOpenRouter = (this.clientConfig.baseURL || '').includes('openrouter.ai')
-            const hasResponses = (this.client as any)?.responses && typeof (this.client as any).responses.stream === 'function'
-            return !isOpenRouter && !!hasResponses
-        } catch {
-            return false
-        }
-    }
-
-    private messagesToResponsesInput(messages: BaseMessage[]): string {
-        return messages
-            .map((m) => {
-                const role = messageToOpenAIRole(m)
-                const content = typeof (m as any).content === 'string'
-                    ? (m as any).content
-                    : Array.isArray((m as any).content)
-                        ? (m as any).content.map((p: any) => p?.text ?? '').join('\n')
-                        : ''
-                return `${role.toUpperCase()}: ${content}`
-            })
-            .join('\n')
-    }
-
-    private async *_streamResponseChunksResponses(
-        messages: BaseMessage[],
-        options: this["ParsedCallOptions"],
-        runManager?: CallbackManagerForLLMRun
-    ): AsyncGenerator<ChatGenerationChunk> {
-        try {
-            // @ts-ignore - v6 Responses API
-            const stream = await (this.client as any).responses.stream({
-                model: this.modelName,
-                input: this.messagesToResponsesInput(messages),
-            }, this._getClientOptions(options))
-
-            for await (const event of stream as any) {
-                const type = event?.type
-                if (type === 'response.output_text.delta') {
-                    const delta: string = event?.delta ?? ''
-                    if (!delta) continue
-                    const chunkMsg = new CustomAIMessageChunk({ content: delta }) as any
-                    const generationChunk = new ChatGenerationChunk({
-                        message: chunkMsg,
-                        text: delta,
-                        generationInfo: {}
-                    })
-                    yield generationChunk
-                    // eslint-disable-next-line no-void
-                    void runManager?.handleLLMNewToken(delta ?? '')
-                } else if (type === 'response.completed') {
-                    break
-                } else if (type === 'response.error') {
-                    const msg = event?.error?.message || 'OpenAI Responses stream error'
-                    throw new Error(msg)
-                }
-            }
-        } catch (e) {
-            // If Responses API fails, gracefully fallback to completions stream
-            const messagesMapped = convertMessagesToOpenAIParams(messages, {
-                includeReasoningContent: isDeepSeekProvider(
-                    this.modelName,
-                    this.clientConfig?.baseURL
-                )
-            })
-            const params = {
-                ...this.invocationParams(options),
-                messages: messagesMapped,
-                stream: true
-            }
-            // @ts-ignore
-            const streamIterable = await this.completionWithRetry(params, options)
-            let defaultRole
-            for await (const data of streamIterable) {
-                const choice = data?.choices[0]
-                if (!choice) continue
-                const { delta } = choice
-                if (!delta) continue
-                const chunk = _convertDeltaToMessageChunk(delta, defaultRole)
-                defaultRole = delta.role ?? defaultRole
-                if (typeof (chunk as any).content !== 'string') continue
-                const generationChunk = new ChatGenerationChunk({ message: chunk, text: (chunk as any).content, generationInfo: {} })
-                yield generationChunk
-                // eslint-disable-next-line no-void
-                void runManager?.handleLLMNewToken(generationChunk.text ?? '')
-            }
-        }
-        if (options.signal?.aborted) {
-            throw new Error('AbortError')
-        }
-    }
-
     _getClientOptions(options) {
         if (!this.client) {
             const openAIEndpointConfig = {

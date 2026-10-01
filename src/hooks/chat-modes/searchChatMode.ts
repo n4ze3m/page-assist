@@ -35,8 +35,10 @@ export const searchChatMode = async (
     setStreaming,
     setAbortController,
     historyId,
-    setHistoryId
+    setHistoryId,
+    images
   }: {
+    images?: string[]
     selectedModel: string
     useOCR: boolean
     setMessages: (
@@ -55,9 +57,11 @@ export const searchChatMode = async (
 ) => {
   console.log("Using searchChatMode")
   const url = await getOllamaURL()
-  if (image.length > 0) {
+  if (image.length > 0 && !image.startsWith("data:")) {
     image = `data:image/jpeg;base64,${image.split(",")[1]}`
   }
+
+  const imagesToSave = images?.length > 0 ? images : image ? [image] : []
 
   const ollama = await pageAssistModel({
     model: selectedModel!,
@@ -73,13 +77,15 @@ export const searchChatMode = async (
       ...messages,
       {
         isBot: false,
+        createdAt: Date.now(),
         name: "You",
         message,
         sources: [],
-        images: [image]
+        images: imagesToSave
       },
       {
         isBot: true,
+        createdAt: Date.now(),
         name: selectedModel,
         message: "▋",
         sources: [],
@@ -93,6 +99,7 @@ export const searchChatMode = async (
       ...messages,
       {
         isBot: true,
+        createdAt: Date.now(),
         name: selectedModel,
         message: "▋",
         sources: [],
@@ -137,17 +144,17 @@ export const searchChatMode = async (
       useOCR: useOCR
     })
 
-    if (image.length > 0) {
+    if (imagesToSave.length > 0) {
       questionMessage = await humanMessageFormatter({
         content: [
           {
             text: promptForQuestion,
             type: "text"
           },
-          {
-            image_url: image,
-            type: "image_url"
-          }
+          ...imagesToSave.map((image_url) => ({
+            image_url,
+            type: "image_url" as const
+          }))
         ],
         model: selectedModel,
         useOCR: useOCR
@@ -179,24 +186,24 @@ export const searchChatMode = async (
       model: selectedModel,
       useOCR: useOCR
     })
-    if (image.length > 0) {
+    if (imagesToSave.length > 0) {
       humanMessage = await humanMessageFormatter({
         content: [
           {
             text: message,
             type: "text"
           },
-          {
-            image_url: image,
-            type: "image_url"
-          }
+          ...imagesToSave.map((image_url) => ({
+            image_url,
+            type: "image_url" as const
+          }))
         ],
         model: selectedModel,
         useOCR: useOCR
       })
     }
 
-    const applicationChatHistory = generateHistory(history, selectedModel)
+    const applicationChatHistory = await generateHistory(history, selectedModel)
 
     if (prompt) {
       applicationChatHistory.unshift(
@@ -220,11 +227,14 @@ export const searchChatMode = async (
         ...history,
         {
           role: "user",
+          createdAt: Date.now(),
           content: message,
+          images: imagesToSave,
           image
         },
         {
           role: "assistant",
+          createdAt: Date.now(),
           content: fullText
         }
       ])
@@ -236,6 +246,7 @@ export const searchChatMode = async (
         selectedModel: selectedModel,
         message,
         image,
+        images: imagesToSave,
         fullText,
         source,
         generationInfo,
@@ -253,6 +264,7 @@ export const searchChatMode = async (
         history,
         historyId,
         image,
+        images: imagesToSave,
         selectedModel,
         setHistory,
         setHistoryId,
@@ -276,7 +288,7 @@ export const searchChatMode = async (
       humanMessage,
       userMessage: message,
       selectedModel,
-      messages: newMessage,
+      messages,
       isRegenerate,
       signal,
       config,
@@ -284,12 +296,14 @@ export const searchChatMode = async (
       onComplete,
       onError,
       image,
+      images: imagesToSave,
       sources: source,
       messageType: ""
     })
   } catch (e) {
     setIsProcessing(false)
     setStreaming(false)
+    throw e
   } finally {
     setAbortController(null)
   }

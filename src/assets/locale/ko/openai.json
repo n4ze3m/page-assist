@@ -10,6 +10,7 @@
     },
     "modal": {
         "titleAdd": "새 공급자 추가",
+        "titleEdit": "공급자 편집",
         "name": {
             "label": "공급자 이름",
             "required": "공급자 이름은 필수 항목입니다.",
@@ -34,7 +35,26 @@
             "subheading": "이 공급자에서 사용하고자 하는 챗 모델을 선택하세요.",
             "success": "새로운 모델이 정상적으로 추가되었습니다."
         },
-        "tipLMStudio": "Page Assist는 LM Studio에 로드된 모델을 자동으로 가져옵니다. 수동 추가가 필요하지 않습니다."
+        "tipLMStudio": "Page Assist는 LM Studio에 로드된 모델을 자동으로 가져옵니다. 수동 추가가 필요하지 않습니다.",
+        "vertex": {
+            "projectId": {
+                "label": "Google Cloud 프로젝트 ID",
+                "required": "Google Cloud 프로젝트 ID를 입력하세요",
+                "placeholder": "my-gcp-project-123456"
+            },
+            "location": {
+                "label": "위치 / 지역",
+                "required": "위치를 선택하세요"
+            },
+            "serviceAccount": {
+                "label": "서비스 계정 JSON",
+                "required": "서비스 계정 JSON 또는 액세스 토큰을 붙여넣으세요",
+                "help": "서비스 계정 키 파일을 업로드하거나 JSON을 여기에 붙여넣으세요. 이 정보는 로컬에 저장되며 브라우저에서 단기 액세스 토큰을 발급하는 데 사용됩니다. 원시 액세스 토큰을 직접 붙여넣을 수도 있습니다.",
+                "upload": "JSON 파일 업로드",
+                "uploaded": "파일에서 서비스 계정을 불러왔습니다.",
+                "invalid": "유효한 JSON 파일이 아닙니다."
+            }
+        }
     },
     "addSuccess": "공급자가 정상적으로 추가되었습니다.",
     "deleteSuccess": "공급자가 정상적으로 삭제되었습니다.",
@@ -64,10 +84,11 @@
         },
         "modal": {
             "title": "사용자 정의 모델 추가",
+            "titleEdit": "사용자 정의 모델 편집",
             "form": {
                 "name": {
                     "label": "모델 ID",
-                    "placeholder": "llama3.2",
+                    "placeholder": "deepseek-v3.1",
                     "required": "모델 ID는 필수 항목입니다."
                 },
                 "provider": {

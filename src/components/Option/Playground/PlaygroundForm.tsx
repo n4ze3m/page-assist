@@ -36,10 +36,13 @@ import { DocumentChip } from "./DocumentChip"
 import { otherUnsupportedTypes } from "../Knowledge/utils/unsupported-types"
 import { PASTED_TEXT_CHAR_LIMIT } from "@/utils/constant"
 import { PlaygroundFile } from "./PlaygroundFile"
-import { isThinkingCapableModel, isGptOssModel } from "@/libs/model-utils"
+import { useThinkingCapability } from "@/hooks/useThinkingCapability"
 import { useStoreChatModelSettings } from "@/store/model"
 import { useMessageQueue } from "@/hooks/useMessageQueue"
 import { QueuedMessagesList } from "@/components/Common/QueuedMessagesList"
+import { QuotedReplyChip } from "@/components/Common/Playground/QuotedReplyChip"
+import { useQuoteReply } from "@/store/quote"
+import { formatQuotedReply } from "@/utils/quote-reply"
 import { McpServerToggle } from "@/components/Common/McpServerToggle"
 type Props = {
   dropedFile: File | undefined
@@ -85,9 +88,10 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   const [autoStopTimeout] = useStorage("autoStopTimeout", 2000)
 
   // Thinking mode state
-  const [defaultThinkingMode] = useStorage("defaultThinkingMode", false)
+  const [defaultThinkingMode] = useStorage("defaultThinkingMode", true)
   const thinking = useStoreChatModelSettings((state) => state.thinking)
   const setThinking = useStoreChatModelSettings((state) => state.setThinking)
+  const { supportsThinking, isGptOss } = useThinkingCapability(selectedModel)
 
   const {
     tabMentionsEnabled,
@@ -398,6 +402,15 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     }
   }, [useCompactActions])
 
+  const quotedText = useQuoteReply((state) => state.quotedText)
+  const clearQuotedText = useQuoteReply((state) => state.clearQuotedText)
+
+  React.useEffect(() => {
+    if (quotedText) {
+      textAreaFocus()
+    }
+  }, [quotedText])
+
   const sendFormValue = async (value: {
     message: string
     image: string
@@ -405,6 +418,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
   }) => {
     if (
       value.message.trim().length === 0 &&
+      !quotedText &&
       (!value.images || value.images.length === 0) &&
       selectedDocuments.length === 0 &&
       uploadedFiles.length === 0
@@ -417,8 +431,11 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
       return
     }
 
+    const outgoingMessage = formatQuotedReply(quotedText, value.message)
+
     form.reset()
     clearSelectedDocuments()
+    clearQuotedText()
     clearUploadedFiles()
     if (persistChatInput) {
       setPersistedMessage("")
@@ -428,7 +445,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
     await sendMessage({
       image: value.images && value.images.length > 0 ? value.images[0] : "",
       images: value.images,
-      message: value.message.trim(),
+      message: outgoingMessage,
       docs: selectedDocuments.map((doc) => ({
         type: "tab",
         tabId: doc.id,
@@ -448,10 +465,11 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
 
     if (enableMessageQueue && isSending) {
       const enqueued = enqueueMessage({
-        message: value.message,
+        message: formatQuotedReply(quotedText, value.message),
         images: value.images || []
       })
       if (enqueued) {
+        clearQuotedText()
         form.setFieldValue("message", "")
         form.setFieldValue("images", [])
         if (persistChatInput) {
@@ -520,8 +538,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
           />
         </div>
       )}
-      {defaultThinkingMode && isThinkingCapableModel(selectedModel) && (
-        isGptOssModel(selectedModel) ? (
+      {defaultThinkingMode && supportsThinking && (
+        isGptOss ? (
           <div className="flex items-center justify-between rounded-lg border border-gray-200 px-2 py-1.5 dark:border-[#404040]">
             <span className="text-xs text-gray-600 dark:text-gray-300">
               {t("tooltip.thinking")}
@@ -610,7 +628,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
           <div
             data-istemporary-chat={temporaryChat}
             data-checkwidemode={checkWideMode}
-            className={` bg-neutral-50/70  dark:bg-[#2a2a2a]/70 relative w-full max-w-[48rem] p-1 backdrop-blur-3xl duration-100 border border-gray-300 rounded-t-xl  dark:border-[#404040] data-[istemporary-chat='true']:bg-gray-200/70 data-[istemporary-chat='true']:dark:bg-black/70 data-[checkwidemode='true']:max-w-none`}>
+            className={` bg-neutral-50/70  dark:bg-[#2a2a2a] relative w-full max-w-[48rem] p-1 backdrop-blur-3xl dark:backdrop-blur-none duration-100 border border-gray-300 rounded-t-xl  dark:border-[#404040] data-[istemporary-chat='true']:bg-violet-100/70 data-[istemporary-chat='true']:border-violet-300 data-[istemporary-chat='true']:dark:bg-black data-[istemporary-chat='true']:dark:border-[#404040] data-[checkwidemode='true']:max-w-none`}>
             {enableMessageQueue &&
               optimizeQueueForSmallScreen &&
               hasQueuedMessages && (
@@ -665,6 +683,7 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                 />
               </div>
             )}
+            <QuotedReplyChip />
             {form.values.images && form.values.images.length > 0 && (
               <div className="p-3 border-b border-gray-200 dark:border-[#404040]">
                 <div className="flex flex-wrap gap-2">
@@ -850,8 +869,8 @@ export const PlaygroundForm = ({ dropedFile }: Props) => {
                             </div>
                           </Tooltip>
                         )}
-                        {defaultThinkingMode && isThinkingCapableModel(selectedModel) &&
-                          (isGptOssModel(selectedModel) ? (
+                        {defaultThinkingMode && supportsThinking &&
+                          (isGptOss ? (
                             // For gpt-oss: Only show level selector (no on/off toggle)
                             <div className="inline-flex items-center gap-2">
                               <Tooltip title="Adjust reasoning intensity (always enabled)">

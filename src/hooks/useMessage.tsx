@@ -43,6 +43,9 @@ import {
 import { updatePageTitle } from "@/utils/update-page-title"
 import { getNoOfRetrievedDocs } from "@/services/features/app"
 
+import { ChatDocuments } from "@/models/ChatTypes"
+import { pageActionChatMode } from "./chat-modes/pageActionChatMode"
+import { webMcpChatMode } from "./chat-modes/webMcpChatMode"
 import { normalChatMode } from "./chat-modes/normalChatMode"
 import { searchChatMode } from "./chat-modes/searchChatMode"
 import { visionChatMode } from "./chat-modes/visionChatMode"
@@ -75,6 +78,9 @@ export const useMessage = () => {
     actionInfo,
     uploadedFiles,
     documentContext,
+    setDocumentContext,
+    pageAction,
+    webMcp,
     fileRetrievalEnabled,
     setActionInfo,
     setPendingMcpApproval
@@ -148,6 +154,7 @@ export const useMessage = () => {
     }
     setActionInfo(null)
     setPendingMcpApproval(null)
+    setDocumentContext(null)
   }
 
   const saveMessageOnSuccess = createSaveMessageOnSuccess(
@@ -170,7 +177,8 @@ export const useMessage = () => {
     memory,
     messages: chatHistory,
     messageType,
-    chatType
+    chatType,
+    docs
   }: {
     message: string
     image: string
@@ -181,6 +189,7 @@ export const useMessage = () => {
     controller?: AbortController
     messageType?: string
     chatType?: string
+    docs?: ChatDocuments
   }) => {
     let signal: AbortSignal
     if (!controller) {
@@ -195,6 +204,7 @@ export const useMessage = () => {
     const commonParams = {
       selectedModel,
       useOCR,
+      images,
       setMessages,
       saveMessageOnSuccess,
       saveMessageOnError,
@@ -211,18 +221,26 @@ export const useMessage = () => {
       const newEmbeddingController = new AbortController()
       let embeddingSignal = newEmbeddingController.signal
       setEmbeddingController(newEmbeddingController)
-      // Assume youtube handled in ragMode or separate, for now use ragMode with youtube docs
-      await ragMode(
+      await chatWithWebsiteMode(
         message,
         image,
         isRegenerate || false,
         chatHistory || messages,
         memory || history,
         signal,
+        embeddingSignal,
         {
           ...commonParams,
-          selectedKnowledge: { id: "youtube" },
-          currentChatModelSettings
+          setEmbeddingController,
+          setIsEmbedding,
+          chatWithWebsiteEmbedding,
+          maxWebsiteContext,
+          currentURL,
+          setCurrentURL,
+          keepTrackOfEmbedding,
+          setKeepTrackOfEmbedding,
+          currentChatModelSettings,
+          temporaryChat
         }
       )
       return
@@ -240,9 +258,111 @@ export const useMessage = () => {
         commonParams
       )
     } else {
+      const tabDocs = docs?.length > 0 ? docs : documentContext || []
+      if (tabDocs.length > 0 && chatMode === "normal") {
+        if (docs?.length > 0) {
+          setDocumentContext(
+            Array.from(new Set([...(documentContext || []), ...docs]))
+          )
+        }
+        setStreaming(true)
+        try {
+          await tabChatMode(
+            message,
+            image,
+            tabDocs,
+            isRegenerate,
+            chatHistory || messages,
+            memory || history,
+            signal,
+            {
+              selectedModel,
+              useOCR,
+              selectedSystemPrompt,
+              currentChatModelSettings,
+              setMessages,
+              saveMessageOnSuccess,
+              saveMessageOnError,
+              setHistory,
+              setIsProcessing,
+              setStreaming,
+              setAbortController,
+              historyId,
+              setHistoryId
+            }
+          )
+        } catch (e: any) {
+          notification.error({
+            message: t("error"),
+            description: e?.message || t("somethingWentWrong")
+          })
+          setIsProcessing(false)
+          setStreaming(false)
+        }
+        return
+      }
       if (chatMode === "normal") {
         const useAgentWebSearch = webSearch && enableAgentWebSearch
-        if (webSearch && !useAgentWebSearch) {
+        if (pageAction) {
+          await pageActionChatMode(
+            message,
+            image,
+            isRegenerate,
+            chatHistory || messages,
+            memory || history,
+            signal,
+            {
+              selectedModel,
+              useOCR,
+              selectedSystemPrompt,
+              currentChatModelSettings,
+              setMessages,
+              saveMessageOnSuccess,
+              saveMessageOnError,
+              setHistory,
+              setIsProcessing,
+              setStreaming,
+              setAbortController,
+              historyId,
+              setHistoryId,
+              images,
+              setActionInfo,
+              temporaryChat,
+              messageSource: "copilot",
+              requireMcpApproval: mcpHumanInLoop,
+              includeWebMcp: webMcp
+            }
+          )
+        } else if (webMcp) {
+          await webMcpChatMode(
+            message,
+            image,
+            isRegenerate,
+            chatHistory || messages,
+            memory || history,
+            signal,
+            {
+              selectedModel,
+              useOCR,
+              selectedSystemPrompt,
+              currentChatModelSettings,
+              setMessages,
+              saveMessageOnSuccess,
+              saveMessageOnError,
+              setHistory,
+              setIsProcessing,
+              setStreaming,
+              setAbortController,
+              historyId,
+              setHistoryId,
+              images,
+              setActionInfo,
+              temporaryChat,
+              messageSource: "copilot",
+              requireMcpApproval: mcpHumanInLoop
+            }
+          )
+        } else if (webSearch && !useAgentWebSearch) {
           await searchChatMode(
             message,
             image,

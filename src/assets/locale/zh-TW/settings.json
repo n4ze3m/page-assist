@@ -163,6 +163,10 @@
       "searxng": {
         "url": {
           "label": "SearXNG URL"
+        },
+        "apiKey": {
+          "label": "SearXNG API 金鑰（選填）",
+          "placeholder": "輸入您的 SearXNG API 金鑰"
         }
       },
       "braveApi": {
@@ -218,6 +222,10 @@
         "button": "匯入資料",
         "success": "匯入成功",
         "error": "匯入錯誤"
+      },
+      "dynamicImport": {
+        "label": "從其他服務匯入",
+        "button": "匯入"
       },
       "actionIcon": {
         "label": "設定擴充功能圖示點擊的預設動作"
@@ -678,5 +686,8 @@
     "enableMemoryTool": {
       "label": "啟用記憶工具調用"
     }
+  },
+  "pageAction": {
+    "title": "頁面操作"
   }
 }

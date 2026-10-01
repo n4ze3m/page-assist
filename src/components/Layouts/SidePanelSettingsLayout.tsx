@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next"
 import { useLocation, Link } from "react-router-dom"
 import { LinkComponent } from "./LinkComponent"
 import logoImage from "@/assets/icon.png"
+import { useUiDirection } from "@/hooks/useUiDirection"
 
 export const SidePanelSettingsLayout = ({
   children
@@ -16,8 +17,8 @@ export const SidePanelSettingsLayout = ({
   children: React.ReactNode
 }) => {
   const location = useLocation()
-  const { t, i18n } = useTranslation(["settings", "common", "openai"])
-  const isRTL = i18n?.dir() === "rtl"
+  const { t } = useTranslation(["settings", "common", "openai"])
+  const { isRTL } = useUiDirection()
 
   return (
     <div className="flex w-full flex-col min-h-screen bg-neutral-50 dark:bg-[#1a1a1a]">

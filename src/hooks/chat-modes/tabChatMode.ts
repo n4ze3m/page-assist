@@ -73,6 +73,7 @@ export const tabChatMode = async (
       ...newMessage,
       {
         isBot: false,
+        createdAt: Date.now(),
         name: "You",
         message,
         sources: [],
@@ -81,6 +82,7 @@ export const tabChatMode = async (
       },
       {
         isBot: true,
+        createdAt: Date.now(),
         name: selectedModel,
         message: "▋",
         sources: [],
@@ -94,6 +96,7 @@ export const tabChatMode = async (
       ...newMessage,
       {
         isBot: true,
+        createdAt: Date.now(),
         name: selectedModel,
         message: "▋",
         sources: [],
@@ -160,7 +163,7 @@ export const tabChatMode = async (
   }
   let source: any[] = []
 
-  const applicationChatHistory = generateHistory(history, selectedModel)
+  const applicationChatHistory = await generateHistory(history, selectedModel)
 
   const config: StreamConfig = {
     cursor: CURSOR,
@@ -176,11 +179,13 @@ export const tabChatMode = async (
       ...history,
       {
         role: "user",
+        createdAt: Date.now(),
         content: message,
         image
       },
       {
         role: "assistant",
+        createdAt: Date.now(),
         content: fullText
       }
     ])
@@ -232,7 +237,7 @@ export const tabChatMode = async (
     humanMessage,
     userMessage: message,
     selectedModel,
-    messages: newMessage,
+    messages,
     isRegenerate,
     signal,
     config,

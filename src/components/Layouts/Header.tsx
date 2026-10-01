@@ -23,6 +23,7 @@ import { getAllPrompts } from "@/db/dexie/helpers"
 import { ProviderIcons } from "../Common/ProviderIcon"
 import { NewChat } from "./NewChat"
 import { MoreOptions } from "./MoreOptions"
+import { useUiDirection } from "~/hooks/useUiDirection"
 type Props = {
   setSidebarOpen: (open: boolean) => void
   setOpenModelSettings: (open: boolean) => void
@@ -34,8 +35,8 @@ export const Header: React.FC<Props> = ({
   setSidebarOpen,
   saveTemporaryChat
 }) => {
-  const { t, i18n } = useTranslation(["option", "common"])
-  const isRTL = i18n?.dir() === "rtl"
+  const { t } = useTranslation(["option", "common"])
+  const { isRTL } = useUiDirection()
 
   const [shareModeEnabled] = useStorage("shareMode", false)
   const [hideCurrentChatModelSettings] = useStorage(
@@ -94,7 +95,7 @@ export const Header: React.FC<Props> = ({
   return (
     <div
       data-istemporary-chat={temporaryChat}
-      className={`absolute top-0 z-10 flex h-14 w-full flex-row items-center justify-center p-3 overflow-x-auto lg:overflow-x-visible bg-gray-50/80 backdrop-blur-3xl border-b  dark:bg-[#1a1a1a]/80 dark:border-gray-600 data-[istemporary-chat='true']:bg-gray-200/80 data-[istemporary-chat='true']:dark:bg-black/80`}>
+      className={`absolute top-0 z-10 flex h-14 w-full flex-row items-center justify-center p-3 overflow-x-auto lg:overflow-x-visible bg-gray-50/80 backdrop-blur-3xl dark:backdrop-blur-none border-b  dark:bg-[#1a1a1a] dark:border-gray-600 data-[istemporary-chat='true']:bg-violet-100/80 data-[istemporary-chat='true']:border-violet-300 data-[istemporary-chat='true']:dark:bg-black data-[istemporary-chat='true']:dark:border-gray-600`}>
       <div className="flex gap-2 items-center">
         {pathname !== "/" && (
           <div>

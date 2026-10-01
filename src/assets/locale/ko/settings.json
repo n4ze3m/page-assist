@@ -26,9 +26,6 @@
         "label": "웹 UI 기본 프롬프트",
         "placeholder": "프롬프트 선택"
       },
-      "searchMode": {
-        "label": "간편 인터넷 검색 실행"
-      },
       "copilotResumeLastChat": {
         "label": "사이드 패널을 열 때 마지막 채팅 재개 (Copilot)"
       },
@@ -120,6 +117,18 @@
           "left": "왼쪽",
           "right": "오른쪽"
         }
+      },
+      "showMcpServersInChat": {
+        "label": "채팅에서 MCP 서버 토글 표시"
+      },
+      "enableAgentWebSearch": {
+        "label": "에이전트 웹 검색 사용 (모델이 검색 및 조회 시점을 결정)"
+      },
+      "mcpHumanInLoop": {
+        "label": "MCP 도구 실행 전 승인 요구"
+      },
+      "showProviderNameInModelList": {
+        "label": "모델 목록에 공급자 이름 표시"
       }
     },
     "sidepanelRag": {
@@ -310,6 +319,10 @@
     "option1": "일반",
     "option2": "RAG",
     "questionPrompt": "질문 프롬프트",
+    "segmented": {
+      "custom": "커스텀 프롬프트",
+      "copilot": "Copilot 프롬프트"
+    },
     "columns": {
       "title": "제목",
       "prompt": "프롬프트",
@@ -328,10 +341,6 @@
     "modal": {
       "addTitle": "새 프롬프트 추가",
       "editTitle": "프롬프트 수정"
-    },
-    "segmented": {
-      "custom": "커스텀 프롬프트",
-      "copilot": "Copilot 프롬프트"
     },
     "form": {
       "title": {
@@ -446,6 +455,114 @@
     "title": "웹 검색 관리",
     "heading": "웹 검색 설정하기"
   },
+  "mcpSettings": {
+    "title": "MCP 서버",
+    "heading": "MCP 서버 관리",
+    "subheading": "베어러 인증과 사용자 지정 헤더를 포함하여 일반 채팅용 HTTP MCP 서버를 추가하세요.",
+    "addBtn": "MCP 서버 추가",
+    "humanInLoop": {
+      "label": "MCP 도구 실행 전 승인 요구",
+      "description": "쓰기 권한이 있거나 기타 부수 효과가 있는 MCP 서버에 권장됩니다. 아래에서 개별 도구를 계속 허용하거나 비활성화할 수 있습니다.",
+      "enabledHint": "휴먼 인 더 루프가 활성화되어 있습니다. MCP 도구는 실행 전에 승인을 요청합니다.",
+      "disabledHint": "MCP 도구는 기본적으로 승인 없이 실행됩니다. MCP 서버가 파일을 쓰거나 데이터를 수정하거나 메시지를 보내거나 기타 변경을 할 수 있는 경우 이 옵션을 켜세요."
+    },
+    "table": {
+      "name": "이름",
+      "url": "URL",
+      "tools": "캐시된 도구",
+      "status": "검증",
+      "notValidated": "아직 검증되지 않음",
+      "toolsUnavailable": "캐시된 도구 없음",
+      "auth": "인증",
+      "enabled": "활성화",
+      "actions": "동작",
+      "toolName": "도구 이름",
+      "toolDescription": "설명"
+    },
+    "actions": {
+      "refreshTools": "도구 새로고침",
+      "enable": "활성화",
+      "disable": "비활성화"
+    },
+    "status": {
+      "ready": "사용 가능한 도구 {{count}}개",
+      "failed": "검증 실패",
+      "notValidated": "검증되지 않음",
+      "lastChecked": "마지막 확인: {{value}}"
+    },
+    "auth": {
+      "none": "인증 없음",
+      "bearer": "베어러 토큰"
+    },
+    "modal": {
+      "titleAdd": "MCP 서버 추가",
+      "titleEdit": "MCP 서버 편집",
+      "deleteConfirm": "{{name}}을(를) 삭제하시겠습니까?",
+      "name": {
+        "label": "서버 이름",
+        "placeholder": "내 MCP 서버",
+        "required": "서버 이름을 입력하세요"
+      },
+      "url": {
+        "label": "서버 URL",
+        "placeholder": "https://example.com/mcp",
+        "help": "현재는 HTTP 또는 HTTPS를 통한 Streamable HTTP MCP 엔드포인트만 지원됩니다.",
+        "required": "서버 URL을 입력하세요",
+        "invalid": "유효한 HTTP 또는 HTTPS URL을 입력하세요"
+      },
+      "transportNotice": {
+        "title": "전송 방식 지원",
+        "description": "Page Assist는 Streamable HTTP MCP 서버만 지원합니다. /sse 또는 /messages?sessionId=... 와 같은 레거시 SSE 엔드포인트는 지원되지 않습니다."
+      },
+      "auth": {
+        "label": "인증"
+      },
+      "bearerToken": {
+        "label": "베어러 토큰",
+        "placeholder": "베어러 토큰을 입력하세요",
+        "required": "베어러 토큰을 입력하세요"
+      },
+      "enabled": {
+        "label": "전역 활성화"
+      },
+      "headers": {
+        "label": "사용자 지정 헤더",
+        "add": "헤더 추가",
+        "key": {
+          "label": "헤더 키",
+          "placeholder": "X-Request-ID"
+        },
+        "value": {
+          "label": "헤더 값",
+          "placeholder": "값"
+        }
+      },
+      "validation": {
+        "title": "도구 검증",
+        "help": "MCP 서버에 연결하여 사용 가능한 도구를 가져오고 저장하기 전에 캐시합니다. 검증에는 Streamable HTTP MCP 엔드포인트가 필요합니다.",
+        "button": "검증하고 도구 불러오기",
+        "availableTools": "사용 가능한 도구",
+        "idle": "이 서버를 검증하여 연결을 확인하고 사용 가능한 도구를 불러오세요.",
+        "stale": "연결 정보가 변경되었습니다. 캐시된 도구를 새로고침하려면 다시 검증하세요.",
+        "failed": "이 MCP 서버를 검증할 수 없습니다.",
+        "success": "검증에 성공했습니다. {{count}}개의 도구를 사용할 수 있습니다.",
+        "syncedAt": "마지막 동기화: {{value}}",
+        "saveHint": "캐시된 도구 목록이 오래되었거나 없는 경우 저장 시 현재 설정을 검증합니다."
+      },
+      "submit": "MCP 서버 저장",
+      "update": "MCP 서버 업데이트"
+    },
+    "notification": {
+      "added": "MCP 서버가 추가되었습니다",
+      "updated": "MCP 서버가 업데이트되었습니다",
+      "deleted": "MCP 서버가 삭제되었습니다",
+      "validated": "MCP 도구 {{count}}개를 불러왔습니다",
+      "toolsRefreshed": "{{name}}의 도구를 새로고침했습니다",
+      "validationFailedTitle": "MCP 검증 실패",
+      "storageBlockedTitle": "Page Assist가 데이터를 저장할 수 없습니다",
+      "storageBlockedDescription": "Firefox 사생활 보호 모드에서는 IndexedDB에 데이터를 저장할 수 없습니다. 일반 창에서 MCP 서버를 관리해 주세요."
+    }
+  },
   "about": {
     "title": "소개",
     "heading": "소개",
@@ -518,6 +635,11 @@
   },
   "chromeAiSettings": {
     "title": "Chrome AI 설정"
+  },
+  "memory": {
+    "enableMemoryTool": {
+      "label": "메모리 도구 활성화"
+    }
   },
   "mermaid": "Mermaid"
 }

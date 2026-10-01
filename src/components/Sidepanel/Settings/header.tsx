@@ -2,10 +2,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 import logoImage from "@/assets/icon.png"
+import { useUiDirection } from "@/hooks/useUiDirection"
 
 export const SidepanelSettingsHeader = () => {
-  const { t , i18n} = useTranslation("common")
-  const isRTL = i18n?.dir() === "rtl"
+  const { t } = useTranslation("common")
+  const { isRTL } = useUiDirection()
  
   return (
     <div className="flex px-3 justify-start gap-3 bg-white dark:bg-[#1a1a1a] border-b border-gray-300 dark:border-gray-700  py-4 items-center">

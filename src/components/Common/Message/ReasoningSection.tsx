@@ -68,15 +68,18 @@ export const ReasoningSection: React.FC<ReasoningSectionProps> = ({
                 code({ node, inline, className, children, ...props }) {
                   const match = /language-(\w+)/.exec(className || "")
                   return !inline && match ? (
-                    <SyntaxHighlighter
-                      style={oneDark as any}
-                      language={match[1]}
-                      PreTag="div"
-                      {...props}>
-                      {String(children).replace(/\n$/, "")}
-                    </SyntaxHighlighter>
+                    <div dir="ltr">
+                      <SyntaxHighlighter
+                        style={oneDark as any}
+                        language={match[1]}
+                        PreTag="div"
+                        customStyle={{ textAlign: "left" }}
+                        {...props}>
+                        {String(children).replace(/\n$/, "")}
+                      </SyntaxHighlighter>
+                    </div>
                   ) : (
-                    <code className={className} {...props}>
+                    <code dir="ltr" className={className} {...props}>
                       {children}
                     </code>
                   )

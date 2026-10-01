@@ -12,7 +12,7 @@ import {
 import { Loader2 } from "lucide-react"
 import React from "react"
 import { useTranslation } from "react-i18next"
-import { isThinkingCapableModel, isGptOssModel } from "@/libs/model-utils"
+import { useThinkingCapability } from "@/hooks/useThinkingCapability"
 
 type Props = {
   model_id: string
@@ -28,6 +28,7 @@ export const AddUpdateModelSettings: React.FC<Props> = ({
   const [form] = Form.useForm()
   const { t } = useTranslation("common")
   const queryClient = useQueryClient()
+  const { supportsThinking, isGptOss } = useThinkingCapability(model_id)
 
   const { status, isError } = useQuery({
     queryKey: ["fetchModelSettings", model_id],
@@ -114,7 +115,7 @@ export const AddUpdateModelSettings: React.FC<Props> = ({
             />
           </Form.Item>
 
-          {isThinkingCapableModel(model_id) && !isGptOssModel(model_id) && (
+          {supportsThinking && !isGptOss && (
             <Form.Item
               name="thinking"
               valuePropName="checked"

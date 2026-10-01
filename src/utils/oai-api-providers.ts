@@ -1,5 +1,10 @@
 export const OAI_API_PROVIDERS = [
   {
+    label: "API Route",
+    value: "api-route",
+    baseUrl: "https://global.api-route.com/v1"
+  },
+  {
     label: "Custom",
     value: "custom",
     baseUrl: ""
@@ -23,6 +28,11 @@ export const OAI_API_PROVIDERS = [
     label: "Llamafile",
     value: "llamafile",
     baseUrl: "http://127.0.0.1:8080/v1"
+  },
+  {
+    label: "llmman",
+    value: "llmman",
+    baseUrl: "http://localhost:17434/v1"
   },
   {
     label: "Ollama",
@@ -70,9 +80,24 @@ export const OAI_API_PROVIDERS = [
     baseUrl: "https://openrouter.ai/api/v1"
   },
   {
+    label: "OrcaRouter",
+    value: "orcarouter",
+    baseUrl: "https://api.orcarouter.ai/v1"
+  },
+  {
+    label: "UnoRouter",
+    value: "unorouter",
+    baseUrl: "https://api.unorouter.com/v1"
+  },
+  {
     label: "Google AI",
     value: "gemini",
     baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai"
+  },
+  {
+    label: "Gemini Enterprise Agent Platform (Vertex AI)",
+    value: "vertex",
+    baseUrl: ""
   },
   {
     label: "Mistral",
@@ -145,6 +170,11 @@ export const OAI_API_PROVIDERS = [
     baseUrl: 'https://open.bigmodel.cn/api/paas/v4'
   },
   {
+    label: 'z.ai (Zhipu)',
+    value: 'zai',
+    baseUrl: 'https://api.z.ai/api/paas/v4'
+  },
+  {
     label: 'MiniMax',
     value: 'minimax',
     baseUrl: 'https://api.minimax.io/v1'
@@ -153,5 +183,10 @@ export const OAI_API_PROVIDERS = [
     label: 'Xiaomi Mimo',
     value: 'xiaomimimo',
     baseUrl: 'https://token-plan-sgp.xiaomimimo.com/v1'
+  },
+  {
+    label: "Evolink",
+    value: "evolink",
+    baseUrl: "https://direct.evolink.ai/v1"
   }
 ]

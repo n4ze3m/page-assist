@@ -5,7 +5,14 @@ import { cleanUrl } from "@/libs/clean-url"
 import { HumanMessage } from "@langchain/core/messages"
 import { removeReasoning } from "@/libs/reasoning"
 import { ChatHistory } from "@/store/option"
+import { isConversationMessage } from "@/libs/mcp/utils"
+import { getTitleById, updateHistory } from "@/db/dexie/helpers"
+import { useStoreMessageOption } from "@/store/option"
+import { useStoreMessage } from "@/store"
+import { updatePageTitle } from "@/utils/update-page-title"
 const storage = new Storage()
+
+export const HISTORY_TITLE_UPDATED_EVENT = "page-assist:history-title-updated"
 
 export const DEFAULT_TITLE_GEN_PROMPT = `Here is the conversation:
 
@@ -30,82 +37,126 @@ Shakespeare Analyse Literarische
 Response:`
 
 const formatHistoryAsQuery = (history: ChatHistory): string => {
-  if (history.length === 0) return ""
-
-  if (history.length === 1) {
-    return history[0].content
-  }
-
-  return history
-    .map(
-      (msg) =>
-        `${msg.role === "user" ? "User" : "Assistant"}: ${removeReasoning(msg.content)}`
+    const conversationHistory = history.filter((message) =>
+        isConversationMessage(message)
     )
-    .join("\n")
+
+    if (conversationHistory.length === 0) return ""
+
+    if (conversationHistory.length === 1) {
+        return conversationHistory[0].content
+    }
+
+    return conversationHistory
+        .map(msg => `${msg.role === "user" ? "User" : "Assistant"}: ${removeReasoning(msg.content)}`)
+        .join("\n")
 }
 
+
 export const isTitleGenEnabled = async () => {
-  const enabled = await storage.get<boolean | undefined>("titleGenEnabled")
-  return enabled ?? false
+    const enabled = await storage.get<boolean | undefined>("titleGenEnabled")
+    return enabled ?? false
 }
 
 export const setTitleGenEnabled = async (enabled: boolean) => {
-  await storage.set("titleGenEnabled", enabled)
+    await storage.set("titleGenEnabled", enabled)
 }
 
 export const getTitleGenerationPrompt = async () => {
-  const title = await storage.get<string | undefined>("titleGenerationPrompt")
-  return title ?? DEFAULT_TITLE_GEN_PROMPT
+    const title = await storage.get<string | undefined>("titleGenerationPrompt")
+    return title ?? DEFAULT_TITLE_GEN_PROMPT
 }
+
 
 export const setTitleGenerationPrompt = async (prompt: string) => {
-  await storage.set("titleGenerationPrompt", prompt)
+    await storage.set("titleGenerationPrompt", prompt)
 }
 
+
 export const titleGenerationModel = async () => {
-  const model = await storage.get<string | undefined>("titleGenerationModel")
-  return model
+    const model = await storage.get<string | undefined>("titleGenerationModel")
+    return model
 }
 
 export const setTitleGenerationModel = async (model: string) => {
-  await storage.set("titleGenerationModel", model)
+    await storage.set("titleGenerationModel", model)
 }
 
-export const generateTitle = async (
-  model: string,
-  history: ChatHistory,
-  fallBackTitle: string
-) => {
-  const isEnabled = await isTitleGenEnabled()
+export const generateTitle = async (model: string, history: ChatHistory, fallBackTitle: string) => {
 
-  if (!isEnabled) {
-    return fallBackTitle
-  }
+    const isEnabled = await isTitleGenEnabled()
 
-  try {
-    const url = await getOllamaURL()
+    if (!isEnabled) {
+        return fallBackTitle
+    }
 
-    const defaultTitleModel = await titleGenerationModel()
-    const titleGenModel = defaultTitleModel || model
+    try {
+        const url = await getOllamaURL()
 
-    const titleModel = await pageAssistModel({
-      baseUrl: cleanUrl(url),
-      model: titleGenModel
+
+        const defaultTitleModel = await titleGenerationModel();
+        const titleGenModel = defaultTitleModel || model
+
+        const titleModel = await pageAssistModel({
+            baseUrl: cleanUrl(url),
+            model: titleGenModel
+        })
+
+        const titlePrompt = await getTitleGenerationPrompt()
+
+        const query = formatHistoryAsQuery(history) || fallBackTitle
+
+        const formattedPrompt = titlePrompt.replace("{{query}}", query)
+
+        const messages = [new HumanMessage(formattedPrompt)]
+
+        const title = await titleModel.invoke(messages)
+
+        return removeReasoning(title.content.toString())
+    } catch (error) {
+        console.error(`Error generating title: ${error}`)
+        return fallBackTitle
+    }
+}
+
+// Generates the title without blocking the chat lifecycle. The history must
+// already be saved with `provisionalTitle`; it is replaced once the model responds.
+export const generateTitleInBackground = ({
+    historyId,
+    model,
+    history,
+    provisionalTitle
+}: {
+    historyId: string
+    model: string
+    history: ChatHistory
+    provisionalTitle: string
+}) => {
+    void (async () => {
+        if (!(await isTitleGenEnabled())) return
+
+        const title = (await generateTitle(model, history, provisionalTitle))?.trim()
+        if (!title || title === provisionalTitle) return
+
+        // chat was deleted or renamed by the user while the title was generating
+        const currentTitle = await getTitleById(historyId)
+        if (currentTitle !== provisionalTitle) return
+
+        await updateHistory(historyId, title)
+
+        const isActiveChat =
+            useStoreMessageOption.getState().historyId === historyId ||
+            useStoreMessage.getState().historyId === historyId
+        if (isActiveChat) {
+            updatePageTitle(title)
+        }
+
+        window.dispatchEvent(
+            new CustomEvent(HISTORY_TITLE_UPDATED_EVENT, {
+                detail: { historyId, title }
+            })
+        )
+    })().catch((error) => {
+        console.error(`Error generating title in background: ${error}`)
     })
-
-    const titlePrompt = await getTitleGenerationPrompt()
-
-    const query = formatHistoryAsQuery(history) || fallBackTitle
-
-    const formattedPrompt = titlePrompt.replace("{{query}}", query)
-
-    const messages = [new HumanMessage(formattedPrompt)]
-
-    const title = await titleModel.invoke(messages)
-
-    return removeReasoning(title.content.toString())
-  } catch (error) {
-    console.error(`Error generating title: ${error}`)
-    return fallBackTitle
-  }
 }

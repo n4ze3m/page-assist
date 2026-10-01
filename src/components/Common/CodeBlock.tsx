@@ -7,7 +7,7 @@ import {
   EyeIcon,
   CodeIcon
 } from "lucide-react"
-import { FC, useState, useRef, useEffect, useCallback } from "react"
+import { FC, memo, useState, useRef, useEffect, useCallback } from "react"
 import { useTranslation } from "react-i18next"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { coldarkDark } from "react-syntax-highlighter/dist/cjs/styles/prism"
@@ -18,7 +18,7 @@ interface Props {
   value: string
 }
 
-export const CodeBlock: FC<Props> = ({ language, value }) => {
+const CodeBlockComponent: FC<Props> = ({ language, value }) => {
   const [isBtnPressed, setIsBtnPressed] = useState(false)
   const [previewValue, setPreviewValue] = useState(value)
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -143,7 +143,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
 
   return (
     <>
-      <div className="not-prose">
+      <div className="not-prose" dir="ltr">
         <div className=" [&_div+div]:!mt-0 my-4 bg-zinc-950 rounded-xl">
           <div className="flex flex-row px-4 py-2 rounded-t-xl  gap-3 bg-[#2a2a2a]  ">
             {isPreviewable && (
@@ -205,7 +205,8 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
                 margin: 0,
                 width: "100%",
                 background: "transparent",
-                padding: "1.5rem 1rem"
+                padding: "1.5rem 1rem",
+                textAlign: "left"
               }}
               lineNumberStyle={{
                 userSelect: "none"
@@ -234,3 +235,7 @@ export const CodeBlock: FC<Props> = ({ language, value }) => {
     </>
   )
 }
+
+// Memoized so that already-closed code blocks are not re-highlighted on
+// every streamed chunk of the surrounding message.
+export const CodeBlock = memo(CodeBlockComponent)

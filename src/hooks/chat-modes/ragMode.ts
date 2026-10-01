@@ -167,7 +167,7 @@ export const ragMode = async (
     useOCR: useOCR
   })
 
-  const applicationChatHistory = generateHistory(history, selectedModel)
+  const applicationChatHistory = await generateHistory(history, selectedModel)
 
   const config = {
     cursor: CURSOR,
@@ -183,11 +183,13 @@ export const ragMode = async (
       ...history,
       {
         role: "user",
+        createdAt: Date.now(),
         content: message,
         image
       },
       {
         role: "assistant",
+        createdAt: Date.now(),
         content: fullText
       }
     ])

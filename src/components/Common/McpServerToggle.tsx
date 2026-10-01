@@ -8,6 +8,8 @@ import { MCPIcon } from "@/components/Icons/MCPIcon"
 import { getAllMcpServers, updateMcpServer } from "@/db/dexie/mcp"
 import type { McpServer } from "@/libs/mcp/types"
 import { hasValidOAuthTokens } from "@/libs/mcp/oauth"
+import { isPageActionServer } from "@/services/page-action"
+import { isWebMcpServer } from "@/services/webmcp"
 
 const getRootDomain = (hostname: string) => {
   const parts = hostname.split(".")
@@ -87,10 +89,15 @@ export const McpServerToggle = () => {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
 
-  const { data: servers } = useQuery({
+  const { data } = useQuery({
     queryKey: ["mcpServers"],
     queryFn: getAllMcpServers
   })
+
+  // Page Action is controlled by the sidepanel toggle and its own settings page
+  const servers = data?.filter(
+    (s) => !isPageActionServer(s) && !isWebMcpServer(s)
+  )
 
   const hasServers = servers && servers.length > 0
   const enabledCount = hasServers

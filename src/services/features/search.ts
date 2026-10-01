@@ -86,6 +86,15 @@ export const setSearxngURL = async (searxngURL: string) => {
   await storage.set("searxngURL", searxngURL)
 }
 
+export const getSearxngApiKey = async () => {
+  const searxngApiKey = await storage2.get("searxngApiKey")
+  return searxngApiKey || ""
+}
+
+export const setSearxngApiKey = async (searxngApiKey: string) => {
+  await storage2.set("searxngApiKey", searxngApiKey)
+}
+
 export const getBraveApiKey = async () => {
   const braveApiKey = await storage2.get("braveApiKey")
   return braveApiKey || ""
@@ -104,6 +113,11 @@ export const getKagiApiKey = async () => {
 export const getPerplexityApiKey = async () => {
   const perplexityApiKey = await storage2.get("perplexityApiKey")
   return perplexityApiKey || ""
+}
+
+export const getSerplyApiKey = async () => {
+  const serplyApiKey = await storage2.get("serplyApiKey")
+  return serplyApiKey || ""
 }
 
 export const getTavilyApiKey = async () => {
@@ -130,6 +144,10 @@ export const setKagiApiKey = async (kagiApiKey: string) => {
 
 export const setPerplexityApiKey = async (perplexityApiKey: string) => {
   await storage2.set("perplexityApiKey", perplexityApiKey)
+}
+
+export const setSerplyApiKey = async (serplyApiKey: string) => {
+  await storage2.set("serplyApiKey", serplyApiKey)
 }
 
 export const setFirecrawlAPIKey = async (firecrawlAPIKey: string) => {
@@ -209,6 +227,7 @@ export const getSearchSettings = async () => {
     visitSpecificWebsite,
     searxngURL,
     searxngJSONMode,
+    searxngApiKey,
     braveApiKey,
     tavilyApiKey,
     googleDomain,
@@ -218,6 +237,7 @@ export const getSearchSettings = async () => {
     ollamaSearchApiKey,
     kagiApiKey,
     perplexityApiKey,
+    serplyApiKey,
     domainFilterList,
     blockedDomainList
   ] = await Promise.all([
@@ -227,6 +247,7 @@ export const getSearchSettings = async () => {
     getIsVisitSpecificWebsite(),
     getSearxngURL(),
     isSearxngJSONMode(),
+    getSearxngApiKey(),
     getBraveApiKey(),
     getTavilyApiKey(),
     getGoogleDomain(),
@@ -236,6 +257,7 @@ export const getSearchSettings = async () => {
     getOllamaSearchApiKey(),
     getKagiApiKey(),
     getPerplexityApiKey(),
+    getSerplyApiKey(),
     getDomainFilterList(),
     getBlockedDomainList()
   ])
@@ -247,6 +269,7 @@ export const getSearchSettings = async () => {
     visitSpecificWebsite,
     searxngURL,
     searxngJSONMode,
+    searxngApiKey,
     braveApiKey,
     tavilyApiKey,
     googleDomain,
@@ -256,6 +279,7 @@ export const getSearchSettings = async () => {
     ollamaSearchApiKey,
     kagiApiKey,
     perplexityApiKey,
+    serplyApiKey,
     domainFilterList,
     blockedDomainList
   }
@@ -268,6 +292,7 @@ export const setSearchSettings = async ({
   visitSpecificWebsite,
   searxngJSONMode,
   searxngURL,
+  searxngApiKey,
   braveApiKey,
   tavilyApiKey,
   googleDomain,
@@ -277,6 +302,7 @@ export const setSearchSettings = async ({
   ollamaSearchApiKey,
   kagiApiKey,
   perplexityApiKey,
+  serplyApiKey,
   domainFilterList,
   blockedDomainList
 }: {
@@ -286,6 +312,7 @@ export const setSearchSettings = async ({
   visitSpecificWebsite: boolean
   searxngURL: string
   searxngJSONMode: boolean
+  searxngApiKey: string
   braveApiKey: string
   tavilyApiKey: string
   googleDomain: string
@@ -295,6 +322,7 @@ export const setSearchSettings = async ({
   ollamaSearchApiKey: string
   kagiApiKey: string
   perplexityApiKey: string
+  serplyApiKey: string
   domainFilterList: string[]
   blockedDomainList: string[]
 }) => {
@@ -305,6 +333,7 @@ export const setSearchSettings = async ({
     setIsVisitSpecificWebsite(visitSpecificWebsite),
     setSearxngJSONMode(searxngJSONMode),
     setSearxngURL(searxngURL),
+    setSearxngApiKey(searxngApiKey),
     setBraveApiKey(braveApiKey),
     setTavilyApiKey(tavilyApiKey),
     setGoogleDomain(googleDomain),
@@ -314,6 +343,7 @@ export const setSearchSettings = async ({
     setOllamaSearchApiKey(ollamaSearchApiKey),
     setKagiApiKey(kagiApiKey),
     setPerplexityApiKey(perplexityApiKey),
+    setSerplyApiKey(serplyApiKey),
     setDomainFilterList(domainFilterList),
     setBlockedDomainList(blockedDomainList)
   ])

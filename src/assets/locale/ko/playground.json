@@ -16,17 +16,35 @@
         "webSearch": {
             "on": "켜짐",
             "off": "꺼짐"
+        },
+        "thinking": {
+            "on": "켜짐",
+            "off": "꺼짐",
+            "level": "레벨",
+            "levels": {
+                "low": "낮음",
+                "medium": "보통",
+                "high": "높음"
+            }
         }
     },
     "tooltip": {
         "searchInternet": "인터넷 검색",
+        "thinking": "추론 모드를 활성화하여 모델의 사고 과정을 확인하세요",
         "speechToText": "음성 입력",
         "uploadImage": "이미지 업로드",
         "stopStreaming": "스트리밍 중지",
         "knowledge": "지식",
-        "clearContext": "컨텍스트 지우기"
+        "vision": "[실험적] 비전 채팅",
+        "clearContext": "컨텍스트 지우기",
+        "uploadDocuments": "문서 업로드 (베타)",
+        "mcpServers": "MCP 서버",
+        "mcpEmpty": "설정된 MCP 서버가 없습니다",
+        "mcpEmptyDesc": "채팅에서 도구를 사용하려면 MCP 서버를 연결하세요.",
+        "mcpAddServer": "MCP 서버 추가"
     },
     "sendWhenEnter": "Enter 키를 누르면 전송",
     "welcome": "안녕하세요! 오늘 어떻게 도와드릴까요?",
-    "useOCR": "이미지에서 텍스트 추출 (OCR)"
+    "useOCR": "이미지에서 텍스트 추출 (OCR)",
+    "fileRetrievalEnabled": "문서용 RAG 활성화"
 }

@@ -39,10 +39,12 @@ export type McpOAuthMetadata = {
   scopesSupported?: string[]
 }
 
+export type McpTransport = "http" | "extension" | "webmcp"
+
 export type McpServer = {
   id: string
   name: string
-  transport: "http"
+  transport: McpTransport
   url: string
   enabled: boolean
   authType: "none" | "bearer" | "oauth"
@@ -79,6 +81,7 @@ export type McpToolCall = {
   type?: "tool_call"
   serverName?: string
   displayName?: string
+  extraContent?: Record<string, any>
 }
 
 export type McpPendingApprovalRequest = {

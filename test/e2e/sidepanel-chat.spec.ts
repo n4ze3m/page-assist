@@ -5,7 +5,8 @@ const extensionPath = path.join(process.cwd(), "build", "chrome-mv3")
 
 test("sidepanel chat smoke", async () => {
   const context = await chromium.launchPersistentContext("", {
-    headless: false,
+    headless: true,
+    channel: "chromium",
     bypassCSP: true,
     args: [
       `--disable-extensions-except=${extensionPath}`,
@@ -14,9 +15,6 @@ test("sidepanel chat smoke", async () => {
   })
 
   try {
-    // Wait for extension to initialize
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
     const background =
       context.serviceWorkers()[0] ??
       (await context.waitForEvent("serviceworker"))
@@ -77,7 +75,7 @@ test("sidepanel chat smoke", async () => {
     await page.goto(`chrome-extension://${extensionId}/sidepanel.html`)
     await page.waitForLoadState("networkidle")
 
-    await expect(page.getByText("Page Assist", { exact: false })).toBeVisible()
+    await expect(page.locator("textarea")).toBeVisible()
 
     const trigger = page.getByTestId("model-select-trigger")
     await expect(trigger).toBeVisible()
@@ -92,15 +90,12 @@ test("sidepanel chat smoke", async () => {
     await expect(option.first()).toBeVisible()
     await option.first().click()
 
-    const input = page.locator("textarea.pa-textarea")
+    const input = page.locator("textarea")
     await expect(input).toBeVisible()
     await input.fill("Hi there")
     await input.press("Enter")
 
-    // Message may be rendered progressively; wait for either echo or assistant
-    await expect(
-      page.getByText(/Hi there|Hello from Page Assist!/).first()
-    ).toBeVisible({ timeout: 30000 })
+    await expect(page.getByText("Hi there", { exact: true })).toHaveCount(1)
 
     await expect(page.getByText("Hello from Page Assist!")).toBeVisible({
       timeout: 50000
