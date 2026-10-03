@@ -188,5 +188,10 @@ export const OAI_API_PROVIDERS = [
     label: "Evolink",
     value: "evolink",
     baseUrl: "https://direct.evolink.ai/v1"
+  },
+  {
+    label: "Cheaper Inference",
+    value: "cheaperinference",
+    baseUrl: "https://api.cheaperinference.com/v1"
   }
 ]
