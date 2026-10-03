@@ -1,6 +1,6 @@
 # MCP (Model Context Protocol)
 
-Page Assist supports MCP which allows your LLM to use external tools like search, databases, and more. You can connect to any MCP server that supports Streamable HTTP or SSE transport.
+Page Assist supports MCP which allows your LLM to use external tools like search, databases, and more. You can connect to any MCP server that supports Streamable HTTP transport. Legacy SSE endpoints are not supported.
 
 ## Supported Transport Types
 
