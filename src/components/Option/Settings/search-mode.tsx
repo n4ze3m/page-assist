@@ -29,6 +29,7 @@ export const SearchModeSettings = () => {
       kagiApiKey: "",
       perplexityApiKey: "",
       serplyApiKey: "",
+      sofyaApiKey: "",
       domainFilterList: [] as string[],
       blockedDomainList: [] as string[]
     }
@@ -306,6 +307,30 @@ export const SearchModeSettings = () => {
                   required
                   className="w-full mt-4 sm:mt-0 sm:w-[200px]"
                   {...form.getInputProps("serplyApiKey")}
+                />
+              </div>
+            </div>
+          </>
+        )}
+
+        {form.values.searchProvider === "sofya-api" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                {t(
+                  "generalSettings.webSearch.sofyaApi.label",
+                  "Sofya API Key"
+                )}
+              </span>
+              <div>
+                <Input.Password
+                  placeholder={t(
+                    "generalSettings.webSearch.sofyaApi.placeholder",
+                    "Sofya API Key"
+                  )}
+                  required
+                  className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                  {...form.getInputProps("sofyaApiKey")}
                 />
               </div>
             </div>

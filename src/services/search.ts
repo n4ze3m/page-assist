@@ -120,6 +120,11 @@ export const getSerplyApiKey = async () => {
   return serplyApiKey || ""
 }
 
+export const getSofyaApiKey = async () => {
+  const sofyaApiKey = await storage2.get("sofyaApiKey")
+  return sofyaApiKey || ""
+}
+
 export const getTavilyApiKey = async () => {
   const tavilyApiKey = await storage2.get("tavilyApiKey")
   return tavilyApiKey || ""
@@ -148,6 +153,10 @@ export const setPerplexityApiKey = async (perplexityApiKey: string) => {
 
 export const setSerplyApiKey = async (serplyApiKey: string) => {
   await storage2.set("serplyApiKey", serplyApiKey)
+}
+
+export const setSofyaApiKey = async (sofyaApiKey: string) => {
+  await storage2.set("sofyaApiKey", sofyaApiKey)
 }
 
 export const setFirecrawlAPIKey = async (firecrawlAPIKey: string) => {
@@ -238,6 +247,7 @@ export const getSearchSettings = async () => {
     kagiApiKey,
     perplexityApiKey,
     serplyApiKey,
+    sofyaApiKey,
     domainFilterList,
     blockedDomainList
   ] = await Promise.all([
@@ -258,6 +268,7 @@ export const getSearchSettings = async () => {
     getKagiApiKey(),
     getPerplexityApiKey(),
     getSerplyApiKey(),
+    getSofyaApiKey(),
     getDomainFilterList(),
     getBlockedDomainList()
   ])
@@ -280,6 +291,7 @@ export const getSearchSettings = async () => {
     kagiApiKey,
     perplexityApiKey,
     serplyApiKey,
+    sofyaApiKey,
     domainFilterList,
     blockedDomainList
   }
@@ -303,6 +315,7 @@ export const setSearchSettings = async ({
   kagiApiKey,
   perplexityApiKey,
   serplyApiKey,
+  sofyaApiKey,
   domainFilterList,
   blockedDomainList
 }: {
@@ -323,6 +336,7 @@ export const setSearchSettings = async ({
   kagiApiKey: string
   perplexityApiKey: string
   serplyApiKey: string
+  sofyaApiKey: string
   domainFilterList: string[]
   blockedDomainList: string[]
 }) => {
@@ -344,6 +358,7 @@ export const setSearchSettings = async ({
     setKagiApiKey(kagiApiKey),
     setPerplexityApiKey(perplexityApiKey),
     setSerplyApiKey(serplyApiKey),
+    setSofyaApiKey(sofyaApiKey),
     setDomainFilterList(domainFilterList),
     setBlockedDomainList(blockedDomainList)
   ])
