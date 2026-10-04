@@ -29,6 +29,7 @@ import { AtlasCloudIcon } from "../Icons/AtlasCloud"
 import { BigModelZhipuIcon } from "../Icons/BigModelZhipuIcon"
 import { ZAiIcon } from "../Icons/ZAiIcon"
 import { UnoRouterIcon } from "../Icons/UnoRouterIcon"
+import { DemonRouteIcon } from "../Icons/DemonRouteIcon"
 import { CanopyWaveIcon } from "../Icons/CanopyWaveIcon"
 import { MiniMaxIcon } from "../Icons/MiniMaxIcon"
 import { XiaomiMimoIcon } from "../Icons/XiaomiMimo"
@@ -115,6 +116,8 @@ export const ProviderIcons = ({
       return <ZAiIcon className={className} />
     case 'unorouter':
       return <UnoRouterIcon className={className} />
+    case 'demonroute':
+      return <DemonRouteIcon className={className} />
     case 'minimax':
       return <MiniMaxIcon className={className} />
     case 'xiaomimimo':
