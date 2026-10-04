@@ -1,13 +1,13 @@
 export const OAI_API_PROVIDERS = [
   {
-    label: "API Route",
-    value: "api-route",
-    baseUrl: "https://global.api-route.com/v1"
-  },
-  {
     label: "Custom",
     value: "custom",
     baseUrl: ""
+  },
+  {
+    label: "AIHubMix",
+    value: "aihubmix",
+    baseUrl: "https://aihubmix.com/v1"
   },
   {
     label: "Atlas Cloud",
@@ -188,5 +188,10 @@ export const OAI_API_PROVIDERS = [
     label: "Evolink",
     value: "evolink",
     baseUrl: "https://direct.evolink.ai/v1"
-  }
+  },
+  {
+    label: "API Route",
+    value: "api-route",
+    baseUrl: "https://global.api-route.com/v1"
+  },
 ]
