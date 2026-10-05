@@ -80,6 +80,11 @@ export const OAI_API_PROVIDERS = [
     baseUrl: "https://openrouter.ai/api/v1"
   },
   {
+    label: "Opper",
+    value: "opper",
+    baseUrl: "https://api.opper.ai/v3/compat"
+  },
+  {
     label: "OrcaRouter",
     value: "orcarouter",
     baseUrl: "https://api.orcarouter.ai/v1"

@@ -7,6 +7,7 @@ import { OpenAiIcon } from "../Icons/OpenAI"
 import { TogtherMonoIcon } from "../Icons/Togther"
 import { OpenRouterIcon } from "../Icons/OpenRouter"
 import { OrcaRouterIcon } from "../Icons/OrcaRouter"
+import { OpperIcon } from "../Icons/Opper"
 import { LLamaFile } from "../Icons/Llamafile"
 import { GeminiIcon } from "../Icons/GeminiIcon"
 import { MistarlIcon } from "../Icons/Mistral"
@@ -69,6 +70,8 @@ export const ProviderIcons = ({
       return <OpenRouterIcon className={className} />
     case "orcarouter":
       return <OrcaRouterIcon className={className} />
+    case "opper":
+      return <OpperIcon className={className} />
     case "llamafile":
       return <LLamaFile className={className} />
     case "gemini":
