@@ -4,8 +4,7 @@ title: "Page Assist"
 abstract: "Use your locally running AI models to assist you in your web browsing."
 type: software
 authors:
-  - given-names: Muhammed
-    family-names: Nazeem
+  - given-names: Muhammed Nazeem
     alias: n4ze3m
 repository-code: "https://github.com/n4ze3m/page-assist"
 url: "https://github.com/n4ze3m/page-assist"
