@@ -49,18 +49,6 @@ Checkout the Demo (v1.0.0):
       <a href="https://aihubmix.com/?aff=N9Wa"><b>AIHubMix</b></a> is a compliant LLM API aggregation platform that has operated reliably for three years. It partners with model developers and cloud inference providers to offer more than 800 models through a single API, with real-time monitoring for production reliability.
     </td>
   </tr>
-  <tr>
-    <td align="center" width="200">
-      <a href="https://www.atlascloud.ai/?utm_source=github&utm_medium=link&utm_campaign=page-assist">
-        <img src="https://www.atlascloud.ai/logo.svg" alt="Atlas Cloud" height="60" />
-      </a>
-    </td>
-    <td>
-      <a href="https://www.atlascloud.ai/?utm_source=github&utm_medium=link&utm_campaign=page-assist"><b>Atlas Cloud</b></a> is a full-modal AI inference platform that gives developers a single AI API to access video generation, image generation, and LLM APIs. Instead of managing multiple vendor integrations, you connect once and get unified access to 300+ curated models across all modalities.
-      <br/><br/>
-      Check out <a href="https://www.atlascloud.ai/console/coding-plan?utm_source=github&utm_medium=link&utm_campaign=page-assist">Atlas Cloud's coding plan</a> for more budget-friendly API access.
-    </td>
-  </tr>
 </table>
 
 Interested in sponsoring Page Assist? Reach out at [me@n4ze3m.com](mailto:me@n4ze3m.com).
