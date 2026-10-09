@@ -37,6 +37,7 @@ By default, Page Assist supports the following OpenAI Compatible API endpoints:
 - MiniMax
 - XiaomiMimo
 - Evolink
+- Wally
 
 
 ## Adding OpenAI Compatible API

@@ -194,4 +194,9 @@ export const OAI_API_PROVIDERS = [
     value: "api-route",
     baseUrl: "https://global.api-route.com/v1"
   },
+  {
+    label: "Wally",
+    value: "wally",
+    baseUrl: "https://inference.runanywhere.ai/v1"
+  },
 ]
