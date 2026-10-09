@@ -73,19 +73,25 @@ export default defineConfig({
         ? ["http://*/*", "https://*/*", "file://*/*"]
         : undefined,
     commands: {
-      _execute_action: {
-        description: "Open the Web UI",
-        suggested_key: {
-          default: "Ctrl+Shift+L"
-        }
-      },
-      execute_side_panel: {
-        description: "Open the side panel",
-        suggested_key: {
-          default: "Ctrl+Shift+Y"
-        }
-      }
-    },
+  _execute_action: {
+    description: "Open the Web UI",
+    suggested_key: {
+      default: "Ctrl+Shift+L"
+    }
+  },
+  execute_side_panel: {
+    description: "Open the side panel",
+    suggested_key: {
+      default: "Ctrl+Shift+Y"
+    }
+  },
+  execute_predefined_prompt: {
+    description: "Open side panel and submit predefined prompt",
+    suggested_key: {
+      default: "Ctrl+Shift+S"
+    }
+  }
+},
     content_security_policy:
       process.env.TARGET !== "firefox" ?
         {
