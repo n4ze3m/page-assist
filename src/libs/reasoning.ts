@@ -106,13 +106,13 @@ export function mergeReasoningContent(
 
 export function replaceThinkTagToEM(text: string): string {
   const tagPattern = new RegExp(
-    `<(${tags.join("|")})>.*?</(${tags.join("|")})>`,
+    `<(${tags.join("|")})>(.*?)</(${tags.join("|")})>`,
     "gis"
   )
   const emStyle = "font-style: italic; font-size: 0.9em; margin-bottom: 1em;"
   return text
-    .replace(tagPattern, (match) => {
-      return `<em style="${emStyle}">${match.replace(/<(\/)?(${tags.join("|")})>/gi, "")}</em>\n\n`
+    .replace(tagPattern, (_match, _tag, content) => {
+      return `<em style="${emStyle}">${content}</em>\n\n`
     })
     .replaceAll("<think>", "")
     .replaceAll("</think>", "")
