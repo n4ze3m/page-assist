@@ -25,7 +25,8 @@
         "apiKey": {
             "label": "API Key",
             "required": "API Key is required.",
-            "placeholder": "Enter API Key"
+            "placeholder": "Enter API Key",
+            "create": "Create API Key"
         },
         "submit": "Save",
         "update": "Update",

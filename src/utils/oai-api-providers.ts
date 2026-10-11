@@ -1,4 +1,11 @@
-export const OAI_API_PROVIDERS = [
+export type OAIApiProvider = {
+  label: string
+  value: string
+  baseUrl: string
+  apiKeyUrl?: string
+}
+
+export const OAI_API_PROVIDERS: OAIApiProvider[] = [
   {
     label: "Custom",
     value: "custom",
@@ -7,12 +14,8 @@ export const OAI_API_PROVIDERS = [
   {
     label: "AIHubMix",
     value: "aihubmix",
-    baseUrl: "https://aihubmix.com/v1"
-  },
-  {
-    label: "Atlas Cloud",
-    value: "atlascloud",
-    baseUrl: "https://api.atlascloud.ai/v1"
+    baseUrl: "https://aihubmix.com/v1",
+    apiKeyUrl: "https://aihubmix.com/?aff=N9Wa"
   },
   {
     label: "LLaMa.cpp",
@@ -42,17 +45,20 @@ export const OAI_API_PROVIDERS = [
   {
     label: "OpenAI",
     value: "openai",
-    baseUrl: "https://api.openai.com/v1"
+    baseUrl: "https://api.openai.com/v1",
+    apiKeyUrl: "https://platform.openai.com/api-keys"
   },
   {
     label: "DeepSeek",
     value: "deepseek",
-    baseUrl: "https://api.deepseek.com"
+    baseUrl: "https://api.deepseek.com",
+    apiKeyUrl: "https://platform.deepseek.com/api_keys"
   },
   {
     label: "Fireworks",
     value: "fireworks",
-    baseUrl: "https://api.fireworks.ai/inference/v1"
+    baseUrl: "https://api.fireworks.ai/inference/v1",
+    apiKeyUrl: "https://fireworks.ai/account/api-keys"
   },
   {
     label: "Novita AI",
@@ -62,22 +68,26 @@ export const OAI_API_PROVIDERS = [
   {
     label: "Hugging Face",
     value: "huggingface",
-    baseUrl: "https://router.huggingface.co/v1"
+    baseUrl: "https://router.huggingface.co/v1",
+    apiKeyUrl: "https://huggingface.co/settings/tokens"
   },
   {
     label: "Groq",
     value: "groq",
-    baseUrl: "https://api.groq.com/openai/v1"
+    baseUrl: "https://api.groq.com/openai/v1",
+    apiKeyUrl: "https://console.groq.com/keys"
   },
   {
     label: "Together",
     value: "together",
-    baseUrl: "https://api.together.xyz/v1"
+    baseUrl: "https://api.together.xyz/v1",
+    apiKeyUrl: "https://api.together.ai/settings/projects/~current/api-keys"
   },
   {
     label: "OpenRouter",
     value: "openrouter",
-    baseUrl: "https://openrouter.ai/api/v1"
+    baseUrl: "https://openrouter.ai/api/v1",
+    apiKeyUrl: "https://openrouter.ai/settings/keys"
   },
   {
     label: "OrcaRouter",
@@ -92,7 +102,8 @@ export const OAI_API_PROVIDERS = [
   {
     label: "Google AI",
     value: "gemini",
-    baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai"
+    baseUrl: "https://generativelanguage.googleapis.com/v1beta/openai",
+    apiKeyUrl: "https://aistudio.google.com/app/apikey"
   },
   {
     label: "Gemini Enterprise Agent Platform (Vertex AI)",
@@ -102,7 +113,8 @@ export const OAI_API_PROVIDERS = [
   {
     label: "Mistral",
     value: "mistral",
-    baseUrl: "https://api.mistral.ai/v1"
+    baseUrl: "https://api.mistral.ai/v1",
+    apiKeyUrl: "https://console.mistral.ai/api-keys/"
   },
   {
     label: "Infinigence AI",
@@ -127,7 +139,8 @@ export const OAI_API_PROVIDERS = [
   {
     label: "AliBaBaCloud",
     value: "alibabacloud",
-    baseUrl: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    baseUrl: "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    apiKeyUrl: "https://bailian.console.aliyun.com/?tab=model#/api-key"
   },
   {
     label: "vLLM",
@@ -137,7 +150,8 @@ export const OAI_API_PROVIDERS = [
   {
     label: "Moonshot",
     value: "moonshot",
-    baseUrl: "https://api.moonshot.ai/v1"
+    baseUrl: "https://api.moonshot.ai/v1",
+    apiKeyUrl: "https://platform.moonshot.ai/console/api-keys"
   },
   {
     label: "xAI",
@@ -157,7 +171,8 @@ export const OAI_API_PROVIDERS = [
   {
     label: "Anthropic (Claude)",
     value: "anthropic",
-    baseUrl: "https://api.anthropic.com/v1"
+    baseUrl: "https://api.anthropic.com/v1",
+    apiKeyUrl: "https://platform.claude.com/settings/keys"
   },
   {
     label: "Canopy Wave",
@@ -167,12 +182,14 @@ export const OAI_API_PROVIDERS = [
   {
     label: 'BigModel (Zhipu)',
     value: 'zhipu',
-    baseUrl: 'https://open.bigmodel.cn/api/paas/v4'
+    baseUrl: 'https://open.bigmodel.cn/api/paas/v4',
+    apiKeyUrl: 'https://open.bigmodel.cn/apikey/platform'
   },
   {
     label: 'z.ai (Zhipu)',
     value: 'zai',
-    baseUrl: 'https://api.z.ai/api/paas/v4'
+    baseUrl: 'https://api.z.ai/api/paas/v4',
+    apiKeyUrl: 'https://z.ai/manage-apikey/apikey-list'
   },
   {
     label: 'MiniMax',
@@ -198,5 +215,10 @@ export const OAI_API_PROVIDERS = [
     label: "WebWright",
     value: "webwright",
     baseUrl: "https://webwright.ai/v1"
+  },
+  {
+    label: "Atlas Cloud",
+    value: "atlascloud",
+    baseUrl: "https://api.atlascloud.ai/v1"
   },
 ]
