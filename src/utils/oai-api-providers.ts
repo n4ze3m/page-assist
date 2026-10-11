@@ -221,4 +221,10 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     value: "atlascloud",
     baseUrl: "https://api.atlascloud.ai/v1"
   },
+  {
+    label: "DemonRoute",
+    value: "demonroute",
+    baseUrl: "https://api.demonroute.com/v1",
+    apiKeyUrl: "https://demonroute.com/login"
+  },
 ]
