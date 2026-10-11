@@ -227,6 +227,10 @@ export const OpenAIApp = () => {
     }
   }
 
+  const apiKeyUrl = OAI_API_PROVIDERS.find(
+    (p) => p.value === provider
+  )?.apiKeyUrl
+
   return (
     <div className="w-full max-w-full overflow-hidden">
       <div className="px-2 sm:px-0">
@@ -547,7 +551,22 @@ export const OpenAIApp = () => {
                   />
                 </Form.Item>
 
-                <Form.Item name="apiKey" label={t("modal.apiKey.label")}>
+                <Form.Item
+                  name="apiKey"
+                  label={t("modal.apiKey.label")}
+                  extra={
+                    apiKeyUrl && (
+                      <a
+                        href={apiKeyUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline">
+                        {t("modal.apiKey.create", {
+                          defaultValue: "Create API Key"
+                        })}
+                      </a>
+                    )
+                  }>
                   <Input.Password
                     size="large"
                     placeholder={t("modal.apiKey.placeholder")}
