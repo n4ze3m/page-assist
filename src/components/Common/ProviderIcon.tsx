@@ -123,6 +123,11 @@ export const ProviderIcons = ({
       return <EvolinkIcon className={className} />
     case "aihubmix":
       return <AIHubMixIcon className={className} />
+    // No WebWright brand mark is available yet, so fall back to the same
+    // neutral icon as "custom" rather than the default branch, which would
+    // show another provider's logo.
+    case "webwright":
+      return <CpuIcon className={className} />
     default:
       return <OllamaIcon className={className} />
   }
