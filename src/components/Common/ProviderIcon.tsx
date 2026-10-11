@@ -128,6 +128,8 @@ export const ProviderIcons = ({
     // show another provider's logo.
     case "webwright":
       return <CpuIcon className={className} />
+    case "demonroute":
+      return <CpuIcon className={className} />
     default:
       return <OllamaIcon className={className} />
   }
