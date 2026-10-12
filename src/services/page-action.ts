@@ -183,6 +183,12 @@ export const getPageActionSystemPrompt = async (): Promise<string> => {
 export const setPageActionSystemPrompt = async (
   value: string
 ): Promise<void> => {
+  // The bundled default exceeds Chrome sync storage's per-item quota.
+  // An absent value already resolves to the default when reading the prompt.
+  if (value === DEFAULT_PAGE_ACTION_SYSTEM_PROMPT) {
+    await storage.remove(SYSTEM_PROMPT_KEY)
+    return
+  }
   await storage.set(SYSTEM_PROMPT_KEY, value)
 }
 
