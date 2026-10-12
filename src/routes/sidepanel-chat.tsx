@@ -186,29 +186,72 @@ const SidepanelChat = () => {
     }
   }, [defaultChatWithWebsite, sidepanelTemporaryChat])
 
-  React.useEffect(() => {
-    if (bgMsg && !streaming) {
-      if (selectedModel) {
-        if (bgMsg.type === "yt_summarize") {
-          onSubmit({
-            message: bgMsg.text,
-            image: "",
-            chatType: "youtube"
-          })
-        } else {
-          onSubmit({
-            message: bgMsg.text,
-            messageType: bgMsg.type,
-            image: ""
-          })
+React.useEffect(() => {
+  if (bgMsg && !streaming) {
+    if (selectedModel) {
+      if (bgMsg.type === "auto_submit_default_prompt") {
+        const submitDefaultPrompt = async () => {
+          if (!defaultCopilotPrompt) {
+            notification.warning({
+              message: "No default prompt configured"
+            })
+            return
+          }
+
+          try {
+            const prompt = await getPromptById(defaultCopilotPrompt)
+
+            if (prompt.is_system) {
+              notification.warning({
+                message: "Selected default prompt is a system prompt"
+              })
+              return
+            }
+
+            if (!prompt.content) {
+              notification.warning({
+                message: "Default prompt has no content"
+              })
+              return
+            }
+
+            onSubmit({
+              message: prompt.content,
+              image: ""
+            })
+          } catch (error) {
+            console.error(
+              "Failed to submit default copilot prompt:",
+              error
+            )
+
+            notification.error({
+              message: "Failed to load default prompt"
+            })
+          }
         }
+
+        submitDefaultPrompt()
+      } else if (bgMsg.type === "yt_summarize") {
+        onSubmit({
+          message: bgMsg.text,
+          image: "",
+          chatType: "youtube"
+        })
       } else {
-        notification.error({
-          message: t("formError.noModel")
+        onSubmit({
+          message: bgMsg.text,
+          messageType: bgMsg.type,
+          image: ""
         })
       }
+    } else {
+      notification.error({
+        message: t("formError.noModel")
+      })
     }
-  }, [bgMsg])
+  }
+}, [bgMsg])
 
   return (
     <div className="flex h-full w-full">
