@@ -89,6 +89,7 @@ type Props = {
   actionInfo?: ChatActionInfo | null
   onNewBranch?: (messageIndex: number) => void
   temporaryChat?: boolean
+  messageId?: string
   messageKind?: ChatMessageKind
   toolCalls?: McpToolCall[]
   toolCallId?: string
@@ -294,12 +295,18 @@ const PlaygroundMessageComponent = (props: Props) => {
     copyableMessage
   ])
 
-  if (isUserChatBubble && !props.isBot) {
-    return <PlaygroundUserMessageBubble {...props} />
-  }
+ if (isUserChatBubble && !props.isBot) {
+  return (
+    <div id={props.messageId}>
+      <PlaygroundUserMessageBubble {...props} />
+    </div>
+  )
+}
 
   return (
     <div
+
+  id={props.messageId}
       className={`group relative flex w-full max-w-3xl flex-col items-end justify-center pb-2 text-gray-800 dark:text-gray-100 md:px-4 lg:w-4/5 ${checkWideMode ? "max-w-none" : ""}`}
       style={
         props.isLastMessage || props.isStreaming || props.isProcessing
