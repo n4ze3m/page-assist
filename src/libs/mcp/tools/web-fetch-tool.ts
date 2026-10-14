@@ -2,6 +2,7 @@ import { DynamicStructuredTool } from "@langchain/core/tools"
 import { z } from "zod"
 import { PageAssistHtmlLoader } from "@/loader/html"
 import { getMaxContextSize } from "@/services/kb"
+import { assertSafeFetchUrl } from "@/utils/safe-fetch-url"
 
 export const createWebFetchTool = () => {
   return new DynamicStructuredTool({
@@ -12,10 +13,22 @@ export const createWebFetchTool = () => {
       url: z
         .string()
         .url()
-        .describe("The absolute URL (https://...) of the page to fetch.")
+        .refine((value) => {
+          try {
+            const protocol = new URL(value).protocol
+            return protocol === "http:" || protocol === "https:"
+          } catch {
+            return false
+          }
+        }, "Only http: and https: URLs are allowed.")
+        .describe("The absolute http(s) URL of the page to fetch.")
     }),
     func: async ({ url }) => {
-      const loader = new PageAssistHtmlLoader({ html: "", url })
+      const safety = assertSafeFetchUrl(url)
+      if (!safety.ok) {
+        return safety.reason
+      }
+      const loader = new PageAssistHtmlLoader({ html: "", url: safety.url.toString() })
       const docs = await loader.loadByURL()
 
       if (!docs || docs.length === 0) {
