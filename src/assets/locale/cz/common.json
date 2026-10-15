@@ -189,7 +189,7 @@
     "sidebarChat": "Postranní chat",
     "reasoning": {
         "thinking": "Přemýšlím....",
-        "thought": "Přemýšlel jssem {{time}}",
+        "thought": "Přemýšlel jsem po dobu {{time}}",
         "title": "Proces uvažování",
         "expand": "Zobraz uvažování",
         "collapse": "Skryj uvažování"
