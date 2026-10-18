@@ -12,7 +12,7 @@ import {
 } from "@/services/search"
 import { getPageAssistTextSplitter } from "@/utils/text-splitter"
 import type { Document } from "@langchain/core/documents"
-import * as cheerio from "cheerio"
+import { parseDuckDuckGoResults } from "./duckduckgo-parser"
 import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory"
 
 export const localDuckDuckGoSearch = async (query: string) => {
@@ -29,24 +29,7 @@ export const localDuckDuckGoSearch = async (query: string) => {
     .then((response) => response.text())
     .catch()
 
-  const $ = cheerio.load(htmlString)
-
-  const searchResults = Array.from($("div.results_links_deep")).map(
-    (result) => {
-      const title = $(result).find("a.result__a").text()
-      const link = $(result)
-        .find("a.result__snippet")
-        .attr("href")
-        .replace("//duckduckgo.com/l/?uddg=", "")
-        .replace(/&rut=.*/, "")
-
-      const content = $(result).find("a.result__snippet").text()
-      const decodedLink = decodeURIComponent(link)
-      return { title, link: decodedLink, content }
-    }
-  )
-
-  return searchResults
+  return parseDuckDuckGoResults(htmlString)
 }
 
 export const webDuckDuckGoSearch = async (query: string) => {
