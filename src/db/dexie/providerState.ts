@@ -101,3 +101,19 @@ export const getAllProviderStates = async (): Promise<Record<string, boolean>> =
     return {}
   }
 }
+
+export const exportProviderStates = async (): Promise<ProviderStates> => {
+  const providerStateDb = new ProviderStateDb()
+  return await providerStateDb.getAllProviderStates()
+}
+
+export const importProviderStatesV2 = async (
+  data: ProviderStates,
+  options: {
+    replaceExisting?: boolean
+    mergeData?: boolean
+  } = {}
+): Promise<void> => {
+  const providerStateDb = new ProviderStateDb()
+  await providerStateDb.importDataV2(data, options)
+}

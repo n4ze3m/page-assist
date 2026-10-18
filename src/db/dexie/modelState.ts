@@ -101,3 +101,19 @@ export const getAllModelStates = async (): Promise<Record<string, boolean>> => {
     return {}
   }
 }
+
+export const exportModelStates = async (): Promise<ModelStates> => {
+  const modelStateDb = new ModelStateDb()
+  return await modelStateDb.getAllModelStates()
+}
+
+export const importModelStatesV2 = async (
+  data: ModelStates,
+  options: {
+    replaceExisting?: boolean
+    mergeData?: boolean
+  } = {}
+): Promise<void> => {
+  const modelStateDb = new ModelStateDb()
+  await modelStateDb.importDataV2(data, options)
+}
