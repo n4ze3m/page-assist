@@ -6,16 +6,30 @@ import {
   exportNicknames,
   exportOAIConfigs,
   exportPrompts,
+  exportSessionFiles,
+  exportUserSettings,
   generateID,
+  getAllWebshares,
+  getProjectFolders,
   importChatHistoryV2,
   importMcpServersV2,
   importModelsV2,
   importNicknamesV2,
   importOAIConfigsV2,
-  importPromptsV2
+  importProjectFoldersV2,
+  importPromptsV2,
+  importSessionFilesV2,
+  importUserSettingsV2,
+  importWebsharesV2
 } from "@/db/dexie/helpers"
 import type { HistoryInfo, Message } from "@/db/dexie/types"
 import { exportKnowledge, importKnowledgeV2 } from "@/db/dexie/knowledge"
+import { exportMemories, importMemoriesV2 } from "@/db/dexie/memory"
+import { exportModelStates, importModelStatesV2 } from "@/db/dexie/modelState"
+import {
+  exportProviderStates,
+  importProviderStatesV2
+} from "@/db/dexie/providerState"
 import { db } from "@/db/dexie/schema"
 import { exportVectors, importVectorsV2 } from "@/db/dexie/vector"
 import { importKnowledge } from "@/db/knowledge"
@@ -52,24 +66,36 @@ export const formatVector = (vector: any[]) => {
 export type ExportSection =
   | "knowledge"
   | "chat"
+  | "projectFolders"
+  | "sessionFiles"
   | "vector"
   | "prompts"
+  | "memories"
   | "oaiConfigs"
   | "nicknames"
   | "models"
+  | "modelState"
+  | "providerState"
   | "mcpServers"
+  | "webshares"
   | "storageLocal"
   | "storageSync"
 
 export const ALL_EXPORT_SECTIONS: ExportSection[] = [
   "knowledge",
   "chat",
+  "projectFolders",
+  "sessionFiles",
   "vector",
   "prompts",
+  "memories",
   "oaiConfigs",
   "nicknames",
   "models",
+  "modelState",
+  "providerState",
   "mcpServers",
+  "webshares",
   "storageLocal",
   "storageSync"
 ]
@@ -82,12 +108,22 @@ export const exportPageAssistData = async (
 
   if (wants("knowledge")) data.knowledge = await exportKnowledge()
   if (wants("chat")) data.chat = await exportChatHistory()
+  if (wants("projectFolders")) data.projectFolders = await getProjectFolders()
+  if (wants("sessionFiles")) data.sessionFiles = await exportSessionFiles()
   if (wants("vector")) data.vector = await exportVectors()
   if (wants("prompts")) data.prompts = await exportPrompts()
+  if (wants("memories")) data.memories = await exportMemories()
   if (wants("oaiConfigs")) data.oaiConfigs = await exportOAIConfigs()
   if (wants("nicknames")) data.nicknames = await exportNicknames()
   if (wants("models")) data.models = await exportModels()
+  if (wants("modelState")) data.modelState = await exportModelStates()
+  if (wants("providerState")) data.providerState = await exportProviderStates()
   if (wants("mcpServers")) data.mcpServers = await exportMcpServers()
+  if (wants("webshares")) {
+    data.webshares = await getAllWebshares()
+    // holds the owner id needed to delete these share links later
+    data.userSettings = await exportUserSettings()
+  }
 
   if (wants("storageLocal")) {
     data.storageLocal = await browser.storage.local.get()
@@ -205,14 +241,28 @@ export const getAvailableImportSections = (
     counts.knowledge = formatKnowledge(data.knowledge).length
   }
   if (Array.isArray(data?.chat)) counts.chat = data.chat.length
+  if (Array.isArray(data?.projectFolders)) {
+    counts.projectFolders = data.projectFolders.length
+  }
+  if (Array.isArray(data?.sessionFiles)) {
+    counts.sessionFiles = data.sessionFiles.length
+  }
   if (Array.isArray(data?.vector)) {
     counts.vector = formatVector(data.vector).length
   }
   if (Array.isArray(data?.prompts)) counts.prompts = data.prompts.length
+  if (Array.isArray(data?.memories)) counts.memories = data.memories.length
   if (Array.isArray(data?.oaiConfigs)) counts.oaiConfigs = data.oaiConfigs.length
   if (Array.isArray(data?.nicknames)) counts.nicknames = data.nicknames.length
   if (Array.isArray(data?.models)) counts.models = data.models.length
+  if (Array.isArray(data?.modelState)) {
+    counts.modelState = data.modelState.length
+  }
+  if (Array.isArray(data?.providerState)) {
+    counts.providerState = data.providerState.length
+  }
   if (Array.isArray(data?.mcpServers)) counts.mcpServers = data.mcpServers.length
+  if (Array.isArray(data?.webshares)) counts.webshares = data.webshares.length
   if (data?.storageLocal && typeof data.storageLocal === "object") {
     counts.storageLocal = Object.keys(data.storageLocal).length
   }
@@ -242,7 +292,13 @@ export const importPageAssistDataFromObject = async (
       db.openaiConfigs,
       db.modelNickname,
       db.customModels,
-      db.mcpServers
+      db.mcpServers,
+      db.projectFolders,
+      db.memories,
+      db.modelState,
+      db.providerState,
+      db.webshares,
+      db.userSettings
     ],
     async () => {
       if (
@@ -257,12 +313,32 @@ export const importPageAssistDataFromObject = async (
         await importChatHistoryV2(data.chat, options)
       }
 
+      if (
+        wants("projectFolders") &&
+        data?.projectFolders &&
+        Array.isArray(data.projectFolders)
+      ) {
+        await importProjectFoldersV2(data.projectFolders, options)
+      }
+
+      if (
+        wants("sessionFiles") &&
+        data?.sessionFiles &&
+        Array.isArray(data.sessionFiles)
+      ) {
+        await importSessionFilesV2(data.sessionFiles, options)
+      }
+
       if (wants("vector") && data?.vector && Array.isArray(data.vector)) {
         await importVectorsV2(formatVector(data.vector), options)
       }
 
       if (wants("prompts") && data?.prompts && Array.isArray(data.prompts)) {
         await importPromptsV2(data.prompts, options)
+      }
+
+      if (wants("memories") && data?.memories && Array.isArray(data.memories)) {
+        await importMemoriesV2(data.memories, options)
       }
       if (
         wants("oaiConfigs") &&
@@ -285,11 +361,39 @@ export const importPageAssistDataFromObject = async (
       }
 
       if (
+        wants("modelState") &&
+        data?.modelState &&
+        Array.isArray(data.modelState)
+      ) {
+        await importModelStatesV2(data.modelState, options)
+      }
+
+      if (
+        wants("providerState") &&
+        data?.providerState &&
+        Array.isArray(data.providerState)
+      ) {
+        await importProviderStatesV2(data.providerState, options)
+      }
+
+      if (
         wants("mcpServers") &&
         data?.mcpServers &&
         Array.isArray(data.mcpServers)
       ) {
         await importMcpServersV2(data.mcpServers, options)
+      }
+
+      if (
+        wants("webshares") &&
+        data?.webshares &&
+        Array.isArray(data.webshares)
+      ) {
+        // before webshares: the owner id is only adopted while this device has none
+        if (Array.isArray(data?.userSettings)) {
+          await importUserSettingsV2(data.userSettings)
+        }
+        await importWebsharesV2(data.webshares, options)
       }
     }
   )

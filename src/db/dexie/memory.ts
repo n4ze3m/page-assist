@@ -76,6 +76,30 @@ export const importMemories = async (memories: Memories): Promise<void> => {
   await bulkAddMemories(memories)
 }
 
+export const importMemoriesV2 = async (
+  data: Memories,
+  options: {
+    replaceExisting?: boolean
+    mergeData?: boolean
+  } = {}
+): Promise<void> => {
+  const { replaceExisting = false, mergeData = true } = options
+
+  if (!mergeData && !replaceExisting) {
+    await db.memories.clear()
+  }
+
+  for (const memory of data) {
+    const existingMemory = await db.memories.get(memory.id)
+
+    if (existingMemory && !replaceExisting) {
+      continue
+    }
+
+    await db.memories.put(memory)
+  }
+}
+
 export const getMemoriesAsContext = async (): Promise<string> => {
   try {
     const memories = await getAllMemories()

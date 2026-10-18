@@ -8,6 +8,7 @@ import {
   Prompts,
   SessionFiles,
   UploadedFile,
+  UserSettings,
   Webshare,
   ProjectFolder,
   ProjectFolders
@@ -51,6 +52,10 @@ export class PageAssistDatabase {
   async getSessionFiles(sessionId: string): Promise<UploadedFile[]> {
     const sessionFiles = await db.sessionFiles.get(sessionId)
     return sessionFiles?.files || []
+  }
+
+  async getAllSessionFiles(): Promise<SessionFiles[]> {
+    return await db.sessionFiles.toArray()
   }
 
   async getProjectFolders(): Promise<ProjectFolders> {
@@ -419,6 +424,10 @@ export class PageAssistDatabase {
     await db.userSettings.put({ id: "main", user_id: id })
   }
 
+  async getAllUserSettings(): Promise<UserSettings[]> {
+    return await db.userSettings.toArray()
+  }
+
   async importChatHistoryV2(
     data: any[],
     options: {
@@ -512,6 +521,66 @@ export class PageAssistDatabase {
       }
 
       await db.sessionFiles.put(sessionFile)
+    }
+  }
+
+  async importWebsharesV2(
+    data: Webshare[],
+    options: {
+      replaceExisting?: boolean
+      mergeData?: boolean
+    } = {}
+  ) {
+    const { replaceExisting = false, mergeData = true } = options
+
+    if (!mergeData && !replaceExisting) {
+      await db.webshares.clear()
+    }
+
+    for (const webshare of data) {
+      const existingWebshare = await db.webshares.get(webshare.id)
+
+      if (existingWebshare && !replaceExisting) {
+        continue
+      }
+
+      await db.webshares.put(webshare)
+    }
+  }
+
+  async importProjectFoldersV2(
+    data: ProjectFolders,
+    options: {
+      replaceExisting?: boolean
+      mergeData?: boolean
+    } = {}
+  ) {
+    const { replaceExisting = false, mergeData = true } = options
+
+    if (!mergeData && !replaceExisting) {
+      await db.projectFolders.clear()
+    }
+
+    for (const folder of data) {
+      const existingFolder = await db.projectFolders.get(folder.id)
+
+      if (existingFolder && !replaceExisting) {
+        continue
+      }
+
+      await db.projectFolders.put(folder)
+    }
+  }
+
+  async importUserSettingsV2(data: UserSettings[]) {
+    // user_id is the owner id needed to delete share links on the server, so
+    // only adopt the imported one when this device has no share links of its own
+    if ((await db.webshares.count()) > 0) {
+      return
+    }
+
+    for (const settings of data) {
+      await db.userSettings.put(settings)
     }
   }
 }

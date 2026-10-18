@@ -90,12 +90,18 @@ export const SystemSettings = () => {
   const SECTION_LABELS: Record<ExportSection, string> = {
     knowledge: "Knowledge Base",
     chat: "Chat History",
+    projectFolders: "Project Folders",
+    sessionFiles: "Chat Files",
     vector: "Vector Embeddings",
     prompts: "Prompts",
+    memories: "Memories",
     oaiConfigs: "OpenAI Configurations",
     nicknames: "Model Nicknames",
     models: "Custom Models",
+    modelState: "Enabled/Disabled Models",
+    providerState: "Enabled/Disabled Providers",
     mcpServers: "MCP Servers",
+    webshares: "Shared Links",
     storageLocal: "Local Settings",
     storageSync: "Synced Settings"
   }

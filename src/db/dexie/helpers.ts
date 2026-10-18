@@ -11,6 +11,7 @@ import {
   type Prompts,
   type UploadedFile,
   type SessionFiles,
+  type UserSettings,
   type Webshare,
   Prompt,
   LastUsedModelType,
@@ -689,6 +690,54 @@ export const importOAIConfigsV2 = async (
 ) => {
   const db = new OpenAIModelDb()
   return db.importDataV2(data, options)
+}
+
+export const exportSessionFiles = async () => {
+  const db = new PageAssistDatabase()
+  return await db.getAllSessionFiles()
+}
+
+export const importSessionFilesV2 = async (
+  data: SessionFiles[],
+  options: {
+    replaceExisting?: boolean
+    mergeData?: boolean
+  } = {}
+) => {
+  const db = new PageAssistDatabase()
+  return db.importSessionFilesV2(data, options)
+}
+
+export const importWebsharesV2 = async (
+  data: Webshare[],
+  options: {
+    replaceExisting?: boolean
+    mergeData?: boolean
+  } = {}
+) => {
+  const db = new PageAssistDatabase()
+  return db.importWebsharesV2(data, options)
+}
+
+export const exportUserSettings = async () => {
+  const db = new PageAssistDatabase()
+  return await db.getAllUserSettings()
+}
+
+export const importUserSettingsV2 = async (data: UserSettings[]) => {
+  const db = new PageAssistDatabase()
+  return db.importUserSettingsV2(data)
+}
+
+export const importProjectFoldersV2 = async (
+  data: ProjectFolders,
+  options: {
+    replaceExisting?: boolean
+    mergeData?: boolean
+  } = {}
+) => {
+  const db = new PageAssistDatabase()
+  return db.importProjectFoldersV2(data, options)
 }
 
 export { exportMcpServers, importMcpServersV2 }
