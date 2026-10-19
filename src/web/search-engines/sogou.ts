@@ -25,15 +25,16 @@ const getCorrectTargeUrl = async (url: string) => {
 }
 export const localSogouSearch = async (query: string) => {
   try {
+    const searchURL = "https://www.sogou.com/web?query=" + encodeURIComponent(query)
     await urlRewriteRuntime(
-      cleanUrl("https://www.sogou.com/web?query=" + query),
+      cleanUrl(searchURL),
       "sogou"
     )
 
     const abortController = new AbortController()
     setTimeout(() => abortController.abort(), 10000)
 
-    const htmlString = await fetch("https://www.sogou.com/web?query=" + query, {
+    const htmlString = await fetch(searchURL, {
       signal: abortController.signal
     })
       .then((response) => {

@@ -19,15 +19,16 @@ import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory"
 const BING_SEARCH_URL = "https://www.bing.com/search?q="
 
 export const localBingSearch = async (query: string) => {
+    const searchURL = BING_SEARCH_URL + encodeURIComponent(query)
     await urlRewriteRuntime(
-        cleanUrl(BING_SEARCH_URL + query),
+        cleanUrl(searchURL),
         "bing"
     )
 
     const abortController = new AbortController()
     setTimeout(() => abortController.abort(), 10000)
 
-    const htmlString = await fetch(BING_SEARCH_URL + query, {
+    const htmlString = await fetch(searchURL, {
         signal: abortController.signal
     })
         .then((response) => response.text())

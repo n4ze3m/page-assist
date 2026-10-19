@@ -21,7 +21,7 @@ export const localDuckDuckGoSearch = async (query: string) => {
   setTimeout(() => abortController.abort(), 10000)
 
   const htmlString = await fetch(
-    "https://html.duckduckgo.com/html/?q=" + query,
+    "https://html.duckduckgo.com/html/?q=" + encodeURIComponent(query),
     {
       signal: abortController.signal
     }

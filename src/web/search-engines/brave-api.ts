@@ -91,7 +91,7 @@ export const braveAPISearch = async (query: string) => {
 const apiBraveSearch = async (braveApiKey: string, query: string) => {
     const TOTAL_SEARCH_RESULTS = await totalSearchResults()
 
-    const searchURL = `https://api.search.brave.com/res/v1/web/search?q=${query}&count=${TOTAL_SEARCH_RESULTS}`
+    const searchURL = `https://api.search.brave.com/res/v1/web/search?q=${encodeURIComponent(query)}&count=${TOTAL_SEARCH_RESULTS}`
 
     const abortController = new AbortController()
     setTimeout(() => abortController.abort(), 20000)

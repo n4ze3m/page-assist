@@ -18,13 +18,14 @@ import * as cheerio from "cheerio"
 import { MemoryVectorStore } from "@langchain/classic/vectorstores/memory"
 
 export const localBraveSearch = async (query: string) => {
-    await urlRewriteRuntime(cleanUrl("https://search.brave.com/search?q=" + query), "duckduckgo")
+    const searchURL = "https://search.brave.com/search?q=" + encodeURIComponent(query)
+    await urlRewriteRuntime(cleanUrl(searchURL), "duckduckgo")
 
     const abortController = new AbortController()
     setTimeout(() => abortController.abort(), 10000)
 
     const htmlString = await fetch(
-        "https://search.brave.com/search?q=" + query,
+        searchURL,
         {
             signal: abortController.signal
         }
