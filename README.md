@@ -46,7 +46,8 @@ Checkout the Demo (v1.0.0):
       </a>
     </td>
     <td>
-      <a href="https://aihubmix.com/?aff=N9Wa"><b>AIHubMix</b></a> is a compliant LLM API aggregation platform that has operated reliably for three years. It partners with model developers and cloud inference providers to offer more than 800 models through a single API, with real-time monitoring for production reliability.
+      <b>Your local AI, complemented by leading cloud models.</b><br />
+      Use Ollama for local AI, and switch to <a href="https://aihubmix.com/?aff=N9Wa"><b>AIHubMix</b></a> in Page Assist whenever you need models like Claude, GPT, or Gemini.
     </td>
   </tr>
 </table>
