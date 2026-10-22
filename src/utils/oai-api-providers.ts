@@ -221,4 +221,10 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     value: "atlascloud",
     baseUrl: "https://api.atlascloud.ai/v1"
   },
+  {
+    label: "Wally",
+    value: "wally",
+    baseUrl: "https://inference.runanywhere.ai/v1",
+    apiKeyUrl: "https://console.runanywhere.ai"
+  },
 ]
