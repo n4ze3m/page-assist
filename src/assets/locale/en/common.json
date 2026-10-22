@@ -150,7 +150,8 @@
         "explain": "Explain",
         "rephrase": "Rephrase",
         "translate": "Translate",
-        "custom": "Custom"
+        "custom": "Custom",
+        "note": "Note"
     },
     "citations": "Citations",
     "segmented": {
