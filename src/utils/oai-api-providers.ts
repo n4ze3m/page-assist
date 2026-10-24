@@ -43,6 +43,12 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     baseUrl: "http://localhost:11434/v1"
   },
   {
+    label: "OpenLLM",
+    value: "openllm",
+    baseUrl: "http://127.0.0.1:8787/v1",
+    apiKeyUrl: "https://www.openllm.sh/sign-in"
+  },
+  {
     label: "OpenAI",
     value: "openai",
     baseUrl: "https://api.openai.com/v1",
