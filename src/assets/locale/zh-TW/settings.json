@@ -267,6 +267,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "從 TTS 中刪除推理標籤"
+      },
+      "removeEmojisTTS": {
+        "label": "從 TTS 中刪除表情符號"
       }
     },
     "stt": {

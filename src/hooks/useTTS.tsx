@@ -5,6 +5,7 @@ import {
   getElevenLabsModel,
   getElevenLabsVoiceId,
   getRemoveReasoningTagTTS,
+  getRemoveEmojisTTS,
   getTTSProvider,
   getVoice,
   isSSMLEnabled,
@@ -12,7 +13,7 @@ import {
 } from "@/services/tts"
 import { markdownToSSML } from "@/utils/markdown-to-ssml"
 import { generateSpeech } from "@/services/elevenlabs"
-import { splitMessageContent } from "@/utils/tts"
+import { sanitizeEmojis, splitMessageContent } from "@/utils/tts"
 import { removeReasoning } from "@/libs/reasoning"
 import { markdownToText } from "@/utils/markdown-to-text"
 import { generateOpenAITTS } from "@/services/openai-tts"
@@ -33,10 +34,14 @@ export const useTTS = () => {
       const voice = await getVoice()
       const provider = await getTTSProvider()
       const isRemoveReasoning = await getRemoveReasoningTagTTS()
+      const isRemoveEmojis = await getRemoveEmojisTTS()
       const playbackSpeed = await getSpeechPlaybackSpeed()
 
       if (isRemoveReasoning) {
         utterance = removeReasoning(utterance)
+      }
+      if (isRemoveEmojis) {
+        utterance = sanitizeEmojis(utterance)
       }
       const isSSML = await isSSMLEnabled()
       if (isSSML) {

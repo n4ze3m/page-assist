@@ -244,6 +244,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "حذف برچسب استدلال از تبدیل متن به گفتار"
+      },
+      "removeEmojisTTS": {
+        "label": "حذف ایموجی‌ها از تبدیل متن به گفتار"
       }
     },
     "stt": {

@@ -3,7 +3,9 @@
 const CODE_BLOCK_PATTERN = /```[\s\S]*?```/g;
 
 export const sanitizeEmojis = (text: string): string => {
-    const EMOJI_PATTERN = /[\uD800-\uDBFF][\uDC00-\uDFFF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g;
+    // Whole emoji sequences (skin tones, flags, ZWJ families). Keycaps keep
+    // their digit; © ® ™ and lone ZWJs (used in Malayalam, Hindi) are kept.
+    const EMOJI_PATTERN = /(?![\u{A9}\u{AE}\u{2122}])[\p{Extended_Pictographic}\p{Regional_Indicator}][\p{Emoji_Modifier}\u{FE0F}\u{E0020}-\u{E007F}]*(?:\u{200D}[\p{Extended_Pictographic}\p{Regional_Indicator}]?[\p{Emoji_Modifier}\u{FE0F}]*)*|\u{FE0F}?\u{20E3}/gu;
     return text.replace(EMOJI_PATTERN, '');
 };
 
@@ -28,7 +30,7 @@ export const sanitizeMarkdown = (text: string): string => {
 };
 
 export const sanitizeText = (content: string): string => {
-    return sanitizeMarkdown(sanitizeEmojis(content.trim()));
+    return sanitizeMarkdown(content.trim());
 };
 
 export const parseTextIntoSentences = (text: string): string[] => {

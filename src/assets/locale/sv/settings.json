@@ -152,6 +152,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "Ta bort resonemangstagg från Text till Tal"
+      },
+      "removeEmojisTTS": {
+        "label": "Ta bort emojier från Text till Tal"
       }
     },
     "stt": {

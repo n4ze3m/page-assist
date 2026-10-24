@@ -256,6 +256,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "הסר תגי נימוק מ-TTS"
+      },
+      "removeEmojisTTS": {
+        "label": "הסר אימוג'ים מ-TTS"
       }
     },
     "stt": {

@@ -152,6 +152,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "Удалить тег рассуждения из TTS"
+      },
+      "removeEmojisTTS": {
+        "label": "Удалить эмодзи из TTS"
       }
     },
     "stt": {

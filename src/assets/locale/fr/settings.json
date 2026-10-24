@@ -256,6 +256,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "Supprimer la balise de raisonnement de la synthèse vocale"
+      },
+      "removeEmojisTTS": {
+        "label": "Supprimer les emojis de la synthèse vocale"
       }
     },
     "stt": {

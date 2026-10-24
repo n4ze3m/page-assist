@@ -152,6 +152,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "Fjern Resonneringsmerke fra TTS"
+      },
+      "removeEmojisTTS": {
+        "label": "Fjern Emojier fra TTS"
       }
     },
     "stt": {
