@@ -6,6 +6,7 @@ By default, Page Assist supports the following OpenAI Compatible API endpoints:
 
 - AIHubMix
 - Atlas Cloud
+- DemonRoute
 - LLaMA.cpp
 - LM Studio
 - Llamafile
