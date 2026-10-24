@@ -48,7 +48,7 @@ Page Action works alongside your other MCP servers. When it is on, the model can
 Open `Settings > Page Action` to manage it. This page is only shown on Chromium based browsers.
 
 - **Enable Page Action.** Show or hide the Page Action option in the chat sidebar. On by default.
-- **Require approval before each action.** Ask for confirmation before Page Action clicks, types, or navigates. On by default, and recommended.
+- **Require approval before each action.** Ask for confirmation before Page Action clicks, types, or navigates. Off by default. Turning it on is recommended.
 - **System prompt.** The instructions sent to the model in Page Action mode. Edit it to change how the model reads and acts on your pages, then `Save`. Use `Reset to default` to restore it. You can use variables like `{current_date_time}`.
 - **Tools.** Turn individual page action tools on or off, and refresh the tool list.
 
