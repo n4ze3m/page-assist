@@ -34,6 +34,7 @@ import { MiniMaxIcon } from "../Icons/MiniMaxIcon"
 import { XiaomiMimoIcon } from "../Icons/XiaomiMimo"
 import { EvolinkIcon } from "../Icons/EvolinkIcon"
 import { AIHubMixIcon } from "../Icons/AIHubMix"
+import { RuncrateIcon } from "../Icons/Runcrate"
 
 export const ProviderIcons = ({
   provider,
@@ -123,6 +124,8 @@ export const ProviderIcons = ({
       return <EvolinkIcon className={className} />
     case "aihubmix":
       return <AIHubMixIcon className={className} />
+    case "runcrate":
+      return <RuncrateIcon className={className} />
     // No WebWright brand mark is available yet, so fall back to the same
     // neutral icon as "custom" rather than the default branch, which would
     // show another provider's logo.

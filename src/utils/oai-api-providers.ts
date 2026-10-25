@@ -221,4 +221,10 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     value: "atlascloud",
     baseUrl: "https://api.atlascloud.ai/v1"
   },
+  {
+    label: "Runcrate",
+    value: "runcrate",
+    baseUrl: "https://api.runcrate.ai/v1",
+    apiKeyUrl: "https://www.runcrate.ai/dashboard/api-keys?utm_source=page-assist&utm_medium=directory&utm_campaign=gpu_pricing"
+  },
 ]
