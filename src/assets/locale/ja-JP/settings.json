@@ -257,6 +257,9 @@
       "removeReasoningTagTTS": {
         "label": "テキスト読み上げから推論タグを削除"
       },
+      "removeEmojisTTS": {
+        "label": "テキスト読み上げから絵文字を削除"
+      },
       "responseSplitting": {
         "label": "応答の分割"
       }

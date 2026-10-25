@@ -257,6 +257,9 @@
       "removeReasoningTagTTS": {
         "label": "从语音合成中移除推理标签"
       },
+      "removeEmojisTTS": {
+        "label": "从语音合成中移除表情符号"
+      },
       "responseSplitting": {
         "label": "回复分割"
       }

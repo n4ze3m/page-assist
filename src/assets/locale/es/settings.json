@@ -244,6 +244,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "Eliminar Etiqueta de Razonamiento del TTS"
+      },
+      "removeEmojisTTS": {
+        "label": "Eliminar Emojis del TTS"
       }
     },
     "stt": {

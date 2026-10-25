@@ -256,6 +256,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "TTS에서 추론 태그 제거"
+      },
+      "removeEmojisTTS": {
+        "label": "TTS에서 이모지 제거"
       }
     },
     "stt": {

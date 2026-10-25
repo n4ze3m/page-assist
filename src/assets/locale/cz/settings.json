@@ -262,6 +262,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "Nepředávat TTS obsah uvažování"
+      },
+      "removeEmojisTTS": {
+        "label": "Odstranit emoji z TTS"
       }
     },
     "stt": {

@@ -272,6 +272,9 @@
       },
       "removeReasoningTagTTS": {
         "label": "Remove Reasoning Tag from TTS"
+      },
+      "removeEmojisTTS": {
+        "label": "Remove Emojis from TTS"
       }
     },
     "stt": {

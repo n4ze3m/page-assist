@@ -254,6 +254,9 @@
       "removeReasoningTagTTS": {
         "label": "Reasoning-Tag aus Text-zu-Sprache entfernen"
       },
+      "removeEmojisTTS": {
+        "label": "Emojis aus Text-zu-Sprache entfernen"
+      },
       "responseSplitting": {
         "label": "Antwortaufteilung"
       }

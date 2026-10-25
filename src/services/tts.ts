@@ -206,6 +206,18 @@ export const setRemoveReasoningTagTTS = async (removeReasoningTagTTS: boolean) =
   await storage2.set("removeReasoningTagTTS", removeReasoningTagTTS.toString())
 }
 
+export const getRemoveEmojisTTS = async () => {
+  const data = await storage2.get("removeEmojisTTS")
+  if (!data || data.length === 0 || data === "") {
+    return true
+  }
+  return data === "true"
+}
+
+export const setRemoveEmojisTTS = async (removeEmojisTTS: boolean) => {
+  await storage2.set("removeEmojisTTS", removeEmojisTTS.toString())
+}
+
 
 export const isTTSAutoPlayEnabled = async () => {
   const data = await storage.get<boolean | undefined>("isTTSAutoPlayEnabled")
@@ -237,6 +249,7 @@ export const getTTSSettings = async () => {
     elevenLabsModel,
     responseSplitting,
     removeReasoningTagTTS,
+    removeEmojisTTS,
     // OPENAI
     openAITTSBaseUrl,
     openAITTSApiKey,
@@ -261,6 +274,7 @@ export const getTTSSettings = async () => {
     getElevenLabsModel(),
     getResponseSplitting(),
     getRemoveReasoningTagTTS(),
+    getRemoveEmojisTTS(),
     // OPENAI
     getOpenAITTSBaseUrl(),
     getOpenAITTSApiKey(),
@@ -287,6 +301,7 @@ export const getTTSSettings = async () => {
     elevenLabsModel,
     responseSplitting,
     removeReasoningTagTTS,
+    removeEmojisTTS,
     // OPENAI
     openAITTSBaseUrl,
     openAITTSApiKey,
@@ -312,6 +327,7 @@ export const setTTSSettings = async ({
   elevenLabsModel,
   responseSplitting,
   removeReasoningTagTTS,
+  removeEmojisTTS,
   openAITTSBaseUrl,
   openAITTSApiKey,
   openAITTSModel,
@@ -332,6 +348,7 @@ export const setTTSSettings = async ({
   elevenLabsModel: string
   responseSplitting: string
   removeReasoningTagTTS: boolean
+  removeEmojisTTS: boolean
   openAITTSBaseUrl: string,
   openAITTSApiKey: string,
   openAITTSModel: string,
@@ -353,6 +370,7 @@ export const setTTSSettings = async ({
     setElevenLabsModel(elevenLabsModel),
     setResponseSplitting(responseSplitting),
     setRemoveReasoningTagTTS(removeReasoningTagTTS),
+    setRemoveEmojisTTS(removeEmojisTTS),
     setOpenAITTSBaseUrl(openAITTSBaseUrl),
     setOpenAITTSApiKey(openAITTSApiKey),
     setOpenAITTSModel(openAITTSModel),
