@@ -221,4 +221,10 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     value: "atlascloud",
     baseUrl: "https://api.atlascloud.ai/v1"
   },
+  {
+    label: "Obscurify.ai",
+    value: "obscurify",
+    baseUrl: "https://obscurify.ai/v1",
+    apiKeyUrl: "https://obscurify.ai/account?utm_source=pageassist"
+  },
 ]
