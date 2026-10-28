@@ -127,6 +127,7 @@ export const ProviderIcons = ({
     // neutral icon as "custom" rather than the default branch, which would
     // show another provider's logo.
     case "webwright":
+    case "obscurify":
       return <CpuIcon className={className} />
     default:
       return <OllamaIcon className={className} />
