@@ -128,6 +128,7 @@ export const ProviderIcons = ({
     // neutral icon as "custom" rather than the default branch, which would
     // show another provider's logo.
     case "webwright":
+    case "obscurify":
       return <CpuIcon className={className} />
     case "wally":
       return <WallyIcon className={className} />
