@@ -59,6 +59,7 @@ export const ProviderIcons = ({
     // "custom" rather than the default branch, which would show another
     // provider's logo.
     case "api-route":
+    case "llamay":
     case "llmman":
       return <CpuIcon className={className} />
     case "openai":
