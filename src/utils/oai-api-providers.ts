@@ -221,4 +221,9 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     value: "atlascloud",
     baseUrl: "https://api.atlascloud.ai/v1"
   },
+  {
+    label: "cheapaimodel",
+    value: "cheapaimodel",
+    baseUrl: "https://api.cheapaimodel.ai/v1"
+  },
 ]
