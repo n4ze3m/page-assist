@@ -38,6 +38,7 @@ By default, Page Assist supports the following OpenAI Compatible API endpoints:
 - XiaomiMimo
 - Evolink
 - WebWright
+- cheapaimodel
 
 
 ## Adding OpenAI Compatible API
