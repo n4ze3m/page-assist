@@ -221,4 +221,9 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     value: "atlascloud",
     baseUrl: "https://api.atlascloud.ai/v1"
   },
+  {
+    label: "CloudGPU",
+    value: "cloudgpu",
+    baseUrl: "https://cloudgpu.app/v1"
+  },
 ]
