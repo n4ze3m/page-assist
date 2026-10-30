@@ -128,6 +128,9 @@ export const ProviderIcons = ({
     // show another provider's logo.
     case "webwright":
       return <CpuIcon className={className} />
+    // No CloudGPU brand mark is shipped, so use the same neutral fallback.
+    case "cloudgpu":
+      return <CpuIcon className={className} />
     default:
       return <OllamaIcon className={className} />
   }
