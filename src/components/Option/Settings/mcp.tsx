@@ -2,6 +2,7 @@ import {
   Alert,
   Form,
   Input,
+  InputNumber,
   Modal,
   Select,
   Switch,
@@ -52,6 +53,13 @@ import {
 import { getServerFaviconUrl } from "@/components/Common/McpServerToggle"
 import { ToolExecutionModeControl } from "@/components/MCP/ToolExecutionModeControl"
 import { isPageActionServer } from "@/services/page-action"
+import {
+  DEFAULT_MCP_MAX_TOOL_ROUNDS,
+  MAX_MCP_MAX_TOOL_ROUNDS,
+  MCP_MAX_TOOL_ROUNDS_KEY,
+  MIN_MCP_MAX_TOOL_ROUNDS,
+  clampMcpMaxToolRounds
+} from "@/libs/mcp/limits"
 
 type ValidationSnapshot = {
   fingerprint: string
@@ -91,6 +99,10 @@ export const MCPSettingsApp = () => {
   const [mcpHumanInLoop, setMcpHumanInLoop] = useStorage(
     "mcpHumanInLoop",
     false
+  )
+  const [mcpMaxToolRounds, setMcpMaxToolRounds] = useStorage<number>(
+    MCP_MAX_TOOL_ROUNDS_KEY,
+    DEFAULT_MCP_MAX_TOOL_ROUNDS
   )
   const [form] = Form.useForm()
   const queryClient = useQueryClient()
@@ -483,6 +495,35 @@ export const MCPSettingsApp = () => {
                     "MCP tools run without approval by default. Turn this on when an MCP server can write files, modify data, send messages, or make other changes."
                   )}
             </p>
+          </div>
+          <div className="mt-4 rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-600">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-gray-900 dark:text-white">
+                  {t(
+                    "mcpSettings.maxToolRounds.label",
+                    "Maximum tool-call rounds per message"
+                  )}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-gray-600 dark:text-gray-300">
+                  {t(
+                    "mcpSettings.maxToolRounds.description",
+                    "Stops a model from calling tools in an endless loop. When the limit is reached, the model is asked to answer with what it has. Raise it for long multi-step tasks."
+                  )}
+                </p>
+              </div>
+              <InputNumber
+                min={MIN_MCP_MAX_TOOL_ROUNDS}
+                max={MAX_MCP_MAX_TOOL_ROUNDS}
+                precision={0}
+                value={clampMcpMaxToolRounds(mcpMaxToolRounds)}
+                onChange={(value) => {
+                  if (value !== null && value !== undefined) {
+                    setMcpMaxToolRounds(clampMcpMaxToolRounds(value))
+                  }
+                }}
+              />
+            </div>
           </div>
           <div className="mt-4 border border-b border-gray-200 dark:border-gray-600"></div>
         </div>
