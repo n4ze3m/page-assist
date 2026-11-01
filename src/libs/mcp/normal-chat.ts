@@ -14,9 +14,10 @@ import { humanMessageFormatter } from "@/utils/human-message"
 import { systemPromptFormatter } from "@/utils/system-message"
 import { getMemoriesAsContext } from "@/db/dexie/memory"
 import { useStoreMessageOption } from "@/store/option"
-import { AIMessage, ToolMessage } from "@langchain/core/messages"
+import { AIMessage, HumanMessage, ToolMessage } from "@langchain/core/messages"
 import { concat } from "@langchain/core/utils/stream"
 import { getConfiguredMcpServers, createMcpClient } from "./client"
+import { getMcpMaxToolRounds } from "./limits"
 import { McpServer, McpToolExecutionMode } from "./types"
 import { updateMcpServer } from "@/db/dexie/mcp"
 import { isWebMcpServer, setWebMcpToolMode } from "@/services/webmcp"
@@ -627,17 +628,29 @@ export const runMcpNormalChatMode = async (
     appendAssistantPlaceholder()
 
     let lcConversation: any[] = [...applicationChatHistory, humanMessage]
+    const maxToolRounds = await getMcpMaxToolRounds()
+    let toolRounds = 0
 
     while (true) {
       setIsProcessing(true)
+      // Once the tool-call budget is spent, ask for a final answer and stop
+      // running tools, so a model that keeps calling tools can't loop forever.
+      const toolLimitReached = toolRounds >= maxToolRounds
       const {
         aiMessage,
-        fullText,
+        fullText: streamedText,
         generationInfo,
         reasoningTimeTaken
       } = await streamModelResponse({
         runnable: boundModel,
-        messages: lcConversation,
+        messages: toolLimitReached
+          ? [
+              ...lcConversation,
+              new HumanMessage(
+                `You have reached the tool-call limit (${maxToolRounds} rounds). Do not call any more tools. Answer now using the information you already have, and say briefly if anything is incomplete.`
+              )
+            ]
+          : lcConversation,
         signal,
         onToken: ({ text, reasoningTimeTaken: currentReasoningTimeTaken }) => {
           if (!text.trim()) {
@@ -652,8 +665,12 @@ export const runMcpNormalChatMode = async (
         }
       })
 
+      const fullText =
+        toolLimitReached && !streamedText.trim()
+          ? `Stopped after reaching the MCP tool-call limit (${maxToolRounds} rounds). You can raise this limit in Settings → MCP.`
+          : streamedText
       finalAssistantText = fullText
-      const storedToolCalls = toStoredToolCalls(
+      const storedToolCalls = toolLimitReached ? [] : toStoredToolCalls(
         (aiMessage as any).tool_calls || [],
         (aiMessage as any).additional_kwargs?.tool_call_extra_content || {}
       ).map((toolCall) => ({
@@ -967,6 +984,7 @@ export const runMcpNormalChatMode = async (
         ...toolMessages,
         ...visionMessages
       ]
+      toolRounds++
       appendAssistantPlaceholder()
     }
 
