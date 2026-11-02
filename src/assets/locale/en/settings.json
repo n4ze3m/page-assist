@@ -485,6 +485,10 @@
       "enabledHint": "Human-in-the-loop is enabled. MCP tools will ask for approval before they run.",
       "disabledHint": "MCP tools run without approval by default. Turn this on when an MCP server can write files, modify data, send messages, or make other changes."
     },
+    "maxToolRounds": {
+      "label": "Maximum tool-call rounds per message",
+      "description": "Stops a model from calling tools in an endless loop. When the limit is reached, the model is asked to answer with what it has. Raise it for long multi-step tasks."
+    },
     "table": {
       "name": "Name",
       "url": "URL",

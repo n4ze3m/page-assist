@@ -34,6 +34,7 @@ import { MiniMaxIcon } from "../Icons/MiniMaxIcon"
 import { XiaomiMimoIcon } from "../Icons/XiaomiMimo"
 import { EvolinkIcon } from "../Icons/EvolinkIcon"
 import { AIHubMixIcon } from "../Icons/AIHubMix"
+import { WallyIcon } from "../Icons/WallyIcon"
 import { CheapaimodelIcon } from "../Icons/CheapaimodelIcon"
 
 export const ProviderIcons = ({
@@ -129,6 +130,8 @@ export const ProviderIcons = ({
     // show another provider's logo.
     case "webwright":
       return <CpuIcon className={className} />
+    case "wally":
+      return <WallyIcon className={className} />
     case "cheapaimodel":
       return <CheapaimodelIcon className={className} />
     default:
