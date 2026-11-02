@@ -5,7 +5,7 @@ import { searchWebForAgent } from "@/web/web"
 export const createWebSearchTool = () => {
   return new DynamicStructuredTool({
     name: "page_assist_web_search",
-    description: `Search the internet for up-to-date information. Use this whenever the user asks about recent events, current data, or anything that may not be in your training data. Returns a numbered list of results with URL and snippet. Follow up with \`page_assist_web_fetch\` when you need the full content of a specific result. Current date and time: ${new Date().toLocaleString()}.`,
+    description: `Search the internet for up-to-date information. Use this whenever the user asks about recent events, current data, or anything that may not be in your training data. Returns a numbered list of results with URL and snippet. Follow up with \`page_assist_web_fetch\` when you need the full content of a specific result. Current date: ${new Date().toDateString()}.`,
     schema: z.object({
       query: z
         .string()
