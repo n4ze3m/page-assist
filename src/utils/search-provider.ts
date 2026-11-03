@@ -40,6 +40,10 @@ export const SUPPORTED_SEARCH_PROVIDERS = [
         value: "stract"
     },
     {
+        label: "Keenable",
+        value: "keenable"
+    },
+    {
         label: "Startpage",
         value: "startpage"
     },
