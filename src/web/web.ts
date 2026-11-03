@@ -11,6 +11,7 @@ import { tavilyAPISearch } from "./search-engines/tavily-api"
 import { webBaiduSearch } from "./search-engines/baidu"
 import { webBingSearch } from "./search-engines/bing"
 import { stractSearch } from "./search-engines/stract"
+import { keenableSearch } from "./search-engines/keenable"
 import { startpageSearch } from "./search-engines/startpage"
 import { exaAPISearch } from "./search-engines/exa"
 import { firecrawlAPISearch } from "./search-engines/firecrawl"
@@ -61,6 +62,8 @@ const searchWeb = (provider: string, query: string) => {
       return webBingSearch(query)
     case "stract":
       return stractSearch(query)
+    case "keenable":
+      return keenableSearch(query)
     case "startpage":
       return startpageSearch(query)
     case "exa":
