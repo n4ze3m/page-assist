@@ -13,7 +13,6 @@ export default defineBackground({
       area: "local"
     })
     let isCopilotRunning: boolean = false
-    let actionIconClick: string = "webui"
     let contextMenuClick: string = "sidePanel"
     const contextMenuId = {
       webui: "open-web-ui-pa",
@@ -80,13 +79,6 @@ export default defineBackground({
     const initialize = async () => {
       try {
         storage.watch({
-          actionIconClick: (value) => {
-            const oldValue = value?.oldValue || "webui"
-            const newValue = value?.newValue || "webui"
-            if (oldValue !== newValue) {
-              actionIconClick = newValue
-            }
-          },
           contextMenuClick: (value) => {
             const oldValue = value?.oldValue || "sidePanel"
             const newValue = value?.newValue || "sidePanel"
@@ -123,7 +115,6 @@ export default defineBackground({
         })
         const data = await getInitialConfig()
         contextMenuClick = data.contextMenuClick
-        actionIconClick = data.actionIconClick
 
         browser.contextMenus.create({
           id: contextMenuId[contextMenuClick],
@@ -214,13 +205,32 @@ export default defineBackground({
     })
 
     chrome.action.onClicked.addListener((tab) => {
-      if (actionIconClick === "webui") {
-        chrome.tabs.create({ url: chrome.runtime.getURL("/options.html") })
-      } else {
-        chrome.sidePanel.open({
-          tabId: tab.id!
-        })
-      }
+      const key = storage.getNamespacedKey("actionIconClick")
+      // Keep the user gesture in Chrome's API callback, not a promise chain.
+      chrome.storage.local.get(key, (items) => {
+        if (chrome.runtime.lastError) {
+          console.error(
+            "Could not read toolbar action:",
+            chrome.runtime.lastError
+          )
+          return
+        }
+        let actionIconClick = "webui"
+        try {
+          if (items[key] !== undefined) {
+            actionIconClick = JSON.parse(items[key]) || "webui"
+          }
+        } catch (error) {
+          console.error("Could not parse toolbar action:", error)
+        }
+        if (actionIconClick === "webui") {
+          chrome.tabs.create({ url: chrome.runtime.getURL("/options.html") })
+        } else {
+          chrome.sidePanel.open({
+            tabId: tab.id!
+          })
+        }
+      })
     })
 
     const contextMenuTitle = {
