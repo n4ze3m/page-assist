@@ -45,16 +45,19 @@ export const localGoogleSearch = async (query: string, start: number = 0) => {
 
   const doc = parser.parseFromString(htmlString, "text/html")
 
-  const searchResults = Array.from(doc.querySelectorAll("div.g")).map(
-    (result) => {
-      const title = result.querySelector("h3")?.textContent
-      const link = result.querySelector("a")?.getAttribute("href")
-      const content = Array.from(result.querySelectorAll("span"))
-        .map((span) => span.textContent)
-        .join(" ")
-      return { title, link, content }
-    }
-  )
+  const searchResults = Array.from(
+    doc.querySelectorAll("div.g, div.tF2Cxc")
+  ).map((result) => {
+    const heading = result.querySelector("h3")
+    const title = heading?.textContent
+    const anchor =
+      heading?.closest("a[href]") ?? result.querySelector("a[href]")
+    const link = anchor?.getAttribute("href")
+    const content = Array.from(result.querySelectorAll("span"))
+      .map((span) => span.textContent)
+      .join(" ")
+    return { title, link, content }
+  })
   return searchResults
 }
 
