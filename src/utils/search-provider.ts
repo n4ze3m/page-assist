@@ -70,5 +70,9 @@ export const SUPPORTED_SEARCH_PROVIDERS = [
     {
         label: "Sofya Search API",
         value: "sofya-api"
+    },
+    {
+        label: "SpecStream Search API",
+        value: "specstream-api"
     }
 ]
