@@ -199,6 +199,10 @@ You learn more about the privacy policy [here](PRIVACY.md).
 
 Contributions are welcome. If you have any feature requests, bug reports, or questions, feel free to create an issue.
 
+### Adding a Provider
+
+If you want your provider added to Page Assist, please don't open a pull request. Instead, email [add-provider@pageassist.xyz](mailto:add-provider@pageassist.xyz) and offer credits so we can try the platform.
+
 ## Support
 
 If you like the project and want to support it, you can buy me a coffee. It will help me to keep working on the project.

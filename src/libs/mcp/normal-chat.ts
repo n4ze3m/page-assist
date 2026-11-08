@@ -17,7 +17,7 @@ import { useStoreMessageOption } from "@/store/option"
 import { AIMessage, HumanMessage, ToolMessage } from "@langchain/core/messages"
 import { concat } from "@langchain/core/utils/stream"
 import { getConfiguredMcpServers, createMcpClient } from "./client"
-import { getMcpMaxToolRounds } from "./limits"
+import { getMcpMaxToolRounds, getWebFetchPrivateApproval } from "./limits"
 import { McpServer, McpToolExecutionMode } from "./types"
 import { updateMcpServer } from "@/db/dexie/mcp"
 import { isWebMcpServer, setWebMcpToolMode } from "@/services/webmcp"
@@ -45,6 +45,10 @@ import {
 import { createMemoryTool, isMemoryEnabled, isMemoryToolEnabled } from "./tools/memory-tool"
 import { createWebSearchTool } from "./tools/web-search-tool"
 import { createWebFetchTool } from "./tools/web-fetch-tool"
+import {
+  WEB_FETCH_TOOL_NAME,
+  getPrivateWebFetchUrl
+} from "./tools/web-fetch-access"
 
 type SetMessages = (messages: Message[] | ((prev: Message[]) => Message[])) => void
 type SetHistory = (history: ChatHistory) => void
@@ -564,6 +568,8 @@ export const runMcpNormalChatMode = async (
 
   try {
     const tools = hasMcpServers ? await client!.getTools() : []
+    const approvedPrivateFetchUrls = new Set<string>()
+    const requirePrivateFetchApproval = await getWebFetchPrivateApproval()
 
     if (memoryEnabled && memoryToolEnabled) {
       tools.push(createMemoryTool())
@@ -571,7 +577,12 @@ export const runMcpNormalChatMode = async (
 
     if (webSearchAsTool) {
       tools.push(createWebSearchTool())
-      tools.push(createWebFetchTool())
+      tools.push(
+        createWebFetchTool({
+          approvedPrivateUrls: approvedPrivateFetchUrls,
+          requirePrivateApproval: requirePrivateFetchApproval
+        })
+      )
     }
 
     if (tools.length === 0) {
@@ -785,7 +796,14 @@ export const runMcpNormalChatMode = async (
             throw new Error(`Tool "${toolCall.name}" is no longer available.`)
           }
 
-          if (requireMcpApproval) {
+          // Private addresses need approval even when the MCP approval setting
+          // is off, because page content can steer this tool.
+          const privateFetchUrl =
+            requirePrivateFetchApproval && tool.name === WEB_FETCH_TOOL_NAME
+              ? getPrivateWebFetchUrl(toolCall.args)
+              : undefined
+
+          if (requireMcpApproval || privateFetchUrl) {
             const shouldRequireApproval =
               (tool as any)?.metadata?.executionMode !== "allow"
 
@@ -824,6 +842,10 @@ export const runMcpNormalChatMode = async (
                     ? `Tool execution denied by user: ${rejectionReason}`
                     : `Tool execution denied by user for "${parsedTool.displayName}".`
                 )
+              }
+
+              if (privateFetchUrl) {
+                approvedPrivateFetchUrls.add(privateFetchUrl)
               }
             }
           }

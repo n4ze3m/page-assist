@@ -18,6 +18,14 @@ export const clampMcpMaxToolRounds = (value: unknown): number => {
   )
 }
 
+export const getWebFetchPrivateApproval = async (): Promise<boolean> => {
+  try {
+    return (await storage.get<boolean>("webFetchPrivateApproval")) !== false
+  } catch {
+    return true
+  }
+}
+
 export const getMcpMaxToolRounds = async (): Promise<number> => {
   try {
     const stored = await storage.get(MCP_MAX_TOOL_ROUNDS_KEY)

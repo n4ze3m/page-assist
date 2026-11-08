@@ -1,6 +1,9 @@
 import { defaultExtractContent } from "./default"
 
-export const extractReadabilityContent = async (url: string) => {
+export const extractReadabilityContent = async (
+  url: string,
+  isFinalUrlAllowed?: (finalUrl: string) => boolean
+) => {
   const response = await fetch(url, {
     headers: {
       "User-Agent":
@@ -18,6 +21,9 @@ export const extractReadabilityContent = async (url: string) => {
       "Cache-Control": "max-age=0"
     }
   })
+  if (isFinalUrlAllowed && !isFinalUrlAllowed(response.url)) {
+    throw new Error(`Redirect not allowed for ${url}`)
+  }
   if (!response.ok) {
     throw new Error(`Failed to fetch ${url}`)
   }
