@@ -66,7 +66,11 @@ export class PageAssistHtmlLoader
     return [new Document({ pageContent: this.html, metadata })]
   }
 
-  async loadByURL(): Promise<Document<Record<string, any>>[]> {
+  async loadByURL({
+    isFinalUrlAllowed
+  }: {
+    isFinalUrlAllowed?: (finalUrl: string) => boolean
+  } = {}): Promise<Document<Record<string, any>>[]> {
     try {
       console.log("Loading HTML...", this.url)
       if (isYoutubeLink(this.url)) {
@@ -97,9 +101,12 @@ export class PageAssistHtmlLoader
       let text = "";
       if (isWikipedia(this.url)) {
         const fetchHTML = await fetch(this.url)
+        if (isFinalUrlAllowed && !isFinalUrlAllowed(fetchHTML.url)) {
+          throw new Error(`Redirect not allowed for ${this.url}`)
+        }
         text = parseWikipedia(await fetchHTML.text())
       } else {
-        text = await extractReadabilityContent(this.url)
+        text = await extractReadabilityContent(this.url, isFinalUrlAllowed)
       }
 
       const metadata = { url: this.url }

@@ -139,6 +139,9 @@
       "mcpHumanInLoop": {
         "label": "Require approval before running MCP tools"
       },
+      "webFetchPrivateApproval": {
+        "label": "Ask before web fetch opens private network addresses"
+      },
       "showProviderNameInModelList": {
         "label": "Show Provider Name in Model List"
       }

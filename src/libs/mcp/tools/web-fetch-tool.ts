@@ -2,10 +2,21 @@ import { DynamicStructuredTool } from "@langchain/core/tools"
 import { z } from "zod"
 import { PageAssistHtmlLoader } from "@/loader/html"
 import { getMaxContextSize } from "@/services/kb"
+import {
+  WEB_FETCH_TOOL_NAME,
+  getWebFetchAccess,
+  isWebFetchRedirectAllowed
+} from "./web-fetch-access"
 
-export const createWebFetchTool = () => {
+export const createWebFetchTool = ({
+  approvedPrivateUrls,
+  requirePrivateApproval
+}: {
+  approvedPrivateUrls: ReadonlySet<string>
+  requirePrivateApproval: boolean
+}) => {
   return new DynamicStructuredTool({
-    name: "page_assist_web_fetch",
+    name: WEB_FETCH_TOOL_NAME,
     description:
       "Fetch the full readable content of a single web page or YouTube transcript by URL. Use this after `page_assist_web_search` when the snippet is not enough, or when the user shares a URL they want analyzed. Content is truncated to the configured maximum context size.",
     schema: z.object({
@@ -15,8 +26,25 @@ export const createWebFetchTool = () => {
         .describe("The absolute URL (https://...) of the page to fetch.")
     }),
     func: async ({ url }) => {
+      const access = getWebFetchAccess(url)
+      if (access === "blocked") {
+        throw new Error("Only http and https URLs can be fetched.")
+      }
+      if (
+        access === "private" &&
+        requirePrivateApproval &&
+        !approvedPrivateUrls.has(url)
+      ) {
+        throw new Error("Fetching a private network address needs user approval.")
+      }
+
       const loader = new PageAssistHtmlLoader({ html: "", url })
-      const docs = await loader.loadByURL()
+      const docs = await loader.loadByURL({
+        isFinalUrlAllowed: (finalUrl) =>
+          requirePrivateApproval
+            ? isWebFetchRedirectAllowed(url, finalUrl, approvedPrivateUrls)
+            : getWebFetchAccess(finalUrl) !== "blocked"
+      })
 
       if (!docs || docs.length === 0) {
         return `Failed to fetch content from ${url}.`

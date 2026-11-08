@@ -40,6 +40,9 @@ By default, Page Assist supports the following OpenAI Compatible API endpoints:
 - WebWright
 - Wally
 
+::: info
+Want your provider added to this list? Please contact us at [add-provider@pageassist.xyz](mailto:add-provider@pageassist.xyz) before opening a pull request, and offer credits so we can try the platform.
+:::
 
 ## Adding OpenAI Compatible API
 

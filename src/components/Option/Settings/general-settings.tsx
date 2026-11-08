@@ -156,6 +156,10 @@ export const GeneralSettings = () => {
     "mcpHumanInLoop",
     false
   )
+  const [webFetchPrivateApproval, setWebFetchPrivateApproval] = useStorage(
+    "webFetchPrivateApproval",
+    true
+  )
   const [optimizeQueueForSmallScreen, setOptimizeQueueForSmallScreen] =
     useStorage("optimizeQueueForSmallScreen", false)
 
@@ -746,6 +750,22 @@ export const GeneralSettings = () => {
         <Switch
           checked={mcpHumanInLoop}
           onChange={(checked) => setMcpHumanInLoop(checked)}
+        />
+      </div>
+
+      <div className="flex flex-row justify-between">
+        <div className="inline-flex items-center gap-2">
+          <span className="text-gray-700   dark:text-neutral-50">
+            {t(
+              "generalSettings.settings.webFetchPrivateApproval.label",
+              "Ask before web fetch opens private network addresses"
+            )}
+          </span>
+        </div>
+
+        <Switch
+          checked={webFetchPrivateApproval}
+          onChange={(checked) => setWebFetchPrivateApproval(checked)}
         />
       </div>
 
