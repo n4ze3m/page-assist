@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Collapse, Skeleton, Switch } from "antd"
 import { useState } from "react"
 import { SaveButton } from "~/components/Common/SaveButton"
@@ -16,6 +16,7 @@ export const SettingsOllama = () => {
     true
   )
   const [_, setCheckOllamaStatus] = useStorage("checkOllamaStatus", true)
+  const queryClient = useQueryClient()
   const { t } = useTranslation("settings")
 
   const { status } = useQuery({
@@ -63,8 +64,9 @@ export const SettingsOllama = () => {
             </div>
             <div className="flex justify-end mb-3">
               <SaveButton
-                onClick={() => {
-                  saveOllamaURL(ollamaURL)
+                onClick={async () => {
+                  await saveOllamaURL(ollamaURL)
+                  await queryClient.invalidateQueries({ queryKey: ["fetchOllamURL"] })
                 }}
                 className="mt-2"
               />
