@@ -35,6 +35,7 @@ import { XiaomiMimoIcon } from "../Icons/XiaomiMimo"
 import { EvolinkIcon } from "../Icons/EvolinkIcon"
 import { AIHubMixIcon } from "../Icons/AIHubMix"
 import { WallyIcon } from "../Icons/WallyIcon"
+import { UberLLMIcon } from "../Icons/UberLLMIcon"
 
 export const ProviderIcons = ({
   provider,
@@ -131,6 +132,8 @@ export const ProviderIcons = ({
       return <CpuIcon className={className} />
     case "wally":
       return <WallyIcon className={className} />
+    case "uberllm":
+      return <UberLLMIcon className={className} />
     default:
       return <OllamaIcon className={className} />
   }
