@@ -128,10 +128,14 @@ export const ProviderIcons = ({
     // neutral icon as "custom" rather than the default branch, which would
     // show another provider's logo.
     case "webwright":
+    // No 超稳API brand mark is available yet, so fall back to the same
+    // neutral icon as "custom".
+    case "apiniuma":
       return <CpuIcon className={className} />
     case "wally":
       return <WallyIcon className={className} />
     default:
+
       return <OllamaIcon className={className} />
   }
 }
