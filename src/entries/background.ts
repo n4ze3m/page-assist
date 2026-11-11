@@ -335,46 +335,73 @@ export default defineBackground({
       | undefined
 
     browser.commands.onCommand.addListener((command) => {
-      switch (command) {
-        case "execute_side_panel":
-          chrome.tabs.query(
-            { active: true, currentWindow: true },
-            async (tabs) => {
-              const tab = tabs[0]
-              if (!tab?.id) return
+  switch (command) {
+    case "execute_side_panel":
+      chrome.tabs.query(
+        { active: true, currentWindow: true },
+        async (tabs) => {
+          const tab = tabs[0]
+          if (!tab?.id) return
 
-              if (isCopilotRunning && sidePanelClose) {
-                const closeAttempts: Array<{
-                  tabId?: number
-                  windowId?: number
-                }> = []
-                if (tab.windowId !== undefined) {
-                  closeAttempts.push({ windowId: tab.windowId })
-                }
-                closeAttempts.push({ tabId: tab.id })
+          if (isCopilotRunning && sidePanelClose) {
+            const closeAttempts: Array<{
+              tabId?: number
+              windowId?: number
+            }> = []
 
-                for (const attempt of closeAttempts) {
-                  try {
-                    await sidePanelClose(attempt)
-                    return
-                  } catch (e) {
-                  }
-                }
-                console.warn(
-                  "Side panel reported open but close() rejected for both windowId and tabId"
-                )
-              }
-
-              chrome.sidePanel.open({
-                tabId: tab.id
-              })
+            if (tab.windowId !== undefined) {
+              closeAttempts.push({ windowId: tab.windowId })
             }
+
+            closeAttempts.push({ tabId: tab.id })
+
+            for (const attempt of closeAttempts) {
+              try {
+                await sidePanelClose(attempt)
+                return
+              } catch (e) {}
+            }
+
+            console.warn(
+              "Side panel reported open but close() rejected for both windowId and tabId"
+            )
+          }
+
+          chrome.sidePanel.open({
+            tabId: tab.id
+          })
+        }
+      )
+      break
+
+    case "execute_predefined_prompt":
+      chrome.tabs.query(
+        { active: true, currentWindow: true },
+        async (tabs) => {
+          const tab = tabs[0]
+          if (!tab?.id) return
+
+          chrome.sidePanel.open({
+            tabId: tab.id
+          })
+
+          setTimeout(
+            async () => {
+              await browser.runtime.sendMessage({
+                from: "background",
+                type: "auto_submit_default_prompt"
+              })
+            },
+            isCopilotRunning ? 0 : 5000
           )
-          break
-        default:
-          break
-      }
-    })
+        }
+      )
+      break
+
+    default:
+      break
+  }
+})
 
     initialize()
   },
