@@ -34,6 +34,9 @@ You can use the following variables in your system prompts:
 - `{current_day}` - The current day of the month
 - `{current_hour}` - The current hour (0-23)
 - `{current_minute}` - The current minute (0-59)
+- `{model_name}` - The name of the selected model
+- `{page_title}` - The title of the active tab (empty when it is not a web page, e.g. in the Web UI)
+- `{page_url}` - The URL of the active tab (empty when it is not a web page, e.g. in the Web UI)
 
 These variables will be automatically replaced with their respective values when the prompt is sent to the LLM.
 
