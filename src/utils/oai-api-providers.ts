@@ -227,4 +227,10 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     baseUrl: "https://inference.runanywhere.ai/v1",
     apiKeyUrl: "https://console.runanywhere.ai"
   },
+  {
+    label: "Obscurify.ai",
+    value: "obscurify",
+    baseUrl: "https://obscurify.ai/v1",
+    apiKeyUrl: "https://obscurify.ai/account?utm_source=pageassist"
+  },
 ]
