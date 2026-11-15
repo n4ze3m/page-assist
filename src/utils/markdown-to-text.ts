@@ -21,11 +21,12 @@ export function markdownToText(markdown: string): string {
     text = text.replace(/(\*\*|__)(.*?)\1/g, '$2');
     text = text.replace(/(\*|_)(.*?)\1/g, '$2');
   
+    // Images before links. The link pattern also matches the [alt](url)
+    // inside ![alt](url), which would leave the leading "!" for TTS to speak.
+    text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '$1');
+
     // Replace links
     text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1');
-  
-    // Replace images
-    text = text.replace(/!\[([^\]]+)\]\(([^)]+)\)/g, '$1');
   
     // Replace horizontal rules
     text = text.replace(/^\s*[-*_]{3,}\s*$/gm, '');
