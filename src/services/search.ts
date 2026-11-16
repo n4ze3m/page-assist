@@ -125,6 +125,11 @@ export const getSofyaApiKey = async () => {
   return sofyaApiKey || ""
 }
 
+export const getSpecStreamApiKey = async () => {
+  const specstreamApiKey = await storage2.get("specstreamApiKey")
+  return specstreamApiKey || ""
+}
+
 export const getTavilyApiKey = async () => {
   const tavilyApiKey = await storage2.get("tavilyApiKey")
   return tavilyApiKey || ""
@@ -157,6 +162,10 @@ export const setSerplyApiKey = async (serplyApiKey: string) => {
 
 export const setSofyaApiKey = async (sofyaApiKey: string) => {
   await storage2.set("sofyaApiKey", sofyaApiKey)
+}
+
+export const setSpecStreamApiKey = async (specstreamApiKey: string) => {
+  await storage2.set("specstreamApiKey", specstreamApiKey)
 }
 
 export const setFirecrawlAPIKey = async (firecrawlAPIKey: string) => {
@@ -248,6 +257,7 @@ export const getSearchSettings = async () => {
     perplexityApiKey,
     serplyApiKey,
     sofyaApiKey,
+    specstreamApiKey,
     domainFilterList,
     blockedDomainList
   ] = await Promise.all([
@@ -269,6 +279,7 @@ export const getSearchSettings = async () => {
     getPerplexityApiKey(),
     getSerplyApiKey(),
     getSofyaApiKey(),
+    getSpecStreamApiKey(),
     getDomainFilterList(),
     getBlockedDomainList()
   ])
@@ -292,6 +303,7 @@ export const getSearchSettings = async () => {
     perplexityApiKey,
     serplyApiKey,
     sofyaApiKey,
+    specstreamApiKey,
     domainFilterList,
     blockedDomainList
   }
@@ -316,6 +328,7 @@ export const setSearchSettings = async ({
   perplexityApiKey,
   serplyApiKey,
   sofyaApiKey,
+  specstreamApiKey,
   domainFilterList,
   blockedDomainList
 }: {
@@ -337,6 +350,7 @@ export const setSearchSettings = async ({
   perplexityApiKey: string
   serplyApiKey: string
   sofyaApiKey: string
+  specstreamApiKey: string
   domainFilterList: string[]
   blockedDomainList: string[]
 }) => {
@@ -359,6 +373,7 @@ export const setSearchSettings = async ({
     setPerplexityApiKey(perplexityApiKey),
     setSerplyApiKey(serplyApiKey),
     setSofyaApiKey(sofyaApiKey),
+    setSpecStreamApiKey(specstreamApiKey),
     setDomainFilterList(domainFilterList),
     setBlockedDomainList(blockedDomainList)
   ])
