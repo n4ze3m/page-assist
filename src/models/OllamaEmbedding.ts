@@ -249,8 +249,8 @@ export class OllamaEmbeddingsPageAssist extends Embeddings {
     } catch (error) {
       // Fallback to old method if batch fails
       const embeddings: number[][] = await Promise.all(
-        texts.map((text) => this.caller.call(() => this._request(text)))
-      ) as any
+        texts.map((text) => this.caller.call(() => this._request(text)).then((item) => item[0])) as any
+      );
       return embeddings
     }
   }
