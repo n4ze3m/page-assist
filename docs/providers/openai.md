@@ -39,6 +39,7 @@ By default, Page Assist supports the following OpenAI Compatible API endpoints:
 - Evolink
 - WebWright
 - Wally
+- cheapaimodel
 
 ::: info
 Want your provider added to this list? Please contact us at [add-provider@pageassist.xyz](mailto:add-provider@pageassist.xyz) before opening a pull request, and offer credits so we can try the platform.
