@@ -9,6 +9,7 @@ By default, Page Assist supports the following OpenAI Compatible API endpoints:
 - LLaMA.cpp
 - LM Studio
 - Llamafile
+- llamay
 - Ollama
 - OpenAI
 - DeepSeek
