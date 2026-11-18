@@ -227,4 +227,10 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     baseUrl: "https://inference.runanywhere.ai/v1",
     apiKeyUrl: "https://console.runanywhere.ai"
   },
+  {
+    label: "UberLLM",
+    value: "uberllm",
+    baseUrl: "https://api.uberllm.dev/v1",
+    apiKeyUrl: "https://uberllm.dev/dashboard/keys"
+  },
 ]
