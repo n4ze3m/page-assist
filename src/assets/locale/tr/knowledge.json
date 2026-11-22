@@ -1,0 +1,92 @@
+{
+    "addBtn": "Yeni Bilgi Ekle",
+    "columns": {
+        "title": "Başlık",
+        "status": "Durum",
+        "embeddings": "Gömme Modeli",
+        "createdAt": "Oluşturulma Tarihi",
+        "action": "Eylemler"
+    },
+    "expandedColumns": {
+        "name": "Ad"
+    },
+    "confirm": {
+        "delete": "Bu bilgiyi silmek istediğinizden emin misiniz?",
+        "deleteSource": "Bu kaynağı silmek istediğinizden emin misiniz?"
+    },
+    "deleteSuccess": "Bilgi başarıyla silindi",
+    "status": {
+        "pending": "Beklemede",
+        "finished": "Tamamlandı",
+        "processing": "İşleniyor",
+        "failed": "Başarısız"
+    },
+    "addKnowledge": "Bilgi Ekle",
+    "updateKnowledge": "Kaynak Ekle",
+    "form": {
+        "tabs": {
+            "upload": "Dosya Yükle",
+            "text": "Metin Girişi"
+        },
+        "title": {
+            "label": "Bilgi Başlığı (isteğe bağlı)",
+            "placeholder": "Bilgi başlığını girin",
+            "placeholderOptional": "İsteğe bağlı başlık (ilk 50 karakter varsayılan olarak kullanılır)",
+            "required": "Bilgi başlığı gerekli"
+        },
+        "uploadFile": {
+            "label": "Dosya Yükle",
+            "uploadText": "Dosyayı buraya sürükleyip bırakın veya yüklemek için tıklayın",
+            "uploadHint": "Desteklenen dosya türleri: .pdf, .csv, .txt, .md, .docx",
+            "required": "Dosya gerekli",
+            "uploadError": "Desteklenmeyen dosya türü"
+        },
+        "textInput": {
+            "typeLabel": "Tür",
+            "type": {
+                "plain": "Düz Metin",
+                "markdown": "Markdown",
+                "code": "Kod"
+            },
+            "contentLabel": "İçerik",
+            "placeholder": "Metninizi buraya yapıştırın veya yazın...",
+            "required": "Metin içeriği gerekli",
+            "tooLarge": "İçerik çok büyük. Lütfen 500 bin karakterin altında tutun.",
+            "defaultTitle": "Başlıksız Metin"
+        },
+        "submit": "Gönder",
+        "success": "Bilgi başarıyla eklendi"
+    },
+    "noEmbeddingModel": "Lütfen önce RAG ayarları sayfasından bir gömme modeli ekleyin",
+    "newSource": "Yeni Kaynak",
+    "editSettings": {
+        "title": "Bilgi Ayarlarını Düzenle",
+        "success": "Bilgi ayarları başarıyla güncellendi",
+        "variableInfo": {
+            "title": "Mevcut Değişkenler",
+            "description": "İstemlerinizde aşağıdaki değişkenleri kullanabilirsiniz:",
+            "context": "Bilgi tabanınızdan alınan bağlam",
+            "query": "Kullanıcının sorusu veya sorgusu"
+        },
+        "form": {
+            "title": {
+                "label": "Bilgi Başlığı",
+                "placeholder": "Bilgi başlığını girin",
+                "required": "Bilgi başlığı gerekli"
+            },
+            "systemPrompt": {
+                "label": "Sistem İstemi",
+                "help": "Bilgi tabanınızı kullanarak YZ'nin nasıl yanıt vereceğini özelleştirin. Alınan bilgi için {context} ve kullanıcının sorusu için {question} kullanın. Not: {question} istemde gereklidir, aksi takdirde karakter soru bağlamını almaz.",
+                "placeholder": "Özel sistem isteminizi girin...",
+                "prefillButton": "Varsayılan İstemi Kullan"
+            },
+            "followupPrompt": {
+                "label": "Takip Sorusu İstemi",
+                "help": "Takip sorularının nasıl işleneceğini özelleştirin. Bu istem, takip sorularını bağımsız sorulara dönüştürür.",
+                "placeholder": "Özel takip isteminizi girin...",
+                "prefillButton": "Varsayılan İstemi Kullan"
+            }
+        },
+        "tooltip": "Bilgi ayarlarını düzenle"
+    }
+}

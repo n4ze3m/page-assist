@@ -1,0 +1,671 @@
+{
+    "generalSettings": {
+        "title": "Genel Ayarlar",
+        "settings": {
+            "heading": "Web Arayüzü Ayarları",
+            "speechRecognitionLang": {
+                "label": "Konuşma Tanıma Dili",
+                "placeholder": "Bir dil seçin"
+            },
+            "language": {
+                "label": "Dil",
+                "placeholder": "Bir dil seçin"
+            },
+            "forceRTL": {
+                "label": "Her Zaman RTL Düzenini Kullan"
+            },
+            "darkMode": {
+                "label": "Temayı Değiştir",
+                "options": {
+                    "light": "Açık",
+                    "dark": "Koyu"
+                }
+            },
+            "defaultCopilotPrompt": {
+                "label": "Yan Panel (Copilot) İçin Varsayılan İstem",
+                "placeholder": "Bir istem seçin"
+            },
+            "defaultWebUIPrompt": {
+                "label": "Web Arayüzü İçin Varsayılan İstem",
+                "placeholder": "Bir istem seçin"
+            },
+            "copilotResumeLastChat": {
+                "label": "Yan Paneli (Copilot) açarken son sohbeti devam ettir"
+            },
+            "turnOnChatWithWebsite": {
+                "label": "Web Sitesiyle Sohbeti varsayılan olarak etkinleştir (Copilot)"
+            },
+            "webUIResumeLastChat": {
+                "label": "Web Arayüzünü açarken son sohbeti devam ettir"
+            },
+            "hideCurrentChatModelSettings": {
+                "label": "Mevcut Sohbet Modeli Ayarlarını Gizle"
+            },
+            "restoreLastChatModel": {
+                "label": "Önceki sohbetler için son kullanılan modeli geri yükle"
+            },
+            "sendNotificationAfterIndexing": {
+                "label": "Bilgi Tabanı İşlemi Bittikten Sonra Bildirim Gönder"
+            },
+            "generateTitle": {
+                "label": "YZ kullanarak Başlık Oluştur"
+            },
+            "ollamaStatus": {
+                "label": "Ollama bağlantı durumu kontrolünü etkinleştir veya devre dışı bırak"
+            },
+            "wideMode": {
+                "label": "Geniş ekran modunu etkinleştir"
+            },
+            "openReasoning": {
+                "label": "Akıl Yürütme Daraltmasını varsayılan olarak aç"
+            },
+            "defaultThinkingMode": {
+                "label": "Formlarda Düşünme Modu Durumunu Göster"
+            },
+            "userChatBubble": {
+                "label": "Kullanıcı İletileri İçin Sohbet Balonu Kullan"
+            },
+            "hideChatScrollbar": {
+                "label": "Sohbet Kaydırma Çubuğunu Gizle"
+            },
+            "enableQuoteReply": {
+                "label": "Asistan İletilerinde Seçili Metni Yanıtla"
+            },
+            "autoCopyResponseToClipboard": {
+                "label": "Yanıtı Otomatik Olarak Panoya Kopyala"
+            },
+            "useMarkdownForUserMessage": {
+                "label": "Kullanıcı iletileri için Markdown biçimlendirmesini etkinleştir"
+            },
+            "copyAsFormattedText": {
+                "label": "Biçimlendirilmiş Metin Olarak Kopyala"
+            },
+            "tabMentionsEnabled": {
+                "label": "Sekme Bahsetmelerini (@sekme) Etkinleştir"
+            },
+            "pasteLargeTextAsFile": {
+                "label": "Büyük Metni Dosya Olarak Yapıştır"
+            },
+            "ocrLanguage": {
+                "label": "Varsayılan OCR Dili",
+                "placeholder": "Bir OCR dili seçin"
+            },
+            "sidepanelTemporaryChat": {
+                "label": "Yan Panelde Geçici Sohbeti varsayılan olarak etkinleştir"
+            },
+            "webuiTemporaryChat": {
+                "label": "Web Arayüzünde Geçici Sohbeti varsayılan olarak etkinleştir"
+            },
+            "removeReasoningTagFromCopy": {
+                "label": "Kopyalanan Metinden Akıl Yürütme Etiketini Kaldır"
+            },
+            "youtubeAutoSummarize": {
+                "label": "YouTube videolarında 'Özetle' düğmesini göster."
+            },
+            "hideReasoningWidget": {
+                "label": "YZ İletilerinden Akıl Yürütme Widget'ını Gizle"
+            },
+            "persistChatInput": {
+                "label": "Sohbet Girişini Kalıcı Yap (Gönderilmemiş iletileri kaydet)"
+            },
+            "enableMessageQueue": {
+                "label": "Akış Sırasında İleti Kuyruğunu Etkinleştir"
+            },
+            "optimizeQueueForSmallScreen": {
+                "label": "Küçük Ekranlar İçin Sohbet Arayüzünü Optimize Et"
+            },
+            "tableTextWrap": {
+                "label": "Markdown Tablolarında Metin Kaydırmayı Etkinleştir"
+            },
+            "showMoreForLargeMessage": {
+                "label": "Büyük insan iletileri için 'Daha fazla göster'i göster"
+            },
+            "showMessageTimestamp": {
+                "label": "İleti Zaman Damgasını Göster"
+            },
+            "sidebarPosition": {
+                "label": "Yan Panel Konumu",
+                "options": {
+                    "left": "Sol",
+                    "right": "Sağ"
+                }
+            },
+            "showMcpServersInChat": {
+                "label": "Sohbette MCP Sunucuları Geçişini Göster"
+            },
+            "enableAgentWebSearch": {
+                "label": "Ajan Web Aramasını Kullan (model ne zaman arama yapıp getireceğine karar verir)"
+            },
+            "mcpHumanInLoop": {
+                "label": "MCP araçlarını çalıştırmadan önce onay iste"
+            },
+            "webFetchPrivateApproval": {
+                "label": "Web getirme özel ağ adreslerini açmadan önce sor"
+            },
+            "showProviderNameInModelList": {
+                "label": "Model Listesinde Sağlayıcı Adını Göster"
+            }
+        },
+        "sidepanelRag": {
+            "heading": "Alma Ayarları",
+            "ragEnabled": {
+                "label": "Gömme ve Almayı Etkinleştir"
+            },
+            "maxWebsiteContext": {
+                "label": "Tam Bağlam Modu İçin Maksimum İçerik Boyutu",
+                "placeholder": "İçerik boyutu (varsayılan 4028)"
+            }
+        },
+        "webSearch": {
+            "heading": "Web Aramasını Yönet",
+            "searchMode": {
+                "label": "Basit İnternet Araması Yap"
+            },
+            "provider": {
+                "label": "Arama Motoru",
+                "placeholder": "Bir arama motoru seçin"
+            },
+            "totalSearchResults": {
+                "label": "Toplam Arama Sonuçları",
+                "placeholder": "Toplam Arama Sonuçlarını Girin"
+            },
+            "visitSpecificWebsite": {
+                "label": "İletide belirtilen web sitesini ziyaret et"
+            },
+            "searxng": {
+                "url": {
+                    "label": "SearXNG URL'si"
+                },
+                "apiKey": {
+                    "label": "SearXNG API Anahtarı (İsteğe Bağlı)",
+                    "placeholder": "SearXNG API anahtarınızı girin"
+                }
+            },
+            "braveApi": {
+                "label": "Brave API Anahtarı",
+                "placeholder": "Brave API anahtarınızı girin"
+            },
+            "tavilyApi": {
+                "label": "Tavily API Anahtarı ",
+                "placeholder": "Tavily API anahtarınızı girin"
+            },
+            "exa": {
+                "label": "Exa API Anahtarı",
+                "placeholder": "Exa API anahtarınızı girin"
+            },
+            "googleDomain": {
+                "label": "Google Alan Adı"
+            },
+            "searchOnByDefault": {
+                "label": "İnternet Araması Varsayılan Olarak AÇIK"
+            },
+            "firecrawlAPIKey": {
+                "label": "Firecrawl API Anahtarı",
+                "placeholder": "Firecrawl API anahtarınızı girin"
+            },
+            "domainFilter": {
+                "label": "Alan Adı Filtre Listesi",
+                "description": "Yalnızca bu alan adlarından gelen sonuçları göster",
+                "placeholder": "örn. example.com"
+            },
+            "blockedDomains": {
+                "label": "Engellenen Alan Adları",
+                "description": "Bu alan adlarından gelen sonuçları hariç tutun",
+                "placeholder": "örn. spam.com"
+            }
+        },
+        "system": {
+            "heading": "Sistem Ayarları",
+            "deleteChatHistory": {
+                "label": "Sistem Sıfırlama",
+                "button": "Tümünü Sıfırla",
+                "confirm": "Sistem sıfırlaması yapmak istediğinizden emin misiniz? Bu işlem tüm verileri temizleyecek ve geri alınamayacaktır."
+            },
+            "export": {
+                "label": "Tüm Verileri Dışa Aktar (Sohbet Geçmişi, Bilgi Tabanı, İstemler ve Ayarlar)",
+                "button": "Verileri Dışa Aktar",
+                "success": "Dışa Aktarma Başarılı"
+            },
+            "import": {
+                "label": "Tüm Verileri İçe Aktar (Sohbet Geçmişi, Bilgi Tabanı, İstemler ve Ayarlar)",
+                "button": "Verileri İçe Aktar",
+                "success": "İçe Aktarma Başarılı",
+                "error": "İçe Aktarma Hatası"
+            },
+            "actionIcon": {
+                "label": "Eklenti Simgesi Tıklamaları İçin Varsayılan Eylemi Ayarla"
+            },
+            "contextMenu": {
+                "label": "Bağlam Menüsü İçin Varsayılan Eylemi Ayarla"
+            },
+            "fontSize": {
+                "label": "Yazı Tipi Boyutu"
+            },
+            "webuiBtnSidePanel": {
+                "label": "Yan Panelde Web Arayüzü Düğmesini Göster"
+            },
+            "chatBackgroundImage": {
+                "label": "Sohbet Arka Plan Resmi"
+            },
+            "storageSyncEnabled": {
+                "label": "Tarayıcı Depolama Senkronizasyonunu Etkinleştir (Ayarları cihazlar arasında senkronize et)"
+            }
+        },
+        "tts": {
+            "heading": "Metin Okuma Ayarları",
+            "ttsEnabled": {
+                "label": "Metin Okumayı Etkinleştir"
+            },
+            "ttsAutoPlay": {
+                "label": "Tamamlandıktan sonra sesli yanıtı otomatik oynat"
+            },
+            "ttsProvider": {
+                "label": "Metin Okuma Sağlayıcısı",
+                "placeholder": "Bir sağlayıcı seçin"
+            },
+            "ttsVoice": {
+                "label": "Metin Okuma Sesi",
+                "placeholder": "Bir ses seçin"
+            },
+            "ssmlEnabled": {
+                "label": "SSML'yi (Konuşma Sentezi İşaretleme Dili) Etkinleştir"
+            },
+            "responseSplitting": {
+                "label": "Yanıt Bölme"
+            },
+            "removeReasoningTagTTS": {
+                "label": "Metin Okumadan Akıl Yürütme Etiketini Kaldır"
+            },
+            "removeEmojisTTS": {
+                "label": "Metin Okumadan Emojileri Kaldır"
+            }
+        },
+        "stt": {
+            "heading": "Konuşmadan Metne Ayarları",
+            "autoStopTimeout": {
+                "label": "Otomatik Durdurma Zaman Aşımı (ms)",
+                "placeholder": "Otomatik durdurma zaman aşımını milisaniye cinsinden girin"
+            },
+            "autoSubmitVoiceMessage": {
+                "label": "Sesli İletiyi Otomatik Gönder"
+            }
+        }
+    },
+    "manageModels": {
+        "title": "Modelleri Yönet",
+        "addBtn": "Yeni Model Ekle",
+        "columns": {
+            "name": "Ad",
+            "digest": "Özet",
+            "nickname": "Takma Ad",
+            "modifiedAt": "Değiştirilme Tarihi",
+            "size": "Boyut",
+            "actions": "Eylemler"
+        },
+        "expandedColumns": {
+            "parentModel": "Üst Model",
+            "format": "Biçim",
+            "family": "Aile",
+            "parameterSize": "Parametre Boyutu",
+            "quantizationLevel": "Nicemleme Seviyesi"
+        },
+        "tooltip": {
+            "delete": "Modeli Sil",
+            "repull": "Modeli Yeniden Çek",
+            "editNickname": "Takma Adı Düzenle"
+        },
+        "confirm": {
+            "delete": "Bu modeli silmek istediğinizden emin misiniz?",
+            "repull": "Bu modeli yeniden çekmek istediğinizden emin misiniz?"
+        },
+        "modal": {
+            "title": "Yeni Model Ekle",
+            "placeholder": "Model Adını Girin",
+            "pull": "Modeli Çek"
+        },
+        "notification": {
+            "pullModel": "Model Çekiliyor",
+            "pullModelDescription": "{{modelName}} modeli çekiliyor. Daha fazla ayrıntı için eklenti simgesini kontrol edin.",
+            "cancellingDownload": "İndirme İptal Ediliyor",
+            "cancellingDownloadDescription": "Model indirme iptal ediliyor...",
+            "success": "Başarılı",
+            "error": "Hata",
+            "successDescription": "Model başarıyla çekildi",
+            "successDeleteDescription": "Model başarıyla silindi",
+            "someError": "Bir şeyler ters gitti. Lütfen daha sonra tekrar deneyin"
+        }
+    },
+    "managePrompts": {
+        "title": "İstemleri Yönet",
+        "addBtn": "Yeni İstem Ekle",
+        "option1": "Normal",
+        "option2": "RAG",
+        "questionPrompt": "Soru İstemi",
+        "segmented": {
+            "custom": "Özel İstemler",
+            "copilot": "Copilot İstemleri"
+        },
+        "columns": {
+            "title": "Başlık",
+            "prompt": "İstem",
+            "type": "İstem Türü",
+            "actions": "Eylemler"
+        },
+        "systemPrompt": "Sistem İstemi",
+        "quickPrompt": "Hızlı İstem",
+        "tooltip": {
+            "delete": "İstemi Sil",
+            "edit": "İstem Düzenle"
+        },
+        "confirm": {
+            "delete": "Bu istemi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
+        },
+        "modal": {
+            "addTitle": "Yeni İstem Ekle",
+            "editTitle": "İstem Düzenle"
+        },
+        "form": {
+            "title": {
+                "label": "Başlık",
+                "placeholder": "Harika İstemim",
+                "required": "Lütfen bir başlık girin"
+            },
+            "prompt": {
+                "label": "İstem",
+                "placeholder": "İstem Girin",
+                "required": "Lütfen bir istem girin",
+                "help": "İsteminizde {key} değişkenini kullanabilirsiniz.",
+                "missingTextPlaceholder": "{text} değişkeni istemde eksik. Lütfen ekleyin."
+            },
+            "isSystem": {
+                "label": "Sistem İstemidir"
+            },
+            "btnSave": {
+                "saving": "İstem Ekleniyor...",
+                "save": "İstem Ekle"
+            },
+            "btnEdit": {
+                "saving": "İstem Güncelleniyor...",
+                "save": "İstemi Güncelle"
+            }
+        },
+        "notification": {
+            "addSuccess": "İstem Eklendi",
+            "addSuccessDesc": "İstem başarıyla eklendi",
+            "error": "Hata",
+            "someError": "Bir şeyler ters gitti. Lütfen daha sonra tekrar deneyin",
+            "updatedSuccess": "İstem Güncellendi",
+            "updatedSuccessDesc": "İstem başarıyla güncellendi",
+            "deletedSuccess": "İstem Silindi",
+            "deletedSuccessDesc": "İstem başarıyla silindi"
+        }
+    },
+    "manageShare": {
+        "title": "Paylaşımı Yönet",
+        "heading": "Sayfa Paylaşım URL'sini Yapılandırın",
+        "form": {
+            "url": {
+                "label": "Sayfa Paylaşım URL'si",
+                "placeholder": "Sayfa Paylaşım URL'sini Girin",
+                "required": "Lütfen Sayfa Paylaşım URL'nizi girin!",
+                "help": "Gizlilik nedenleriyle, sayfa paylaşımını kendi sunucunuzda barındırabilir ve URL'yi buraya sağlayabilirsiniz. <anchor>Daha Fazla Bilgi Edinin</anchor>."
+            }
+        },
+        "webshare": {
+            "heading": "Web Paylaşımı",
+            "columns": {
+                "title": "Başlık",
+                "url": "URL",
+                "actions": "Eylemler"
+            },
+            "tooltip": {
+                "delete": "Paylaşımı Sil"
+            },
+            "confirm": {
+                "delete": "Bu paylaşımı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
+            },
+            "label": "Sayfa Paylaşımını Yönet",
+            "description": "Sayfa paylaşım özelliğini etkinleştirin veya devre dışı bırakın"
+        },
+        "notification": {
+            "pageShareSuccess": "Sayfa Paylaşım URL'si başarıyla güncellendi",
+            "someError": "Bir şeyler ters gitti. Lütfen daha sonra tekrar deneyin.",
+            "webShareDeleteSuccess": "Web Paylaşımı başarıyla silindi."
+        }
+    },
+    "ollamaSettings": {
+        "title": "Ollama Ayarları",
+        "heading": "Ollama'yı Yapılandırın",
+        "settings": {
+            "ollamaUrl": {
+                "label": "Ollama URL'si",
+                "placeholder": "Ollama URL'sini girin"
+            },
+            "globalEnable": {
+                "label": "Ollama Entegrasyonunu Genel Olarak Etkinleştir veya Devre Dışı Bırak",
+                "warning": "Ollama entegrasyonunu genel olarak devre dışı bırakarak, Page Assist Ollama'dan model getirmez. Yine de <anchor>OpenAI uyumlu API</anchor> bölümünden Ollama örneği ekleyebilirsiniz, bu sorunsuz çalışacaktır."
+            },
+            "advanced": {
+                "label": "Gelişmiş Ollama URL Yapılandırması",
+                "urlRewriteEnabled": {
+                    "label": "Özel Kaynak URL'sini Etkinleştir veya Devre Dışı Bırak"
+                },
+                "rewriteUrl": {
+                    "label": "Özel Kaynak URL'si",
+                    "placeholder": "Özel Kaynak URL'sini girin"
+                },
+                "autoCORSFix": {
+                    "label": "Otomatik Ollama CORS Düzeltmesini Etkinleştir veya Devre Dışı Bırak"
+                },
+                "headers": {
+                    "label": "Özel Başlıklar",
+                    "add": "Başlık Ekle",
+                    "key": {
+                        "label": "Başlık Anahtarı",
+                        "placeholder": "Yetkilendirme"
+                    },
+                    "value": {
+                        "label": "Başlık Değeri",
+                        "placeholder": "Taşıyıcı belirteç"
+                    }
+                },
+                "help": "Page Assist'te Ollama ile bağlantı sorunları yaşıyorsanız, özel bir kaynak URL'si yapılandırabilirsiniz. Yapılandırma hakkında daha fazla bilgi edinmek için <anchor>buraya tıklayın</anchor>."
+            }
+        }
+    },
+    "manageSearch": {
+        "title": "Web Aramasını Yönet",
+        "heading": "Web Aramasını Yapılandır"
+    },
+    "mcpSettings": {
+        "title": "MCP Sunucuları",
+        "heading": "MCP Sunucularını Yönet",
+        "subheading": "Normal sohbet için HTTP MCP sunucuları ekleyin, taşıyıcı kimlik doğrulaması ve özel başlıklar dahil.",
+        "addBtn": "MCP Sunucusu Ekle",
+        "humanInLoop": {
+            "label": "MCP araçlarını çalıştırmadan önce onay iste",
+            "description": "Yazma izinleri veya diğer yan etkileri olan MCP sunucuları için önerilir. Aşağıda tek tek araçlara yine de izin verebilir veya devre dışı bırakabilirsiniz.",
+            "enabledHint": "İnsan döngüsü etkinleştirildi. MCP araçları çalışmadan önce onay isteyecektir.",
+            "disabledHint": "MCP araçları varsayılan olarak onaysız çalışır. Bir MCP sunucusu dosya yazabiliyor, veri değiştirebiliyor, ileti gönderebiliyor veya başka değişiklikler yapabiliyorsa bunu açın."
+        },
+        "maxToolRounds": {
+            "label": "İleti başına maksimum araç çağırma turu",
+            "description": "Bir modelin araçları sonsuz bir döngüde çağırmasını durdurur. Sınıra ulaşıldığında, modelden elindekilerle yanıt vermesi istenir. Uzun çok adımlı görevler için artırın."
+        },
+        "table": {
+            "name": "Ad",
+            "url": "URL",
+            "tools": "Önbelleğe Alınmış Araçlar",
+            "status": "Doğrulama",
+            "notValidated": "Henüz doğrulanmadı",
+            "toolsUnavailable": "Önbelleğe alınmış araç yok",
+            "auth": "Kimlik Doğrulama",
+            "enabled": "Etkin",
+            "actions": "Eylemler",
+            "toolName": "Araç Adı",
+            "toolDescription": "Açıklama"
+        },
+        "actions": {
+            "refreshTools": "Araçları yenile",
+            "enable": "Etkinleştir",
+            "disable": "Devre dışı bırak"
+        },
+        "status": {
+            "ready": "{{count}} araç mevcut",
+            "failed": "Doğrulama başarısız oldu",
+            "notValidated": "Doğrulanmadı",
+            "lastChecked": "Son kontrol: {{value}}"
+        },
+        "auth": {
+            "none": "Kimlik doğrulama yok",
+            "bearer": "Taşıyıcı belirteç"
+        },
+        "modal": {
+            "titleAdd": "MCP Sunucusu Ekle",
+            "titleEdit": "MCP Sunucusunu Düzenle",
+            "deleteConfirm": "{{name}} silinsin mi?",
+            "name": {
+                "label": "Sunucu Adı",
+                "placeholder": "MCP Sunucum",
+                "required": "Lütfen bir sunucu adı girin"
+            },
+            "url": {
+                "label": "Sunucu URL'si",
+                "placeholder": "https://example.com/mcp",
+                "help": "Şu anda yalnızca HTTP veya HTTPS üzerinden Akış Yapılabilir HTTP MCP uç noktaları desteklenmektedir.",
+                "required": "Lütfen bir sunucu URL'si girin",
+                "invalid": "Lütfen geçerli bir HTTP veya HTTPS URL'si girin"
+            },
+            "transportNotice": {
+                "title": "Aktarım desteği",
+                "description": "Page Assist yalnızca Akış Yapılabilir HTTP MCP sunucularını destekler. /sse veya /messages?sessionId=... gibi eski SSE uç noktaları desteklenmez."
+            },
+            "auth": {
+                "label": "Kimlik Doğrulama"
+            },
+            "bearerToken": {
+                "label": "Taşıyıcı Belirteç",
+                "placeholder": "Taşıyıcı belirteci girin",
+                "required": "Lütfen bir taşıyıcı belirteci girin"
+            },
+            "enabled": {
+                "label": "Küresel Etkinleştirme"
+            },
+            "headers": {
+                "label": "Özel Başlıklar",
+                "add": "Başlık Ekle",
+                "key": {
+                    "label": "Başlık Anahtarı",
+                    "placeholder": "X-Request-ID"
+                },
+                "value": {
+                    "label": "Başlık Değeri",
+                    "placeholder": "değer"
+                }
+            },
+            "validation": {
+                "title": "Araçları Doğrula",
+                "help": "Kaydetmeden önce MCP sunucusuna bağlanın, mevcut araçları getirin ve önbelleğe alın. Doğrulama, Akış Yapılabilir HTTP MCP uç noktası bekler.",
+                "button": "Araçları Doğrula ve Yükle",
+                "availableTools": "Mevcut araçlar",
+                "idle": "Bağlantıyı onaylamak ve mevcut araçlarını yüklemek için bu sunucuyu doğrulayın.",
+                "stale": "Bağlantı detayları değişti. Önbelleğe alınmış araçları yenilemek için tekrar doğrulayın.",
+                "failed": "Bu MCP sunucusu doğrulanamadı.",
+                "success": "Başarıyla doğrulandı. {{count}} araç mevcut.",
+                "syncedAt": "Son senkronizasyon: {{value}}",
+                "saveHint": "Kaydetme işlemi, önbelleğe alınmış araç listesi güncel değilse veya eksikse mevcut yapılandırmayı doğrulayacaktır."
+            },
+            "submit": "MCP Sunucusunu Kaydet",
+            "update": "MCP Sunucusunu Güncelle"
+        },
+        "notification": {
+            "added": "MCP sunucusu eklendi",
+            "updated": "MCP sunucusu güncellendi",
+            "deleted": "MCP sunucusu silindi",
+            "validated": "{{count}} MCP aracı yüklendi",
+            "toolsRefreshed": "{{name}} için araçlar yenilendi",
+            "validationFailedTitle": "MCP doğrulama başarısız oldu",
+            "storageBlockedTitle": "Page Assist verileri kaydedemiyor",
+            "storageBlockedDescription": "Firefox Gizli Modu, verileri IndexedDB'ye kaydetmeyi desteklemez. Lütfen MCP sunucularını normal bir pencereden yönetin."
+        }
+    },
+    "about": {
+        "title": "Hakkında",
+        "heading": "Hakkında",
+        "chromeVersion": "Page Assist Sürümü",
+        "ollamaVersion": "Ollama Sürümü",
+        "support": "Page Assist projesini aşağıdaki platformlar aracılığıyla bağış yaparak veya sponsor olarak destekleyebilirsiniz:",
+        "koFi": "Ko-fi'de Destekle",
+        "githubSponsor": "GitHub'da Sponsor Ol",
+        "githubRepo": "GitHub Deposu"
+    },
+    "manageKnowledge": {
+        "title": "Bilgiyi Yönet",
+        "heading": "Bilgi Tabanını Yapılandır"
+    },
+    "rag": {
+        "title": "İşlem Hattı Ayarları",
+        "ragSettings": {
+            "label": "RAG Ayarları",
+            "model": {
+                "label": "Gömme Modeli",
+                "required": "Lütfen bir model seçin",
+                "help": "`nomic-embed-text` gibi gömme modelleri kullanmanız şiddetle tavsiye edilir.",
+                "placeholder": "Bir model seçin"
+            },
+            "chunkSize": {
+                "label": "Parça Boyutu",
+                "placeholder": "Parça Boyutunu Girin",
+                "required": "Lütfen bir parça boyutu girin"
+            },
+            "chunkOverlap": {
+                "label": "Parça Çakışması",
+                "placeholder": "Parça Çakışmasını Girin",
+                "required": "Lütfen bir parça çakışması girin"
+            },
+            "totalFilePerKB": {
+                "label": "Bilgi Tabanı Varsayılan Dosya Yükleme Sınırı",
+                "placeholder": "Varsayılan dosya yükleme sınırını girin (örn. 10)",
+                "required": "Lütfen varsayılan dosya yükleme limitini girin"
+            },
+            "noOfRetrievedDocs": {
+                "label": "Alınan Belge Sayısı",
+                "placeholder": "Alınan Belge Sayısını Girin",
+                "required": "Lütfen alınan belge sayısını girin"
+            },
+            "splittingSeparator": {
+                "label": "Ayırıcı",
+                "placeholder": "Ayırıcıyı Girin (örn. \\n\\n)",
+                "required": "Lütfen bir ayırıcı girin"
+            },
+            "splittingStrategy": {
+                "label": "Metin Ayırıcı"
+            }
+        },
+        "prompt": {
+            "label": "RAG İstemini Yapılandır",
+            "option1": "Normal",
+            "option2": "Web",
+            "alert": "Sistem istemini buradan yapılandırmak kullanımdan kaldırılmıştır. Lütfen istemleri eklemek veya düzenlemek için İstemleri Yönet bölümünü kullanın. Bu bölüm gelecekteki bir sürümde kaldırılacaktır",
+            "systemPrompt": "Sistem İstemi",
+            "systemPromptPlaceholder": "Sistem İstemini Girin",
+            "webSearchPrompt": "Web Arama İstemi",
+            "webSearchPromptHelp": "İstemden `{search_results}` öğesini kaldırmayın.",
+            "webSearchPromptError": "Lütfen bir web arama istemi girin",
+            "webSearchPromptPlaceholder": "Web Arama İstemini Girin",
+            "webSearchFollowUpPrompt": "Web Arama Takip İstemi",
+            "webSearchFollowUpPromptHelp": "İstemden `{chat_history}` ve `{question}` öğelerini kaldırmayın.",
+            "webSearchFollowUpPromptError": "Lütfen Web Arama Takip İsteminizi girin!",
+            "webSearchFollowUpPromptPlaceholder": "Web Arama Takip İsteminiz"
+        }
+    },
+    "chromeAiSettings": {
+        "title": "Chrome YZ Ayarları"
+    },
+    "memory": {
+        "enableMemoryTool": {
+            "label": "Bellek Aracını Etkinleştir"
+        }
+    },
+    "mermaid": "Mermaid"
+}

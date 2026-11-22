@@ -1,0 +1,51 @@
+{
+    "ollamaState": {
+        "searching": "Ollama'nız aranıyor 🦙",
+        "running": "Ollama çalışıyor 🦙",
+        "notRunning": "Ollama'ya bağlanılamıyor 🦙",
+        "connectionError": "Bir bağlantı hatası yaşıyor gibisiniz. Sorun giderme için lütfen bu <anchor>belgelere</anchor> bakın.",
+        "noOllamaHint": "Ollama yüklü değil mi? Ollama entegrasyonunu <anchor>Ollama Ayarları</anchor> sayfasından devre dışı bırakabilirsiniz."
+    },
+    "formError": {
+        "noModel": "Lütfen bir model seçin",
+        "noEmbeddingModel": "Lütfen Ayarlar > RAG sayfasında bir gömme modeli ayarlayın"
+    },
+    "form": {
+        "textarea": {
+            "placeholder": "Bir ileti yazın..."
+        },
+        "webSearch": {
+            "on": "Açık",
+            "off": "Kapalı"
+        },
+        "thinking": {
+            "on": "Açık",
+            "off": "Kapalı",
+            "level": "Seviye",
+            "levels": {
+                "low": "Düşük",
+                "medium": "Orta",
+                "high": "Yüksek"
+            }
+        }
+    },
+    "tooltip": {
+        "searchInternet": "İnternette Ara",
+        "thinking": "Modelin düşünme sürecini görmek için akıl yürütme modunu etkinleştirin",
+        "speechToText": "Konuşmadan Metne",
+        "uploadImage": "Resim Yükle",
+        "stopStreaming": "Akışı Durdur",
+        "knowledge": "Bilgi",
+        "vision": "[Deneysel] Görsel Sohbet",
+        "clearContext": "Bağlamı Temizle",
+        "uploadDocuments": "Belgeleri Yükle (beta)",
+        "mcpServers": "MCP Sunucuları",
+        "mcpEmpty": "Yapılandırılmış MCP sunucusu yok",
+        "mcpEmptyDesc": "Sohbette araçları kullanmak için MCP sunucularını bağlayın.",
+        "mcpAddServer": "MCP Sunucusu Ekle"
+    },
+    "sendWhenEnter": "Enter tuşuna basıldığında gönder",
+    "welcome": "Merhaba! Bugün size nasıl yardımcı olabilirim?",
+    "useOCR": "Resimden metin çıkar (OCR)",
+    "fileRetrievalEnabled": "Belgeler için RAG'ı etkinleştir"
+}

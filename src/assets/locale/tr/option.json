@@ -1,0 +1,32 @@
+{
+    "newChat": "Yeni Sohbet",
+    "selectAPrompt": "Bir İstem Seçin",
+    "githubRepository": "GitHub Deposu",
+    "settings": "Ayarlar",
+    "sidebarTitle": "Sohbet Geçmişi",
+    "error": "Hata",
+    "somethingWentWrong": "Bir şeyler yanlış gitti",
+    "validationSelectModel": "Devam etmek için lütfen bir model seçin",
+    "deleteHistoryConfirmation": "Bu geçmişi silmek istediğinizden emin misiniz?",
+    "editHistoryTitle": "Yeni bir başlık girin",
+    "temporaryChat": "Geçici Sohbet",
+    "more": {
+        "copy": {
+            "group": "Kopyala",
+            "asText": "Metin Olarak Kopyala",
+            "asMarkdown": "Markdown Olarak Kopyala",
+            "success": "Panoya kopyalandı!"
+        },
+        "download": {
+            "group": "İndir",
+            "text": "Metin Dosyası (.txt)",
+            "markdown": "Markdown (.md)",
+            "json": "JSON Dosyası (.json)",
+            "image": "Resim (.png)"
+        },
+        "share": "Paylaş"
+    },
+    "chatSaved": "Sohbet Kaydedildi",
+    "temporaryChatSavedSuccessfully": "Geçici sohbetiniz başarıyla kaydedildi",
+    "failedToSaveTemporaryChat": "Geçici sohbet kaydedilemedi. Lütfen tekrar deneyin."
+}

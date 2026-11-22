@@ -20,6 +20,7 @@ import { sv } from "./lang/sv";
 import { ko } from "./lang/ko";
 import { ar } from "./lang/ar"
 import { he } from "./lang/he"
+import { tr } from "./lang/tr"
 
 
 i18n
@@ -51,7 +52,9 @@ i18n
             ar: ar,
             he: he,
             cz: cz,
-            "cs-CZ": cz
+            "cs-CZ": cz,
+            tr: tr,
+            "tr-TR": tr
         },
         fallbackLng: "en",
         lng: localStorage.getItem("i18nextLng") || "en",
