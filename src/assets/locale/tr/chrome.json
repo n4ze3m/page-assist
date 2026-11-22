@@ -1,0 +1,27 @@
+{
+    "heading": "Chrome YZ Yapılandırması",
+    "status": {
+        "label": "Page Assist'te Chrome YZ Desteğini Etkinleştir veya Devre Dışı Bırak"
+    },
+    "error": {
+        "browser_not_supported": "Chrome'un bu sürümü Gemini Nano modeli tarafından desteklenmiyor. Lütfen 138 veya sonraki bir sürüme güncelleyin.",
+        "ai_not_supported": "chrome://flags/#prompt-api-for-gemini-nano ayarı etkin değil. Lütfen etkinleştirin.",
+        "ai_not_ready": "Gemini Nano henüz hazır değil; Chrome ayarlarını tekrar kontrol etmeniz gerekiyor.",
+        "internal_error": "Bir iç hata oluştu. Lütfen daha sonra tekrar deneyin."
+    },
+    "errorDescription": "Chrome YZ'yi kullanmak için Chrome sürüm 138 veya daha yenisine ihtiyacınız var. Şu adımları izleyin:\n\n1. `chrome://flags/#prompt-api-for-gemini-nano` adresine gidin ve \"Prompt API for Gemini Nano\" seçeneğini etkinleştirin.\n2. Bayrağı uygulamak için Chrome'u yeniden başlatın.\n3. Bu sayfaya geri dönün ve \"Modeli İndir\"e tıklayın — bu, ilk kez 4 GB'lık bir model indirecektir.\n4. İndirildikten sonra Gemini Nano, Page Assist aracılığıyla etkinleştirilebilir.",
+    "downloadModel": "Modeli İndir",
+    "modelDownloadWarning": "Bu, yaklaşık 1,5 GB ila 2,4 GB arasında bir indirme boyutuna sahip bir model indirecektir. Yeterli disk alanınız olduğundan emin olun.",
+    "downloadModal": {
+        "title": "Gemini Nano Modelini İndir",
+        "warning": "Büyük İndirme Gerekiyor",
+        "warningDescription": "Bu, yaklaşık 4 GB veri indirecektir. Yeterli disk alanınız ve sabit bir internet bağlantınız olduğundan emin olun.",
+        "confirm": "Şimdi İndir",
+        "cancel": "İptal",
+        "downloading": "Model İndiriliyor",
+        "downloadingDescription": "Gemini Nano modeli indiriliyor. İnternet bağlantınıza bağlı olarak bu birkaç dakika sürebilir.",
+        "pleaseWait": "İndirme sırasında lütfen bu pencereyi kapatmayın..."
+    },
+    "downloadSuccess": "Model başarıyla indirildi!",
+    "downloadError": "Model indirilemedi. Lütfen tekrar deneyin."
+}

@@ -1,0 +1,128 @@
+{
+    "settings": "OpenAI Uyumlu API",
+    "heading": "OpenAI uyumlu API",
+    "subheading": "OpenAI API Uyumlu sağlayıcılarınızı buradan yönetin ve yapılandırın.",
+    "addBtn": "Sağlayıcı Ekle",
+    "table": {
+        "name": "Sağlayıcı Adı",
+        "baseUrl": "Temel URL",
+        "actions": "Eylem"
+    },
+    "modal": {
+        "titleAdd": "Yeni Sağlayıcı Ekle",
+        "titleEdit": "Sağlayıcıyı Düzenle",
+        "name": {
+            "label": "Sağlayıcı Adı",
+            "required": "Sağlayıcı adı gerekli.",
+            "placeholder": "Sağlayıcı adını girin"
+        },
+        "baseUrl": {
+            "label": "Temel URL",
+            "help": "OpenAI API sağlayıcısının temel URL'si. örn (http://localhost:1234/v1)",
+            "required": "Temel URL gerekli.",
+            "placeholder": "Temel URL girin"
+        },
+        "apiKey": {
+            "label": "API Anahtarı",
+            "required": "API Anahtarı gerekli.",
+            "placeholder": "API Anahtarını girin",
+            "create": "API Anahtarı Oluştur"
+        },
+        "submit": "Kaydet",
+        "update": "Güncelle",
+        "deleteConfirm": "Bu sağlayıcıyı silmek istediğinizden emin misiniz?",
+        "model": {
+            "title": "Model Listesi",
+            "subheading": "Lütfen bu sağlayıcıyla kullanmak istediğiniz sohbet modellerini seçin.",
+            "success": "Yeni modeller başarıyla eklendi."
+        },
+        "tipLMStudio": "Page Assist, LM Studio'da yüklediğiniz modelleri otomatik olarak getirir. Bunları manuel olarak eklemenize gerek yoktur.",
+        "vertex": {
+            "projectId": {
+                "label": "Google Cloud Proje Kimliği",
+                "required": "Lütfen Google Cloud proje kimliğinizi girin",
+                "placeholder": "my-gcp-project-123456"
+            },
+            "location": {
+                "label": "Konum / Bölge",
+                "required": "Lütfen bir konum seçin"
+            },
+            "serviceAccount": {
+                "label": "Hizmet Hesabı JSON'ı",
+                "required": "Lütfen hizmet hesabı JSON'ınızı veya bir erişim belirtecini yapıştırın",
+                "help": "Hizmet hesabı anahtar dosyanızı yükleyin veya JSON'ını buraya yapıştırın. Yerel olarak depolanır ve tarayıcınızda kısa ömürlü erişim belirteçleri oluşturmak için kullanılır. Bunun yerine ham bir erişim belirteci de yapıştırabilirsiniz.",
+                "upload": "JSON dosyasını yükle",
+                "uploaded": "Hizmet hesabı dosyadan yüklendi.",
+                "invalid": "Bu dosya geçerli bir JSON değil."
+            }
+        }
+    },
+    "addSuccess": "Sağlayıcı başarıyla eklendi.",
+    "deleteSuccess": "Sağlayıcı başarıyla silindi.",
+    "updateSuccess": "Sağlayıcı başarıyla güncellendi.",
+    "delete": "Sil",
+    "edit": "Düzenle",
+    "newModel": "Sağlayıcıya Model Ekle",
+    "noNewModel": "LMStudio, Ollama, Llamafile için dinamik olarak getiriyoruz. Manuel eklemeye gerek yok.",
+    "searchModel": "Model Ara",
+    "selectAll": "Tümünü Seç",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor...",
+    "manageModels": {
+        "columns": {
+            "name": "Model Adı",
+            "model_type": "Model Türü",
+            "model_id": "Model Kimliği",
+            "provider": "Sağlayıcı Adı",
+            "actions": "Eylem",
+            "nickname": "Model Takma Adı"
+        },
+        "tooltip": {
+            "delete": "Sil"
+        },
+        "confirm": {
+            "delete": "Bu modeli silmek istediğinizden emin misiniz?"
+        },
+        "modal": {
+            "title": "Özel Model Ekle",
+            "titleEdit": "Özel Modeli Düzenle",
+            "form": {
+                "name": {
+                    "label": "Model Kimliği",
+                    "placeholder": "deepseek-v3.1",
+                    "required": "Model kimliği gerekli."
+                },
+                "provider": {
+                    "label": "Sağlayıcı",
+                    "placeholder": "Sağlayıcı seçin",
+                    "required": "Sağlayıcı gerekli."
+                },
+                "type": {
+                    "label": "Model Türü"
+                }
+            }
+        }
+    },
+    "noModelFound": "Model bulunamadı. Lütfen doğru sağlayıcıyı temel URL ve API anahtarı ile eklediğinizden emin olun.",
+    "radio": {
+        "chat": "Sohbet Modeli",
+        "embedding": "Gömme Modeli",
+        "chatInfo": "sohbet tamamlama ve konuşma oluşturma için kullanılır",
+        "embeddingInfo": "RAG ve diğer anlamsal arama ile ilgili görevler için kullanılır."
+    },
+    "nicknameModal": {
+        "title": "Model Takma Adı Ekle / Düzenle",
+        "form": {
+            "modelName": {
+                "label": "Model Adı",
+                "placeholder": "Model adı girin",
+                "required": "Model adı gerekli."
+            },
+            "modelAvatar": {
+                "label": "Model Avatarı",
+                "placeholder": "Model avatarı girin",
+                "help": "Lütfen model avatarının URL'sini girin. Bu görsel sohbet penceresinde görüntülenecektir."
+            }
+        }
+    }
+}

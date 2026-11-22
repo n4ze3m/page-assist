@@ -79,5 +79,9 @@ export const supportLanguage = [
     {
         value: "he",
         label: "עברית"
+    },
+    {
+        value: "tr",
+        label: "Türkçe"
     }
 ]

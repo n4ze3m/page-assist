@@ -1,0 +1,238 @@
+{
+    "pageAssist": "Page Assist",
+    "selectAModel": "Bir Model Seçin",
+    "save": "Kaydet",
+    "saved": "Kaydedildi",
+    "cancel": "İptal",
+    "retry": "Tekrar Dene",
+    "loadMore": "Daha Fazla Yükle...",
+    "share": {
+        "tooltip": {
+            "share": "Paylaş"
+        },
+        "modal": {
+            "title": "Sohbet bağlantısını paylaş"
+        },
+        "form": {
+            "defaultValue": {
+                "name": "Anonim",
+                "title": "Başlıksız sohbet"
+            },
+            "title": {
+                "label": "Sohbet başlığı",
+                "placeholder": "Sohbet başlığını girin",
+                "required": "Sohbet başlığı gerekli"
+            },
+            "name": {
+                "label": "Adınız",
+                "placeholder": "Adınızı girin",
+                "required": "Adınız gerekli"
+            },
+            "btn": {
+                "save": "Bağlantı Oluştur",
+                "saving": "Bağlantı Oluşturuluyor..."
+            }
+        },
+        "notification": {
+            "successGenerate": "Bağlantı panoya kopyalandı",
+            "failGenerate": "Bağlantı oluşturulamadı"
+        }
+    },
+    "copyToClipboard": "Panoya kopyala",
+    "webSearch": "Web'de aranıyor",
+    "regenerate": "Yeniden oluştur",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "continue": "Yanıtı Sürdür",
+    "saveAndSubmit": "Kaydet ve Gönder",
+    "editMessage": {
+        "placeholder": "Bir ileti yazın..."
+    },
+    "submit": "Gönder",
+    "noData": "Veri yok",
+    "noHistory": "Sohbet geçmişi yok",
+    "chatWithCurrentPage": "Mevcut sayfa ile sohbet et",
+    "beta": "Beta",
+    "tts": "Sesli oku",
+    "currentChatModelSettings": "Mevcut Sohbet Modeli Ayarları",
+    "modelSettings": {
+        "label": "Model Ayarları",
+        "description": "Model seçeneklerini tüm sohbetler için genel olarak ayarlayın",
+        "form": {
+            "keepAlive": {
+                "label": "Canlı Tut",
+                "help": "isteğin ardından modelin bellekte ne kadar süre yüklü kalacağını kontrol eder (varsayılan: 5d)",
+                "placeholder": "örn. 5d, 10d, 1s"
+            },
+            "temperature": {
+                "label": "Sıcaklık",
+                "placeholder": "örn. 0.7, 1.0"
+            },
+            "numCtx": {
+                "label": "Bağlam Penceresi Boyutu (num_ctx)",
+                "placeholder": "Bağlam Penceresi Boyutu değerini girin (varsayılan: 2048)"
+            },
+            "numPredict": {
+                "label": "Maksimum Belirteç (num_predict)",
+                "placeholder": "örn. 2048, 4096"
+            },
+            "thinking": {
+                "label": "Düşünme Modu (Ollama)",
+                "levels": {
+                    "off": "Kapalı",
+                    "on": "Açık",
+                    "low": "Düşük akıl yürütme çabası",
+                    "medium": "Orta akıl yürütme çabası",
+                    "high": "Yüksek akıl yürütme çabası"
+                }
+            },
+            "seed": {
+                "label": "Tohum",
+                "placeholder": "örn. 1234",
+                "help": "Model çıktısının tekrarlanabilirliği"
+            },
+            "topK": {
+                "label": "Top K",
+                "placeholder": "örn. 40, 100"
+            },
+            "topP": {
+                "label": "Top P",
+                "placeholder": "örn. 0.9, 0.95"
+            },
+            "useMMap": {
+                "label": "useMmap"
+            },
+            "tfsZ": {
+                "label": "TFS-Z",
+                "placeholder": "örn. 1.0, 1.1"
+            },
+            "numKeep": {
+                "label": "Saklanacak Sayı",
+                "placeholder": "örn. 256, 512"
+            },
+            "numThread": {
+                "label": "İş Parçacığı Sayısı",
+                "placeholder": "örn. 8, 16"
+            },
+            "useMlock": {
+                "label": "useMlock kullan"
+            },
+            "reasoningEffort": {
+                "label": "Akıl Yürütme Çabası",
+                "placeholder": "düşük, orta, yüksek"
+            },
+            "minP": {
+                "label": "Min P",
+                "placeholder": "örn. 0.05"
+            },
+            "repeatPenalty": {
+                "label": "Tekrar Cezası",
+                "placeholder": "örn. 1.1, 1.2"
+            },
+            "repeatLastN": {
+                "label": "Son N Tekrarla",
+                "placeholder": "örn. 64, 128"
+            },
+            "numGpu": {
+                "label": "GPU Sayısı",
+                "placeholder": "GPU'lara gönderilecek katman sayısını girin"
+            },
+            "systemPrompt": {
+                "label": "Geçici Sistem İstemi",
+                "placeholder": "Sistem İstemini Girin",
+                "help": "Bu, mevcut sohbette sistem istemini ayarlamanın hızlı bir yoludur ve seçili sistem istemi varsa onu geçersiz kılar."
+            }
+        },
+        "advanced": "Daha Fazla Model Ayarı"
+    },
+    "copilot": {
+        "summary": "Özetle",
+        "explain": "Açıkla",
+        "rephrase": "Yeniden İfade Et",
+        "translate": "Çevir",
+        "custom": "Özel"
+    },
+    "citations": "Atıflar",
+    "segmented": {
+        "ollama": "Ollama Modelleri",
+        "custom": "Özel Modeller"
+    },
+    "downloadCode": "Kodu İndir",
+    "date": {
+        "pinned": "Sabitlenmiş",
+        "today": "Bugün",
+        "yesterday": "Dün",
+        "last7Days": "Son 7 Gün",
+        "older": "Daha Eskiler"
+    },
+    "range": {
+        "deleteConfirm": {
+            "pinned": "Tüm sabitlenmiş iletileri silmek istediğinizden emin misiniz?",
+            "today": "Bugüne ait tüm iletileri silmek istediğinizden emin misiniz?",
+            "yesterday": "Düne ait tüm iletileri silmek istediğinizden emin misiniz?",
+            "last7Days": "Son 7 güne ait tüm iletileri silmek istediğinizden emin misiniz?",
+            "older": "Daha eski tüm iletileri silmek istediğinizden emin misiniz?"
+        },
+        "tooltip": {
+            "pinned": "Tüm sabitlenmiş iletileri sil",
+            "today": "Bugüne ait tüm iletileri sil",
+            "yesterday": "Düne ait tüm iletileri sil",
+            "last7Days": "Son 7 güne ait tüm iletileri sil",
+            "older": "Daha eski tüm iletileri sil"
+        }
+    },
+    "historiesDeleted": "{{count}} Konuşma Silindi",
+    "deleteHistoriesError": "Konuşmalar silinirken hata oluştu",
+    "pin": "Sabitle",
+    "unpin": "Sabitlemeyi Kaldır",
+    "generationInfo": "Oluşturma Bilgisi",
+    "sidebarChat": "Yan Panel Sohbeti",
+    "reasoning": {
+        "thinking": "Düşünülüyor...",
+        "thought": "{{time}} için düşünce",
+        "title": "Akıl Yürütme Süreci",
+        "expand": "Akıl yürütmeyi göster",
+        "collapse": "Akıl yürütmeyi gizle"
+    },
+    "mermaid": "Mermaid",
+    "search": "Ara",
+    "searchResults": "Arama Sonuçları",
+    "embeddingGen": "Gömme oluşturuluyor, bu biraz zaman alabilir",
+    "semanticSearch": "Semantik arama yapılıyor",
+    "newBranch": "Yeni Dal",
+    "downloading": "İndiriliyor",
+    "mcp": {
+        "tool": "araç",
+        "server": "sunucu",
+        "toolRequestTitle": "İstenen araçlar",
+        "toolResultTitle": "Araç sonucu",
+        "arguments": "Argümanlar",
+        "output": "Çıktı",
+        "approvalRequired": "Onay gerekli",
+        "approvalPrompt": "Bu MCP araç çağrısını çalıştırmadan önce onaylayın.",
+        "approve": "Onayla",
+        "reject": "Reddet",
+        "rejectWithReason": "Notla reddet",
+        "rejectionReasonPlaceholder": "İsteğe bağlı ret nedeni",
+        "noOutput": "Çıktı döndürülmedi.",
+        "status": {
+            "success": "Başarılı",
+            "error": "Hata"
+        },
+        "action": {
+            "connecting": "MCP sunucularına bağlanılıyor",
+            "loading_tools": "MCP araçları yükleniyor",
+            "awaiting_approval": "{{server}} üzerinde {{tool}} aracını çalıştırmak için onay bekleniyor",
+            "calling_tool": "{{server}} üzerinde {{tool}} çağrılıyor",
+            "waiting_result": "{{server}} üzerinde {{tool}} için bekleniyor"
+        }
+    },
+    "cancelPullingModel": {
+        "confirm": "İndirmeyi iptal etmek istediğinizden emin misiniz? Bu işlem indirme sürecini durduracaktır. Ollama belgelerine göre, kaldığınız yerden devam edebilirsiniz."
+    },
+    "saveChat": "Sohbeti Kaydet",
+    "quoteReply": {
+        "reply": "Yanıtla",
+        "remove": "Alıntıyı kaldır"
+    }
+}
