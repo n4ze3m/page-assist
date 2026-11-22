@@ -81,7 +81,7 @@ For a full walkthrough of internet search, see [Internet Search](/features/inter
 | --- | --- |
 | **Enable Text-to-Speech** | Turns on reading AI responses out loud. |
 | **Auto play voice response after completion** | Plays the spoken response automatically when a message finishes. |
-| **Text-to-Speech Provider** | The TTS engine to use: Browser TTS, ElevenLabs, OpenAI TTS, or Mistral TTS. |
+| **Text-to-Speech Provider** | The TTS engine to use: Browser TTS, ElevenLabs, OpenAI TTS, Mistral TTS, or Tiny Voca (runs on your device, English only; the 8 MB model is downloaded from Hugging Face on first use). |
 | **Text-to-Speech Voice** | The voice used for playback (options depend on the selected provider). |
 | **API Key / Base URL / TTS Model** | Connection details for ElevenLabs, OpenAI TTS, or Mistral TTS providers. |
 | **Response Splitting** | How responses are split before being spoken: None, Punctuation, or Paragraph. |

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { notification } from "antd"
 import {
   getElevenLabsApiKey,
@@ -8,6 +8,7 @@ import {
   getRemoveEmojisTTS,
   getTTSProvider,
   getVoice,
+  getTinyVocaVoice,
   isSSMLEnabled,
   getSpeechPlaybackSpeed
 } from "@/services/tts"
@@ -18,6 +19,7 @@ import { removeReasoning } from "@/libs/reasoning"
 import { markdownToText } from "@/utils/markdown-to-text"
 import { generateOpenAITTS } from "@/services/openai-tts"
 import { generateMistralTTS } from "@/services/mistral-tts"
+import { generateTinyVocaTTS } from "@/services/tiny-voca"
 
 export interface VoiceOptions {
   utterance: string
@@ -28,6 +30,8 @@ export const useTTS = () => {
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
     null
   )
+  const runRef = useRef(0)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const speak = async ({ utterance }: VoiceOptions) => {
     try {
@@ -44,7 +48,8 @@ export const useTTS = () => {
         utterance = sanitizeEmojis(utterance)
       }
       const isSSML = await isSSMLEnabled()
-      if (isSSML) {
+      // Tiny Voca reads plain text, SSML tags would be spoken out loud
+      if (isSSML && provider !== "tiny-voca") {
         utterance = markdownToSSML(utterance)
       } else {
         utterance = markdownToText(utterance)
@@ -188,6 +193,47 @@ export const useTTS = () => {
 
         setIsSpeaking(false)
         setAudioElement(null)
+      } else if (provider === "tiny-voca") {
+        const voice = await getTinyVocaVoice()
+        const runId = ++runRef.current
+        setIsSpeaking(true)
+
+        // sentences keep being made in the worker while the current one plays
+        for await (const audioData of generateTinyVocaTTS({
+          text: utterance,
+          voice,
+          onDownload: () =>
+            notification.info({
+              message: "Tiny Voca",
+              description:
+                "Downloading the voice model (8 MB). This only happens once."
+            })
+        })) {
+          if (runRef.current !== runId) break
+
+          const blob = new Blob([audioData], { type: "audio/wav" })
+          const url = URL.createObjectURL(blob)
+          const audio = new Audio(url)
+          audio.playbackRate = playbackSpeed
+          audioRef.current = audio
+          setAudioElement(audio)
+
+          await new Promise((resolve) => {
+            audio.onended = resolve
+            audio.onpause = resolve
+            audio.onerror = resolve
+            audio.play().catch(resolve)
+          })
+
+          URL.revokeObjectURL(url)
+          if (runRef.current !== runId) break
+        }
+
+        if (runRef.current === runId) {
+          audioRef.current = null
+          setIsSpeaking(false)
+          setAudioElement(null)
+        }
       }
     } catch (error) {
       setIsSpeaking(false)
@@ -200,6 +246,12 @@ export const useTTS = () => {
   }
 
   const cancel = () => {
+    runRef.current++
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current = null
+    }
+
     if (audioElement) {
       audioElement.pause()
       audioElement.currentTime = 0

@@ -91,6 +91,10 @@ export const useSpeechRecognition = (
 
   const recognition = useRef<SpeechRecognition | null>(null)
   const [listening, setListening] = useState<boolean>(false)
+  // The state above only changes on the next render. onEnd can submit the
+  // form, and the form stops the recognition again in the same tick, so the
+  // guard in stop() must see the change at once.
+  const listeningRef = useRef<boolean>(false)
   const [supported, setSupported] = useState<boolean>(false)
   const [liveTranscript, setLiveTranscript] = useState<string>("")
   const silenceTimer = useRef<NodeJS.Timeout | null>(null)
@@ -146,6 +150,7 @@ export const useSpeechRecognition = (
       if (recognition.current) {
         recognition.current.onend = null
       }
+      listeningRef.current = false
       setListening(false)
     }
     onError(event)
@@ -153,7 +158,7 @@ export const useSpeechRecognition = (
 
   const listen = useEventCallback(
     (args: ListenArgs = {}) => {
-      if (listening || !supported) return
+      if (listeningRef.current || !supported) return
       const {
         lang = "",
         interimResults = true,
@@ -165,6 +170,7 @@ export const useSpeechRecognition = (
         autoSubmit: argAutoSubmit = autoSubmit
       } = args
 
+      listeningRef.current = true
       setListening(true)
       setLiveTranscript("")
       lastTranscriptRef.current = ""
@@ -191,6 +197,13 @@ export const useSpeechRecognition = (
           if (recognition.current && !argAutoStop) {
             recognition.current.start()
           } else {
+            // the browser ended it by itself: this is the one and only end
+            if (silenceTimer.current) {
+              clearTimeout(silenceTimer.current)
+              silenceTimer.current = null
+            }
+            listeningRef.current = false
+            setListening(false)
             onEnd()
           }
         }
@@ -203,7 +216,8 @@ export const useSpeechRecognition = (
   )
 
   const stop = useEventCallback(() => {
-    if (!listening || !supported) return
+    if (!listeningRef.current || !supported) return
+    listeningRef.current = false
 
     if (silenceTimer.current) {
       clearTimeout(silenceTimer.current)

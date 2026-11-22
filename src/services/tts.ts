@@ -7,7 +7,7 @@ const storage2 = new Storage({
 
 const DEFAULT_TTS_PROVIDER = "browser"
 
-const AVAILABLE_TTS_PROVIDERS = ["browser", "elevenlabs", "openai", "mistral"] as const
+const AVAILABLE_TTS_PROVIDERS = ["browser", "elevenlabs", "openai", "mistral", "tiny-voca"] as const
 
 export const getTTSProvider = async (): Promise<
   (typeof AVAILABLE_TTS_PROVIDERS)[number]
@@ -182,6 +182,18 @@ export const setMistralTTSVoiceId = async (mistralTTSVoiceId: string) => {
 }
 
 
+export const getTinyVocaVoice = async () => {
+  const data = await storage.get("tinyVocaVoice")
+  if (!data || data.length === 0) {
+    return "F2"
+  }
+  return data
+}
+
+export const setTinyVocaVoice = async (tinyVocaVoice: string) => {
+  await storage.set("tinyVocaVoice", tinyVocaVoice)
+}
+
 export const getResponseSplitting = async () => {
   const data = await storage.get("ttsResponseSplitting")
   if (!data || data.length === 0 || data === "") {
@@ -260,6 +272,8 @@ export const getTTSSettings = async () => {
     mistralTTSApiKey,
     mistralTTSModel,
     mistralTTSVoiceId,
+    // TINY VOCA
+    tinyVocaVoice,
     // UTILS
     ttsAutoPlay,
     playbackSpeed,
@@ -285,6 +299,8 @@ export const getTTSSettings = async () => {
     getMistralTTSApiKey(),
     getMistralTTSModel(),
     getMistralTTSVoiceId(),
+    // TINY VOCA
+    getTinyVocaVoice(),
     // UTILS
     isTTSAutoPlayEnabled(),
     getSpeechPlaybackSpeed(),
@@ -312,6 +328,7 @@ export const getTTSSettings = async () => {
     mistralTTSApiKey,
     mistralTTSModel,
     mistralTTSVoiceId,
+    tinyVocaVoice,
     ttsAutoPlay,
     playbackSpeed,
   }
@@ -336,6 +353,7 @@ export const setTTSSettings = async ({
   mistralTTSApiKey,
   mistralTTSModel,
   mistralTTSVoiceId,
+  tinyVocaVoice,
   ttsAutoPlay,
   playbackSpeed,
 }: {
@@ -357,6 +375,7 @@ export const setTTSSettings = async ({
   mistralTTSApiKey: string,
   mistralTTSModel: string,
   mistralTTSVoiceId: string,
+  tinyVocaVoice: string,
   ttsAutoPlay: boolean,
   playbackSpeed: number,
 }) => {
@@ -379,6 +398,7 @@ export const setTTSSettings = async ({
     setMistralTTSApiKey(mistralTTSApiKey),
     setMistralTTSModel(mistralTTSModel),
     setMistralTTSVoiceId(mistralTTSVoiceId),
+    setTinyVocaVoice(tinyVocaVoice),
     setTTSAutoPlayEnabled(ttsAutoPlay),
     setSpeechPlaybackSpeed(playbackSpeed),
   ])

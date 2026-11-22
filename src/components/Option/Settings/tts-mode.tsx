@@ -1,11 +1,24 @@
 import { SaveButton } from "@/components/Common/SaveButton"
 import { getModels, getVoices } from "@/services/elevenlabs"
 import { getMistralVoices } from "@/services/mistral-tts"
+import {
+  downloadTinyVocaModel,
+  isTinyVocaModelDownloaded,
+  TINY_VOCA_VOICES
+} from "@/services/tiny-voca"
 import { getTTSSettings, setTTSSettings } from "@/services/tts"
 import { useWebUI } from "@/store/webui"
 import { useForm } from "@mantine/form"
-import { useQuery } from "@tanstack/react-query"
-import { Input, InputNumber, message, Select, Skeleton, Switch } from "antd"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  Button,
+  Input,
+  InputNumber,
+  message,
+  Select,
+  Skeleton,
+  Switch
+} from "antd"
 import { useTranslation } from "react-i18next"
 
 export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
@@ -32,6 +45,7 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
       mistralTTSApiKey: "",
       mistralTTSModel: "",
       mistralTTSVoiceId: "",
+      tinyVocaVoice: "F2",
       ttsAutoPlay: false,
       playbackSpeed: 1
     }
@@ -91,6 +105,27 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
     enabled:
       form.values.ttsProvider === "mistral" && !!form.values.mistralTTSApiKey
   })
+
+  const queryClient = useQueryClient()
+  const { data: tinyVocaDownloaded } = useQuery({
+    queryKey: ["fetchTinyVocaModelStatus"],
+    queryFn: isTinyVocaModelDownloaded,
+    enabled: form.values.ttsProvider === "tiny-voca"
+  })
+
+  const { mutate: downloadTinyVoca, isPending: isDownloadingTinyVoca } =
+    useMutation({
+      mutationFn: downloadTinyVocaModel,
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["fetchTinyVocaModelStatus"]
+        })
+      },
+      onError: () => {
+        message.error("Error downloading the Tiny Voca model")
+      }
+    })
+
   if (status === "pending" || status === "error") {
     return <Skeleton active />
   }
@@ -161,6 +196,10 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
                 {
                   label: "Mistral TTS",
                   value: "mistral"
+                },
+                {
+                  label: "Tiny Voca (English)",
+                  value: "tiny-voca"
                 }
               ]}
               {...form.getInputProps("ttsProvider")}
@@ -358,6 +397,39 @@ export const TTSModeSettings = ({ hideBorder }: { hideBorder?: boolean }) => {
                 className=" mt-4 sm:mt-0 !w-[300px] sm:w-[200px]"
                 required
                 {...form.getInputProps("mistralTTSModel")}
+              />
+            </div>
+          </>
+        )}
+        {form.values.ttsProvider === "tiny-voca" && (
+          <>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <div>
+                <span className="text-gray-700 dark:text-neutral-50">
+                  Model
+                </span>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Runs on your device, English only. The model (8 MB) is
+                  downloaded from Hugging Face.
+                </p>
+              </div>
+              <Button
+                className="mt-4 sm:mt-0"
+                loading={isDownloadingTinyVoca}
+                disabled={tinyVocaDownloaded}
+                onClick={() => downloadTinyVoca()}>
+                {tinyVocaDownloaded ? "Downloaded" : "Download"}
+              </Button>
+            </div>
+            <div className="flex sm:flex-row flex-col space-y-4 sm:space-y-0 sm:justify-between">
+              <span className="text-gray-700 dark:text-neutral-50">
+                TTS Voice
+              </span>
+              <Select
+                className="w-full mt-4 sm:mt-0 sm:w-[200px]"
+                placeholder="Select a voice"
+                options={TINY_VOCA_VOICES}
+                {...form.getInputProps("tinyVocaVoice")}
               />
             </div>
           </>
