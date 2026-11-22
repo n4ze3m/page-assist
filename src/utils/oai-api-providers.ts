@@ -228,9 +228,9 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     apiKeyUrl: "https://console.runanywhere.ai"
   },
   {
-    label: "UberLLM",
-    value: "uberllm",
-    baseUrl: "https://api.uberllm.dev/v1",
-    apiKeyUrl: "https://uberllm.dev/dashboard/keys"
+    label: "MartLLM",
+    value: "martllm",
+    baseUrl: "https://api.martllm.com/v1",
+    apiKeyUrl: "https://martllm.com/dashboard/keys"
   },
 ]

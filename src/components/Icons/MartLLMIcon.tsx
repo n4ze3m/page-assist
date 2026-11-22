@@ -1,6 +1,6 @@
 import React from "react"
 
-export const UberLLMIcon = React.forwardRef<
+export const MartLLMIcon = React.forwardRef<
   SVGSVGElement,
   React.SVGProps<SVGSVGElement>
 >((props, ref) => {
