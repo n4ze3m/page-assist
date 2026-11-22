@@ -18,6 +18,12 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     apiKeyUrl: "https://aihubmix.com/?aff=N9Wa"
   },
   {
+    label: "CrowLLM",
+    value: "crowllm",
+    baseUrl: "https://crowllm.com/v1",
+    apiKeyUrl: "https://crowllm.com"
+  },
+  {
     label: "LLaMa.cpp",
     value: "llamacpp",
     baseUrl: "http://localhost:8080/v1"
