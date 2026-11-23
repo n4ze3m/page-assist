@@ -227,4 +227,10 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     baseUrl: "https://inference.runanywhere.ai/v1",
     apiKeyUrl: "https://console.runanywhere.ai"
   },
+  {
+    label: "MartLLM",
+    value: "martllm",
+    baseUrl: "https://api.martllm.com/v1",
+    apiKeyUrl: "https://martllm.com/dashboard/keys"
+  },
 ]
