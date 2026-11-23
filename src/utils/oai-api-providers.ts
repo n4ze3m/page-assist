@@ -227,4 +227,9 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     baseUrl: "https://inference.runanywhere.ai/v1",
     apiKeyUrl: "https://console.runanywhere.ai"
   },
+  {
+    label: "cheapaimodel",
+    value: "cheapaimodel",
+    baseUrl: "https://api.cheapaimodel.ai/v1"
+  },
 ]
