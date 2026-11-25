@@ -33,6 +33,11 @@ export const OAI_API_PROVIDERS: OAIApiProvider[] = [
     baseUrl: "http://127.0.0.1:8080/v1"
   },
   {
+    label: "llamay",
+    value: "llamay",
+    baseUrl: "http://127.0.0.1:11435/v1"
+  },
+  {
     label: "llmman",
     value: "llmman",
     baseUrl: "http://localhost:17434/v1"
