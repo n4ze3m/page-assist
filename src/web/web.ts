@@ -19,6 +19,7 @@ import { kagiAPISearch } from "./search-engines/kagi-api"
 import { perplexityAPISearch } from "./search-engines/perplexity-api"
 import { serplyAPISearch } from "./search-engines/serply-api"
 import { sofyaAPISearch } from "./search-engines/sofya-api"
+import { specstreamAPISearch } from "./search-engines/specstream-api"
 
 interface ProviderResults {
   url: any
@@ -77,6 +78,8 @@ const searchWeb = (provider: string, query: string) => {
       return serplyAPISearch(query)
     case "sofya-api":
       return sofyaAPISearch(query)
+    case "specstream-api":
+      return specstreamAPISearch(query)
     default:
       return webGoogleSearch(query)
   }
