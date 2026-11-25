@@ -17,6 +17,16 @@ Page Assist supports MCP which allows your LLM to use external tools like search
 
 Once added, the server tools will be automatically fetched and cached.
 
+For example, to connect [Cohesivity](https://cohesivity.ai?ref=gh-page-assist), a remote server that needs no API key:
+
+1. Go to Settings > `MCP Settings`
+2. Click `Add MCP Server`
+3. Enter `cohesivity` as the name and `https://cohesivity.ai/mcp` as the server URL
+4. Select `None` as the auth type
+5. Click `Save`
+
+Your model then gets tools to create a backend and provision hosting, Postgres, storage, auth, email, and AI model APIs. No account or API keys are needed to start. The backend expires after 72 hours unless you claim it.
+
 ## Human-in-the-Loop Approval
 
 You can enable `Require approval before running MCP tools` directly from `Settings > MCP Settings`.
