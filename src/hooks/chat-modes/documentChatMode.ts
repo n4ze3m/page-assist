@@ -238,7 +238,7 @@ export const documentChatMode = async (
 
       setActionInfo(null)
     }
-    if (newMessage.length > 2) {
+    if (newMessage.length > 2 && uploadedFiles.length > 0 && fileRetrievalEnabled) {
       const lastTenMessages = newMessage.slice(-10)
       lastTenMessages.pop()
       const chat_history = lastTenMessages
